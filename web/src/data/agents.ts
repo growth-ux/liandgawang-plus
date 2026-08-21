@@ -17,8 +17,8 @@ export interface Agent {
   accent: string;
   /** 页内 Tab（设计文档第 8 章） */
   tabs: string[];
-  /** 首页主视觉热区，百分比坐标 */
-  hotspot: { x: number; y: number; w: number; h: number };
+  /** 首页协作场站位：x/y 为脚底锚点百分比，size 为角色高度占舞台高度百分比 */
+  pos: { x: number; y: number; size: number };
 }
 
 export const agents: Agent[] = [
@@ -32,7 +32,7 @@ export const agents: Agent[] = [
     zone: "中央业务台",
     accent: "#e35d2b",
     tabs: ["目标受理", "任务方案", "参与小二", "综合结论", "行动清单", "历史任务"],
-    hotspot: { x: 40, y: 27, w: 21, h: 46 },
+    pos: { x: 50.5, y: 73, size: 34 },
   },
   {
     id: "zhan",
@@ -44,7 +44,7 @@ export const agents: Agent[] = [
     zone: "行情与资讯屏",
     accent: "#2f7fb8",
     tabs: ["市场全景", "品种走势", "区域价差", "影响因素", "我的关注", "研判记录"],
-    hotspot: { x: 42, y: 3, w: 16, h: 24 },
+    pos: { x: 50, y: 27, size: 20 },
   },
   {
     id: "liang",
@@ -56,7 +56,7 @@ export const agents: Agent[] = [
     zone: "农田与粮源区",
     accent: "#c9902a",
     tabs: ["找粮源", "候选对比", "供应方", "寻源任务", "历史记录"],
-    hotspot: { x: 68, y: 11, w: 17, h: 28 },
+    pos: { x: 76.5, y: 39, size: 22 },
   },
   {
     id: "yun",
@@ -68,7 +68,7 @@ export const agents: Agent[] = [
     zone: "仓储与物流区",
     accent: "#3f9d6e",
     tabs: ["找物流", "路线方案", "方案对比", "运输任务", "历史记录"],
-    hotspot: { x: 83, y: 33, w: 16, h: 32 },
+    pos: { x: 91, y: 65, size: 22 },
   },
   {
     id: "suan",
@@ -80,7 +80,7 @@ export const agents: Agent[] = [
     zone: "方案测算台",
     accent: "#7a6bc0",
     tabs: ["新建测算", "成本明细", "方案对比", "敏感因素", "测算记录"],
-    hotspot: { x: 41, y: 64, w: 18, h: 30 },
+    pos: { x: 50, y: 94, size: 22 },
   },
   {
     id: "qian",
@@ -92,7 +92,7 @@ export const agents: Agent[] = [
     zone: "金融服务区",
     accent: "#c76a3f",
     tabs: ["找资金服务", "服务对比", "申请咨询", "办理进度", "服务记录"],
-    hotspot: { x: 13, y: 50, w: 17, h: 32 },
+    pos: { x: 21.5, y: 82, size: 22 },
   },
   {
     id: "an",
@@ -104,7 +104,7 @@ export const agents: Agent[] = [
     zone: "全局巡检位",
     accent: "#4b8f8c",
     tabs: ["发起审核", "风险清单", "核验事项", "审核对象", "审核记录"],
-    hotspot: { x: 3, y: 19, w: 16, h: 30 },
+    pos: { x: 11, y: 49, size: 20 },
   },
 ];
 

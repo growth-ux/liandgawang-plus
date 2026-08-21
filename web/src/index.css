@@ -26,3 +26,41 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
+
+/* ===== 数字员工动画（协作场首页） ===== */
+
+@keyframes ld-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes ld-sway {
+  0%, 100% { transform: rotate(-1.6deg); }
+  50% { transform: rotate(1.6deg); }
+}
+
+@keyframes ld-pulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+@keyframes ld-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-9px); }
+}
+
+@keyframes ld-dash {
+  to { stroke-dashoffset: -48; }
+}
+
+.ld-bob { animation: ld-bob 3.4s ease-in-out infinite; }
+.ld-sway { animation: ld-sway 5.2s ease-in-out infinite; transform-origin: 50% 96%; }
+.ld-pulse { animation: ld-pulse 2.4s ease-in-out infinite; }
+.ld-float { animation: ld-float 4.6s ease-in-out infinite; }
+.ld-dash { animation: ld-dash 2.2s linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ld-bob, .ld-sway, .ld-pulse, .ld-float, .ld-dash {
+    animation: none;
+  }
+}
