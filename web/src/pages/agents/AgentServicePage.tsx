@@ -15,7 +15,7 @@ export default function AgentServicePage() {
   return (
     <div className="flex min-h-[calc(100vh-4rem)] flex-col">
       {/* 页面头部：当前小二身份与服务范围 + 切换小二 */}
-      <div className="border-b border-line bg-white">
+      <div className="border-b border-line bg-panel">
         <div className="mx-auto flex max-w-[1280px] items-center justify-between px-6 py-4">
           <div className="flex items-center gap-3.5">
             <AgentAvatar agent={agent} size={48} />
@@ -68,7 +68,7 @@ export default function AgentServicePage() {
 
       {/* 占位正文 */}
       <div className="mx-auto w-full max-w-[1280px] flex-1 px-6 py-8">
-        <div className="flex min-h-[420px] flex-col items-center justify-center rounded-3xl border border-dashed border-line bg-white/70 text-center">
+        <div className="flex min-h-[420px] flex-col items-center justify-center rounded-3xl border border-dashed border-line bg-panel/60 text-center">
           <AgentAvatar agent={agent} size={64} />
           <h2 className="mt-4 text-lg font-semibold">
             「{agent.name}｜{agent.action}」的 {agent.tabs[activeTab]} 正在建设中
@@ -93,7 +93,7 @@ export default function AgentServicePage() {
       </div>
 
       {/* 底部：面向当前小二的自然语言输入（占位，未接通） */}
-      <div className="sticky bottom-0 border-t border-line bg-white/95 backdrop-blur">
+      <div className="sticky bottom-0 border-t border-line bg-panel/90 backdrop-blur">
         <div className="mx-auto flex max-w-[1280px] items-center gap-3 px-6 py-3">
           <input
             type="text"

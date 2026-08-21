@@ -1,15 +1,18 @@
 @import "tailwindcss";
 
+/* 科技风方向 A「深空能量」：深空蓝黑底 + 粮达橙霓虹 + 数据青 */
 @theme {
-  --color-rice: #fbf6ec;
-  --color-rice-deep: #f3ebdb;
+  --color-rice: #0b1220;
+  --color-rice-deep: #111b30;
+  --color-panel: #131c36;
+  --color-tech: #22d3ee;
   --color-brand: #ee7b1f;
-  --color-brand-deep: #d9650c;
-  --color-brand-soft: #fcebd6;
-  --color-brand-faint: #fdf4e7;
-  --color-ink: #382e21;
-  --color-ink-soft: #8a7d6a;
-  --color-line: #e8dfce;
+  --color-brand-deep: #f59e0b;
+  --color-brand-soft: #3a2413;
+  --color-brand-faint: #2a1e12;
+  --color-ink: #e9eef7;
+  --color-ink-soft: #93a1b8;
+  --color-line: rgba(148, 163, 184, 0.16);
   --font-sans: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
     "Noto Sans SC", system-ui, sans-serif;
 }
@@ -39,28 +42,60 @@ body {
   50% { transform: rotate(1.6deg); }
 }
 
-@keyframes ld-pulse {
-  0%, 100% { opacity: 0.3; }
+.ld-bob { animation: ld-bob 3.4s ease-in-out infinite; }
+.ld-sway { animation: ld-sway 5.2s ease-in-out infinite; transform-origin: 50% 96%; }
+
+/* ===== 全息道具动画（首页 HoloProp） ===== */
+
+@keyframes ld-holo-breathe {
+  0%, 100% { opacity: 0.7; }
   50% { opacity: 1; }
 }
 
-@keyframes ld-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-9px); }
+@keyframes ld-blink {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 1; }
 }
 
-@keyframes ld-dash {
-  to { stroke-dashoffset: -48; }
+/* 虚线流动：--dash-shift 需与元素 stroke-dasharray 周期匹配，避免循环跳变 */
+@keyframes ld-dash-flow {
+  to { stroke-dashoffset: var(--dash-shift, -36px); }
 }
 
-.ld-bob { animation: ld-bob 3.4s ease-in-out infinite; }
-.ld-sway { animation: ld-sway 5.2s ease-in-out infinite; transform-origin: 50% 96%; }
-.ld-pulse { animation: ld-pulse 2.4s ease-in-out infinite; }
-.ld-float { animation: ld-float 4.6s ease-in-out infinite; }
-.ld-dash { animation: ld-dash 2.2s linear infinite; }
+/* 折线循环生长：画完停留再淡出重画 */
+@keyframes ld-draw {
+  0% { stroke-dashoffset: 240; opacity: 0.9; }
+  55% { stroke-dashoffset: 0; opacity: 0.9; }
+  80% { stroke-dashoffset: 0; opacity: 0.9; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+
+/* 扫描线垂直掠过：--scan-dist 为各道具的扫描行程 */
+@keyframes ld-scan-y {
+  0% { transform: translateY(0); opacity: 0; }
+  15% { opacity: 0.8; }
+  85% { opacity: 0.8; }
+  100% { transform: translateY(var(--scan-dist, 46px)); opacity: 0; }
+}
+
+/* 微光斜向扫过屏面 */
+@keyframes ld-sweep {
+  0% { transform: translateX(-26px) skewX(-12deg); opacity: 0; }
+  25% { opacity: 0.5; }
+  75% { opacity: 0.5; }
+  100% { transform: translateX(132px) skewX(-12deg); opacity: 0; }
+}
+
+.ld-holo-breathe { animation: ld-holo-breathe 4.6s ease-in-out infinite; }
+.ld-blink { animation: ld-blink 2.6s ease-in-out infinite; }
+.ld-dash-flow { animation: ld-dash-flow 2.8s linear infinite; }
+.ld-draw { stroke-dasharray: 240; animation: ld-draw 5.5s ease-in-out infinite; }
+.ld-scan-y { animation: ld-scan-y 3.2s ease-in-out infinite; }
+.ld-sweep { animation: ld-sweep 4s ease-in-out infinite; }
 
 @media (prefers-reduced-motion: reduce) {
-  .ld-bob, .ld-sway, .ld-pulse, .ld-float, .ld-dash {
+  .ld-bob, .ld-sway,
+  .ld-holo-breathe, .ld-blink, .ld-dash-flow, .ld-draw, .ld-scan-y, .ld-sweep {
     animation: none;
   }
 }

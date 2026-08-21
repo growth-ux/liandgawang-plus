@@ -30,7 +30,7 @@ export default function Knowledge() {
             className={`rounded-full px-4 py-1.5 text-sm transition-colors ${
               i === active
                 ? "bg-brand font-medium text-white"
-                : "border border-line bg-white text-ink-soft hover:text-ink"
+                : "border border-line bg-panel text-ink-soft hover:text-ink"
             }`}
           >
             {tab}
@@ -38,7 +38,7 @@ export default function Knowledge() {
         ))}
       </div>
 
-      <div className="mt-6 flex min-h-[420px] flex-col items-center justify-center rounded-3xl border border-dashed border-line bg-white/70 text-center">
+      <div className="mt-6 flex min-h-[420px] flex-col items-center justify-center rounded-3xl border border-dashed border-line bg-panel/60 text-center">
         <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-faint text-2xl">
           📚
         </span>

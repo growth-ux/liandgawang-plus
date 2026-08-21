@@ -23,7 +23,7 @@ export default function AgentSwitcher({ currentId }: { currentId: string }) {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-1.5 rounded-full border border-line bg-white px-4 py-2 text-sm text-ink transition-colors hover:border-brand hover:text-brand-deep"
+        className="flex items-center gap-1.5 rounded-full border border-line bg-panel px-4 py-2 text-sm text-ink transition-colors hover:border-brand hover:text-brand-deep"
       >
         切换小二
         <svg
@@ -38,7 +38,7 @@ export default function AgentSwitcher({ currentId }: { currentId: string }) {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full z-50 mt-2 w-72 overflow-hidden rounded-2xl border border-line bg-white shadow-xl">
+        <div className="absolute right-0 top-full z-50 mt-2 w-72 overflow-hidden rounded-2xl border border-line bg-panel shadow-[0_16px_40px_rgba(0,0,0,0.55)]">
           <ul className="py-1.5">
             {agents.map((agent) => {
               const current = agent.id === currentId;
@@ -51,7 +51,7 @@ export default function AgentSwitcher({ currentId }: { currentId: string }) {
                       navigate(`/agent/${agent.id}`);
                     }}
                     className={`flex w-full items-center gap-3 px-4 py-2.5 text-left transition-colors ${
-                      current ? "bg-brand-faint" : "hover:bg-rice"
+                      current ? "bg-brand-faint" : "hover:bg-rice-deep"
                     }`}
                   >
                     <AgentAvatar agent={agent} size={32} />
