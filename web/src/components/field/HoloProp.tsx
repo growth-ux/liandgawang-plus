@@ -170,48 +170,75 @@ function RouteScreen({ className }: { className?: string }) {
   );
 }
 
-/** 钱小二：资金仪表盘，双层旋转资金环 + 三家机构授信对比（呼应「比对 3 家机构授信方案」） */
+/** 钱小二：授信凭证卡扇 + 硬币轨道，三家机构授信卡扇形悬浮、最低利率卡上浮戴「最优」角标，硬币光点沿前后双层椭圆轨道环行（呼应「比对 3 家机构授信方案」） */
 function FundScreen({ className }: { className?: string }) {
-  const offers = [
-    { y: 22, w: 34, pct: "4.2%", d: "0s" },
-    { y: 38, w: 25, pct: "3.8%", d: "-0.7s" },
-    { y: 54, w: 43, pct: "4.9%", d: "-1.4s" },
-  ];
+  // 椭圆轨道前后两半：后半（上弧）画在卡片后面、前半（下弧）画在卡片前面，配合光点两端淡入淡出伪造环绕
+  const frontArc = "M 8 58 A 62 14 0 0 0 132 58";
+  const backArc = "M 132 58 A 62 14 0 0 0 8 58";
+
+  /** 轨道硬币光点：沿半弧行进，两端淡入淡出形成连续环行错觉 */
+  const orbitCoin = (path: string, begin: string, r: number, maxO: number) => (
+    <g opacity="0">
+      <circle r={r} fill={G} />
+      <circle r={r * 0.5} fill="none" stroke="#7c4a03" strokeOpacity="0.5" strokeWidth="0.7" />
+      <animateMotion path={path} dur="3.4s" begin={begin} repeatCount="indefinite" />
+      <animate
+        attributeName="opacity" values={`0;${maxO};${maxO};0`} keyTimes="0;0.15;0.85;1"
+        dur="3.4s" begin={begin} repeatCount="indefinite"
+      />
+    </g>
+  );
+
+  /** 授信卡：芯片 + 机构名 + 利率 + 额度条；best 为推荐卡（描边加亮 + 外发光） */
+  const card = (transform: string, tag: string, rate: string, barW: number, best?: boolean) => (
+    <g transform={transform}>
+      {best && (
+        <rect x="-21.5" y="-14.5" width="43" height="29" rx="4" fill="none" stroke={O} strokeWidth="2.5" opacity="0.35" filter="url(#ld-fund-blur)" />
+      )}
+      <rect x="-20" y="-13" width="40" height="26" rx="3" fill={FILL} stroke={best ? "#ffd9ae" : O} strokeWidth={best ? 1.5 : 1.1} />
+      <rect x="-15.5" y="-8.5" width="7" height="5.5" rx="1" fill="rgba(238,123,31,0.25)" stroke={O} strokeWidth="0.7" />
+      <text x="15.5" y="-4" textAnchor="end" fontSize="4.6" fill={O} opacity="0.75">{tag}</text>
+      <text x="-15.5" y="8.5" fontSize={best ? 8 : 7} fontWeight={best ? 700 : 400} fill={C}>{rate}</text>
+      <rect x="1" y="3.5" width="14.5" height="3" rx="1.5" fill="none" stroke={O} strokeWidth="0.7" opacity="0.4" />
+      <rect x="1" y="3.5" width={barW} height="3" rx="1.5" fill={O} opacity={best ? 0.95 : 0.6} />
+    </g>
+  );
+
   return (
-    <svg viewBox="0 0 140 90" className={className}>
+    <svg viewBox="0 0 140 100" className={className}>
       <defs>
-        <clipPath id="ld-fund-clip">
-          <rect x="4" y="4" width="132" height="82" rx="7" />
-        </clipPath>
+        <filter id="ld-fund-blur" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="2.2" />
+        </filter>
       </defs>
-      <rect x="4" y="4" width="132" height="82" rx="7" {...panel} />
-      {/* 双层资金环：外环橙、内环青，反向流速 */}
-      <circle
-        cx="34" cy="45" r="20" fill="none" stroke={O} strokeWidth="2.5"
-        strokeDasharray="26 14" className="ld-dash-flow" opacity="0.9"
-        style={{ "--dash-shift": "-80px" } as CSSProperties}
-      />
-      <circle
-        cx="34" cy="45" r="13" fill="none" stroke={C} strokeWidth="1.2"
-        strokeDasharray="8 8" className="ld-dash-flow" opacity="0.6"
-        style={{ "--dash-shift": "-32px", animationDuration: "3.6s" } as CSSProperties}
-      />
-      <text x="34" y="50" textAnchor="middle" fontSize="12" fill={O}>
-        ¥
-      </text>
-      {/* 授信方案对比条：轨道 + 实条 + 利率标签 */}
-      {offers.map((o) => (
-        <g key={o.y} className="ld-blink" style={{ animationDelay: o.d }}>
-          <rect x="66" y={o.y} width="44" height="5" rx="2.5" fill="none" stroke={O} strokeWidth="0.8" opacity="0.4" />
-          <rect x="66" y={o.y} width={o.w} height="5" rx="2.5" fill={O} />
-          <text x="114" y={o.y + 4.5} fontSize="6.5" fill={C}>
-            {o.pct}
-          </text>
-        </g>
-      ))}
-      <g clipPath="url(#ld-fund-clip)">
-        <rect x="0" y="0" width="18" height="90" fill="rgba(255,255,255,0.16)" className="ld-sweep" />
+      {/* 中央暖橙浸润光晕 */}
+      <ellipse cx="70" cy="50" rx="44" ry="26" fill="rgba(238,123,31,0.16)" filter="url(#ld-fund-blur)" />
+      {/* 后半轨道（卡片之后）：淡弧 + 小而暗的硬币光点 */}
+      <path d={backArc} fill="none" stroke={O} strokeWidth="0.8" opacity="0.25" />
+      {orbitCoin(backArc, "-0.9s", 2.3, 0.5)}
+      {orbitCoin(backArc, "-2.6s", 2.3, 0.5)}
+      {/* 两侧授信卡微旋后退，推荐卡居中上浮加亮 */}
+      {card("translate(44 52) rotate(-12)", "机构 A", "4.2%", 9)}
+      {card("translate(96 52) rotate(12)", "机构 C", "4.9%", 12)}
+      {card("translate(70 42)", "机构 B", "3.8%", 11, true)}
+      {/* 最优角标 */}
+      <g transform="translate(70 23)">
+        <rect x="-8" y="-4" width="16" height="7.5" rx="2" fill="rgba(34,211,238,0.12)" stroke={C} strokeWidth="0.8" />
+        <text y="1.8" textAnchor="middle" fontSize="4.8" fill={C}>最优</text>
       </g>
+      {/* 前半轨道（卡片之前）：亮弧 + 青色流光段 + 大而亮的硬币光点 */}
+      <path d={frontArc} fill="none" stroke={O} strokeWidth="1" opacity="0.5" />
+      <path
+        d={frontArc} fill="none" stroke={C} strokeWidth="1.6" strokeLinecap="round"
+        strokeDasharray="12 200" opacity="0.9" className="ld-dash-flow"
+        style={{ "--dash-shift": "-212px", animationDuration: "3s" } as CSSProperties}
+      />
+      {orbitCoin(frontArc, "0s", 3.1, 0.95)}
+      {orbitCoin(frontArc, "-1.7s", 3.1, 0.95)}
+      {/* 扇底 ¥ 枢钮：脉冲环 + 硬币徽记 */}
+      <circle cx="70" cy="86" r="9" fill="none" stroke={O} strokeWidth="0.9" opacity="0.5" className="ld-blink" />
+      <circle cx="70" cy="86" r="6" fill="rgba(238,123,31,0.15)" stroke={O} strokeWidth="1.2" />
+      <text x="70" y="88.8" textAnchor="middle" fontSize="7.5" fill={O}>¥</text>
     </svg>
   );
 }
@@ -271,7 +298,7 @@ export default function HoloProp({ holo, delay = 0 }: { holo?: Holo; delay?: num
         style={{ animationDelay: `${delay}s` }}
       >
         {/* 方案对比小牌：A/B 到厂成本，A 为推荐方案 */}
-        <div className="absolute left-0 top-[2%] rounded border border-brand/60 bg-[#0a1428]/70 px-2 py-1 font-mono text-[10px] leading-[1.6] shadow-[0_0_12px_rgba(238,123,31,0.3)]">
+        <div className="absolute left-[-21%] top-[9%] rounded border border-brand/60 bg-[#0a1428]/70 px-2 py-1 font-mono text-[10px] leading-[1.6] shadow-[0_0_12px_rgba(238,123,31,0.3)]">
           <div className="text-brand-deep">
             方案A ¥2,354/吨 <span className="text-emerald-300">✓</span>
           </div>
@@ -281,7 +308,7 @@ export default function HoloProp({ holo, delay = 0 }: { holo?: Holo; delay?: num
           运费 ↑12%
         </span>
         <span
-          className="ld-blink absolute left-[2%] top-[46%] rounded border border-brand/60 bg-[#0a1428]/70 px-1.5 py-0.5 font-mono text-[10px] text-brand-deep shadow-[0_0_12px_rgba(238,123,31,0.3)]"
+          className="ld-blink absolute left-[10%] top-[46%] rounded border border-brand/60 bg-[#0a1428]/70 px-1.5 py-0.5 font-mono text-[10px] text-brand-deep shadow-[0_0_12px_rgba(238,123,31,0.3)]"
           style={{ animationDelay: "-1.3s" }}
         >
           水杂 ↓6%
@@ -301,7 +328,7 @@ export default function HoloProp({ holo, delay = 0 }: { holo?: Holo; delay?: num
     return (
       <div
         aria-hidden
-        className="ld-holo-breathe pointer-events-none absolute -inset-x-[24%] bottom-[-9%] -z-10"
+        className="ld-holo-breathe pointer-events-none absolute -inset-x-[24%] bottom-[-8%] -z-10"
         style={{ animationDelay: `${delay}s` }}
       >
         <svg viewBox="0 0 200 60" className="w-full overflow-visible">

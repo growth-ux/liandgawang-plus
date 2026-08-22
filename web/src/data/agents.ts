@@ -57,7 +57,7 @@ export const agents: Agent[] = [
     tabs: ["目标受理", "任务方案", "参与小二", "综合结论", "行动清单", "历史任务"],
     image: "/images/agents/liangdawang-plus-collaboration-duo-v1.png",
     doing: "正在拆解 200 吨玉米采购目标，组织六位小二分工",
-    pos: { x: 50, y: 60, size: 32 },
+    pos: { x: 50, y: 57, size: 30 },
     holo: { type: "rings", side: "right", offsetY: 0 },
   },
   {
@@ -72,9 +72,8 @@ export const agents: Agent[] = [
     tabs: ["市场全景", "品种走势", "区域价差", "影响因素", "我的关注", "研判记录"],
     image: "/images/agents/zhan.png",
     doing: "跟踪玉米拍卖底价与港口平仓价，整理本周行情研判",
-    pos: { x: 30, y: 33, size: 19 },
+    pos: { x: 28, y: 31, size: 19 },
     holo: { type: "chart", side: "right", offsetY: 8, tilt: { y: 16 } },
-    flip: true,
   },
   {
     id: "liang",
@@ -88,7 +87,7 @@ export const agents: Agent[] = [
     tabs: ["找粮源", "候选对比", "供应方", "寻源任务", "历史记录"],
     image: "/images/agents/liangxiaoer-hologram-pose-transparent.png",
     doing: "对比东北产区 3 家供应方的粮源报价与质检报告",
-    pos: { x: 70, y: 33, size: 22 },
+    pos: { x: 69, y: 31, size: 19 },
     holo: { type: "grain", side: "right", offsetY: 48, tilt: { y: 10, x: 2 } },
   },
   {
@@ -103,8 +102,9 @@ export const agents: Agent[] = [
     tabs: ["找物流", "路线方案", "方案对比", "运输任务", "历史记录"],
     image: "/images/agents/yun.png",
     doing: "规划港口到厂的 2 条运输路线，核对车辆排期",
-    pos: { x: 88, y: 60, size: 20 },
+    pos: { x: 89, y: 57, size: 20 },
     holo: { type: "route", side: "left", gap: 68, offsetY: 0, tilt: { y: -14 } },
+    flip: true,
   },
   {
     id: "suan",
@@ -118,8 +118,9 @@ export const agents: Agent[] = [
     tabs: ["新建测算", "成本明细", "方案对比", "敏感因素", "测算记录"],
     image: "/images/agents/suan-xiaoer-thinking-operation-transparent.png",
     doing: "测算方案 A 的到厂成本，比对运费与水分扣量影响",
-    pos: { x: 62, y: 90, size: 22 },
+    pos: { x: 70, y: 90, size: 21 },
     holo: { type: "chips", side: "right", offsetY: 0 },
+    flip: true,
   },
   {
     id: "qian",
@@ -133,7 +134,7 @@ export const agents: Agent[] = [
     tabs: ["找资金服务", "服务对比", "申请咨询", "办理进度", "服务记录"],
     image: "/images/agents/qian.png",
     doing: "整理采购资金申请材料，比对 3 家机构授信方案",
-    pos: { x: 20, y: 88, size: 22 },
+    pos: { x: 26, y: 88, size: 21 },
     holo: { type: "fund", side: "right", offsetY: 10, tilt: { y: 16 } },
   },
   {
@@ -148,7 +149,7 @@ export const agents: Agent[] = [
     tabs: ["发起审核", "风险清单", "核验事项", "审核对象", "审核记录"],
     image: "/images/agents/an.png",
     doing: "巡检供应方资质与合同条款，标记 1 项待核验风险",
-    pos: { x: 14, y: 60, size: 20 },
+    pos: { x: 13, y: 57, size: 20 },
     holo: { type: "shield", side: "right", offsetY: 8, tilt: { y: 12 } },
   },
 ];
