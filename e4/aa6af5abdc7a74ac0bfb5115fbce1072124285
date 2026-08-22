@@ -1,0 +1,37 @@
+web/src/pages/Home.tsx
+  s_3aec88388ff48c::t_2556a831222570 34-35,38
+  s_3aec88388ff48c::t_86e84b881a7ede 17
+web/src/components/field/HoloProp.tsx
+  h_7549b7dc6a6921 301,311,331
+  s_3aec88388ff48c::t_3c7b1557394de2 173,175-206,208,210-212,214-227,229-241
+web/src/components/field/FieldBackground.tsx
+  s_3aec88388ff48c::t_e497956c0a11c0 1-2,6,9,11-14,46
+  h_7549b7dc6a6921 38
+  s_3aec88388ff48c::t_1ed9fe8a405ff0 21-22
+  s_3aec88388ff48c::t_7869623132b526 17
+web/src/data/agents.ts
+  s_3aec88388ff48c::t_9911eb1c157b2b 152
+  h_7549b7dc6a6921 75,90,105,121,137
+  h_7549b7dc6a6921 60,107,123
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "e4aa6af5abdc7a74ac0bfb5115fbce1072124285",
+  "prompts": {},
+  "humans": {
+    "h_7549b7dc6a6921": {
+      "author": "tiger <1360055716@qq.com>"
+    }
+  },
+  "sessions": {
+    "s_3aec88388ff48c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a027c3-3f10-7872-b746-4af18b604881",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
