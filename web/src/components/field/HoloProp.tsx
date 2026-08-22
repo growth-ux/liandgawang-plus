@@ -7,43 +7,10 @@ import type { Holo, HoloType } from "../../data/agents";
 
 const O = "#ee7b1f"; // brand 橙：全息主色，呼应参考图
 const C = "#22d3ee"; // tech 青：数据细节点缀
+const G = "#f7b32b"; // 稻谷金：粮小二稻穗全息专用
 const FILL = "rgba(238,123,31,0.08)";
 
 const panel = { fill: FILL, stroke: O, strokeWidth: 1.5 } as const;
-
-/** 达小二：协作网络屏，对勾节点 + 流光连线 */
-function CommandScreen({ className }: { className?: string }) {
-  const nodes = [
-    { x: 26, y: 30, d: "0s" },
-    { x: 66, y: 20, d: "-0.6s" },
-    { x: 56, y: 58, d: "-1.2s" },
-    { x: 94, y: 58, d: "-1.8s" },
-  ];
-  return (
-    <svg viewBox="0 0 120 90" className={className}>
-      <rect x="4" y="4" width="112" height="82" rx="7" {...panel} />
-      <g stroke={O} strokeWidth="1" strokeDasharray="4 5" opacity="0.7" className="ld-dash-flow">
-        <line x1="26" y1="30" x2="66" y2="20" />
-        <line x1="66" y1="20" x2="94" y2="58" />
-        <line x1="26" y1="30" x2="56" y2="58" />
-        <line x1="56" y1="58" x2="94" y2="58" />
-      </g>
-      {nodes.map((n) => (
-        <g key={`${n.x}-${n.y}`} className="ld-blink" style={{ animationDelay: n.d }}>
-          <circle cx={n.x} cy={n.y} r="8" fill="rgba(238,123,31,0.15)" stroke={O} strokeWidth="1.5" />
-          <path
-            d={`M${n.x - 3.5} ${n.y} l2.5 2.5 l5 -5`}
-            fill="none"
-            stroke={C}
-            strokeWidth="1.6"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </g>
-      ))}
-    </svg>
-  );
-}
 
 /** 瞻小二：行情大屏，K 线蜡烛图 + 成交量柱 + 均线循环生长 */
 function ChartScreen({ className }: { className?: string }) {
@@ -87,103 +54,119 @@ function ChartScreen({ className }: { className?: string }) {
   );
 }
 
-/** 粮小二：粮源质检扫描屏，麦穗靶框扫描 + 水分/容重/杂质指标（呼应「对比供应方质检报告」） */
+/** 粮小二：等距稻田全息，4×4 麦株阵列 + 优选地块质检扫描（呼应官方资产 wheat.14a88246.png 与「找粮源」职责） */
 function GrainScreen({ className }: { className?: string }) {
-  const metrics = [
-    { y: 22, label: "水分", value: "14.2%", w: 30, d: "0s" },
-    { y: 38, label: "容重", value: "718", w: 40, d: "-0.7s" },
-    { y: 54, label: "杂质", value: "0.8%", w: 18, d: "-1.4s" },
-  ];
+  // 等距映射 P(u,v) = (70+(u-v)*15, 40+(u+v)*7.5)，麦株落在格心；hot 为优选地块
+  const stalks: { x: number; y: number; s: number; hot?: boolean }[] = [];
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 4; j++) {
+      stalks.push({
+        x: 70 + (i - j) * 15,
+        y: 40 + (i + j + 1) * 7.5,
+        s: 0.8 + (i + j) * 0.055, // 前排略大，制造纵深
+        hot: i === 2 && j === 1,
+      });
+    }
+  }
+  stalks.sort((a, b) => a.y - b.y); // 由后往前画，保证前排遮挡正确
+  const LEAF = "#a8b054"; // 麦叶橄榄绿，呼应官方资产
+  const hot = stalks.find((t) => t.hot)!;
   return (
-    <svg viewBox="0 0 140 90" className={className}>
+    <svg viewBox="0 0 140 110" className={className}>
       <defs>
-        <clipPath id="ld-grain-clip">
-          <circle cx="34" cy="45" r="20" />
-        </clipPath>
-      </defs>
-      <rect x="4" y="4" width="132" height="82" rx="7" {...panel} />
-      {/* 扫描靶框：四角括线 + 流动虚线环 */}
-      <g stroke={O} strokeWidth="1.4" fill="none" strokeLinecap="round">
-        <path d="M16 27 v-4 a4 4 0 0 1 4 -4 h4" />
-        <path d="M44 19 h4 a4 4 0 0 1 4 4 v4" />
-        <path d="M52 63 v4 a4 4 0 0 1 -4 4 h-4" />
-        <path d="M24 71 h-4 a4 4 0 0 1 -4 -4 v-4" />
-      </g>
-      <circle
-        cx="34" cy="45" r="20" fill="none" stroke={O} strokeWidth="1.2"
-        strokeDasharray="6 8" opacity="0.7" className="ld-dash-flow"
-        style={{ "--dash-shift": "-28px" } as CSSProperties}
-      />
-      {/* 麦穗 */}
-      <g stroke={O} strokeWidth="1.6" fill="none" strokeLinecap="round">
-        <line x1="34" y1="56" x2="34" y2="36" />
-        <path d="M34 40 l-5 -3.5 M34 40 l5 -3.5 M34 46 l-5 -3.5 M34 46 l5 -3.5 M34 52 l-5 -3.5 M34 52 l5 -3.5" />
-      </g>
-      <g clipPath="url(#ld-grain-clip)">
-        <rect
-          x="14" y="22" width="40" height="4" fill={C} opacity="0.35"
-          className="ld-scan-y" style={{ "--scan-dist": "46px" } as CSSProperties}
-        />
-      </g>
-      {/* 质检指标：标签 + 条 + 数值 */}
-      {metrics.map((m) => (
-        <g key={m.y} className="ld-blink" style={{ animationDelay: m.d }}>
-          <text x="66" y={m.y + 4.5} fontSize="6.5" fill={O} opacity="0.85">
-            {m.label}
-          </text>
-          <rect x="84" y={m.y} width="34" height="5" rx="2.5" fill="none" stroke={O} strokeWidth="0.8" opacity="0.4" />
-          <rect x="84" y={m.y} width={m.w} height="5" rx="2.5" fill={O} />
-          <text x="122" y={m.y + 4.5} fontSize="6.5" fill={C}>
-            {m.value}
-          </text>
+        {/* 单株麦：橄榄绿叶 + 金色茎粒，原点在株底 */}
+        <g id="ld-wheat">
+          <path d="M0 0 C-3.4 -1.6 -5.4 -4.4 -6.2 -8.2" fill="none" stroke={LEAF} strokeWidth="1.1" strokeLinecap="round" />
+          <path d="M0 0 C3.4 -1.6 5.4 -4.4 6.2 -8.2" fill="none" stroke={LEAF} strokeWidth="1.1" strokeLinecap="round" />
+          <line x1="0" y1="0" x2="0" y2="-12" stroke={G} strokeWidth="1.1" strokeLinecap="round" />
+          <ellipse cx="-2.4" cy="-8.4" rx="1.5" ry="2.6" fill={G} transform="rotate(26 -2.4 -8.4)" />
+          <ellipse cx="2.4" cy="-10.4" rx="1.5" ry="2.6" fill={G} transform="rotate(-26 2.4 -10.4)" />
+          <ellipse cx="-2.2" cy="-12.4" rx="1.4" ry="2.4" fill={G} transform="rotate(24 -2.2 -12.4)" />
+          <ellipse cx="2.2" cy="-14.2" rx="1.4" ry="2.4" fill={G} transform="rotate(-24 2.2 -14.2)" />
+          <ellipse cx="0" cy="-16.6" rx="1.4" ry="2.5" fill={G} />
         </g>
+      </defs>
+      {/* 等距田块：半透明全息地面 + 等距网格线 */}
+      <path d="M70 40 L130 70 L70 100 L10 70 Z" fill="rgba(238,123,31,0.07)" stroke={O} strokeWidth="1.3" strokeLinejoin="round" />
+      <g stroke={O} strokeWidth="0.6" opacity="0.16">
+        {[1, 2, 3].map((k) => (
+          <g key={k}>
+            <line x1={70 + k * 15} y1={40 + k * 7.5} x2={70 + k * 15 - 60} y2={40 + k * 7.5 + 30} />
+            <line x1={70 - k * 15} y1={40 + k * 7.5} x2={70 - k * 15 + 60} y2={40 + k * 7.5 + 30} />
+          </g>
+        ))}
+      </g>
+      {/* 优选地块扫描环 */}
+      <ellipse
+        cx={hot.x} cy={hot.y} rx="10" ry="4.6" fill="none" stroke={C} strokeWidth="1"
+        strokeDasharray="4 5" className="ld-dash-flow"
+        style={{ "--dash-shift": "-18px" } as CSSProperties}
+      />
+      {/* 麦株阵列 */}
+      {stalks.map((t, idx) => (
+        <use
+          key={idx} href="#ld-wheat"
+          transform={`translate(${t.x} ${t.y}) scale(${t.s})`}
+          opacity={Math.min(1, 0.6 + t.s * 0.4)}
+        />
       ))}
+      {/* 上升谷粒光点 */}
+      <ellipse cx="52" rx="1.3" ry="2.2" fill={G} opacity="0">
+        <animate attributeName="cy" values="84;44" dur="3.8s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0;0.8;0" dur="3.8s" repeatCount="indefinite" />
+      </ellipse>
+      <ellipse cx="96" rx="1.3" ry="2.2" fill={G} opacity="0">
+        <animate attributeName="cy" values="78;40" dur="4.4s" begin="-2s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0;0.8;0" dur="4.4s" begin="-2s" repeatCount="indefinite" />
+      </ellipse>
     </svg>
   );
 }
 
-/** 运小二：路线屏，光点沿运输路线循环跑动 */
+/** 运小二：路线投影玻璃屏，竖版玻璃屏内只保留两条不同路线（粗线推荐/细线备选）+ 目的地标识（呼应「规划 2 条运输路线」） */
 function RouteScreen({ className }: { className?: string }) {
-  const route = "M14 62 L42 62 L42 34 L76 34 L76 52 L104 52";
+  // 两条路线汇聚于目的地标识尖端 (45,50)：A 左线简单直达、被选中为推荐；B 右线绕弯复杂、作为备选
+  const routeA = "M30 100 C 27 91 29 83 33 76 C 37 69 42 60 45 50";
+  const routeB = "M62 100 C 72 95 52 92 58 85 C 63 79 72 80 69 73 C 66 66 52 68 55 61 C 57 56 50 55 45 50";
   return (
-    <svg viewBox="0 0 120 90" className={className}>
-      <rect x="4" y="4" width="112" height="82" rx="7" {...panel} />
-      <path d={route} fill="none" stroke={O} strokeWidth="1.4" strokeDasharray="4 5" opacity="0.8" />
-      <circle cx="14" cy="62" r="4" fill="none" stroke={O} strokeWidth="1.6" />
-      <circle cx="104" cy="52" r="4" fill={O} className="ld-blink" />
-      <circle r="3" fill={C}>
-        <animateMotion dur="3.2s" repeatCount="indefinite" path={route} />
+    <svg viewBox="0 0 90 120" className={className}>
+      <defs>
+        <filter id="ld-route-blur" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="2.2" />
+        </filter>
+      </defs>
+      {/* 竖版玻璃面板，与其它全息屏同款 */}
+      <rect x="4" y="4" width="82" height="112" rx="8" {...panel} />
+      <rect x="6.5" y="6.5" width="77" height="107" rx="6" fill="none" stroke={O} strokeWidth="0.8" opacity="0.18" />
+      {/* 中部暖橙浸润光晕 */}
+      <ellipse cx="45" cy="64" rx="24" ry="27" fill="rgba(238,123,31,0.18)" filter="url(#ld-route-blur)" />
+      {/* 目的地标识：呼吸光环 + 描边定位 pin */}
+      <circle cx="45" cy="34" r="12" fill="none" stroke={O} strokeWidth="0.9" opacity="0.5" className="ld-blink" />
+      <path
+        d="M45 24 c-5.8 0 -9.6 4.2 -9.6 9.3 c0 6.9 9.6 16.7 9.6 16.7 c0 0 9.6 -9.8 9.6 -16.7 c0 -5.1 -3.8 -9.3 -9.6 -9.3 z"
+        fill={O} stroke="#ffd9ae" strokeWidth="1.2" strokeLinejoin="round"
+      />
+      <circle cx="45" cy="33" r="3.4" fill="#0b1220" />
+      {/* 路线 B 备选（绕弯复杂）：细实线 + 慢行光点 */}
+      <path d={routeB} fill="none" stroke={O} strokeWidth="1.4" opacity="0.55" strokeLinecap="round" />
+      <circle r="1.5" fill={O} opacity="0.6">
+        <animateMotion dur="6s" repeatCount="indefinite" path={routeB} />
       </circle>
+      {/* 路线 A 推荐（简单直达）：柔光层 → 半透底层 → 高亮芯线 */}
+      <path d={routeA} fill="none" stroke={O} strokeWidth="6" opacity="0.25" strokeLinecap="round" filter="url(#ld-route-blur)" />
+      <path d={routeA} fill="none" stroke={O} strokeWidth="3" opacity="0.45" strokeLinecap="round" />
+      <path d={routeA} fill="none" stroke="#f59e0b" strokeWidth="1.8" opacity="0.95" strokeLinecap="round" />
+      {/* 沿推荐路线巡游的青色流光段 */}
+      <path
+        d={routeA} fill="none" stroke={C} strokeWidth="2" strokeLinecap="round"
+        strokeDasharray="8 40" opacity="0.95" className="ld-dash-flow"
+        style={{ "--dash-shift": "-48px", animationDuration: "2.8s" } as CSSProperties}
+      />
+      {/* 起点：A 实心脉冲、B 空心点 */}
+      <circle cx="30" cy="100" r="4.6" fill="none" stroke={O} strokeWidth="0.9" opacity="0.5" className="ld-blink" style={{ animationDelay: "-0.8s" } as CSSProperties} />
+      <circle cx="30" cy="100" r="2.4" fill={O} />
+      <circle cx="62" cy="100" r="2" fill="rgba(238,123,31,0.15)" stroke={O} strokeWidth="1" opacity="0.7" />
     </svg>
-  );
-}
-
-/** 算小二：环绕能量环 + 两侧悬浮数字碎片（环绕角色，渲染在角色身后） */
-function RingsField() {
-  return (
-    <>
-      <svg viewBox="0 0 200 60" className="absolute bottom-[2%] left-1/2 w-full -translate-x-1/2">
-        <ellipse
-          cx="100" cy="30" rx="86" ry="20" fill="none" stroke={O} strokeWidth="1.4"
-          strokeDasharray="7 9" opacity="0.8" className="ld-dash-flow"
-          style={{ "--dash-shift": "-32px" } as CSSProperties}
-        />
-        <ellipse
-          cx="100" cy="30" rx="60" ry="13" fill="none" stroke={C} strokeWidth="1"
-          strokeDasharray="4 8" opacity="0.5" className="ld-dash-flow"
-          style={{ "--dash-shift": "-24px", animationDuration: "4.2s" } as CSSProperties}
-        />
-      </svg>
-      <span className="ld-blink absolute right-[4%] top-[22%] rounded border border-brand/60 bg-[#0a1428]/70 px-1.5 py-0.5 font-mono text-[10px] text-brand-deep shadow-[0_0_12px_rgba(238,123,31,0.3)]">
-        18%
-      </span>
-      <span
-        className="ld-blink absolute left-[2%] top-[46%] rounded border border-brand/60 bg-[#0a1428]/70 px-1.5 py-0.5 font-mono text-[10px] text-brand-deep shadow-[0_0_12px_rgba(238,123,31,0.3)]"
-        style={{ animationDelay: "-1.3s" }}
-      >
-        60%
-      </span>
-    </>
   );
 }
 
@@ -259,8 +242,7 @@ function ShieldBadge({ className }: { className?: string }) {
   );
 }
 
-const screens: Record<Exclude<HoloType, "rings">, (p: { className?: string }) => React.ReactNode> = {
-  command: CommandScreen,
+const screens: Record<Exclude<HoloType, "rings" | "chips">, (p: { className?: string }) => React.ReactNode> = {
   chart: ChartScreen,
   grain: GrainScreen,
   route: RouteScreen,
@@ -269,11 +251,10 @@ const screens: Record<Exclude<HoloType, "rings">, (p: { className?: string }) =>
 };
 
 /** 道具宽度（相对角色宽度百分比），不超过角色体量以免抢主体 */
-const widthByType: Record<Exclude<HoloType, "rings">, string> = {
-  command: "w-[95%]",
+const widthByType: Record<Exclude<HoloType, "rings" | "chips">, string> = {
   chart: "w-[120%]",
-  grain: "w-[105%]",
-  route: "w-[105%]",
+  grain: "w-[168%]",
+  route: "w-[103%]",
   fund: "w-[118%]",
   shield: "w-[88%]",
 };
@@ -281,15 +262,60 @@ const widthByType: Record<Exclude<HoloType, "rings">, string> = {
 export default function HoloProp({ holo, delay = 0 }: { holo?: Holo; delay?: number }) {
   if (!holo) return null;
 
-  // 环绕型：渲染在角色身后（-z-10），忽略 side/offsetY
+  // 碎片型：成本要素碎片环绕角色（算小二），渲染在角色身前避免被遮挡
+  if (holo.type === "chips") {
+    return (
+      <div
+        aria-hidden
+        className="ld-holo-breathe pointer-events-none absolute -inset-x-[45%] inset-y-[-3%] z-10"
+        style={{ animationDelay: `${delay}s` }}
+      >
+        {/* 方案对比小牌：A/B 到厂成本，A 为推荐方案 */}
+        <div className="absolute left-0 top-[2%] rounded border border-brand/60 bg-[#0a1428]/70 px-2 py-1 font-mono text-[10px] leading-[1.6] shadow-[0_0_12px_rgba(238,123,31,0.3)]">
+          <div className="text-brand-deep">
+            方案A ¥2,354/吨 <span className="text-emerald-300">✓</span>
+          </div>
+          <div className="text-ink-soft opacity-55">方案B ¥2,412/吨</div>
+        </div>
+        <span className="ld-blink absolute right-[4%] top-[22%] rounded border border-brand/60 bg-[#0a1428]/70 px-1.5 py-0.5 font-mono text-[10px] text-brand-deep shadow-[0_0_12px_rgba(238,123,31,0.3)]">
+          运费 ↑12%
+        </span>
+        <span
+          className="ld-blink absolute left-[2%] top-[46%] rounded border border-brand/60 bg-[#0a1428]/70 px-1.5 py-0.5 font-mono text-[10px] text-brand-deep shadow-[0_0_12px_rgba(238,123,31,0.3)]"
+          style={{ animationDelay: "-1.3s" }}
+        >
+          水杂 ↓6%
+        </span>
+        <span
+          className="ld-blink absolute bottom-[16%] right-[12%] rounded border border-brand/60 bg-[#0a1428]/70 px-1.5 py-0.5 font-mono text-[10px] text-brand-deep shadow-[0_0_12px_rgba(238,123,31,0.3)]"
+          style={{ animationDelay: "-2.2s" }}
+        >
+          到厂 ¥2,354/吨
+        </span>
+      </div>
+    );
+  }
+
+  // 环绕型：角色脚下的双层能量环（外橙内青、反向流动），渲染在角色身后
   if (holo.type === "rings") {
     return (
       <div
         aria-hidden
-        className="ld-holo-breathe pointer-events-none absolute -inset-x-[45%] inset-y-[-3%] -z-10"
+        className="ld-holo-breathe pointer-events-none absolute -inset-x-[24%] bottom-[-9%] -z-10"
         style={{ animationDelay: `${delay}s` }}
       >
-        <RingsField />
+        <svg viewBox="0 0 200 60" className="w-full overflow-visible">
+          <ellipse
+            cx="100" cy="30" rx="86" ry="20" fill="rgba(238,123,31,0.035)" stroke={O} strokeWidth="1.4"
+            strokeDasharray="7 9" opacity="0.8" className="ld-dash-flow"
+            style={{ "--dash-shift": "-32px" } as CSSProperties}
+          />
+          <ellipse
+            cx="100" cy="30" rx="60" ry="13" fill="none" stroke={C} strokeWidth="1"
+            strokeDasharray="4 8" opacity="0.5" className="ld-dash-flow"
+            style={{ "--dash-shift": "-24px", animationDuration: "4.2s" } as CSSProperties}
+          />
+        </svg>
       </div>
     );
   }

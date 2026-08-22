@@ -2,7 +2,7 @@
  * 粮贸协作场背景（纯代码绘制，不嵌入官方素材图标）
  * 地面：深空底 + 数据青菱形格纹与能量光斑
  * 节点：网页原生业务节点信标，站位与 data/agents.ts 中 pos 对齐：
- *       达(50,62) 瞻(47,30) 粮(79,34) 运(90,62) 算(52,92) 钱(17,78) 安(11,52)
+ *       达(50,60) 瞻(30,33) 粮(70,33) 运(88,60) 算(62,90) 钱(20,88) 安(14,60)
  */
 
 type Node = { label: string; left: number; top: number; tone: "orange" | "cyan" };
@@ -10,10 +10,10 @@ type Node = { label: string; left: number; top: number; tone: "orange" | "cyan" 
 /** 网页原生业务节点：承担场景定位，不伪装成真实业务看板。 */
 const nodes: Node[] = [
   { label: "交易协同", left: 14, top: 14, tone: "cyan" },
-  { label: "行情资讯", left: 39, top: 10, tone: "cyan" },
-  { label: "金融服务", left: 9, top: 72, tone: "orange" },
-  { label: "成本测算", left: 43, top: 84, tone: "orange" },
-  { label: "物流调度", left: 84, top: 66, tone: "cyan" },
+  { label: "行情资讯", left: 22, top: 22, tone: "cyan" },
+  { label: "金融服务", left: 8, top: 76, tone: "orange" },
+  { label: "成本测算", left: 76, top: 80, tone: "orange" },
+  { label: "物流调度", left: 84, top: 70, tone: "cyan" },
 ];
 
 function NodeBeacon({ node }: { node: Node }) {
@@ -51,10 +51,6 @@ export default function FieldBackground() {
       {/* 远景数据轨道：不承载文字和数值，只建立科技空间感 */}
       <div className="pointer-events-none absolute left-1/2 top-[8%] h-[42%] w-[62%] -translate-x-1/2 rounded-[50%] border border-tech/10 [transform:translateX(-50%)_rotateX(62deg)]" />
       <div className="pointer-events-none absolute left-1/2 top-[13%] h-[31%] w-[46%] -translate-x-1/2 rounded-[50%] border border-brand/15 [transform:translateX(-50%)_rotateX(62deg)]" />
-
-      {/* 中央指挥枢纽的低密度能量场，避免出现传统 Dashboard 面板 */}
-      <div className="pointer-events-none absolute left-1/2 top-[62%] h-[29%] w-[25%] -translate-x-1/2 -translate-y-1/2 rounded-[50%] border border-brand/20 bg-brand/[0.035] shadow-[0_0_65px_rgba(238,123,31,0.16)]" />
-      <div className="pointer-events-none absolute left-1/2 top-[62%] h-[20%] w-[17%] -translate-x-1/2 -translate-y-1/2 rounded-[50%] border border-brand/20" />
 
       {nodes.map((node) => (
         <NodeBeacon key={node.label} node={node} />

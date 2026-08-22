@@ -1,5 +1,5 @@
 /** 首页全息道具类型（HoloProp 按类型渲染，对照官方参考图） */
-export type HoloType = "command" | "chart" | "grain" | "route" | "rings" | "fund" | "shield";
+export type HoloType = "chart" | "grain" | "route" | "rings" | "chips" | "fund" | "shield";
 
 export interface Holo {
   type: HoloType;
@@ -38,8 +38,8 @@ export interface Agent {
   doing: string;
   /** 首页协作场站位：x/y 为脚底锚点百分比，size 为角色高度占舞台高度百分比 */
   pos: { x: number; y: number; size: number };
-  /** 首页全息道具：角色「正在操作」的全息屏（对照官方参考图） */
-  holo: Holo;
+  /** 首页全息道具：角色「正在操作」的全息屏（对照官方参考图）；不配置则不渲染 */
+  holo?: Holo;
   /** 首页形象水平镜像（true 时角色面朝反方向，全息道具位置不受影响） */
   flip?: boolean;
 }
@@ -55,10 +55,10 @@ export const agents: Agent[] = [
     zone: "中央业务台",
     accent: "#e35d2b",
     tabs: ["目标受理", "任务方案", "参与小二", "综合结论", "行动清单", "历史任务"],
-    image: "/images/agents/da.png",
+    image: "/images/agents/liangdawang-plus-collaboration-duo-v1.png",
     doing: "正在拆解 200 吨玉米采购目标，组织六位小二分工",
-    pos: { x: 50, y: 62, size: 32 },
-    holo: { type: "command", side: "left", offsetY: 14, tilt: { y: -16 } },
+    pos: { x: 50, y: 60, size: 32 },
+    holo: { type: "rings", side: "right", offsetY: 0 },
   },
   {
     id: "zhan",
@@ -72,8 +72,8 @@ export const agents: Agent[] = [
     tabs: ["市场全景", "品种走势", "区域价差", "影响因素", "我的关注", "研判记录"],
     image: "/images/agents/zhan.png",
     doing: "跟踪玉米拍卖底价与港口平仓价，整理本周行情研判",
-    pos: { x: 47, y: 30, size: 21 },
-    holo: { type: "chart", side: "right", offsetY: 6 , gap: 68,  tilt: { y: -322, x: -4 , z: 0} },
+    pos: { x: 30, y: 33, size: 19 },
+    holo: { type: "chart", side: "right", offsetY: 8, tilt: { y: 16 } },
     flip: true,
   },
   {
@@ -86,10 +86,10 @@ export const agents: Agent[] = [
     zone: "农田与粮源区",
     accent: "#c9902a",
     tabs: ["找粮源", "候选对比", "供应方", "寻源任务", "历史记录"],
-    image: "/images/agents/liang.png",
+    image: "/images/agents/liangxiaoer-hologram-pose-transparent.png",
     doing: "对比东北产区 3 家供应方的粮源报价与质检报告",
-    pos: { x: 79, y: 34, size: 22 },
-    holo: { type: "grain", side: "right", offsetY: 22, tilt: { y: 12 } },
+    pos: { x: 70, y: 33, size: 22 },
+    holo: { type: "grain", side: "right", offsetY: 48, tilt: { y: 10, x: 2 } },
   },
   {
     id: "yun",
@@ -103,8 +103,8 @@ export const agents: Agent[] = [
     tabs: ["找物流", "路线方案", "方案对比", "运输任务", "历史记录"],
     image: "/images/agents/yun.png",
     doing: "规划港口到厂的 2 条运输路线，核对车辆排期",
-    pos: { x: 90, y: 62, size: 22 },
-    holo: { type: "route", side: "left", offsetY: 16, tilt: { y: -18 } },
+    pos: { x: 88, y: 60, size: 20 },
+    holo: { type: "route", side: "left", gap: 68, offsetY: 0, tilt: { y: -14 } },
   },
   {
     id: "suan",
@@ -116,10 +116,10 @@ export const agents: Agent[] = [
     zone: "方案测算台",
     accent: "#7a6bc0",
     tabs: ["新建测算", "成本明细", "方案对比", "敏感因素", "测算记录"],
-    image: "/images/agents/suan.png",
+    image: "/images/agents/suan-xiaoer-thinking-operation-transparent.png",
     doing: "测算方案 A 的到厂成本，比对运费与水分扣量影响",
-    pos: { x: 52, y: 92, size: 23 },
-    holo: { type: "rings", side: "right", offsetY: 0 },
+    pos: { x: 62, y: 90, size: 22 },
+    holo: { type: "chips", side: "right", offsetY: 0 },
   },
   {
     id: "qian",
@@ -133,8 +133,8 @@ export const agents: Agent[] = [
     tabs: ["找资金服务", "服务对比", "申请咨询", "办理进度", "服务记录"],
     image: "/images/agents/qian.png",
     doing: "整理采购资金申请材料，比对 3 家机构授信方案",
-    pos: { x: 17, y: 88, size: 23 },
-    holo: { type: "fund", side: "right", offsetY: 10, gap: 68, tilt: { y: 26 , x: 0 , z: 0}},
+    pos: { x: 20, y: 88, size: 22 },
+    holo: { type: "fund", side: "right", offsetY: 10, tilt: { y: 16 } },
   },
   {
     id: "an",
@@ -148,8 +148,8 @@ export const agents: Agent[] = [
     tabs: ["发起审核", "风险清单", "核验事项", "审核对象", "审核记录"],
     image: "/images/agents/an.png",
     doing: "巡检供应方资质与合同条款，标记 1 项待核验风险",
-    pos: { x: 11, y: 52, size: 21 },
-    holo: { type: "shield", side: "left", offsetY: 6, tilt: { y: -12 } },
+    pos: { x: 14, y: 60, size: 20 },
+    holo: { type: "shield", side: "right", offsetY: 8, tilt: { y: 12 } },
   },
 ];
 
