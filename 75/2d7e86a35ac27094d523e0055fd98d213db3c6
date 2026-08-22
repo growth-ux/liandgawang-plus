@@ -1,0 +1,87 @@
+web/src/components/field/HoloProp.tsx
+  s_3ff4238dfacbed::t_8ade5dde159678 10,69-70,100,272,312
+  s_92f083aa2fc7c8::t_545370a16fb15e 147,151
+  s_a96bef5a48f367::t_4e1f52a2583a00 317
+  h_7549b7dc6a6921 126,256-257
+  s_3ff4238dfacbed::t_3316e77ae5927f 66-68
+  s_3ff4238dfacbed::t_4e7c6f711ba48a 71-73
+  s_3ff4238dfacbed::t_4d90eaf0640903 99
+  s_3ff4238dfacbed::t_9782338886fe6f 101-103
+  s_92f083aa2fc7c8::t_0a76ce00438e21 144-146
+  s_92f083aa2fc7c8::t_11d9f50d2451da 148-150
+  s_92f083aa2fc7c8::t_402f64dafa54f4 152-153
+  s_3ff4238dfacbed::t_c0d0c6e96045cd 269-271
+  s_3ff4238dfacbed::t_800580e3a2aecb 273-275
+  s_3ff4238dfacbed::t_1b3f7d69ceac6b 309-311
+  s_a96bef5a48f367::t_f4b6b67c555045 318
+  h_7549b7dc6a6921 57,59-65,75,77-87,89-97,105-110,113-121,128-130,132-143,155-168,245,254,265-268,276-299,304,307-308,313-316
+web/src/data/agents.ts
+  h_7549b7dc6a6921 91,107
+  s_ab88e299f3b637::t_01b1e37000c5cd 119
+  s_ab88e299f3b637::t_0c8f0b4702de70 2,41-42,58,60-61,75-76,89,92,106,121-122,136-137,151-152
+uv.lock
+  s_88aea37af51ee9::t_34a1b6c6e5f486 1-8
+.superpowers/brainstorm/40399-1787323853/state/server-info
+  h_7549b7dc6a6921 1
+.superpowers/brainstorm/40399-1787323853/state/server.log
+  h_7549b7dc6a6921 1
+.superpowers/brainstorm/40399-1787323853/state/server.pid
+  h_7549b7dc6a6921 1
+docs/superpowers/specs/2026-08-21-home-holo-props-design.md
+  h_7549b7dc6a6921 42,44,46
+web/src/components/field/FieldBackground.tsx
+  h_7549b7dc6a6921 5,13-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "752d7e86a35ac27094d523e0055fd98d213db3c6",
+  "prompts": {},
+  "humans": {
+    "h_7549b7dc6a6921": {
+      "author": "tiger <1360055716@qq.com>"
+    }
+  },
+  "sessions": {
+    "s_3ff4238dfacbed": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a02753-4226-7000-bb97-8dae22773623",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    },
+    "s_88aea37af51ee9": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0272e-af9f-7592-901b-57410a123b17",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    },
+    "s_92f083aa2fc7c8": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a02736-3bca-7061-a839-48277747cf70",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    },
+    "s_a96bef5a48f367": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a02700-ff96-7ac1-babc-e75de87c2382",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    },
+    "s_ab88e299f3b637": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a027b3-f304-7982-9cfc-0f3e6f223129",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
