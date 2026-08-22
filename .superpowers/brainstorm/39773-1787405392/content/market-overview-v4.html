@@ -1,0 +1,167 @@
+<div style="font-family:'PingFang SC','Microsoft YaHei',sans-serif;color:#e9eef7;">
+  <h2>「市场全景」v4 —— 照粮达网价格指数页：左地图 + 右指数</h2>
+  <p class="subtitle">还原粮达网「价格指数」页布局：左侧全国地图点标记，右侧各地点价格指数表。</p>
+
+  <div class="mockup">
+    <div class="mockup-header">/agent/zhan —— 市场全景（玉米 · 收购价）</div>
+    <div class="mockup-body" style="background:#0b1220;padding:0;">
+
+      <!-- 头部 -->
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 22px;border-bottom:1px solid rgba(148,163,184,0.16);background:#0e1728;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#2f7fb8,#22d3ee);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#0b1220;">瞻</div>
+          <div>
+            <div style="font-size:16px;font-weight:600;">瞻小二｜看行情
+              <span style="margin-left:8px;padding:2px 10px;border-radius:999px;background:#2a1e12;color:#f59e0b;font-size:11px;">行情研判</span>
+            </div>
+            <div style="font-size:11px;color:#93a1b8;margin-top:2px;">行情与资讯屏 · 数据目镜、趋势波形</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:11px;">
+          <span style="padding:3px 10px;border-radius:999px;background:rgba(251,191,36,0.12);color:#fbbf24;border:1px solid rgba(251,191,36,0.3);">当前为演示行情</span>
+          <span style="color:#93a1b8;">数据集 <b style="color:#22d3ee;">zhan-v1</b></span>
+          <span style="color:#93a1b8;">生成 2026-08-22 10:00</span>
+        </div>
+      </div>
+
+      <!-- Tab -->
+      <div style="display:flex;gap:22px;padding:0 22px;border-bottom:1px solid rgba(148,163,184,0.16);background:#0e1728;">
+        <div style="padding:10px 0;font-size:13px;font-weight:600;color:#22d3ee;border-bottom:2px solid #22d3ee;">市场全景</div>
+        <div style="padding:10px 0;font-size:13px;color:#93a1b8;">品种走势</div>
+        <div style="padding:10px 0;font-size:13px;color:#93a1b8;">区域价差</div>
+        <div style="padding:10px 0;font-size:13px;color:#93a1b8;">影响因素</div>
+        <div style="padding:10px 0;font-size:13px;color:#93a1b8;">我的关注</div>
+        <div style="padding:10px 0;font-size:13px;color:#93a1b8;">研判记录</div>
+      </div>
+
+      <div style="padding:18px 22px;display:flex;flex-direction:column;gap:14px;">
+
+        <!-- 筛选行 -->
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:12px;color:#93a1b8;">品种</span>
+            <span style="padding:4px 14px;border-radius:999px;font-size:13px;font-weight:600;color:#0b1220;background:#22d3ee;">玉米</span>
+            <span style="padding:4px 14px;border-radius:999px;font-size:13px;color:#93a1b8;border:1px solid rgba(148,163,184,0.16);">小麦</span>
+            <span style="padding:4px 14px;border-radius:999px;font-size:13px;color:#93a1b8;border:1px solid rgba(148,163,184,0.16);">大豆</span>
+            <span style="padding:4px 14px;border-radius:999px;font-size:13px;color:#93a1b8;border:1px solid rgba(148,163,184,0.16);">稻谷</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:12px;color:#93a1b8;">价格类型</span>
+            <span style="padding:4px 14px;border-radius:999px;font-size:13px;font-weight:600;color:#0b1220;background:#ee7b1f;">收购价</span>
+            <span style="padding:4px 14px;border-radius:999px;font-size:13px;color:#93a1b8;border:1px solid rgba(148,163,184,0.16);">市场报价</span>
+          </div>
+          <span style="margin-left:auto;font-size:11px;color:#93a1b8;">价格日期 2026-08-22</span>
+        </div>
+
+        <!-- 左地图 + 右指数 -->
+        <div style="display:grid;grid-template-columns:1.55fr 1fr;gap:14px;">
+
+          <!-- 左侧地图 -->
+          <div style="border:1px solid rgba(148,163,184,0.16);border-radius:12px;background:#131c36;padding:14px;">
+            <div style="font-size:13px;font-weight:600;">全国价格分布
+              <span style="color:#93a1b8;font-weight:400;font-size:11px;"> 玉米 · 收购价 · 元/吨</span>
+            </div>
+            <div style="margin-top:8px;background:rgba(11,18,32,0.55);border-radius:10px;padding:12px;">
+              <svg viewBox="0 0 460 340" style="width:100%;height:auto;">
+                <g fill="rgba(148,163,184,0.07)" stroke="rgba(148,163,184,0.18)" stroke-width="1">
+                  <polygon points="40,62 148,52 168,82 128,120 92,140 48,118"/>
+                  <polygon points="168,108 210,90 250,110 238,142 200,152 170,132"/>
+                  <polygon points="250,52 330,42 360,82 340,112 300,102 268,82"/>
+                  <polygon points="378,32 440,42 444,80 400,86 380,70"/>
+                  <polygon points="380,86 436,92 440,140 400,150 376,128"/>
+                  <polygon points="300,142 360,132 380,170 368,220 330,230 300,200 290,162"/>
+                  <polygon points="340,220 400,220 410,260 380,300 350,290 330,252"/>
+                  <polygon points="290,252 342,252 342,320 300,330 286,292"/>
+                  <polygon points="80,200 140,180 160,230 120,260 90,240"/>
+                  <polygon points="200,230 262,230 270,270 230,290 196,262"/>
+                  <polygon points="200,290 262,300 252,350 210,358 190,330"/>
+                  <polygon points="300,320 362,330 382,372 342,392 310,372 296,342"/>
+                </g>
+                <!-- 库点标记 -->
+                <g>
+                  <circle cx="398" cy="62" r="7" fill="rgba(34,211,238,0.25)"/><circle cx="398" cy="62" r="4" fill="#22d3ee" stroke="#0b1220" stroke-width="1"/>
+                  <text x="398" y="42" fill="#e9eef7" font-size="11" text-anchor="middle">黑龙江·绥化</text><text x="398" y="55" fill="#22d3ee" font-size="11" font-weight="700" text-anchor="middle">2310</text>
+                </g>
+                <g>
+                  <circle cx="405" cy="96" r="7" fill="rgba(34,211,238,0.25)"/><circle cx="405" cy="96" r="4" fill="#22d3ee" stroke="#0b1220" stroke-width="1"/>
+                  <text x="405" y="76" fill="#e9eef7" font-size="11" text-anchor="middle">吉林·长春</text><text x="405" y="89" fill="#22d3ee" font-size="11" font-weight="700" text-anchor="middle">2330</text>
+                </g>
+                <g>
+                  <circle cx="416" cy="132" r="7" fill="rgba(238,123,31,0.25)"/><circle cx="416" cy="132" r="4" fill="#ee7b1f" stroke="#0b1220" stroke-width="1"/>
+                  <text x="430" y="130" fill="#e9eef7" font-size="11">辽宁·大连港</text><text x="430" y="143" fill="#ee7b1f" font-size="11" font-weight="700">2410</text>
+                </g>
+                <g>
+                  <circle cx="318" cy="76" r="7" fill="rgba(34,211,238,0.25)"/><circle cx="318" cy="76" r="4" fill="#22d3ee" stroke="#0b1220" stroke-width="1"/>
+                  <text x="318" y="60" fill="#e9eef7" font-size="11" text-anchor="middle">内蒙·通辽</text><text x="318" y="73" fill="#22d3ee" font-size="11" font-weight="700" text-anchor="middle">2290</text>
+                </g>
+                <g>
+                  <circle cx="330" cy="162" r="7" fill="rgba(34,211,238,0.25)"/><circle cx="330" cy="162" r="4" fill="#22d3ee" stroke="#0b1220" stroke-width="1"/>
+                  <text x="330" y="146" fill="#e9eef7" font-size="11" text-anchor="middle">河北·石家庄</text><text x="330" y="159" fill="#22d3ee" font-size="11" font-weight="700" text-anchor="middle">2295</text>
+                </g>
+                <g>
+                  <circle cx="362" cy="184" r="7" fill="rgba(238,123,31,0.25)"/><circle cx="362" cy="184" r="4" fill="#ee7b1f" stroke="#0b1220" stroke-width="1"/>
+                  <text x="374" y="182" fill="#e9eef7" font-size="11">山东·潍坊</text><text x="374" y="195" fill="#ee7b1f" font-size="11" font-weight="700">2340</text>
+                </g>
+                <g>
+                  <circle cx="386" cy="232" r="7" fill="rgba(238,123,31,0.25)"/><circle cx="386" cy="232" r="4" fill="#ee7b1f" stroke="#0b1220" stroke-width="1"/>
+                  <text x="398" y="230" fill="#e9eef7" font-size="11">江苏·连云港</text><text x="398" y="243" fill="#ee7b1f" font-size="11" font-weight="700">2360</text>
+                </g>
+                <g>
+                  <circle cx="320" cy="272" r="7" fill="rgba(238,123,31,0.25)"/><circle cx="320" cy="272" r="4" fill="#ee7b1f" stroke="#0b1220" stroke-width="1"/>
+                  <text x="320" y="256" fill="#e9eef7" font-size="11" text-anchor="middle">湖北·武汉</text><text x="320" y="269" fill="#ee7b1f" font-size="11" font-weight="700" text-anchor="middle">2350</text>
+                </g>
+                <g>
+                  <circle cx="228" cy="262" r="7" fill="rgba(238,123,31,0.25)"/><circle cx="228" cy="262" r="4" fill="#ee7b1f" stroke="#0b1220" stroke-width="1"/>
+                  <text x="212" y="256" fill="#e9eef7" font-size="11" text-anchor="end">四川·成都</text><text x="212" y="269" fill="#ee7b1f" font-size="11" font-weight="700" text-anchor="end">2380</text>
+                </g>
+                <g>
+                  <circle cx="228" cy="330" r="7" fill="rgba(238,123,31,0.25)"/><circle cx="228" cy="330" r="4" fill="#ee7b1f" stroke="#0b1220" stroke-width="1"/>
+                  <text x="212" y="324" fill="#e9eef7" font-size="11" text-anchor="end">云南·昆明</text><text x="212" y="337" fill="#ee7b1f" font-size="11" font-weight="700" text-anchor="end">2390</text>
+                </g>
+                <g>
+                  <circle cx="338" cy="354" r="7" fill="rgba(238,123,31,0.25)"/><circle cx="338" cy="354" r="4" fill="#ee7b1f" stroke="#0b1220" stroke-width="1"/>
+                  <text x="352" y="348" fill="#e9eef7" font-size="11">广东·广州港</text><text x="352" y="361" fill="#ee7b1f" font-size="11" font-weight="700">2460</text>
+                </g>
+              </svg>
+              <div style="display:flex;gap:16px;justify-content:center;margin-top:10px;font-size:11px;color:#93a1b8;">
+                <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#22d3ee;margin-right:5px;"></span>产区</span>
+                <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#ee7b1f;margin-right:5px;"></span>销区 / 港口</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 右侧指数表 -->
+          <div style="border:1px solid rgba(148,163,184,0.16);border-radius:12px;background:#131c36;padding:14px;display:flex;flex-direction:column;">
+            <div style="font-size:13px;font-weight:600;margin-bottom:8px;">价格指数</div>
+            <table style="width:100%;border-collapse:collapse;font-size:11px;">
+              <tr style="color:#93a1b8;text-align:left;">
+                <th style="padding:5px 4px;font-weight:500;">地点</th>
+                <th style="padding:5px 4px;font-weight:500;text-align:right;">价格</th>
+                <th style="padding:5px 4px;font-weight:500;text-align:right;">指数</th>
+                <th style="padding:5px 4px;font-weight:500;text-align:right;">涨跌</th>
+                <th style="padding:5px 4px;font-weight:500;text-align:right;">去年同期</th>
+              </tr>
+              <tr style="border-top:1px solid rgba(148,163,184,0.16);"><td style="padding:5px 4px;">黑龙江·绥化</td><td style="padding:5px 4px;text-align:right;color:#22d3ee;font-weight:600;">2310</td><td style="padding:5px 4px;text-align:right;">98</td><td style="padding:5px 4px;text-align:right;color:#34d399;">+1.2%</td><td style="padding:5px 4px;text-align:right;color:#93a1b8;">2250</td></tr>
+              <tr style="border-top:1px solid rgba(148,163,184,0.16);"><td style="padding:5px 4px;">吉林·长春</td><td style="padding:5px 4px;text-align:right;color:#22d3ee;font-weight:600;">2330</td><td style="padding:5px 4px;text-align:right;">99</td><td style="padding:5px 4px;text-align:right;color:#34d399;">+0.8%</td><td style="padding:5px 4px;text-align:right;color:#93a1b8;">2270</td></tr>
+              <tr style="border-top:1px solid rgba(148,163,184,0.16);"><td style="padding:5px 4px;">内蒙·通辽</td><td style="padding:5px 4px;text-align:right;color:#22d3ee;font-weight:600;">2290</td><td style="padding:5px 4px;text-align:right;">97</td><td style="padding:5px 4px;text-align:right;color:#34d399;">+0.5%</td><td style="padding:5px 4px;text-align:right;color:#93a1b8;">2230</td></tr>
+              <tr style="border-top:1px solid rgba(148,163,184,0.16);"><td style="padding:5px 4px;">辽宁·大连港</td><td style="padding:5px 4px;text-align:right;color:#ee7b1f;font-weight:600;">2410</td><td style="padding:5px 4px;text-align:right;">102</td><td style="padding:5px 4px;text-align:right;color:#34d399;">+1.5%</td><td style="padding:5px 4px;text-align:right;color:#93a1b8;">2330</td></tr>
+              <tr style="border-top:1px solid rgba(148,163,184,0.16);"><td style="padding:5px 4px;">河北·石家庄</td><td style="padding:5px 4px;text-align:right;color:#22d3ee;font-weight:600;">2295</td><td style="padding:5px 4px;text-align:right;">97</td><td style="padding:5px 4px;text-align:right;color:#f87171;">-0.3%</td><td style="padding:5px 4px;text-align:right;color:#93a1b8;">2310</td></tr>
+              <tr style="border-top:1px solid rgba(148,163,184,0.16);"><td style="padding:5px 4px;">山东·潍坊</td><td style="padding:5px 4px;text-align:right;color:#ee7b1f;font-weight:600;">2340</td><td style="padding:5px 4px;text-align:right;">100</td><td style="padding:5px 4px;text-align:right;color:#34d399;">+0.6%</td><td style="padding:5px 4px;text-align:right;color:#93a1b8;">2290</td></tr>
+              <tr style="border-top:1px solid rgba(148,163,184,0.16);"><td style="padding:5px 4px;">江苏·连云港</td><td style="padding:5px 4px;text-align:right;color:#ee7b1f;font-weight:600;">2360</td><td style="padding:5px 4px;text-align:right;">101</td><td style="padding:5px 4px;text-align:right;color:#34d399;">+1.0%</td><td style="padding:5px 4px;text-align:right;color:#93a1b8;">2300</td></tr>
+              <tr style="border-top:1px solid rgba(148,163,184,0.16);"><td style="padding:5px 4px;">湖北·武汉</td><td style="padding:5px 4px;text-align:right;color:#ee7b1f;font-weight:600;">2350</td><td style="padding:5px 4px;text-align:right;">100</td><td style="padding:5px 4px;text-align:right;color:#34d399;">+0.4%</td><td style="padding:5px 4px;text-align:right;color:#93a1b8;">2310</td></tr>
+              <tr style="border-top:1px solid rgba(148,163,184,0.16);"><td style="padding:5px 4px;">四川·成都</td><td style="padding:5px 4px;text-align:right;color:#ee7b1f;font-weight:600;">2380</td><td style="padding:5px 4px;text-align:right;">101</td><td style="padding:5px 4px;text-align:right;color:#34d399;">+0.9%</td><td style="padding:5px 4px;text-align:right;color:#93a1b8;">2310</td></tr>
+              <tr style="border-top:1px solid rgba(148,163,184,0.16);"><td style="padding:5px 4px;">云南·昆明</td><td style="padding:5px 4px;text-align:right;color:#ee7b1f;font-weight:600;">2390</td><td style="padding:5px 4px;text-align:right;">102</td><td style="padding:5px 4px;text-align:right;color:#34d399;">+1.1%</td><td style="padding:5px 4px;text-align:right;color:#93a1b8;">2320</td></tr>
+              <tr style="border-top:1px solid rgba(148,163,184,0.16);"><td style="padding:5px 4px;">广东·广州港</td><td style="padding:5px 4px;text-align:right;color:#ee7b1f;font-weight:600;">2460</td><td style="padding:5px 4px;text-align:right;">105</td><td style="padding:5px 4px;text-align:right;color:#34d399;">+1.8%</td><td style="padding:5px 4px;text-align:right;color:#93a1b8;">2360</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <!-- 数据说明（备注） -->
+        <div style="border:1px dashed rgba(148,163,184,0.2);border-radius:10px;background:rgba(148,163,184,0.04);padding:10px 14px;font-size:11px;color:#93a1b8;line-height:1.7;">
+          <span style="color:#e9eef7;font-weight:600;">备注：</span>均为市场主流粮型、容重二等以上、水分达标；价格为粮达网各大区业务员在所在区域市场一手采集的实际成交价。指数以全国均价为基准（=100），涨跌为环比，去年同期为同比参考。以上为演示数据，不代表真实市场。
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

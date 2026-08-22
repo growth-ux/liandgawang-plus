@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brainstorm</title>
+</head>
+<body>
+<style>
+  .pair{display:grid;grid-template-columns:1fr 1fr;gap:18px}.mock{overflow:hidden;border-radius:18px;border:1px solid rgba(148,163,184,.2);background:#09111f;color:#e9eef7;box-shadow:0 18px 45px rgba(0,0,0,.22);font-size:9px}.top{height:31px;display:flex;align-items:center;justify-content:space-between;padding:0 13px;background:#131c36;border-bottom:1px solid rgba(148,163,184,.13)}.brand{color:#ff9b45;font-weight:800}.nav{color:#8391a7;word-spacing:8px}.agent{display:flex;align-items:center;justify-content:space-between;padding:7px 13px;border-bottom:1px solid rgba(148,163,184,.12)}.who{display:flex;align-items:center;gap:6px;font-weight:700;font-size:11px}.avatar{width:24px;height:24px;display:grid;place-items:center;border-radius:50%;color:#5ce0f3;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.27)}.muted{color:#8391a6}.cyan{color:#4fdef2}.orange{color:#ff9b45}.up{color:#49d8a5}.down{color:#ff9b73}.tabs{height:31px;display:flex;align-items:center;gap:13px;padding:0 13px;border-bottom:1px solid rgba(148,163,184,.12);color:#7f8da2;white-space:nowrap}.tabs b{height:31px;display:flex;align-items:center;color:#fff;border-bottom:2px solid #ee7b1f}.body{min-height:360px;padding:10px 12px;background:linear-gradient(145deg,#0c1629,#09101c)}.title{display:flex;align-items:center;justify-content:space-between}.title b{font-size:12px}.button{padding:6px 8px;border-radius:7px;background:#ee7b1f;color:#fff;font-weight:700}.filters{display:flex;gap:5px;margin-top:8px}.pill{padding:3px 6px;border-radius:999px;border:1px solid rgba(148,163,184,.16);color:#9daabc}.pill.active{color:#ffd2ad;border-color:rgba(238,123,31,.32);background:rgba(238,123,31,.08)}.list{display:grid;gap:7px;margin-top:8px}.card{padding:9px;border-radius:9px;background:rgba(19,28,54,.72);border:1px solid rgba(148,163,184,.13)}.card.alert{border-color:rgba(238,123,31,.35);background:linear-gradient(130deg,rgba(238,123,31,.09),rgba(19,28,54,.72))}.cardtop{display:flex;align-items:flex-start;justify-content:space-between}.status{padding:3px 5px;border-radius:999px;background:rgba(73,216,165,.08);color:#55dda9}.status.hit{background:rgba(238,123,31,.11);color:#ffad68}.condition{font-size:12px;font-weight:750;margin:6px 0 3px}.progress{height:5px;margin-top:7px;border-radius:999px;background:rgba(148,163,184,.12);overflow:hidden}.progress span{display:block;height:100%;background:#42d5e8}.cardactions{display:flex;gap:10px;margin-top:7px;padding-top:6px;border-top:1px solid rgba(148,163,184,.11);color:#8f9db1}.cardactions b{color:#ff9b45}.recordmeta{display:flex;gap:5px;margin-top:6px}.tag{padding:2px 5px;border-radius:5px;background:rgba(255,255,255,.035);color:#99a7ba}.snapshot{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:7px}.snap{padding:6px;border-radius:7px;background:rgba(255,255,255,.025)}.compare{margin-top:7px;padding:6px;border-radius:7px;background:rgba(34,211,238,.05);border:1px solid rgba(34,211,238,.12);line-height:1.4}.foot{margin-top:8px;padding:8px;border-radius:8px;border:1px dashed rgba(148,163,184,.17);color:#718198;line-height:1.45}.explain{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin-top:17px}.note{padding:13px 14px;border-radius:12px;background:#111a2e;border:1px solid rgba(148,163,184,.17)}.note b{display:block;margin-bottom:5px}.note p{margin:0;color:#90a0b4;font-size:12px;line-height:1.55}.approve{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}.choice{cursor:pointer;padding:13px 15px;border-radius:12px;background:#111a2e;border:1px solid rgba(148,163,184,.2)}.choice:hover{border-color:rgba(34,211,238,.45)}.choice.selected{border-color:#ee7b1f;box-shadow:0 0 0 2px rgba(238,123,31,.18)}.choice b{display:block;margin-bottom:4px}.choice span{font-size:12px;color:#8d9bae}@media(max-width:1000px){.pair,.explain,.approve{grid-template-columns:1fr}}
+</style>
+
+<h2>章节四：我的关注与研判记录</h2>
+<p class="subtitle">“关注”回答接下来要盯什么；“记录”回答当时为什么这样判断。两者都围绕结构化研判，不保存一长串难以复用的聊天。</p>
+
+<div class="pair">
+  <div class="mock">
+    <div class="top"><span class="brand">粮达网 Plus</span><span class="nav">粮掌柜　我的办事　企业知识库</span></div>
+    <div class="agent"><div class="who"><span class="avatar">瞻</span>瞻小二｜看行情</div><span class="muted">切换小二⌄</span></div>
+    <div class="tabs"><span>市场全景</span><span>品种行情</span><span>采购研判</span><b>我的关注</b><span>研判记录</span></div>
+    <div class="body">
+      <div class="title"><div><b>我的关注</b><br><span class="muted">3 个监测中 · 1 个条件已触发</span></div><span class="button">＋ 新建关注</span></div>
+      <div class="filters"><span class="pill active">全部 4</span><span class="pill">已触发 1</span><span class="pill">监测中 3</span><span class="pill">已暂停</span></div>
+      <div class="list">
+        <div class="card alert"><div class="cardtop"><div><b>玉米 · 华南到港价</b><br><span class="muted">来自“200 吨玉米采购研判”</span></div><span class="status hit">已触发</span></div><div class="condition">≤ 2,440 元/吨</div><div>当前 <b class="orange">2,438</b> · 8 月 22 日 10:30 触发</div><div class="cardactions"><b>重新研判</b><span>查看行情</span><span>暂停</span></div></div>
+        <div class="card"><div class="cardtop"><div><b>玉米 · 港口库存</b><br><span class="muted">数据变化关注</span></div><span class="status">监测中</span></div><div class="condition">周环比再下降 3%</div><div class="muted">当前下降 1.8%，距触发条件还有 1.2%</div><div class="progress"><span style="width:60%"></span></div><div class="cardactions"><b>查看依据</b><span>编辑条件</span><span>暂停</span></div></div>
+        <div class="card"><div class="cardtop"><div><b>政策粮拍卖相关事件</b><br><span class="muted">事件关注 · 玉米</span></div><span class="status">监测中</span></div><div class="condition">出现新的拍卖公告或成交结果</div><div class="muted">最近检查：今天 10:30 · 暂无新增</div><div class="cardactions"><b>查看历史事件</b><span>编辑条件</span></div></div>
+      </div>
+      <div class="foot">首版提醒仅在产品内展示，并同步到“我的办事”的待确认状态；不扩展短信、电话和多渠道通知。</div>
+    </div>
+  </div>
+
+  <div class="mock">
+    <div class="top"><span class="brand">粮达网 Plus</span><span class="nav">粮掌柜　我的办事　企业知识库</span></div>
+    <div class="agent"><div class="who"><span class="avatar">瞻</span>瞻小二｜看行情</div><span class="muted">切换小二⌄</span></div>
+    <div class="tabs"><span>市场全景</span><span>品种行情</span><span>采购研判</span><span>我的关注</span><b>研判记录</b></div>
+    <div class="body">
+      <div class="title"><div><b>研判记录</b><br><span class="muted">保存当时的条件、数据时间和结论版本</span></div><span class="pill">玉米⌄</span></div>
+      <div class="filters"><span class="pill active">全部</span><span class="pill">采购研判</span><span class="pill">行情解读</span><span class="pill">有新变化</span></div>
+      <div class="list">
+        <div class="card alert"><div class="cardtop"><div><b>200 吨玉米采购研判</b><br><span class="muted">2026-08-21 16:40 · 结论版本 V1</span></div><span class="status hit">行情有变化</span></div><div class="condition">建议分两批采购 · 60% / 40%</div><div class="recordmeta"><span class="tag">深圳到货</span><span class="tag">7 天内</span><span class="tag">目标价 ≤ 2,480</span></div><div class="snapshot"><div class="snap"><span class="muted">当时参考价</span><br><b>2,468</b></div><div class="snap"><span class="muted">当前参考价</span><br><b class="up">2,438</b></div></div><div class="compare">价格已触发第二批条件，建议基于最新数据重新研判。</div><div class="cardactions"><b>重新研判</b><span>查看原结论</span><span>交给粮小二</span></div></div>
+        <div class="card"><div class="cardtop"><div><b>玉米未来 7 天行情解读</b><br><span class="muted">2026-08-18 09:20 · 市场全景生成</span></div><span class="status">结论仍有效</span></div><div class="condition">短期偏强 · 置信度中等</div><div class="recordmeta"><span class="tag">全国</span><span class="tag">东北二等</span><span class="tag">近 30 天</span></div><div class="cardactions"><b>查看快照</b><span>基于当前数据重做</span></div></div>
+        <div class="card"><div class="cardtop"><div><b>华南玉米区域价差分析</b><br><span class="muted">2026-08-12 14:05 · 用户主动保存</span></div><span class="status">已归档</span></div><div class="condition">北港 → 华南价差 85 元/吨</div><div class="cardactions"><b>查看快照</b><span>复制为新研判</span></div></div>
+      </div>
+      <div class="foot">历史记录展示“当时的快照”，不会用今天的数据覆盖旧结论；重新研判会生成新版本，并保留前后差异。</div>
+    </div>
+  </div>
+</div>
+
+<div class="explain"><div class="note"><b>我的关注保持简单</b><p>首版只支持三类条件：价格阈值、指标变化和关键事件。条件触发后引导用户重新研判，不直接替用户执行采购。</p></div><div class="note"><b>研判记录不是聊天记录</b><p>保存采购条件、数据时间、结论、依据与触发线。当市场发生明显变化时标记“行情有变化”，但不篡改旧结论。</p></div></div>
+
+<div class="approve"><div class="choice" data-choice="approve-watch-records" onclick="toggleSelect(this)"><b>A｜认可关注与记录设计</b><span>下一步确认整体数据流、异常状态和首版范围。</span></div><div class="choice" data-choice="adjust-watch-records" onclick="toggleSelect(this)"><b>B｜需要调整</b><span>请告诉我关注条件或历史记录还缺少什么。</span></div></div>
+</body>
+</html>

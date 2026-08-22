@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brainstorm</title>
+</head>
+<body>
+<style>
+  .task-shell{margin-top:19px;overflow:hidden;border-radius:20px;border:1px solid rgba(148,163,184,.18);background:linear-gradient(145deg,#0d172b,#09111f);color:#e9eef7;font-size:10px}.top{height:38px;display:flex;align-items:center;justify-content:space-between;padding:0 15px;background:#131c36;border-bottom:1px solid rgba(148,163,184,.13)}.brand{color:#ff9b45;font-weight:800}.agent{display:flex;align-items:center;gap:7px;font-weight:750}.avatar{width:25px;height:25px;display:grid;place-items:center;border-radius:50%;color:#ffd984;background:rgba(201,144,42,.13);border:1px solid rgba(201,144,42,.32)}.online{color:#4bd9a7;font-size:8px}.tabs{display:flex;gap:28px;padding:0 16px;color:#7d8ba0;border-bottom:1px solid rgba(148,163,184,.12)}.tab{padding:12px 2px}.tab.active{color:#fff;border-bottom:2px solid #ee7b1f}.body{position:relative;padding:10px 10px 58px}.toolbar{display:flex;align-items:center;justify-content:space-between}.filter-tabs{display:flex;gap:5px}.filter{padding:6px 9px;border-radius:7px;color:#8997aa;background:rgba(19,28,54,.72);border:1px solid rgba(148,163,184,.12)}.filter.active{color:#ffad67;border-color:rgba(238,123,31,.28);background:rgba(238,123,31,.08)}.button{padding:7px 10px;border-radius:7px;color:#fff;font-weight:700;background:#ee7b1f}.main{display:grid;grid-template-columns:310px 1fr;gap:8px;margin-top:8px}.list,.detail{border-radius:10px;background:rgba(19,28,54,.65);border:1px solid rgba(148,163,184,.12)}.list{padding:7px}.task-item{cursor:pointer;padding:9px;border-radius:8px;border:1px solid transparent}.task-item+.task-item{margin-top:4px}.task-item.selected{border-color:rgba(238,123,31,.28);background:rgba(238,123,31,.065)}.task-head{display:flex;align-items:center;justify-content:space-between}.task-item b{font-size:11px}.muted{color:#8290a5}.status{padding:3px 5px;border-radius:5px;color:#4bd9a7;background:rgba(73,217,167,.08);font-size:8px}.status.wait{color:#ffad67;background:rgba(238,123,31,.1)}.status.done{color:#8d9aab;background:rgba(148,163,184,.08)}.meta{display:flex;gap:6px;margin-top:6px;color:#748399}.source{padding:2px 4px;border-radius:4px;color:#4fddee;background:rgba(34,211,238,.07)}.detail{padding:11px}.detail-head{display:flex;align-items:flex-start;justify-content:space-between}.detail h3{margin:0 0 4px;font-size:14px}.actions{display:flex;gap:5px}.ghost{padding:5px 7px;border-radius:6px;color:#a8b4c3;border:1px solid rgba(148,163,184,.15)}.condition-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-top:9px}.condition{padding:7px;border-radius:7px;color:#8492a6;background:rgba(255,255,255,.026)}.condition strong{display:block;margin-top:3px;color:#e9eef7}.content-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:7px;margin-top:8px}.panel{padding:9px;border-radius:9px;background:rgba(255,255,255,.022);border:1px solid rgba(148,163,184,.10)}.panelhead{display:flex;align-items:center;justify-content:space-between}.timeline{display:grid;gap:7px;margin-top:8px}.event{display:grid;grid-template-columns:16px 1fr;gap:7px}.dot{width:8px;height:8px;margin:4px auto 0;border-radius:50%;background:#4bd9a7;box-shadow:0 0 0 4px rgba(73,217,167,.07)}.dot.pending{background:#ee7b1f;box-shadow:0 0 0 4px rgba(238,123,31,.08)}.event b{display:block;margin-bottom:2px}.cards{display:grid;gap:5px;margin-top:7px}.result{padding:8px;border-radius:7px;background:rgba(19,28,54,.72)}.orange{color:#ff9b45}.cyan{color:#4fddee}.warn{color:#ff9b7f}.composer{position:absolute;left:10px;right:10px;bottom:10px;height:36px;display:flex;align-items:center;gap:8px;padding:0 9px;border:1px solid rgba(34,211,238,.2);border-radius:10px;background:rgba(19,28,54,.97)}.input{flex:1;color:#6f7e94}.send{height:25px;width:25px;display:grid;place-items:center;border-radius:7px;color:#fff;background:#ee7b1f}.creation{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:stretch;gap:9px;margin-top:14px}.stage{padding:13px;border-radius:11px;background:rgba(19,28,54,.58);border:1px solid rgba(148,163,184,.12)}.stage strong{display:block;margin-bottom:5px;color:#eef3f9}.stage p{margin:0;color:#8d9baf;font-size:11px;line-height:1.55}.arrow{align-self:center;color:#ee7b1f;font-size:18px}.confirm{margin-top:8px;padding:8px;border-radius:7px;background:rgba(238,123,31,.07);border:1px solid rgba(238,123,31,.16);color:#f2b47d}@media(max-width:950px){.main,.content-grid{grid-template-columns:1fr}.condition-grid{grid-template-columns:1fr 1fr}.creation{grid-template-columns:1fr}.arrow{transform:rotate(90deg);text-align:center}}
+</style>
+
+<h2>寻源任务：对话创建，结构化确认，过程可追踪</h2>
+<p class="subtitle">粮小二是任务执行主体；表单只用于确认 AI 理解是否正确，不要求用户先面对一张复杂采购表。</p>
+
+<div class="task-shell">
+  <div class="top"><div class="agent"><span class="avatar">粮</span><span>粮小二 <small class="online">● 正在跟进 2 个任务</small></span></div><span class="brand">粮达网 Plus</span></div>
+  <div class="tabs"><span class="tab">粮源市场</span><span class="tab">寻源方案</span><span class="tab active">寻源任务</span><span class="tab">供应方</span></div>
+  <div class="body">
+    <div class="toolbar"><div class="filter-tabs"><span class="filter active">全部 6</span><span class="filter">进行中 2</span><span class="filter">待我确认 1</span><span class="filter">已完成 3</span></div><span class="button">＋ 发起寻源</span></div>
+    <div class="main">
+      <div class="list">
+        <div class="task-item selected"><div class="task-head"><b>120 吨二等玉米</b><span class="status wait">待核验</span></div><div class="meta"><span class="source">粮小二内创建</span><span>更新于 10:26</span></div></div>
+        <div class="task-item"><div class="task-head"><b>80 吨东北小麦</b><span class="status">分析中</span></div><div class="meta"><span class="source">来自瞻小二</span><span>更新于 09:48</span></div></div>
+        <div class="task-item"><div class="task-head"><b>200 吨稻谷</b><span class="status wait">待我确认</span></div><div class="meta"><span class="source">粮小二内创建</span><span>昨天</span></div></div>
+        <div class="task-item"><div class="task-head"><b>100 吨非转大豆</b><span class="status done">已完成</span></div><div class="meta"><span class="source">来自瞻小二</span><span>08-19</span></div></div>
+      </div>
+      <div class="detail">
+        <div class="detail-head"><div><h3>120 吨二等玉米</h3><span class="muted">任务 LSE-20260822-01 · 粮小二内创建</span></div><div class="actions"><span class="ghost">修改条件</span><span class="ghost">复制任务</span></div></div>
+        <div class="condition-grid"><div class="condition">品种<strong>玉米</strong></div><div class="condition">数量<strong>120 吨</strong></div><div class="condition">最低等级<strong>二等</strong></div><div class="condition">最晚发运<strong>7 天内</strong></div><div class="condition">目的地<strong>深圳</strong></div></div>
+        <div class="content-grid">
+          <div class="panel"><div class="panelhead"><b>执行进度</b><span class="muted">自动记录关键节点</span></div><div class="timeline"><div class="event"><span class="dot"></span><div><b>已确认采购条件</b><span class="muted">用户确认由对话提取的 5 个关键条件 · 10:18</span></div></div><div class="event"><span class="dot"></span><div><b>已检索并过滤公开粮源</b><span class="muted">128 条中 18 条通过硬条件 · 10:22</span></div></div><div class="event"><span class="dot"></span><div><b>已生成主推与备选</b><span class="muted">重点比较 6 条，输出 2 条候选 · 10:25</span></div></div><div class="event"><span class="dot pending"></span><div><b>等待核验关键事实</b><span class="muted">质检单、锁定库存、装货窗口、报价有效期</span></div></div></div></div>
+          <div class="panel"><div class="panelhead"><b>当前产出</b><span class="orange">查看完整方案</span></div><div class="cards"><div class="result"><span class="orange">主推</span><br><b>黑龙江北安粮源</b><br><span class="muted">2,356 元/吨 · 180 吨 · 库提价</span></div><div class="result"><span class="cyan">备选</span><br><b>吉林榆树粮源</b><br><span class="muted">2,372 元/吨 · 150 吨 · 车板价</span></div><div class="result"><span class="warn">待处理</span><br><b>4 项事实需要人工核验</b><br><span class="muted">未核验前不能标记为最终可执行</span></div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="composer"><span class="avatar" style="width:22px;height:22px">粮</span><span class="input">可以直接说：把数量改成 150 吨，其他条件不变，然后重新分析</span><span class="send">↑</span></div>
+  </div>
+</div>
+
+<div class="creation"><div class="stage"><strong>1｜自然语言发起</strong><p>“帮我找 120 吨二等玉米，送深圳，最好一周内能发。”支持从粮小二直接创建，也支持其他小二携带上下文交接。</p></div><span class="arrow">→</span><div class="stage"><strong>2｜AI 生成条件确认卡</strong><p>自动提取品种、数量、质量、时间、目的地；缺失项明确标为“未限制”，而不是擅自猜测。</p><div class="confirm">用户确认后才正式创建并执行任务</div></div><span class="arrow">→</span><div class="stage"><strong>3｜持续对话修改</strong><p>任何时刻都可通过对话修改条件并重新分析；新旧方案保留版本时间，不为每次改动创建重复任务。</p></div></div>
+
+<p style="margin-top:14px;color:#8f9db1;font-size:12px">任务状态建议仅保留：待确认、分析中、待核验、已完成、失败；不引入复杂项目管理流程。</p>
+</body>
+</html>

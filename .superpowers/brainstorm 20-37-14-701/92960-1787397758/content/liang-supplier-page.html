@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brainstorm</title>
+</head>
+<body>
+<style>
+  .supplier-shell{margin-top:19px;overflow:hidden;border-radius:20px;border:1px solid rgba(148,163,184,.18);background:linear-gradient(145deg,#0d172b,#09111f);color:#e9eef7;font-size:10px}.top{height:38px;display:flex;align-items:center;justify-content:space-between;padding:0 15px;background:#131c36;border-bottom:1px solid rgba(148,163,184,.13)}.brand{color:#ff9b45;font-weight:800}.agent{display:flex;align-items:center;gap:7px;font-weight:750}.avatar{width:25px;height:25px;display:grid;place-items:center;border-radius:50%;color:#ffd984;background:rgba(201,144,42,.13);border:1px solid rgba(201,144,42,.32)}.online{color:#4bd9a7;font-size:8px}.tabs{display:flex;gap:28px;padding:0 16px;color:#7d8ba0;border-bottom:1px solid rgba(148,163,184,.12)}.tab{padding:12px 2px}.tab.active{color:#fff;border-bottom:2px solid #ee7b1f}.body{position:relative;padding:10px 10px 58px}.toolbar{display:grid;grid-template-columns:1.3fr repeat(3,.55fr) auto;gap:5px}.field{padding:7px;border-radius:7px;color:#99a7b9;background:rgba(19,28,54,.72);border:1px solid rgba(148,163,184,.12)}.field.search{color:#69798f;border-color:rgba(34,211,238,.16)}.main{display:grid;grid-template-columns:360px 1fr;gap:8px;margin-top:8px}.list,.profile{border-radius:10px;background:rgba(19,28,54,.65);border:1px solid rgba(148,163,184,.12)}.list{padding:7px}.supplier{padding:9px;border-radius:8px;border:1px solid transparent}.supplier+.supplier{margin-top:4px}.supplier.selected{border-color:rgba(238,123,31,.28);background:rgba(238,123,31,.065)}.supplier-head{display:flex;align-items:flex-start;justify-content:space-between}.supplier b{display:block;margin-bottom:3px;font-size:11px}.muted{color:#8290a5}.badge{display:inline-flex;padding:2px 4px;border-radius:4px;color:#51ddeb;background:rgba(34,211,238,.07);font-size:8px}.demo{color:#ffad67;background:rgba(238,123,31,.10)}.facts{display:flex;gap:9px;margin-top:7px;color:#8997a9}.profile{padding:11px}.profile-head{display:flex;align-items:flex-start;justify-content:space-between}.profile h3{margin:0 0 4px;font-size:15px}.actions{display:flex;gap:5px}.ghost{padding:5px 7px;border-radius:6px;color:#a8b4c3;border:1px solid rgba(148,163,184,.15)}.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:9px}.metric{padding:8px;border-radius:7px;color:#8492a6;background:rgba(255,255,255,.026)}.metric strong{display:block;margin-top:3px;color:#e9eef7;font-size:12px}.profile-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:7px;margin-top:8px}.panel{padding:9px;border-radius:9px;background:rgba(255,255,255,.022);border:1px solid rgba(148,163,184,.10)}.panelhead{display:flex;align-items:center;justify-content:space-between}.source-list,.evidence-list{display:grid;gap:5px;margin-top:7px}.source-item{display:grid;grid-template-columns:1fr auto auto;gap:8px;padding:8px;border-radius:7px;background:rgba(19,28,54,.72)}.source-item strong{display:block;margin-bottom:2px}.orange{color:#ff9b45}.cyan{color:#4fddee}.green{color:#4bd9a7}.warn{color:#ff9b7f}.evidence{display:flex;gap:7px;padding:8px;border-radius:7px;background:rgba(19,28,54,.72);line-height:1.45}.icon{width:18px;height:18px;display:grid;place-items:center;flex:0 0 auto;border-radius:5px;color:#4bd9a7;background:rgba(73,217,167,.08)}.icon.wait{color:#ffad67;background:rgba(238,123,31,.1)}.notice{margin-top:7px;padding:8px;border-radius:7px;color:#8997aa;background:rgba(34,211,238,.035);border:1px solid rgba(34,211,238,.1)}.composer{position:absolute;left:10px;right:10px;bottom:10px;height:36px;display:flex;align-items:center;gap:8px;padding:0 9px;border:1px solid rgba(34,211,238,.2);border-radius:10px;background:rgba(19,28,54,.97)}.input{flex:1;color:#6f7e94}.send{height:25px;width:25px;display:grid;place-items:center;border-radius:7px;color:#fff;background:#ee7b1f}.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-top:14px}.rule{padding:13px;border-radius:11px;background:rgba(19,28,54,.58);border:1px solid rgba(148,163,184,.12)}.rule b{display:block;margin-bottom:6px;color:#eef3f9}.rule p{margin:0;color:#8d9baf;font-size:11px;line-height:1.55}@media(max-width:950px){.main,.profile-grid,.rules{grid-template-columns:1fr}.toolbar{grid-template-columns:1fr 1fr}.summary{grid-template-columns:1fr 1fr}}
+</style>
+
+<h2>供应方：看证据，不做虚假的“综合信用分”</h2>
+<p class="subtitle">供应方页帮助用户判断是否值得继续核验；真实公开信息与竞赛演示数据在字段级明确区分。</p>
+
+<div class="supplier-shell">
+  <div class="top"><div class="agent"><span class="avatar">粮</span><span>粮小二 <small class="online">● 可查询供应方</small></span></div><span class="brand">粮达网 Plus</span></div>
+  <div class="tabs"><span class="tab">粮源市场</span><span class="tab">寻源方案</span><span class="tab">寻源任务</span><span class="tab active">供应方</span></div>
+  <div class="body">
+    <div class="toolbar"><div class="field search">搜索供应方名称、地区或关联品种</div><div class="field">主营品种⌄</div><div class="field">所在地区⌄</div><div class="field">有在架粮源⌄</div><div class="field">信息完整度⌄</div></div>
+    <div class="main">
+      <div class="list">
+        <div class="supplier selected"><div class="supplier-head"><div><b>北安粮贸有限公司</b><span class="badge">公开委托方</span> <span class="badge demo">履约演示</span></div><span class="green">有在架粮源</span></div><div class="facts"><span>黑龙江 · 北安</span><span>玉米</span><span>在架 3 条</span></div></div>
+        <div class="supplier"><div class="supplier-head"><div><b>榆树谷业有限公司</b><span class="badge">公开委托方</span> <span class="badge demo">履约演示</span></div><span class="green">有在架粮源</span></div><div class="facts"><span>吉林 · 榆树</span><span>玉米 / 小麦</span><span>在架 2 条</span></div></div>
+        <div class="supplier"><div class="supplier-head"><div><b>辽北粮储有限公司</b><span class="badge">公开委托方</span></div><span class="orange">信息较少</span></div><div class="facts"><span>辽宁 · 铁岭</span><span>玉米</span><span>在架 1 条</span></div></div>
+        <div class="supplier"><div class="supplier-head"><div><b>蒙东供应链有限公司</b><span class="badge">公开委托方</span></div><span class="green">有在架粮源</span></div><div class="facts"><span>内蒙古 · 通辽</span><span>玉米 / 大豆</span><span>在架 4 条</span></div></div>
+      </div>
+      <div class="profile">
+        <div class="profile-head"><div><h3>北安粮贸有限公司</h3><span class="muted">公开挂牌委托方 · 最近更新 2026-08-22 10:26</span></div><div class="actions"><span class="ghost">加入对比</span><span class="ghost">让粮小二分析</span></div></div>
+        <div class="summary"><div class="metric">在架粮源<strong>3 条</strong></div><div class="metric">在架总量<strong>560 吨</strong></div><div class="metric">主营品种<strong>玉米</strong></div><div class="metric">信息状态<strong class="orange">3 项待核验</strong></div></div>
+        <div class="profile-grid">
+          <div class="panel"><div class="panelhead"><b>关联挂牌粮源</b><span class="orange">查看市场中的全部</span></div><div class="source-list"><div class="source-item"><span><strong>北安 · 2025 年二等玉米</strong><small class="muted">库提价 · 北安直属库</small></span><b>2,356 元/吨</b><span class="green">180 吨</span></div><div class="source-item"><span><strong>北安 · 2025 年三等玉米</strong><small class="muted">库提价 · 北安东库</small></span><b>2,328 元/吨</b><span class="green">240 吨</span></div><div class="source-item"><span><strong>逊克 · 2024 年二等玉米</strong><small class="muted">车板价 · 逊克站台</small></span><b>2,368 元/吨</b><span class="green">140 吨</span></div></div><div class="notice">挂牌品种、价格、数量、地点和委托方来自公开数据；这里不把“挂牌数量”直接等同于已锁定库存。</div></div>
+          <div class="panel"><div class="panelhead"><b>可信证据与待核验项</b><span class="muted">不汇总成单一分数</span></div><div class="evidence-list"><div class="evidence"><span class="icon">✓</span><span><b>公开挂牌身份</b><br><small class="muted">可追溯到公开交易标的与发布时间</small></span></div><div class="evidence"><span class="icon">✓</span><span><b>历史履约演示：较稳定</b><br><small class="muted">近 6 单按期 5 单；此字段仅为比赛演示</small></span></div><div class="evidence"><span class="icon wait">!</span><span><b>企业证照待核验</b><br><small class="muted">统一社会信用代码、经营状态与经营范围</small></span></div><div class="evidence"><span class="icon wait">!</span><span><b>实际库存与质检待核验</b><br><small class="muted">需要正式质检单和可锁定库存证明</small></span></div><div class="evidence"><span class="icon wait">!</span><span><b>联系人不可用</b><br><small class="muted">首版不提供自动联系或询价功能</small></span></div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="composer"><span class="avatar" style="width:22px;height:22px">粮</span><span class="input">问粮小二：北安粮贸和榆树谷业，哪家的现有证据更完整？</span><span class="send">↑</span></div>
+  </div>
+</div>
+
+<div class="rules"><div class="rule"><b>不展示“信用 92 分”</b><p>数据量不足时，单一分数会制造确定性。改为逐项显示证据来源、更新时间、是否真实以及是否待核验。</p></div><div class="rule"><b>供应方不是独立推荐入口</b><p>供应方信息用于解释粮源风险，最终推荐仍围绕具体粮源和当前采购条件，不做脱离任务的榜单。</p></div><div class="rule"><b>首版不自动外联</b><p>不拨号、不发消息、不自动询价。粮小二只形成待核验清单，外联能力后续接入时再单独确认授权。</p></div></div>
+
+<p style="margin-top:14px;color:#8f9db1;font-size:12px">首版重点：让用户看清“我们知道什么、不知道什么、哪些数据只是演示”。</p>
+</body>
+</html>

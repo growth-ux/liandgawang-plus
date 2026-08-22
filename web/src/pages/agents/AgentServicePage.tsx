@@ -3,6 +3,7 @@ import { Navigate, useParams } from "react-router-dom";
 import { getAgent, taskStatuses } from "../../data/agents";
 import AgentAvatar from "../../components/AgentAvatar";
 import AgentSwitcher from "../../components/AgentSwitcher";
+import ZhanPage from "../../features/zhan/ZhanPage";
 
 /** 七位小二共用的专业服务页模板（轻占位） */
 export default function AgentServicePage() {
@@ -11,6 +12,7 @@ export default function AgentServicePage() {
   const [activeTab, setActiveTab] = useState(0);
 
   if (!agent) return <Navigate to="/" replace />;
+  if (agent.id === "zhan") return <ZhanPage />;
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)] flex-col">

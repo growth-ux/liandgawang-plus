@@ -1,0 +1,221 @@
+<div style="font-family:'PingFang SC','Microsoft YaHei',sans-serif;color:#e9eef7;">
+  <h2>「市场全景」页面整体布局</h2>
+  <p class="subtitle">瞻小二默认入口 · 科技风 · 深空蓝黑底 + 橙色标识 + 青色数据线。先看整体感觉，具体区块可再调。</p>
+
+  <div class="mockup">
+    <div class="mockup-header">/agent/zhan —— 市场全景（玉米 · 二等 · 东北 · 出库价）</div>
+    <div class="mockup-body" style="background:#0b1220;padding:0;">
+
+      <!-- ===== 页面头部 ===== -->
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 22px;border-bottom:1px solid rgba(148,163,184,0.16);background:#0e1728;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#2f7fb8,#22d3ee);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#0b1220;">瞻</div>
+          <div>
+            <div style="font-size:16px;font-weight:600;">瞻小二｜看行情
+              <span style="margin-left:8px;padding:2px 10px;border-radius:999px;background:#2a1e12;color:#f59e0b;font-size:11px;font-weight:400;">行情研判</span>
+            </div>
+            <div style="font-size:11px;color:#93a1b8;margin-top:2px;">行情与资讯屏 · 数据目镜、趋势波形</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:11px;">
+          <span style="padding:3px 10px;border-radius:999px;background:rgba(251,191,36,0.12);color:#fbbf24;border:1px solid rgba(251,191,36,0.3);">当前为演示行情</span>
+          <span style="color:#93a1b8;">数据集 <b style="color:#22d3ee;">zhan-v1</b></span>
+          <span style="color:#93a1b8;">生成 2026-08-22 10:00</span>
+        </div>
+      </div>
+
+      <!-- ===== Tab 条 ===== -->
+      <div style="display:flex;gap:22px;padding:0 22px;border-bottom:1px solid rgba(148,163,184,0.16);background:#0e1728;">
+        <div style="padding:10px 0;font-size:13px;font-weight:600;color:#22d3ee;border-bottom:2px solid #22d3ee;">市场全景</div>
+        <div style="padding:10px 0;font-size:13px;color:#93a1b8;">品种走势</div>
+        <div style="padding:10px 0;font-size:13px;color:#93a1b8;">区域价差</div>
+        <div style="padding:10px 0;font-size:13px;color:#93a1b8;">影响因素</div>
+        <div style="padding:10px 0;font-size:13px;color:#93a1b8;">我的关注</div>
+        <div style="padding:10px 0;font-size:13px;color:#93a1b8;">研判记录</div>
+      </div>
+
+      <!-- ===== 主体 ===== -->
+      <div style="padding:18px 22px;display:flex;flex-direction:column;gap:16px;">
+
+        <!-- 品种脉搏 -->
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+          <!-- 玉米 选中 -->
+          <div style="border:1px solid #ee7b1f;border-radius:12px;background:#131c36;padding:12px;box-shadow:0 0 0 1px rgba(238,123,31,0.25);">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:14px;font-weight:600;">玉米</span>
+              <span style="font-size:10px;color:#fbbf24;">演示行情</span>
+            </div>
+            <div style="font-size:20px;font-weight:700;margin-top:6px;">2,320<span style="font-size:11px;color:#93a1b8;font-weight:400;"> 元/吨</span></div>
+            <div style="display:flex;gap:8px;margin-top:6px;font-size:11px;">
+              <span style="color:#34d399;">日 +1.2%</span>
+              <span style="color:#34d399;">周 +3.4%</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+              <span style="font-size:11px;padding:2px 8px;border-radius:999px;background:rgba(52,211,153,0.15);color:#34d399;">偏强</span>
+              <span style="font-size:10px;color:#93a1b8;">证据完整度 高</span>
+            </div>
+          </div>
+          <!-- 小麦 -->
+          <div style="border:1px solid rgba(148,163,184,0.16);border-radius:12px;background:#131c36;padding:12px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:14px;font-weight:600;">小麦</span>
+              <span style="font-size:10px;color:#fbbf24;">演示行情</span>
+            </div>
+            <div style="font-size:20px;font-weight:700;margin-top:6px;">2,480<span style="font-size:11px;color:#93a1b8;font-weight:400;"> 元/吨</span></div>
+            <div style="display:flex;gap:8px;margin-top:6px;font-size:11px;">
+              <span style="color:#93a1b8;">日 -0.3%</span>
+              <span style="color:#93a1b8;">周 +0.5%</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+              <span style="font-size:11px;padding:2px 8px;border-radius:999px;background:rgba(147,161,184,0.15);color:#93a1b8;">震荡</span>
+              <span style="font-size:10px;color:#93a1b8;">证据完整度 中</span>
+            </div>
+          </div>
+          <!-- 大豆 -->
+          <div style="border:1px solid rgba(148,163,184,0.16);border-radius:12px;background:#131c36;padding:12px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:14px;font-weight:600;">大豆</span>
+              <span style="font-size:10px;color:#fbbf24;">演示行情</span>
+            </div>
+            <div style="font-size:20px;font-weight:700;margin-top:6px;">3,980<span style="font-size:11px;color:#93a1b8;font-weight:400;"> 元/吨</span></div>
+            <div style="display:flex;gap:8px;margin-top:6px;font-size:11px;">
+              <span style="color:#f87171;">日 -0.8%</span>
+              <span style="color:#f87171;">周 -2.1%</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+              <span style="font-size:11px;padding:2px 8px;border-radius:999px;background:rgba(248,113,113,0.15);color:#f87171;">偏弱</span>
+              <span style="font-size:10px;color:#93a1b8;">证据完整度 中</span>
+            </div>
+          </div>
+          <!-- 稻谷 -->
+          <div style="border:1px solid rgba(148,163,184,0.16);border-radius:12px;background:#131c36;padding:12px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:14px;font-weight:600;">稻谷</span>
+              <span style="font-size:10px;color:#fbbf24;">演示行情</span>
+            </div>
+            <div style="font-size:20px;font-weight:700;margin-top:6px;color:#93a1b8;">--</div>
+            <div style="display:flex;gap:8px;margin-top:6px;font-size:11px;color:#93a1b8;">数据不足</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+              <span style="font-size:11px;padding:2px 8px;border-radius:999px;background:rgba(147,161,184,0.15);color:#93a1b8;">待补充</span>
+              <span style="font-size:10px;color:#93a1b8;">证据完整度 低</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 主区：曲线 + 判断 -->
+        <div style="display:grid;grid-template-columns:1.9fr 1fr;gap:14px;">
+          <!-- 价格主图 -->
+          <div style="border:1px solid rgba(148,163,184,0.16);border-radius:12px;background:#131c36;padding:14px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <div style="font-size:13px;font-weight:600;">价格走势
+                <span style="color:#93a1b8;font-weight:400;font-size:11px;"> 玉米 · 二等 · 东北 · 出库价（含税含运）</span>
+              </div>
+              <div style="display:flex;gap:4px;">
+                <span style="padding:3px 10px;border-radius:999px;font-size:11px;color:#93a1b8;border:1px solid rgba(148,163,184,0.16);">7天</span>
+                <span style="padding:3px 10px;border-radius:999px;font-size:11px;color:#0b1220;background:#22d3ee;font-weight:600;">30天</span>
+                <span style="padding:3px 10px;border-radius:999px;font-size:11px;color:#93a1b8;border:1px solid rgba(148,163,184,0.16);">90天</span>
+              </div>
+            </div>
+            <div style="margin-top:10px;height:150px;background:rgba(11,18,32,0.6);border-radius:8px;padding:10px;">
+              <svg viewBox="0 0 520 130" style="width:100%;height:100%;">
+                <line x1="10" y1="10" x2="10" y2="120" stroke="rgba(148,163,184,0.15)" />
+                <line x1="10" y1="120" x2="510" y2="120" stroke="rgba(148,163,184,0.15)" />
+                <polyline points="10,100 40,102 70,98 100,95 130,99 160,92 190,88 220,90 250,80 280,74 310,78 340,66 370,60 400,55 430,50 460,44 490,40 510,34"
+                  fill="none" stroke="#22d3ee" stroke-width="2.5" stroke-linejoin="round" />
+                <circle cx="280" cy="74" r="4" fill="#ee7b1f" />
+                <circle cx="370" cy="60" r="4" fill="#ee7b1f" />
+                <circle cx="490" cy="40" r="4" fill="#ee7b1f" />
+                <text x="280" y="66" fill="#ee7b1f" font-size="8">拍卖底价上调</text>
+                <text x="362" y="52" fill="#ee7b1f" font-size="8">港口到货偏紧</text>
+                <text x="430" y="46" fill="#ee7b1f" font-size="8">采购窗口临近</text>
+              </svg>
+            </div>
+          </div>
+
+          <!-- 瞻小二演示判断 -->
+          <div style="border:1px solid rgba(148,163,184,0.16);border-radius:12px;background:#131c36;padding:14px;display:flex;flex-direction:column;gap:10px;">
+            <div style="font-size:13px;font-weight:600;">瞻小二演示判断</div>
+            <div style="font-size:14px;color:#22d3ee;line-height:1.5;">玉米短期偏强，产区价格稳中有升，建议关注采购窗口。</div>
+            <div style="font-size:11px;color:#93a1b8;font-weight:600;">支持依据</div>
+            <ul style="margin:0;padding-left:16px;font-size:11px;color:#c9d4e3;line-height:1.8;">
+              <li>东北产区到货量连续 3 日低于均值</li>
+              <li>港口平仓价较上周 +3.4%</li>
+              <li>拍卖底价上调形成支撑</li>
+            </ul>
+            <div style="font-size:11px;color:#93a1b8;font-weight:600;">反对 / 不确定</div>
+            <ul style="margin:0;padding-left:16px;font-size:11px;color:#c9d4e3;line-height:1.8;">
+              <li>华北现货成交偏弱，可能拖累整体</li>
+            </ul>
+            <div style="font-size:11px;color:#93a1b8;">证据完整度
+              <span style="margin-left:6px;display:inline-block;width:90px;height:6px;background:rgba(148,163,184,0.2);border-radius:999px;"><span style="display:block;width:80%;height:6px;background:#22d3ee;border-radius:999px;"></span></span>
+              <span style="color:#22d3ee;margin-left:6px;">高</span>
+            </div>
+            <div style="font-size:11px;color:#93a1b8;">继续观察：华北到货量 · 港口成交</div>
+          </div>
+        </div>
+
+        <!-- 重点区域价格 -->
+        <div style="border:1px solid rgba(148,163,184,0.16);border-radius:12px;background:#131c36;padding:14px;">
+          <div style="font-size:13px;font-weight:600;margin-bottom:8px;">重点区域价格</div>
+          <table style="width:100%;border-collapse:collapse;font-size:11px;">
+            <tr style="color:#93a1b8;text-align:left;">
+              <th style="padding:6px 8px;font-weight:500;">区域</th>
+              <th style="padding:6px 8px;font-weight:500;">当前价</th>
+              <th style="padding:6px 8px;font-weight:500;">周变化</th>
+              <th style="padding:6px 8px;font-weight:500;">较基准价差</th>
+              <th style="padding:6px 8px;font-weight:500;">口径</th>
+              <th style="padding:6px 8px;font-weight:500;">说明</th>
+            </tr>
+            <tr style="border-top:1px solid rgba(148,163,184,0.16);">
+              <td style="padding:6px 8px;">东北（基准）</td>
+              <td style="padding:6px 8px;color:#22d3ee;font-weight:600;">2,320</td>
+              <td style="padding:6px 8px;color:#34d399;">+3.4%</td>
+              <td style="padding:6px 8px;">—</td>
+              <td style="padding:6px 8px;">出库价</td>
+              <td style="padding:6px 8px;color:#93a1b8;">产区到货偏紧</td>
+            </tr>
+            <tr style="border-top:1px solid rgba(148,163,184,0.16);">
+              <td style="padding:6px 8px;">华北</td>
+              <td style="padding:6px 8px;">2,295</td>
+              <td style="padding:6px 8px;color:#f87171;">-0.6%</td>
+              <td style="padding:6px 8px;color:#f87171;">-25</td>
+              <td style="padding:6px 8px;">出库价</td>
+              <td style="padding:6px 8px;color:#93a1b8;">成交偏弱</td>
+            </tr>
+            <tr style="border-top:1px solid rgba(148,163,184,0.16);">
+              <td style="padding:6px 8px;">港口</td>
+              <td style="padding:6px 8px;">2,410</td>
+              <td style="padding:6px 8px;color:#34d399;">+4.1%</td>
+              <td style="padding:6px 8px;color:#34d399;">+90</td>
+              <td style="padding:6px 8px;">平仓价</td>
+              <td style="padding:6px 8px;color:#93a1b8;">口径不同，暂不直接比较</td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- 关键事件 -->
+        <div style="border:1px solid rgba(148,163,184,0.16);border-radius:12px;background:#131c36;padding:14px;">
+          <div style="font-size:13px;font-weight:600;margin-bottom:10px;">关键事件与预期影响</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+            <div style="border:1px solid rgba(52,211,153,0.25);border-radius:10px;background:rgba(52,211,153,0.05);padding:10px;">
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:#34d399;"><span>拍卖底价上调</span><span>08-18</span></div>
+              <div style="font-size:11px;color:#93a1b8;margin-top:4px;line-height:1.5;">东北玉米拍卖底价上调 20 元/吨，对现货形成支撑。</div>
+              <div style="margin-top:6px;font-size:10px;color:#34d399;">预期方向：偏强 · 支撑指标：到货量↓</div>
+            </div>
+            <div style="border:1px solid rgba(52,211,153,0.25);border-radius:10px;background:rgba(52,211,153,0.05);padding:10px;">
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:#34d399;"><span>港口到货偏紧</span><span>08-20</span></div>
+              <div style="font-size:11px;color:#93a1b8;margin-top:4px;line-height:1.5;">港口玉米到货量连续走低，平仓价走高。</div>
+              <div style="margin-top:6px;font-size:10px;color:#34d399;">预期方向：偏强 · 支撑指标：港口成交↑</div>
+            </div>
+            <div style="border:1px solid rgba(248,113,113,0.25);border-radius:10px;background:rgba(248,113,113,0.05);padding:10px;">
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:#f87171;"><span>华北现货成交转弱</span><span>08-21</span></div>
+              <div style="font-size:11px;color:#93a1b8;margin-top:4px;line-height:1.5;">华北深加工采购放缓，现货成交转弱。</div>
+              <div style="margin-top:6px;font-size:10px;color:#f87171;">预期方向：压制 · 支撑指标：华北成交↓</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

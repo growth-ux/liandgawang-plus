@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brainstorm</title>
+</head>
+<body>
+<style>
+  .canvas{border:1px solid rgba(148,163,184,.22);border-radius:20px;overflow:hidden;background:#09111f;color:#e8eef7;box-shadow:0 24px 70px rgba(0,0,0,.25)}.top{height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:#131c36;border-bottom:1px solid rgba(148,163,184,.13);font-size:11px}.brand{font-weight:800;color:#ff9b45}.nav{color:#8593a9;word-spacing:12px}.head{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;border-bottom:1px solid rgba(148,163,184,.12);font-size:11px}.who{display:flex;align-items:center;gap:9px}.avatar{width:32px;height:32px;display:grid;place-items:center;border-radius:50%;color:#67e4f6;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.3)}.who b{font-size:14px}.righthead{display:flex;align-items:center;gap:9px;color:#8796ab}.stamp{padding:5px 8px;border-radius:8px;background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.15)}.tabs{height:38px;display:flex;align-items:center;gap:22px;padding:0 18px;color:#7c8aa0;font-size:11px;border-bottom:1px solid rgba(148,163,184,.12)}.tabs b{height:38px;display:flex;align-items:center;color:white;border-bottom:2px solid #ee7b1f}.body{padding:13px 16px 14px;background:radial-gradient(circle at 72% 12%,rgba(34,211,238,.055),transparent 28%),linear-gradient(145deg,#0c1629,#09101c);font-size:10px}.number{position:absolute;z-index:3;width:23px;height:23px;border-radius:50%;display:grid;place-items:center;background:#ee7b1f;color:#fff;font-weight:800;font-size:11px;box-shadow:0 0 0 4px rgba(238,123,31,.14)}.relative{position:relative}.goods{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.good{padding:9px 10px;border-radius:10px;background:rgba(19,28,54,.76);border:1px solid rgba(148,163,184,.13)}.good.active{border-color:rgba(238,123,31,.55);background:rgba(238,123,31,.08)}.goodtop{display:flex;justify-content:space-between;color:#8896aa}.good strong{display:block;font-size:16px;margin-top:5px}.up{color:#49d8a5}.down{color:#ff9a70}.muted{color:#8492a7}.cyan{color:#4fdef2}.orange{color:#ff9b45}.grid{display:grid;grid-template-columns:1.55fr .68fr;gap:9px;margin-top:9px}.panel{padding:10px;border-radius:11px;background:rgba(19,28,54,.7);border:1px solid rgba(148,163,184,.13)}.panelhead{display:flex;align-items:center;justify-content:space-between}.panelhead b{font-size:11px}.pills{display:flex;gap:5px}.pill{padding:3px 7px;border-radius:999px;border:1px solid rgba(148,163,184,.17);color:#a5b0c0}.series{display:flex;gap:12px;margin-top:9px;color:#8997aa}.line{width:13px;height:2px;display:inline-block;margin-right:4px;vertical-align:middle}.chart{height:145px;margin-top:8px;position:relative;border-radius:8px;background:repeating-linear-gradient(0deg,transparent,transparent 28px,rgba(148,163,184,.07) 29px),repeating-linear-gradient(90deg,transparent,transparent 61px,rgba(148,163,184,.06) 62px);overflow:hidden}.chart:before{content:"";position:absolute;left:4%;right:3%;top:31%;height:46%;border-top:2px solid #39d7eb;border-radius:54%;transform:skewY(-5deg);filter:drop-shadow(0 0 4px rgba(34,211,238,.4))}.chart:after{content:"";position:absolute;left:4%;right:3%;top:48%;height:30%;border-top:2px solid #ee7b1f;border-radius:46%;transform:skewY(3deg);opacity:.8}.marker{position:absolute;left:57%;top:31%;color:#ffd19f;border-left:1px dashed rgba(238,123,31,.65);height:70px;padding-left:5px;line-height:1.35}.basis{display:flex;justify-content:space-between;margin-top:7px;color:#75849a}.judgment{background:linear-gradient(150deg,rgba(34,211,238,.08),rgba(19,28,54,.76));border-color:rgba(34,211,238,.22)}.jtop{display:flex;justify-content:space-between}.confidence{padding:3px 6px;border-radius:999px;background:rgba(73,216,165,.09);color:#59dfae}.signal{font-size:19px;font-weight:800;margin:10px 0 3px}.horizon{color:#50dcef}.reason{display:grid;gap:5px;margin-top:10px}.reasonrow{display:grid;grid-template-columns:12px 1fr auto;gap:6px;padding:7px;background:rgba(255,255,255,.026);border-radius:7px;line-height:1.4}.tag-real,.tag-demo{padding:2px 4px;border-radius:4px;font-size:8px}.tag-real{background:rgba(34,211,238,.08);color:#5cdded}.tag-demo{background:rgba(238,123,31,.10);color:#ffac64}.lower{display:grid;grid-template-columns:1.05fr 1.1fr .72fr;gap:9px;margin-top:9px}.regions{display:grid;gap:5px;margin-top:7px}.region{display:grid;grid-template-columns:1fr auto auto;gap:9px;padding:6px 7px;border-radius:7px;background:rgba(255,255,255,.025)}.events{display:grid;gap:5px;margin-top:7px}.event{display:grid;grid-template-columns:48px 1fr auto;gap:7px;padding:6px 7px;border-left:2px solid rgba(34,211,238,.35);background:rgba(255,255,255,.02);line-height:1.35}.quick{background:linear-gradient(145deg,rgba(238,123,31,.11),rgba(19,28,54,.74));border-color:rgba(238,123,31,.26)}.quick button{width:100%;margin-top:8px;border:0;border-radius:8px;padding:7px;background:#ee7b1f;color:#fff;font-size:9px;font-weight:700}.outline{width:100%;margin-top:6px;border:1px solid rgba(148,163,184,.18);border-radius:8px;padding:6px;background:transparent;color:#aab4c3;font-size:9px}.ask{margin-top:9px;padding:9px 11px;border-radius:10px;border:1px solid rgba(148,163,184,.18);color:#65758c}.ask span{float:right;color:#ff9b45}.notes{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}.note{padding:14px 15px;border-radius:13px;background:#111a2e;border:1px solid rgba(148,163,184,.17)}.note b{display:block;margin-bottom:6px;color:#eef3f9}.note p{margin:0;color:#93a1b5;font-size:12px;line-height:1.58}.approve{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:17px}.choice{cursor:pointer;padding:13px 15px;border-radius:12px;background:#111a2e;border:1px solid rgba(148,163,184,.2)}.choice:hover{border-color:rgba(34,211,238,.45)}.choice.selected{border-color:#ee7b1f;box-shadow:0 0 0 2px rgba(238,123,31,.18)}.choice b{display:block;margin-bottom:4px}.choice span{font-size:12px;color:#8d9bae}@media(max-width:1000px){.grid,.lower,.notes,.approve{grid-template-columns:1fr}.goods{grid-template-columns:1fr 1fr}}
+</style>
+
+<h2>章节一：市场全景的具体内容</h2>
+<p class="subtitle">目标不是堆指标，而是让用户在 30 秒内回答三件事：今天什么在变、为什么变、是否值得继续关注。</p>
+
+<div class="canvas">
+  <div class="top"><span class="brand">粮达网 Plus</span><span class="nav">粮掌柜　我的办事　企业知识库</span></div>
+  <div class="head"><div class="who"><span class="avatar">瞻</span><div><b>瞻小二｜看行情</b><br><span class="muted">行情研判 · 公开数据与模拟数据分层展示</span></div></div><div class="righthead"><span class="stamp">数据更新至 2026-08-22 10:30</span><span>切换小二⌄</span></div></div>
+  <div class="tabs"><b>市场全景</b><span>品种行情</span><span>采购研判</span><span>我的关注</span><span>研判记录</span></div>
+  <div class="body">
+    <div class="relative">
+      <span class="number" style="left:-8px;top:-8px">1</span>
+      <div class="goods">
+        <div class="good active"><div class="goodtop"><span>玉米</span><span>东北二等</span></div><strong>2,468 <small>元/吨</small> <small class="up">+0.6%</small></strong></div>
+        <div class="good"><div class="goodtop"><span>小麦</span><span>国标二等</span></div><strong>2,512 <small>元/吨</small> <small class="down">-0.2%</small></strong></div>
+        <div class="good"><div class="goodtop"><span>稻谷</span><span>中晚籼稻</span></div><strong>2,734 <small>元/吨</small> <small class="muted">持平</small></strong></div>
+        <div class="good"><div class="goodtop"><span>大豆</span><span>国产食用豆</span></div><strong>4,165 <small>元/吨</small> <small class="up">+0.4%</small></strong></div>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="panel relative">
+        <span class="number" style="left:-8px;top:-8px">2</span>
+        <div class="panelhead"><b>玉米价格走势</b><div class="pills"><span class="pill">全国⌄</span><span class="pill">近30天⌄</span></div></div>
+        <div class="series"><span><i class="line" style="background:#39d7eb"></i>华南到港价</span><span><i class="line" style="background:#ee7b1f"></i>北港平仓价</span><span class="muted">＋ 对比指标</span></div>
+        <div class="chart"><span class="marker">政策粮拍卖公告<br><small>预期增加短期供应</small></span></div>
+        <div class="basis"><span>价格口径：含税 · 到港 · 元/吨</span><span>来源：公开行情 · 查看明细</span></div>
+      </div>
+      <div class="panel judgment relative">
+        <span class="number" style="left:-8px;top:-8px">3</span>
+        <div class="jtop"><span class="muted">瞻小二 · 未来 7 天</span><span class="confidence">置信度较高</span></div>
+        <div class="signal">短期偏强</div><div class="horizon">上涨空间可能受政策粮投放限制</div>
+        <div class="reason">
+          <div class="reasonrow"><span class="up">↑</span><span>北港库存周环比下降 4.2%</span><span class="tag-demo">模拟</span></div>
+          <div class="reasonrow"><span class="up">↑</span><span>华南饲料企业补库需求回暖</span><span class="tag-real">公开</span></div>
+          <div class="reasonrow"><span class="down">↓</span><span>政策粮拍卖释放供应预期</span><span class="tag-real">公开</span></div>
+        </div>
+        <div style="margin-top:9px;color:#9dabbc">点击任一依据，可在左侧定位对应时间与价格变化。</div>
+      </div>
+    </div>
+    <div class="lower">
+      <div class="panel relative"><span class="number" style="left:-8px;top:-8px">4</span><div class="panelhead"><b>重点区域价格</b><span class="cyan">查看完整价差 →</span></div><div class="regions"><div class="region"><span>黑龙江产区</span><b>2,395</b><span class="up">+12</span></div><div class="region"><span>锦州港平仓</span><b>2,425</b><span class="up">+8</span></div><div class="region"><span>广东蛇口到港</span><b>2,510</b><span class="down">-5</span></div></div></div>
+      <div class="panel relative"><span class="number" style="left:-8px;top:-8px">5</span><div class="panelhead"><b>关键事件与预期影响</b><span class="muted">按相关性排序</span></div><div class="events"><div class="event"><span>今天</span><span>政策粮拍卖公告</span><b class="down">利空 · 中</b></div><div class="event"><span>近 3 天</span><span>北港库存连续回落</span><b class="up">利多 · 强</b></div><div class="event"><span>未来 7 天</span><span>东北产区降雨预期</span><b class="muted">待观察</b></div></div></div>
+      <div class="panel quick relative"><span class="number" style="left:-8px;top:-8px">6</span><b>下一步由用户决定</b><p class="muted" style="line-height:1.55">没有采购需求也可继续查看、提问或设置提醒。</p><button>有采购计划，生成研判</button><button class="outline">关注玉米价格</button></div>
+    </div>
+    <div class="ask">向瞻小二提问：“华南玉米为什么比上周贵？” <span>发送 ↑</span></div>
+  </div>
+</div>
+
+<div class="notes">
+  <div class="note"><b>1–2｜先看事实</b><p>四个品种只呈现最关键价格脉搏；点击品种后，主图同步切换。图表必须明确等级、地区、含税/运费口径和更新时间。</p></div>
+  <div class="note"><b>3–5｜再理解原因</b><p>瞻小二给出方向、时间范围和置信度，同时把驱动因素落到价格曲线、区域价差与事件上，避免只有一句“看涨”。</p></div>
+  <div class="note"><b>6｜行动不强迫</b><p>无采购需求可关注价格或继续提问；有采购需求才进入研判。所有公开与模拟信息逐项标识，不用一个笼统免责声明掩盖。</p></div>
+</div>
+
+<div class="approve">
+  <div class="choice" data-choice="approve-market-overview" onclick="toggleSelect(this)"><b>A｜认可市场全景内容</b><span>继续设计“品种行情”与“采购研判”。</span></div>
+  <div class="choice" data-choice="adjust-market-overview" onclick="toggleSelect(this)"><b>B｜需要调整</b><span>请在对话里指出要增加、删除或突出哪一块。</span></div>
+</div>
+</body>
+</html>

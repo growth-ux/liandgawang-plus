@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brainstorm</title>
+</head>
+<body>
+<style>
+  .arch{padding:18px;border-radius:18px;background:radial-gradient(circle at 50% 0,rgba(34,211,238,.07),transparent 32%),#0a1220;border:1px solid rgba(148,163,184,.2)}.flow{display:grid;grid-template-columns:.85fr 38px 1fr 38px 1fr;align-items:stretch;gap:6px}.box{padding:14px;border-radius:13px;background:#111b30;border:1px solid rgba(148,163,184,.18)}.box.primary{border-color:rgba(238,123,31,.36);background:linear-gradient(145deg,rgba(238,123,31,.08),#111b30)}.box.data{border-color:rgba(34,211,238,.27)}.box h3{margin:0 0 8px;font-size:14px;color:#eef4fb}.box ul{margin:0;padding-left:17px;color:#95a4b8;font-size:12px;line-height:1.65}.arrow{display:grid;place-items:center;color:#ee7b1f;font-size:22px}.sources{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.source{padding:10px;border-radius:10px;background:rgba(19,28,54,.72);border:1px solid rgba(148,163,184,.14);font-size:11px;color:#96a5b8}.source b{display:block;color:#e7edf6;margin-bottom:4px}.cadence{color:#50ddef}.pipe{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:16px}.step{position:relative;padding:11px;border-radius:11px;background:#111a2e;border:1px solid rgba(148,163,184,.17)}.step:not(:last-child):after{content:"→";position:absolute;right:-9px;top:40%;z-index:2;color:#ee7b1f}.step b{display:block;margin-bottom:5px;color:#eef3f9}.step p{margin:0;color:#8f9db1;font-size:11px;line-height:1.5}.section-title{margin:22px 0 10px}.section-title h3{margin:0 0 4px}.section-title p{margin:0;color:#8f9db1;font-size:12px}.triple{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.card{padding:13px 14px;border-radius:12px;background:#111a2e;border:1px solid rgba(148,163,184,.17)}.card h4{margin:0 0 7px;color:#eef3f9}.card ul{margin:0;padding-left:17px;color:#91a0b4;font-size:11px;line-height:1.6}.do{border-color:rgba(73,216,165,.25)}.dont{border-color:rgba(255,155,115,.22)}.errorgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.error{padding:10px 12px;border-radius:10px;background:#111a2e;border-left:3px solid #ee7b1f}.error b{display:block;margin-bottom:3px}.error span{color:#8f9db1;font-size:11px;line-height:1.45}.approve{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}.choice{cursor:pointer;padding:13px 15px;border-radius:12px;background:#111a2e;border:1px solid rgba(148,163,184,.2)}.choice:hover{border-color:rgba(34,211,238,.45)}.choice.selected{border-color:#ee7b1f;box-shadow:0 0 0 2px rgba(238,123,31,.18)}.choice b{display:block;margin-bottom:4px}.choice span{font-size:12px;color:#8d9bae}@media(max-width:1000px){.flow,.sources,.pipe,.triple,.errorgrid,.approve{grid-template-columns:1fr}.arrow{transform:rotate(90deg)}.step:not(:last-child):after{display:none}}
+</style>
+
+<h2>章节五：最小可实现架构、数据流与首版边界</h2>
+<p class="subtitle">保持现有 React + FastAPI + Docker MySQL，不引入消息队列、Agent 框架、向量库或实时流系统。</p>
+
+<div class="arch">
+  <div class="flow">
+    <div class="box primary"><h3>React｜瞻小二页面</h3><ul><li>5 个页内 Tab</li><li>行情图表、筛选与数据标识</li><li>采购研判表单与结构化结果</li><li>关注条件、研判记录</li></ul></div>
+    <div class="arrow">→</div>
+    <div class="box"><h3>FastAPI｜一个后端服务</h3><ul><li>市场查询与指标计算</li><li>公开数据更新任务</li><li>研判上下文组织与模型调用</li><li>关注条件检查</li><li>数据新鲜度和异常降级</li></ul></div>
+    <div class="arrow">↔</div>
+    <div class="box data"><h3>Docker MySQL｜4 组数据</h3><ul><li>价格序列与来源</li><li>市场事件与影响</li><li>研判条件、结论和版本</li><li>关注条件及触发状态</li></ul></div>
+  </div>
+
+  <div class="sources">
+    <div class="source"><b>盘中行情</b><span class="cadence">交易时段每 5–15 分钟检查</span><br>来源发布新值才入库</div>
+    <div class="source"><b>现货报价 / 交易结果</b><span class="cadence">每小时检查</span><br>保留来源时间与价格口径</div>
+    <div class="source"><b>库存 / 供需指标</b><span class="cadence">按日、周、月发布周期</span><br>演示数据逐项标记</div>
+    <div class="source"><b>政策 / 市场事件</b><span class="cadence">每小时检查</span><br>记录发布时间、来源与影响方向</div>
+  </div>
+</div>
+
+<div class="pipe">
+  <div class="step"><b>① 获取并保存</b><p>数据源适配器拉取最新内容，标准化品种、地区、口径、单位和时间。</p></div>
+  <div class="step"><b>② 代码计算事实</b><p>涨跌幅、价差、区间、阈值是否触发都由后端确定性计算，不交给模型猜。</p></div>
+  <div class="step"><b>③ 组织证据包</b><p>把用户采购条件、事实指标和事件按 ID 提供给模型，禁止使用包外价格。</p></div>
+  <div class="step"><b>④ 模型返回 JSON</b><p>方向、周期、置信度、行动批次、触发条件、正反依据和失效条件固定结构输出。</p></div>
+  <div class="step"><b>⑤ 校验并展示</b><p>FastAPI 校验字段、数值与证据引用；不合格则重试一次，再失败使用规则化降级结果。</p></div>
+</div>
+
+<div class="section-title"><h3>首版做什么，以及明确不做什么</h3><p>范围围绕“玉米行情 → 200 吨采购研判 → 关注 / 交给粮小二”这一条演示路径。</p></div>
+<div class="triple">
+  <div class="card do"><h4>必须做完整</h4><ul><li>玉米真实公开价格序列与来源时间</li><li>市场全景和玉米品种行情</li><li>结构化采购研判与重新研判</li><li>三类关注条件与触发检查</li><li>研判快照、版本和前后变化</li><li>创建“交给粮小二”的预填任务</li></ul></div>
+  <div class="card"><h4>只做轻量展示</h4><ul><li>小麦、稻谷、大豆有行情卡和基础走势</li><li>非玉米品种可关注、可提问</li><li>数据更新后台单进程调度</li><li>产品内提醒同步“我的办事”</li><li>模型供应商通过环境配置切换</li></ul></div>
+  <div class="card dont"><h4>本轮不做</h4><ul><li>真实下单、合同与支付</li><li>短信、电话、邮件提醒</li><li>多企业、多账号与权限体系</li><li>复杂粮价地图、资讯瀑布流</li><li>高可用队列、分布式采集</li><li>模型自行联网搜索或编造缺失数据</li></ul></div>
+</div>
+
+<div class="section-title"><h3>异常与降级</h3><p>行情页面和 AI 研判解耦：即使模型失败，用户仍然能够查看事实数据。</p></div>
+<div class="errorgrid">
+  <div class="error"><b>外部数据源失败</b><span>沿用最后一次成功数据，显示“数据截至……”；过期严重时降低置信度，不输出强行动建议。</span></div>
+  <div class="error"><b>部分指标缺失</b><span>隐藏不能比较的序列，明确缺少哪项数据；不使用模拟值静默补齐公开数据。</span></div>
+  <div class="error"><b>模型超时或格式错误</b><span>保留用户输入和事实图表，自动重试一次；仍失败则展示基于确定性指标的简版结果并允许重试。</span></div>
+  <div class="error"><b>关注条件无法检查</b><span>状态改为“数据待更新”，不误报为未触发；数据恢复后重新计算。</span></div>
+</div>
+
+<div class="section-title"><h3>验证方式</h3></div>
+<div class="triple">
+  <div class="card"><h4>后端单元测试</h4><ul><li>涨跌、价差和触发条件计算</li><li>数据新鲜度分级</li><li>事实 / 推断 / 模拟标签</li><li>模型 JSON 校验与降级</li></ul></div>
+  <div class="card"><h4>接口与页面测试</h4><ul><li>公开 + 模拟混合数据返回</li><li>Tab、筛选和图表同步</li><li>加载、空数据、过期和失败状态</li><li>旧研判快照不被新数据覆盖</li></ul></div>
+  <div class="card"><h4>核心闭环验收</h4><ul><li>全景进入玉米行情</li><li>生成 200 吨采购研判</li><li>创建价格关注并模拟触发</li><li>重新研判并比较版本</li><li>生成粮小二预填任务</li></ul></div>
+</div>
+
+<div class="approve"><div class="choice" data-choice="approve-system-scope" onclick="toggleSelect(this)"><b>A｜认可架构与首版范围</b><span>我将把全部已确认内容汇总为设计规格文档。</span></div><div class="choice" data-choice="adjust-system-scope" onclick="toggleSelect(this)"><b>B｜需要调整</b><span>请指出架构、数据频率或首版范围需要修改的部分。</span></div></div>
+</body>
+</html>

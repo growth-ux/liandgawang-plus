@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brainstorm</title>
+</head>
+<body>
+<style>
+  .ia-shell{margin-top:20px;overflow:hidden;border-radius:20px;border:1px solid rgba(148,163,184,.18);background:linear-gradient(145deg,#0d172b,#09111f);color:#e9eef7}.ia-top{height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:#131c36;border-bottom:1px solid rgba(148,163,184,.13)}.brand{color:#ff9b45;font-weight:800}.agent{display:flex;align-items:center;gap:8px;font-weight:760}.avatar{width:27px;height:27px;display:grid;place-items:center;border-radius:50%;color:#ffd984;background:rgba(201,144,42,.13);border:1px solid rgba(201,144,42,.32)}.online{color:#4bd9a7;font-size:10px}.tabs{display:grid;grid-template-columns:repeat(4,1fr);padding:0 17px;border-bottom:1px solid rgba(148,163,184,.12)}.tab{cursor:pointer;padding:14px 10px 12px;color:#8290a5;text-align:center;border-bottom:2px solid transparent;transition:.18s}.tab:hover{color:#fff;background:rgba(255,255,255,.02)}.tab.selected{color:#fff;border-color:#ee7b1f;background:rgba(238,123,31,.045)}.content{padding:17px}.hint{display:flex;align-items:center;justify-content:space-between;padding:11px 13px;border-radius:10px;background:rgba(19,28,54,.72);border:1px solid rgba(148,163,184,.13)}.hint b{font-size:14px}.muted{color:#8795a9}.orange{color:#ff9b45}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-top:12px}.card{min-height:178px;padding:13px;border-radius:12px;background:rgba(19,28,54,.64);border:1px solid rgba(148,163,184,.12)}.card.primary{border-color:rgba(238,123,31,.3);background:linear-gradient(145deg,rgba(238,123,31,.075),rgba(19,28,54,.68))}.num{display:grid;place-items:center;width:25px;height:25px;margin-bottom:9px;border-radius:8px;background:rgba(34,211,238,.08);color:#4fddee;font-weight:800}.card.primary .num{background:rgba(238,123,31,.14);color:#ff9b45}.card h3{margin:0 0 7px;font-size:14px}.card p{min-height:43px;margin:0;color:#8d9baf;font-size:11px;line-height:1.55}.items{display:grid;gap:5px;margin-top:10px}.item{padding:6px 7px;border-radius:6px;background:rgba(255,255,255,.027);font-size:10px;color:#bbc5d3}.tag{display:inline-block;margin-left:4px;padding:2px 4px;border-radius:4px;font-size:8px;color:#ffb273;background:rgba(238,123,31,.10)}.state-row{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:10px;margin-top:14px;padding:12px 13px;border-radius:11px;border:1px solid rgba(34,211,238,.13);background:rgba(34,211,238,.035)}.state{padding:9px;border-radius:8px;background:rgba(19,28,54,.75);text-align:center}.arrow{color:#ee7b1f;font-weight:800}.composer{display:flex;align-items:center;gap:8px;margin-top:13px;padding:9px 11px;border-radius:10px;background:rgba(19,28,54,.94);border:1px solid rgba(34,211,238,.2)}.input{flex:1;color:#6f7e94}.send{height:26px;width:26px;display:grid;place-items:center;border-radius:7px;color:#fff;background:#ee7b1f}.tradeoffs{display:grid;grid-template-columns:1.1fr .9fr;gap:13px;margin-top:15px}.decision,.fold{padding:13px;border-radius:11px;background:rgba(19,28,54,.58);border:1px solid rgba(148,163,184,.12)}.decision strong,.fold strong{display:block;margin-bottom:7px}.decision p,.fold p{margin:0;color:#8d9baf;font-size:11px;line-height:1.55}@media(max-width:900px){.grid{grid-template-columns:1fr 1fr}.tradeoffs{grid-template-columns:1fr}.state-row{grid-template-columns:1fr}.arrow{transform:rotate(90deg);text-align:center}}
+</style>
+
+<h2>粮小二页内信息架构：建议收敛为 4 个 Tab</h2>
+<p class="subtitle">默认入口仍然是“粮源市场”；历史记录并入寻源任务，避免顶部导航越来越碎。</p>
+
+<div class="ia-shell">
+  <div class="ia-top"><div class="agent"><span class="avatar">粮</span><span>粮小二 <small class="online">● 在线</small></span></div><span class="brand">独立找粮工作台</span></div>
+  <div class="tabs"><div class="tab selected">粮源市场</div><div class="tab">寻源方案</div><div class="tab">寻源任务</div><div class="tab">供应方</div></div>
+  <div class="content">
+    <div class="hint"><div><b>每个 Tab 解决一个明确问题</b><br><span class="muted">浏览 → 决策 → 管理 → 核验；对话栏跨 Tab 常驻，不把 Agent 关在单独页面里。</span></div><span class="orange">默认：粮源市场</span></div>
+    <div class="grid">
+      <div class="card primary"><div class="num">1</div><h3>粮源市场</h3><p>“现在市场上有什么粮？”无采购需求也能完整使用。</p><div class="items"><div class="item">市场概览 <span class="tag">可收起</span></div><div class="item">粮源列表与筛选</div><div class="item">粮源详情 / 加入候选</div><div class="item">AI 候选篮或寻源引导</div></div></div>
+      <div class="card"><div class="num">2</div><h3>寻源方案</h3><p>“针对我的需求，应该选哪一批粮？”</p><div class="items"><div class="item">主推粮源 + 备选粮源</div><div class="item">入选 / 淘汰理由</div><div class="item">报价口径与数量质量</div><div class="item">待核验项 <span class="tag">核心输出</span></div></div></div>
+      <div class="card"><div class="num">3</div><h3>寻源任务</h3><p>“我发起过哪些找粮任务，当前做到哪？”</p><div class="items"><div class="item">进行中 / 草稿 / 已完成</div><div class="item">来自本页或其他小二</div><div class="item">条件修改与继续执行</div><div class="item">历史记录 <span class="tag">合并到这里</span></div></div></div>
+      <div class="card"><div class="num">4</div><h3>供应方</h3><p>“这个粮源背后的供应方是否值得进一步核验？”</p><div class="items"><div class="item">供应方列表与搜索</div><div class="item">关联挂牌粮源</div><div class="item">履约 / 质量演示数据</div><div class="item">证照与联系人待核验项</div></div></div>
+    </div>
+
+    <div class="state-row"><div class="state"><b>浏览市场</b><br><span class="muted">没有采购需求也成立</span></div><span class="arrow">→</span><div class="state"><b>形成寻源任务</b><br><span class="muted">对话、筛选或上游带入</span></div><span class="arrow">→</span><div class="state"><b>产出寻源方案</b><br><span class="muted">主推 + 备选 + 待核验</span></div></div>
+    <div class="composer"><span class="avatar" style="width:23px;height:23px">粮</span><span class="input">粮小二在全部 Tab 中保留上下文：可以问市场、改条件、解释方案、查询供应方</span><span class="send">↑</span></div>
+
+    <div class="tradeoffs"><div class="decision"><strong>为什么推荐 4 个，而不是 5 个？</strong><p>“候选对比”属于寻源方案内部动作；“历史记录”属于寻源任务的状态筛选。分别做成独立 Tab 会造成页面很薄、用户来回跳转。</p></div><div class="fold"><strong>暂不单列“市场全景”</strong><p>市场概览放在粮源市场顶部并支持收起，既保证无采购需求时有价值，也不挤占粮源列表这个默认主体。</p></div></div>
+  </div>
+</div>
+
+<p style="margin-top:14px;color:#8f9db1;font-size:12px">建议的最终 Tab：粮源市场 / 寻源方案 / 寻源任务 / 供应方。</p>
+</body>
+</html>

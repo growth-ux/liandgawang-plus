@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brainstorm</title>
+</head>
+<body>
+<style>
+  .market-shell{margin-top:19px;overflow:hidden;border-radius:20px;border:1px solid rgba(148,163,184,.18);background:linear-gradient(145deg,#0d172b,#09111f);color:#e9eef7;font-size:10px}.top{height:38px;display:flex;align-items:center;justify-content:space-between;padding:0 15px;background:#131c36;border-bottom:1px solid rgba(148,163,184,.13)}.brand{color:#ff9b45;font-weight:800}.agent{display:flex;align-items:center;gap:7px;font-weight:750}.avatar{width:25px;height:25px;display:grid;place-items:center;border-radius:50%;color:#ffd984;background:rgba(201,144,42,.13);border:1px solid rgba(201,144,42,.32)}.online{color:#4bd9a7;font-size:8px}.tabs{display:flex;gap:28px;padding:0 16px;color:#7d8ba0;border-bottom:1px solid rgba(148,163,184,.12)}.tab{padding:12px 2px}.tab.active{color:#fff;border-bottom:2px solid #ee7b1f}.body{position:relative;padding:10px 10px 58px}.overview{display:grid;grid-template-columns:1.25fr repeat(4,.55fr);gap:7px}.overview-intro,.metric{padding:9px 10px;border-radius:9px;background:rgba(19,28,54,.72);border:1px solid rgba(148,163,184,.12)}.overview-intro b{font-size:13px}.muted{color:#8290a5}.metric strong{display:block;margin-bottom:3px;font-size:13px}.orange{color:#ff9b45}.cyan{color:#4fddee}.green{color:#4bd9a7}.warn{color:#ff9677}.toolbar{display:grid;grid-template-columns:1.25fr repeat(5,.57fr) auto;gap:5px;margin-top:7px}.field{padding:7px;border-radius:7px;color:#99a7b9;background:rgba(19,28,54,.72);border:1px solid rgba(148,163,184,.12)}.field.search{color:#69798f;border-color:rgba(34,211,238,.16)}.clear{display:grid;place-items:center;padding:0 8px;color:#ffad67}.main{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:7px;margin-top:7px}.table{overflow:hidden;border-radius:9px;border:1px solid rgba(148,163,184,.12)}.row{display:grid;grid-template-columns:1.52fr .62fr .56fr .8fr .72fr .52fr;gap:6px;align-items:center;padding:9px 8px;background:rgba(19,28,54,.66);border-bottom:1px solid rgba(148,163,184,.08)}.row.head{padding:7px 8px;color:#77869a;background:rgba(255,255,255,.025)}.row.focus{background:linear-gradient(90deg,rgba(238,123,31,.075),rgba(19,28,54,.7));box-shadow:inset 2px 0 #ee7b1f}.row b{display:block;margin-bottom:2px}.badge{display:inline-flex;padding:2px 4px;border-radius:4px;background:rgba(34,211,238,.07);color:#51ddeb;font-size:7px}.demo{background:rgba(238,123,31,.1);color:#ffad67}.action{padding:4px;text-align:center;border-radius:5px;background:rgba(238,123,31,.13);color:#ffae69}.side{padding:10px;border-radius:9px;background:linear-gradient(145deg,rgba(201,144,42,.07),rgba(19,28,54,.73));border:1px solid rgba(201,144,42,.22)}.sidehead{display:flex;justify-content:space-between;align-items:center}.discovery{margin-top:7px;padding:8px;border-radius:8px;background:rgba(255,255,255,.027);line-height:1.45}.discovery b{display:block;margin-bottom:3px}.button{margin-top:8px;padding:7px;border-radius:7px;text-align:center;background:#ee7b1f;color:#fff;font-weight:700}.footnote{display:flex;align-items:center;justify-content:space-between;margin-top:7px;color:#77869a}.composer{position:absolute;left:10px;right:10px;bottom:10px;height:36px;display:flex;align-items:center;gap:8px;padding:0 9px;border:1px solid rgba(34,211,238,.2);border-radius:10px;background:rgba(19,28,54,.97)}.input{flex:1;color:#6f7e94}.send{height:25px;width:25px;display:grid;place-items:center;border-radius:7px;color:#fff;background:#ee7b1f}.drawer{display:grid;grid-template-columns:1.08fr .92fr;gap:11px;margin-top:14px}.drawer-card,.rules{padding:13px;border-radius:12px;background:rgba(19,28,54,.6);border:1px solid rgba(148,163,184,.12)}.drawer-card h3,.rules h3{margin:0 0 8px;font-size:14px}.detail-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.detail{padding:8px;border-radius:7px;background:rgba(255,255,255,.025);color:#8795a9}.detail strong{display:block;margin-top:3px;color:#e9eef7}.rules-list{display:grid;gap:6px}.rule{padding:8px;border-radius:7px;background:rgba(255,255,255,.025);color:#9ba8ba;line-height:1.45}.rule b{color:#e9eef7}.source-note{margin-top:10px;padding:8px;border-radius:7px;color:#8492a6;background:rgba(34,211,238,.035);border:1px solid rgba(34,211,238,.11)}@media(max-width:1000px){.overview{grid-template-columns:1fr 1fr}.toolbar{grid-template-columns:1fr 1fr}.main,.drawer{grid-template-columns:1fr}.side{min-height:180px}.row{grid-template-columns:1.3fr .6fr .6fr .7fr}.row span:nth-child(5),.row span:nth-child(6){display:none}}
+</style>
+
+<h2>粮源市场：默认页的具体内容</h2>
+<p class="subtitle">主体保持交易页面的信息密度；粮小二负责解释、筛选和组织候选，不冒充交易下单系统。</p>
+
+<div class="market-shell">
+  <div class="top"><div class="agent"><span class="avatar">粮</span><span>粮小二 <small class="online">● 可独立使用</small></span></div><span class="brand">粮达网 Plus</span></div>
+  <div class="tabs"><span class="tab active">粮源市场</span><span class="tab">寻源方案</span><span class="tab">寻源任务</span><span class="tab">供应方</span></div>
+  <div class="body">
+    <div class="overview">
+      <div class="overview-intro"><b>今日市场概览</b><br><span class="muted">无采购任务时也能快速了解当前供应；支持一键收起。</span></div>
+      <div class="metric"><strong>128</strong><span class="muted">在架粮源</span></div><div class="metric"><strong>26</strong><span class="muted">今日新增</span></div><div class="metric"><strong>3.8 万吨</strong><span class="muted">挂牌总量</span></div><div class="metric"><strong class="orange">2,318–2,425</strong><span class="muted">玉米报价区间</span></div>
+    </div>
+    <div class="toolbar"><div class="field search">搜索品种、产地、委托方、标的号</div><div class="field">销售粮源⌄</div><div class="field">品种⌄</div><div class="field">产地⌄</div><div class="field">等级⌄</div><div class="field">年份⌄</div><div class="field">更多筛选⌄</div><span class="clear">清空</span></div>
+    <div class="main">
+      <div class="table">
+        <div class="row head"><span>粮源信息</span><span>报价</span><span>数量</span><span>交收信息</span><span>委托方</span><span>操作</span></div>
+        <div class="row focus"><span><b>黑龙江北安 · 玉米</b><span class="badge">公开挂牌</span> <span class="badge demo">质检演示</span><br><small class="muted">2025年 · 二等 · 标的 LD082201</small></span><span><b>2,356</b><small class="muted">库提价/吨</small></span><span><b>180 吨</b><small class="muted">可供应</small></span><span><b>北安直属库</b><small class="muted">08-29 前可发</small></span><span><b>北安粮贸</b><small class="muted">挂牌 08-22</small></span><span class="action">加入候选</span></div>
+        <div class="row"><span><b>吉林榆树 · 玉米</b><span class="badge">公开挂牌</span> <span class="badge demo">履约演示</span><br><small class="muted">2025年 · 二等 · 标的 LD082198</small></span><span><b>2,372</b><small class="muted">车板价/吨</small></span><span><b>150 吨</b><small class="muted">可供应</small></span><span><b>榆树站台</b><small class="muted">08-30 前可发</small></span><span><b>榆树谷业</b><small class="muted">挂牌 08-22</small></span><span class="action">加入候选</span></div>
+        <div class="row"><span><b>辽宁铁岭 · 玉米</b><span class="badge">公开挂牌</span><br><small class="muted">2024年 · 三等 · 标的 LD082176</small></span><span><b>2,318</b><small class="muted">库提价/吨</small></span><span><b>300 吨</b><small class="muted">可供应</small></span><span><b>铁岭中心库</b><small class="muted">交期待核实</small></span><span><b>辽北粮储</b><small class="muted">挂牌 08-21</small></span><span class="action">加入候选</span></div>
+        <div class="row"><span><b>内蒙古通辽 · 玉米</b><span class="badge">公开挂牌</span><br><small class="muted">2025年 · 二等 · 标的 LD082151</small></span><span><b>2,348</b><small class="muted">库提价/吨</small></span><span><b>90 吨</b><small class="muted">可供应</small></span><span><b>通辽东库</b><small class="muted">08-28 前可发</small></span><span><b>蒙东供应链</b><small class="muted">挂牌 08-21</small></span><span class="action">加入候选</span></div>
+      </div>
+      <div class="side"><div class="sidehead"><b>粮小二市场发现</b><span class="cyan">AI</span></div><div class="discovery"><b>供应变化</b><span class="muted">今日东北玉米新增 11 条，新增挂牌量约 2,460 吨。</span></div><div class="discovery"><b>低价提醒</b><span class="muted">铁岭粮源报价最低，但等级为三等，不能仅按价格判断。</span></div><div class="discovery"><b>数据提示</b><span class="muted">部分交期、质检和履约信息仍需向供应方核验。</span></div><div class="button">告诉粮小二我要找什么粮</div></div>
+    </div>
+    <div class="footnote"><span>共 128 条 · 数据更新时间 10:26</span><span>公开挂牌数据与演示数据均明确标识</span></div>
+    <div class="composer"><span class="avatar" style="width:22px;height:22px">粮</span><span class="input">例如：从这些粮源里找 120 吨二等玉米，7 天内可发，先不考虑运费</span><span class="send">↑</span></div>
+  </div>
+</div>
+
+<div class="drawer">
+  <div class="drawer-card"><h3>点击粮源后：右侧详情抽屉</h3><div class="detail-grid"><div class="detail">公开挂牌<strong>品种 / 年份 / 等级</strong></div><div class="detail">价格口径<strong>库提 / 车板 / 到库</strong></div><div class="detail">供货能力<strong>数量 / 交期 / 地点</strong></div><div class="detail">质量信息<strong>水分 / 容重 / 杂质</strong></div><div class="detail">供应方<strong>名称 / 关联粮源</strong></div><div class="detail">数据溯源<strong>来源 / 发布时间</strong></div></div><div class="source-note">抽屉主操作只有“加入候选”和“让粮小二分析”；首版不提供立即采购、自动询价或联系供应商。</div></div>
+  <div class="rules"><h3>首版展示规则</h3><div class="rules-list"><div class="rule"><b>真实公开字段：</b>方向、品种、年份、粮源地、等级、委托单位、挂牌日期、价格类型、报价和挂牌数量。</div><div class="rule"><b>演示补充字段：</b>库存可用量、详细质检、发运排期、供应方履约表现，必须带“演示”标签。</div><div class="rule"><b>AI 不做的事：</b>没有需求时不生成个性化主推；缺失数据不猜；不把价格最低等同于最优。</div></div></div>
+</div>
+
+<p style="margin-top:14px;color:#8f9db1;font-size:12px">推荐的阅读顺序：市场概览 → 多条件筛选 → 高密度粮源列表 → 详情抽屉 / 加入候选 → 对话形成寻源任务。</p>
+</body>
+</html>

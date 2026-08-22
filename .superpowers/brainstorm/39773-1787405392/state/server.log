@@ -1,0 +1,6 @@
+{"type":"server-started","port":64922,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:64922","screen_dir":"/Users/tiger/PycharmProjects/liangda/liangdawang-plus-feature2/.superpowers/brainstorm/39773-1787405392/content","state_dir":"/Users/tiger/PycharmProjects/liangda/liangdawang-plus-feature2/.superpowers/brainstorm/39773-1787405392/state"}
+{"type":"screen-added","file":"/Users/tiger/PycharmProjects/liangda/liangdawang-plus-feature2/.superpowers/brainstorm/39773-1787405392/content/market-overview-v1.html"}
+{"type":"screen-added","file":"/Users/tiger/PycharmProjects/liangda/liangdawang-plus-feature2/.superpowers/brainstorm/39773-1787405392/content/market-overview-v2.html"}
+{"type":"screen-added","file":"/Users/tiger/PycharmProjects/liangda/liangdawang-plus-feature2/.superpowers/brainstorm/39773-1787405392/content/market-overview-v3.html"}
+{"type":"screen-added","file":"/Users/tiger/PycharmProjects/liangda/liangdawang-plus-feature2/.superpowers/brainstorm/39773-1787405392/content/market-overview-v4.html"}
+{"type":"server-stopped","reason":"idle timeout"}

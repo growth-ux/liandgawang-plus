@@ -1,0 +1,202 @@
+<div style="font-family:'PingFang SC','Microsoft YaHei',sans-serif;color:#e9eef7;">
+  <h2>「市场全景」v2 —— 全国价格地图版</h2>
+  <p class="subtitle">主视觉换成全国价格地图：选定品种 → 各区域按价格指数着色（青=低 → 橙=高）。判断/曲线/区域价/事件作为配套。</p>
+
+  <div class="mockup">
+    <div class="mockup-header">/agent/zhan —— 市场全景（玉米 · 全国价格指数）</div>
+    <div class="mockup-body" style="background:#0b1220;padding:0;">
+
+      <!-- 头部 -->
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 22px;border-bottom:1px solid rgba(148,163,184,0.16);background:#0e1728;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#2f7fb8,#22d3ee);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#0b1220;">瞻</div>
+          <div>
+            <div style="font-size:16px;font-weight:600;">瞻小二｜看行情
+              <span style="margin-left:8px;padding:2px 10px;border-radius:999px;background:#2a1e12;color:#f59e0b;font-size:11px;">行情研判</span>
+            </div>
+            <div style="font-size:11px;color:#93a1b8;margin-top:2px;">行情与资讯屏 · 数据目镜、趋势波形</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:11px;">
+          <span style="padding:3px 10px;border-radius:999px;background:rgba(251,191,36,0.12);color:#fbbf24;border:1px solid rgba(251,191,36,0.3);">当前为演示行情</span>
+          <span style="color:#93a1b8;">数据集 <b style="color:#22d3ee;">zhan-v1</b></span>
+          <span style="color:#93a1b8;">生成 2026-08-22 10:00</span>
+        </div>
+      </div>
+
+      <!-- Tab -->
+      <div style="display:flex;gap:22px;padding:0 22px;border-bottom:1px solid rgba(148,163,184,0.16);background:#0e1728;">
+        <div style="padding:10px 0;font-size:13px;font-weight:600;color:#22d3ee;border-bottom:2px solid #22d3ee;">市场全景</div>
+        <div style="padding:10px 0;font-size:13px;color:#93a1b8;">品种走势</div>
+        <div style="padding:10px 0;font-size:13px;color:#93a1b8;">区域价差</div>
+        <div style="padding:10px 0;font-size:13px;color:#93a1b8;">影响因素</div>
+        <div style="padding:10px 0;font-size:13px;color:#93a1b8;">我的关注</div>
+        <div style="padding:10px 0;font-size:13px;color:#93a1b8;">研判记录</div>
+      </div>
+
+      <div style="padding:18px 22px;display:flex;flex-direction:column;gap:16px;">
+
+        <!-- 品种切换 -->
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:12px;color:#93a1b8;">品种</span>
+          <span style="padding:5px 14px;border-radius:999px;font-size:13px;font-weight:600;color:#0b1220;background:#22d3ee;">玉米</span>
+          <span style="padding:5px 14px;border-radius:999px;font-size:13px;color:#93a1b8;border:1px solid rgba(148,163,184,0.16);">小麦</span>
+          <span style="padding:5px 14px;border-radius:999px;font-size:13px;color:#93a1b8;border:1px solid rgba(148,163,184,0.16);">大豆</span>
+          <span style="padding:5px 14px;border-radius:999px;font-size:13px;color:#93a1b8;border:1px solid rgba(148,163,184,0.16);">稻谷</span>
+        </div>
+
+        <!-- 地图 + 判断 -->
+        <div style="display:grid;grid-template-columns:1.75fr 1fr;gap:14px;">
+
+          <!-- 全国价格地图 -->
+          <div style="border:1px solid rgba(148,163,184,0.16);border-radius:12px;background:#131c36;padding:14px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <div style="font-size:13px;font-weight:600;">全国价格指数
+                <span style="color:#93a1b8;font-weight:400;font-size:11px;"> 玉米 · 二等 · 出库价 · 全国均价=100</span>
+              </div>
+              <div style="font-size:11px;color:#93a1b8;">点击区域可查看该区域走势</div>
+            </div>
+
+            <div style="margin-top:8px;background:rgba(11,18,32,0.55);border-radius:10px;padding:12px;">
+              <svg viewBox="0 0 460 340" style="width:100%;height:auto;">
+                <!-- 西北 -->
+                <polygon points="40,62 148,52 168,82 128,120 92,140 48,118" fill="#0e7490" stroke="#0b1220" stroke-width="1.5"/>
+                <polygon points="168,108 210,90 250,110 238,142 200,152 170,132" fill="#22d3ee" stroke="#0b1220" stroke-width="1.5"/>
+                <polygon points="250,52 330,42 360,82 340,112 300,102 268,82" fill="#0e7490" stroke="#0b1220" stroke-width="1.5"/>
+                <!-- 东北 -->
+                <polygon points="378,32 440,42 444,80 400,86 380,70" fill="#22d3ee" stroke="#0b1220" stroke-width="1.5"/>
+                <polygon points="380,86 436,92 440,140 400,150 376,128" fill="#22d3ee" stroke="#0b1220" stroke-width="1.5"/>
+                <!-- 华北 -->
+                <polygon points="300,142 360,132 380,170 368,220 330,230 300,200 290,162" fill="#f59e0b" stroke="#0b1220" stroke-width="1.5"/>
+                <!-- 华东 -->
+                <polygon points="340,220 400,220 410,260 380,300 350,290 330,252" fill="#ee7b1f" stroke="#0b1220" stroke-width="1.5"/>
+                <!-- 华中 -->
+                <polygon points="290,252 342,252 342,320 300,330 286,292" fill="#f59e0b" stroke="#0b1220" stroke-width="1.5"/>
+                <!-- 西南 -->
+                <polygon points="80,200 140,180 160,230 120,260 90,240" fill="#22d3ee" stroke="#0b1220" stroke-width="1.5"/>
+                <polygon points="200,230 262,230 270,270 230,290 196,262" fill="#ee7b1f" stroke="#0b1220" stroke-width="1.5"/>
+                <polygon points="200,290 262,300 252,350 210,358 190,330" fill="#e35d2b" stroke="#0b1220" stroke-width="1.5"/>
+                <!-- 华南 -->
+                <polygon points="300,320 362,330 382,372 342,392 310,372 296,342" fill="#e35d2b" stroke="#0b1220" stroke-width="1.5"/>
+
+                <!-- 指数标注 -->
+                <text x="120" y="95" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">95</text>
+                <text x="410" y="95" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">100</text>
+                <text x="325" y="185" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">98</text>
+                <text x="375" y="258" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">104</text>
+                <text x="316" y="290" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">99</text>
+                <text x="120" y="228" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">96</text>
+                <text x="235" y="262" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">101</text>
+                <text x="235" y="325" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">103</text>
+                <text x="335" y="352" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">106</text>
+              </svg>
+
+              <!-- 图例 -->
+              <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;font-size:11px;color:#93a1b8;">
+                <span>低</span>
+                <span style="width:14px;height:14px;border-radius:3px;background:#0e7490;"></span>
+                <span style="width:14px;height:14px;border-radius:3px;background:#22d3ee;"></span>
+                <span style="width:14px;height:14px;border-radius:3px;background:#3b82f6;"></span>
+                <span style="width:14px;height:14px;border-radius:3px;background:#f59e0b;"></span>
+                <span style="width:14px;height:14px;border-radius:3px;background:#ee7b1f;"></span>
+                <span style="width:14px;height:14px;border-radius:3px;background:#e35d2b;"></span>
+                <span>高</span>
+                <span style="margin-left:8px;">指数 = 区域价 / 全国均价 × 100</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 瞻小二演示判断 -->
+          <div style="border:1px solid rgba(148,163,184,0.16);border-radius:12px;background:#131c36;padding:14px;display:flex;flex-direction:column;gap:10px;">
+            <div style="font-size:13px;font-weight:600;">瞻小二演示判断</div>
+            <div style="font-size:14px;color:#22d3ee;line-height:1.5;">玉米南北价差走阔：华南、华东指数偏高，东北产区仍处低位，物流成本推升销区价格。</div>
+            <div style="font-size:11px;color:#93a1b8;font-weight:600;">支持依据</div>
+            <ul style="margin:0;padding-left:16px;font-size:11px;color:#c9d4e3;line-height:1.8;">
+              <li>华南指数 106、西南 103，显著高于全国均价</li>
+              <li>东北产区指数 100，仍是全国价格洼地</li>
+              <li>港口到货偏紧，销区价格上行</li>
+            </ul>
+            <div style="font-size:11px;color:#93a1b8;font-weight:600;">反对 / 不确定</div>
+            <ul style="margin:0;padding-left:16px;font-size:11px;color:#c9d4e3;line-height:1.8;">
+              <li>华北指数 98 转弱，可能拖累整体</li>
+            </ul>
+            <div style="font-size:11px;color:#93a1b8;">证据完整度
+              <span style="margin-left:6px;display:inline-block;width:90px;height:6px;background:rgba(148,163,184,0.2);border-radius:999px;"><span style="display:block;width:80%;height:6px;background:#22d3ee;border-radius:999px;"></span></span>
+              <span style="color:#22d3ee;margin-left:6px;">高</span>
+            </div>
+            <div style="font-size:11px;color:#93a1b8;">继续观察：华北到货 · 港口成交 · 华南库存</div>
+          </div>
+        </div>
+
+        <!-- 曲线 + 区域价 -->
+        <div style="display:grid;grid-template-columns:1.75fr 1fr;gap:14px;">
+          <div style="border:1px solid rgba(148,163,184,0.16);border-radius:12px;background:#131c36;padding:14px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <div style="font-size:13px;font-weight:600;">华南区域价格走势
+                <span style="color:#93a1b8;font-weight:400;font-size:11px;"> 玉米 · 二等 · 出库价 · 30 天</span>
+              </div>
+              <div style="display:flex;gap:4px;">
+                <span style="padding:3px 10px;border-radius:999px;font-size:11px;color:#93a1b8;border:1px solid rgba(148,163,184,0.16);">7天</span>
+                <span style="padding:3px 10px;border-radius:999px;font-size:11px;color:#0b1220;background:#22d3ee;font-weight:600;">30天</span>
+                <span style="padding:3px 10px;border-radius:999px;font-size:11px;color:#93a1b8;border:1px solid rgba(148,163,184,0.16);">90天</span>
+              </div>
+            </div>
+            <div style="margin-top:10px;height:120px;background:rgba(11,18,32,0.6);border-radius:8px;padding:10px;">
+              <svg viewBox="0 0 520 100" style="width:100%;height:100%;">
+                <line x1="10" y1="90" x2="510" y2="90" stroke="rgba(148,163,184,0.15)" />
+                <polyline points="10,70 40,72 70,66 100,60 130,64 160,55 190,52 220,54 250,46 280,42 310,46 340,38 370,34 400,30 430,26 460,22 490,18 510,14"
+                  fill="none" stroke="#ee7b1f" stroke-width="2.5" stroke-linejoin="round" />
+              </svg>
+            </div>
+          </div>
+
+          <div style="border:1px solid rgba(148,163,184,0.16);border-radius:12px;background:#131c36;padding:14px;">
+            <div style="font-size:13px;font-weight:600;margin-bottom:8px;">区域价格指数</div>
+            <table style="width:100%;border-collapse:collapse;font-size:11px;">
+              <tr style="color:#93a1b8;text-align:left;">
+                <th style="padding:5px 6px;font-weight:500;">区域</th>
+                <th style="padding:5px 6px;font-weight:500;">指数</th>
+                <th style="padding:5px 6px;font-weight:500;">周变化</th>
+              </tr>
+              <tr style="border-top:1px solid rgba(148,163,184,0.16);">
+                <td style="padding:5px 6px;">东北</td><td style="padding:5px 6px;color:#22d3ee;font-weight:600;">100</td><td style="padding:5px 6px;color:#34d399;">+3.4%</td>
+              </tr>
+              <tr style="border-top:1px solid rgba(148,163,184,0.16);">
+                <td style="padding:5px 6px;">华北</td><td style="padding:5px 6px;">98</td><td style="padding:5px 6px;color:#f87171;">-0.6%</td>
+              </tr>
+              <tr style="border-top:1px solid rgba(148,163,184,0.16);">
+                <td style="padding:5px 6px;">华东</td><td style="padding:5px 6px;color:#f59e0b;">104</td><td style="padding:5px 6px;color:#34d399;">+1.8%</td>
+              </tr>
+              <tr style="border-top:1px solid rgba(148,163,184,0.16);">
+                <td style="padding:5px 6px;">华南</td><td style="padding:5px 6px;color:#e35d2b;">106</td><td style="padding:5px 6px;color:#34d399;">+2.6%</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <!-- 关键事件 -->
+        <div style="border:1px solid rgba(148,163,184,0.16);border-radius:12px;background:#131c36;padding:14px;">
+          <div style="font-size:13px;font-weight:600;margin-bottom:10px;">关键事件与预期影响</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+            <div style="border:1px solid rgba(52,211,153,0.25);border-radius:10px;background:rgba(52,211,153,0.05);padding:10px;">
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:#34d399;"><span>港口到货偏紧</span><span>08-20</span></div>
+              <div style="font-size:11px;color:#93a1b8;margin-top:4px;line-height:1.5;">港口玉米到货量走低，销区价格上行。</div>
+              <div style="margin-top:6px;font-size:10px;color:#34d399;">影响区域：华东 · 华南 · 方向偏强</div>
+            </div>
+            <div style="border:1px solid rgba(52,211,153,0.25);border-radius:10px;background:rgba(52,211,153,0.05);padding:10px;">
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:#34d399;"><span>产区到货低于均值</span><span>08-19</span></div>
+              <div style="font-size:11px;color:#93a1b8;margin-top:4px;line-height:1.5;">东北产区到货量连续 3 日偏低。</div>
+              <div style="margin-top:6px;font-size:10px;color:#34d399;">影响区域：东北 · 方向偏强</div>
+            </div>
+            <div style="border:1px solid rgba(248,113,113,0.25);border-radius:10px;background:rgba(248,113,113,0.05);padding:10px;">
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:#f87171;"><span>华北成交转弱</span><span>08-21</span></div>
+              <div style="font-size:11px;color:#93a1b8;margin-top:4px;line-height:1.5;">华北深加工采购放缓，现货成交转弱。</div>
+              <div style="margin-top:6px;font-size:10px;color:#f87171;">影响区域：华北 · 方向压制</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brainstorm</title>
+</head>
+<body>
+<style>
+  .flow-note{display:flex;align-items:center;justify-content:center;gap:10px;margin:18px 0;color:#9ba9bc;font-size:13px}.flow-chip{padding:7px 12px;border-radius:999px;background:#111c31;border:1px solid rgba(148,163,184,.2)}.flow-arrow{color:#ee7b1f;font-size:20px}.screen-pair{display:grid;grid-template-columns:1.15fr .85fr;gap:20px}.screen{overflow:hidden;border-radius:18px;border:1px solid rgba(148,163,184,.2);background:#0b1220;color:#e9eef7;box-shadow:0 20px 45px rgba(0,0,0,.2)}.screen-head{height:35px;display:flex;align-items:center;justify-content:space-between;padding:0 15px;background:#131c36;border-bottom:1px solid rgba(148,163,184,.13);font-size:10px}.brand{font-weight:800;color:#ff9b45}.nav{color:#8694aa;word-spacing:10px}.agent{display:flex;align-items:center;justify-content:space-between;padding:9px 15px;border-bottom:1px solid rgba(148,163,184,.12);font-size:11px}.who{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700}.avatar{width:29px;height:29px;border-radius:50%;display:grid;place-items:center;color:#65e3f5;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.27)}.switch{padding:4px 8px;border:1px solid rgba(148,163,184,.18);border-radius:8px;color:#91a0b6}.tabs{display:flex;gap:16px;padding:0 15px;height:34px;align-items:center;border-bottom:1px solid rgba(148,163,184,.12);font-size:10px;color:#78879e}.tabs b{align-self:stretch;display:flex;align-items:center;color:#f0f5fb;border-bottom:2px solid #ee7b1f}.body{padding:11px 13px;background:linear-gradient(145deg,#0c162a,#09101d);min-height:350px;font-size:10px}.commodities{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.commodity{padding:8px 9px;border-radius:9px;background:rgba(19,28,54,.74);border:1px solid rgba(148,163,184,.13)}.commodity.active{border-color:rgba(238,123,31,.55);background:rgba(238,123,31,.08)}.commodity strong{display:block;margin-top:5px;font-size:14px}.muted{color:#8492a8}.up{color:#42d6a2}.down{color:#ff9b69}.cyan{color:#50dcef}.orange{color:#ff9b45}.workgrid{display:grid;grid-template-columns:1.55fr .72fr;gap:8px;margin-top:8px}.panel{padding:9px;border-radius:10px;background:rgba(19,28,54,.7);border:1px solid rgba(148,163,184,.13)}.panel-title{display:flex;align-items:center;justify-content:space-between}.pills{display:flex;gap:5px}.pill{padding:3px 6px;border-radius:999px;border:1px solid rgba(148,163,184,.16);color:#a5b0c2}.chart{height:117px;margin-top:8px;border-radius:8px;position:relative;overflow:hidden;background:repeating-linear-gradient(0deg,transparent,transparent 22px,rgba(148,163,184,.07) 23px),repeating-linear-gradient(90deg,transparent,transparent 48px,rgba(148,163,184,.06) 49px)}.chart:before{content:"";position:absolute;left:5%;right:3%;top:29%;height:47%;border-top:2px solid #35d3ea;border-radius:52%;transform:skewY(-6deg);filter:drop-shadow(0 0 4px rgba(34,211,238,.45))}.event{position:absolute;left:58%;top:26%;color:#ffbd7a;font-size:9px}.today{background:linear-gradient(150deg,rgba(34,211,238,.08),rgba(19,28,54,.75));border-color:rgba(34,211,238,.22)}.signal{font-size:17px;font-weight:800;margin:8px 0 4px}.tinylist{display:grid;gap:5px;margin-top:8px}.tinyrow{display:flex;justify-content:space-between;padding:6px 7px;border-radius:7px;background:rgba(255,255,255,.026)}.lower{display:grid;grid-template-columns:1.25fr .85fr;gap:8px;margin-top:8px}.events{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:7px}.eventcard{padding:7px;background:rgba(255,255,255,.025);border-radius:7px;line-height:1.45}.cta{display:flex;align-items:center;justify-content:space-between;background:linear-gradient(120deg,rgba(238,123,31,.13),rgba(19,28,54,.72));border-color:rgba(238,123,31,.3)}.cta button,.orange-button{border:0;border-radius:8px;background:#ee7b1f;color:white;padding:7px 9px;font-weight:700;font-size:9px}.ask{margin-top:8px;padding:8px 10px;border-radius:9px;border:1px solid rgba(148,163,184,.17);color:#64748b}.ask span{float:right;color:#ff9b45}.formrow{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin:8px 0}.field{padding:8px;border-radius:8px;background:rgba(255,255,255,.028);border:1px solid rgba(148,163,184,.13)}.decision{margin-top:8px;padding:11px;border:1px solid rgba(238,123,31,.32);border-radius:10px;background:linear-gradient(145deg,rgba(238,123,31,.12),rgba(19,28,54,.74))}.decision h4{font-size:16px;margin:6px 0}.source{margin-top:8px;padding-top:8px;border-top:1px solid rgba(148,163,184,.13);line-height:1.55}.legend{display:flex;gap:13px;margin-top:15px;padding:12px 14px;border-radius:12px;background:#111a2e;color:#9ca9bc;font-size:12px}.dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:5px}.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}.choice{cursor:pointer;padding:14px;border-radius:13px;background:#111a2e;border:1px solid rgba(148,163,184,.2);color:#dfe7f2}.choice:hover{border-color:rgba(34,211,238,.45)}.choice.selected{border-color:#ee7b1f;box-shadow:0 0 0 2px rgba(238,123,31,.18)}.choice b{display:block;margin-bottom:5px}.choice span{color:#8f9db1;font-size:12px;line-height:1.5}@media(max-width:1000px){.screen-pair{grid-template-columns:1fr}.actions{grid-template-columns:1fr}}
+</style>
+
+<h2>修正版：市场浏览与采购决策是两个连续场景</h2>
+<p class="subtitle">默认进入“市场全景”，没有采购需求也能独立看行情、理解变化、关注价格；只有用户主动发起时，才进入“采购研判”。</p>
+
+<div class="flow-note">
+  <span class="flow-chip">① 浏览市场，不要求填写采购需求</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-chip">发现机会 / 产生采购计划</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-chip">② 携带当前行情上下文生成采购研判</span>
+</div>
+
+<div class="screen-pair">
+  <div class="screen">
+    <div class="screen-head"><span class="brand">粮达网 Plus</span><span class="nav">粮掌柜　我的办事　企业知识库</span></div>
+    <div class="agent"><div class="who"><span class="avatar">瞻</span>瞻小二｜看行情</div><span class="switch">切换小二⌄</span></div>
+    <div class="tabs"><b>市场全景</b><span>品种行情</span><span>采购研判</span><span>我的关注</span><span>研判记录</span></div>
+    <div class="body">
+      <div class="commodities">
+        <div class="commodity active"><span class="muted">玉米 · 今日</span><strong>2,468 <small class="up">+0.6%</small></strong></div>
+        <div class="commodity"><span class="muted">小麦 · 今日</span><strong>2,512 <small class="down">-0.2%</small></strong></div>
+        <div class="commodity"><span class="muted">稻谷 · 今日</span><strong>2,734 <small class="muted">持平</small></strong></div>
+        <div class="commodity"><span class="muted">大豆 · 今日</span><strong>4,165 <small class="up">+0.4%</small></strong></div>
+      </div>
+      <div class="workgrid">
+        <div class="panel">
+          <div class="panel-title"><b>玉米市场走势</b><div class="pills"><span class="pill">全国⌄</span><span class="pill">近30天⌄</span></div></div>
+          <div class="chart"><span class="event">● 政策粮拍卖公告</span></div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:7px">
+            <div class="tinyrow"><span>产区价</span><b>2,410</b></div><div class="tinyrow"><span>北港价</span><b>2,425</b></div><div class="tinyrow"><span>华南到港</span><b>2,510</b></div>
+          </div>
+        </div>
+        <div class="panel today">
+          <span class="muted">瞻小二 · 今日市场判断</span>
+          <div class="signal">短期偏强</div>
+          <div class="cyan">供应释放与需求支撑并存</div>
+          <div class="tinylist">
+            <div class="tinyrow"><span>价格动能</span><b class="up">增强</b></div>
+            <div class="tinyrow"><span>供应压力</span><b>中等</b></div>
+            <div class="tinyrow"><span>波动风险</span><b class="orange">需关注</b></div>
+          </div>
+          <div class="source"><b>为什么？</b><br><span class="muted">港口库存下降、饲料需求回暖；政策粮投放可能抑制涨幅。</span></div>
+        </div>
+      </div>
+      <div class="lower">
+        <div class="panel"><b>关键事件与影响</b><div class="events"><div class="eventcard"><span class="orange">今天</span><br>政策粮拍卖公告<br><span class="muted">利空 · 中等</span></div><div class="eventcard"><span class="cyan">近 3 天</span><br>北港库存回落<br><span class="muted">利多 · 较强</span></div><div class="eventcard"><span class="cyan">未来 7 天</span><br>东北降雨预期<br><span class="muted">待观察</span></div></div></div>
+        <div class="panel cta"><div><b>有采购计划？</b><br><span class="muted">基于当前玉米行情生成行动建议</span></div><button>发起采购研判 →</button></div>
+      </div>
+      <div class="ask">向瞻小二提问行情变化、区域价格或影响因素… <span>发送 ↑</span></div>
+    </div>
+  </div>
+
+  <div class="screen">
+    <div class="screen-head"><span class="brand">粮达网 Plus</span><span class="nav">粮掌柜　我的办事　企业知识库</span></div>
+    <div class="agent"><div class="who"><span class="avatar">瞻</span>瞻小二｜看行情</div><span class="switch">切换小二⌄</span></div>
+    <div class="tabs"><span>市场全景</span><span>品种行情</span><b>采购研判</b><span>我的关注</span><span>研判记录</span></div>
+    <div class="body">
+      <div class="panel-title"><div><b style="font-size:13px">基于玉米当前行情发起研判</b><br><span class="muted">已继承：全国 · 近30天 · 当前市场偏强</span></div><span class="pill">更换品种</span></div>
+      <div class="formrow"><div class="field"><span class="muted">采购地区</span><br><b>深圳</b></div><div class="field"><span class="muted">需求数量</span><br><b>200 吨</b></div><div class="field"><span class="muted">期望到货</span><br><b>7 天内</b></div><div class="field"><span class="muted">采购偏好</span><br><b>控制价格风险</b></div></div>
+      <button class="orange-button" style="width:100%">生成采购研判</button>
+      <div class="decision">
+        <span class="muted">瞻小二建议 · 置信度较高</span>
+        <h4>建议分两批采购</h4>
+        <div class="orange">先锁定 60%，其余设置价格触发提醒</div>
+        <div class="tinylist"><div class="tinyrow"><span>立即行动</span><b>询价 120 吨</b></div><div class="tinyrow"><span>继续观察</span><b>80 吨</b></div><div class="tinyrow"><span>价格触发线</span><b>≤ 2,440 元/吨</b></div></div>
+        <div class="source"><b>结论依据</b><br><span class="muted">真实公开价格走势 3 项 · 公开事件 2 项 · 模拟库存数据 1 项</span></div>
+      </div>
+      <div class="ask">追问这个建议，或调整采购条件… <span>发送 ↑</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="legend"><span><i class="dot" style="background:#50dcef"></i>市场全景独立可用</span><span><i class="dot" style="background:#ee7b1f"></i>采购研判按需发起</span><span><i class="dot" style="background:#7c8ba3"></i>影响因素和区域价差不再占用独立 Tab，而是贴着相关图表呈现</span></div>
+
+<div class="actions">
+  <div class="choice" data-choice="approve-dual-entry" onclick="toggleSelect(this)"><b>A｜认可这个双入口结构</b><span>默认看市场，需要时再进入采购决策。</span></div>
+  <div class="choice" data-choice="market-overview-more-prominent" onclick="toggleSelect(this)"><b>B｜市场全景还要更突出</b><span>进一步弱化采购入口，让页面更偏行情研究。</span></div>
+  <div class="choice" data-choice="need-adjustment" onclick="toggleSelect(this)"><b>C｜还需要调整</b><span>在对话里告诉我缺少什么或哪里不顺。</span></div>
+</div>
+</body>
+</html>

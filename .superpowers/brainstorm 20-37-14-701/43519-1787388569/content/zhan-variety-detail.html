@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brainstorm</title>
+</head>
+<body>
+<style>
+  .mock{overflow:hidden;border-radius:20px;border:1px solid rgba(148,163,184,.2);background:#09111f;color:#e9eef7;box-shadow:0 22px 60px rgba(0,0,0,.25);font-size:10px}.top{height:38px;display:flex;align-items:center;justify-content:space-between;padding:0 17px;background:#131c36;border-bottom:1px solid rgba(148,163,184,.13)}.brand{color:#ff9b45;font-weight:800}.nav{color:#8391a7;word-spacing:11px}.agent{display:flex;align-items:center;justify-content:space-between;padding:9px 17px;border-bottom:1px solid rgba(148,163,184,.12)}.who{display:flex;align-items:center;gap:8px;font-weight:700;font-size:13px}.avatar{width:30px;height:30px;display:grid;place-items:center;border-radius:50%;color:#5ce0f3;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.27)}.switch{color:#8e9caf}.tabs{height:36px;display:flex;align-items:center;gap:20px;padding:0 17px;border-bottom:1px solid rgba(148,163,184,.12);color:#7f8da2}.tabs b{height:36px;display:flex;align-items:center;color:#fff;border-bottom:2px solid #ee7b1f}.body{padding:13px 16px;background:radial-gradient(circle at 79% 16%,rgba(34,211,238,.05),transparent 28%),linear-gradient(145deg,#0c1629,#09101c)}.toolbar{display:flex;align-items:center;gap:7px}.select{padding:6px 9px;border-radius:8px;background:rgba(19,28,54,.72);border:1px solid rgba(148,163,184,.16);color:#c2ccda}.toolbar .source{margin-left:auto;color:#75849a}.summary{display:grid;grid-template-columns:1.3fr repeat(3,.7fr);gap:8px;margin-top:9px}.panel{padding:10px;border-radius:10px;background:rgba(19,28,54,.7);border:1px solid rgba(148,163,184,.13)}.price{font-size:20px;font-weight:800;margin-top:4px}.up{color:#48d7a4}.down{color:#ff9b73}.cyan{color:#4fdef2}.orange{color:#ff9b45}.muted{color:#8391a6}.metric strong{display:block;font-size:14px;margin-top:7px}.workspace{display:grid;grid-template-columns:1.5fr .7fr;gap:9px;margin-top:9px}.head{display:flex;align-items:center;justify-content:space-between}.pills{display:flex;gap:5px}.pill{padding:3px 6px;border-radius:999px;border:1px solid rgba(148,163,184,.16);color:#9eabbc}.legend{display:flex;gap:13px;margin-top:9px;color:#8492a6}.line{display:inline-block;width:14px;height:2px;margin-right:4px;vertical-align:middle}.chart{height:172px;margin-top:8px;position:relative;border-radius:8px;overflow:hidden;background:repeating-linear-gradient(0deg,transparent,transparent 33px,rgba(148,163,184,.07) 34px),repeating-linear-gradient(90deg,transparent,transparent 66px,rgba(148,163,184,.06) 67px)}.chart:before{content:"";position:absolute;left:4%;right:3%;top:31%;height:48%;border-top:2px solid #36d2e8;border-radius:50%;transform:skewY(-6deg);filter:drop-shadow(0 0 4px rgba(34,211,238,.4))}.chart:after{content:"";position:absolute;left:4%;right:3%;top:48%;height:31%;border-top:2px solid #ee7b1f;border-radius:45%;transform:skewY(3deg)}.marker{position:absolute;left:61%;top:27%;height:92px;border-left:1px dashed rgba(238,123,31,.6);padding-left:5px;color:#ffc28c;line-height:1.4}.view{background:linear-gradient(150deg,rgba(34,211,238,.07),rgba(19,28,54,.73));border-color:rgba(34,211,238,.22)}.view h3{font-size:18px;margin:8px 0 3px}.confidence{display:inline-block;padding:3px 6px;border-radius:999px;background:rgba(72,215,164,.08);color:#55dda9}.list{display:grid;gap:5px;margin-top:9px}.row{display:grid;grid-template-columns:1fr auto;gap:6px;padding:7px;background:rgba(255,255,255,.026);border-radius:7px;line-height:1.4}.lower{display:grid;grid-template-columns:1fr 1.05fr .8fr;gap:9px;margin-top:9px}.chain{display:flex;align-items:center;gap:5px;margin-top:9px}.node{flex:1;padding:8px 5px;text-align:center;border-radius:7px;background:rgba(255,255,255,.026)}.arrow{color:#66758b}.drivers{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:8px}.driver{padding:7px;border-radius:7px;background:rgba(255,255,255,.025);line-height:1.4}.actions{display:grid;gap:6px;margin-top:8px}.button{padding:7px;text-align:center;border-radius:8px;background:#ee7b1f;color:white;font-weight:700}.outline{padding:7px;text-align:center;border-radius:8px;border:1px solid rgba(148,163,184,.18);color:#a6b1c0}.labels{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:17px}.label{padding:12px 13px;border-radius:12px;background:#111a2e;border:1px solid rgba(148,163,184,.17)}.label b{display:block;color:#eef3f9;margin-bottom:5px}.label p{margin:0;color:#90a0b4;font-size:11px;line-height:1.55}.approve{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}.choice{cursor:pointer;padding:13px 15px;border-radius:12px;background:#111a2e;border:1px solid rgba(148,163,184,.2)}.choice:hover{border-color:rgba(34,211,238,.45)}.choice.selected{border-color:#ee7b1f;box-shadow:0 0 0 2px rgba(238,123,31,.18)}.choice b{display:block;margin-bottom:4px}.choice span{font-size:12px;color:#8d9bae}@media(max-width:1000px){.summary,.workspace,.lower,.labels,.approve{grid-template-columns:1fr}.toolbar{flex-wrap:wrap}.toolbar .source{margin-left:0}}
+</style>
+
+<h2>章节二：品种行情不是另一个大屏，而是一张“研究工作台”</h2>
+<p class="subtitle">从市场全景点击玉米进入，保留所选品种；用户可以比较价格口径、追溯变化原因，并决定关注还是转入采购研判。</p>
+
+<div class="mock">
+  <div class="top"><span class="brand">粮达网 Plus</span><span class="nav">粮掌柜　我的办事　企业知识库</span></div>
+  <div class="agent"><div class="who"><span class="avatar">瞻</span>瞻小二｜看行情</div><span class="switch">数据更新 10:30　 切换小二⌄</span></div>
+  <div class="tabs"><span>市场全景</span><b>品种行情</b><span>采购研判</span><span>我的关注</span><span>研判记录</span></div>
+  <div class="body">
+    <div class="toolbar"><span class="select">玉米⌄</span><span class="select">东北二等⌄</span><span class="select">全国⌄</span><span class="select">近 90 天⌄</span><span class="source">公开数据 8 项 · 模拟数据 2 项 · 查看来源</span></div>
+    <div class="summary">
+      <div class="panel"><span class="muted">华南到港参考价 · 含税</span><div class="price">2,468 元/吨 <small class="up">+0.6%</small></div><span class="muted">较上周 +22 · 近 30 天区间 2,390–2,485</span></div>
+      <div class="panel metric"><span class="muted">产区 → 港口价差</span><strong>+30 元/吨</strong></div>
+      <div class="panel metric"><span class="muted">北港 → 华南价差</span><strong class="cyan">+85 元/吨</strong></div>
+      <div class="panel metric"><span class="muted">近 7 天波动</span><strong class="orange">中等</strong></div>
+    </div>
+    <div class="workspace">
+      <div class="panel">
+        <div class="head"><b>价格口径对比</b><div class="pills"><span class="pill">日线</span><span class="pill">事件标记 开</span><span class="pill">导出</span></div></div>
+        <div class="legend"><span><i class="line" style="background:#36d2e8"></i>华南到港价</span><span><i class="line" style="background:#ee7b1f"></i>北港平仓价</span><span class="muted">＋ 添加产区价格</span></div>
+        <div class="chart"><span class="marker">政策粮拍卖公告<br><small>点击查看事件与行情变化</small></span></div>
+        <div class="muted">悬停显示同一天不同口径价格；点击事件后，右侧只解释该时间段的变化。</div>
+      </div>
+      <div class="panel view">
+        <span class="muted">瞻小二 · 未来 7 天判断</span><h3>震荡偏强</h3><div class="cyan">上行空间有限，回调幅度可能不大</div><div style="margin-top:7px"><span class="confidence">置信度较高</span></div>
+        <div class="list"><div class="row"><span>库存下降提供支撑</span><b class="up">利多</b></div><div class="row"><span>政策粮投放增加供应</span><b class="down">利空</b></div><div class="row"><span>华南刚需补库</span><b class="up">利多</b></div></div>
+        <div style="margin-top:9px;padding-top:8px;border-top:1px solid rgba(148,163,184,.13);line-height:1.5"><b>关注区间</b><br><span class="muted">支撑 2,430 · 压力 2,490 元/吨</span></div>
+      </div>
+    </div>
+    <div class="lower">
+      <div class="panel"><div class="head"><b>价格形成链</b><span class="cyan">查看区域明细 →</span></div><div class="chain"><div class="node">黑龙江产区<br><b>2,395</b></div><span class="arrow">→</span><div class="node">锦州港<br><b>2,425</b></div><span class="arrow">→</span><div class="node">广东蛇口<br><b>2,510</b></div></div><div class="muted" style="margin-top:7px">展示从产区到销区的价差，而不是在地图上堆价格点。</div></div>
+      <div class="panel"><div class="head"><b>四类驱动因素</b><span class="muted">按影响强度排序</span></div><div class="drivers"><div class="driver"><b>供应</b><br><span class="muted">售粮进度、港口库存</span></div><div class="driver"><b>需求</b><br><span class="muted">饲料开工、补库节奏</span></div><div class="driver"><b>政策</b><br><span class="muted">拍卖、进口与储备</span></div><div class="driver"><b>天气</b><br><span class="muted">产区降雨与运输</span></div></div></div>
+      <div class="panel"><b>基于当前研究继续</b><p class="muted" style="line-height:1.55">操作会继承玉米、等级、区域和所选时间段。</p><div class="actions"><div class="button">发起玉米采购研判</div><div class="outline">关注价格与事件</div><div class="outline">向瞻小二追问</div></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="labels">
+  <div class="label"><b>核心价格先统一口径</b><p>等级、地区、税费、运费和单位必须和价格一起出现，防止用户拿不同价格直接比较。</p></div>
+  <div class="label"><b>价差链代替复杂地图</b><p>首版只做“产区—港口—销区”价格形成链，直接解释到厂价格为何变化。</p></div>
+  <div class="label"><b>因素必须关联证据</b><p>供应、需求、政策、天气不是资讯分类；每个因素都要能回到某个数据或事件。</p></div>
+  <div class="label"><b>研究上下文可继续使用</b><p>进入采购研判或设置关注时，不要求用户重新选择品种、区域和时间。</p></div>
+</div>
+
+<div class="approve"><div class="choice" data-choice="approve-variety-detail" onclick="toggleSelect(this)"><b>A｜认可品种行情设计</b><span>下一步设计采购研判的输入、生成过程和结果。</span></div><div class="choice" data-choice="adjust-variety-detail" onclick="toggleSelect(this)"><b>B｜需要调整</b><span>请告诉我需要增加、删除或强化的内容。</span></div></div>
+</body>
+</html>

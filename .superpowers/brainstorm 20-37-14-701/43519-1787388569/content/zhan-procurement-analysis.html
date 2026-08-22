@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brainstorm</title>
+</head>
+<body>
+<style>
+  .mock{overflow:hidden;border-radius:20px;border:1px solid rgba(148,163,184,.2);background:#09111f;color:#e9eef7;box-shadow:0 22px 60px rgba(0,0,0,.25);font-size:10px}.top{height:38px;display:flex;align-items:center;justify-content:space-between;padding:0 17px;background:#131c36;border-bottom:1px solid rgba(148,163,184,.13)}.brand{color:#ff9b45;font-weight:800}.nav{color:#8391a7;word-spacing:11px}.agent{display:flex;align-items:center;justify-content:space-between;padding:9px 17px;border-bottom:1px solid rgba(148,163,184,.12)}.who{display:flex;align-items:center;gap:8px;font-weight:700;font-size:13px}.avatar{width:30px;height:30px;display:grid;place-items:center;border-radius:50%;color:#5ce0f3;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.27)}.switch{color:#8e9caf}.tabs{height:36px;display:flex;align-items:center;gap:20px;padding:0 17px;border-bottom:1px solid rgba(148,163,184,.12);color:#7f8da2}.tabs b{height:36px;display:flex;align-items:center;color:#fff;border-bottom:2px solid #ee7b1f}.body{padding:13px 16px;background:radial-gradient(circle at 75% 10%,rgba(238,123,31,.05),transparent 28%),linear-gradient(145deg,#0c1629,#09101c)}.context{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-radius:10px;background:rgba(34,211,238,.055);border:1px solid rgba(34,211,238,.14)}.context-tags{display:flex;gap:5px}.tag{padding:3px 6px;border-radius:999px;background:rgba(255,255,255,.035);color:#aab5c4}.layout{display:grid;grid-template-columns:.76fr 1.4fr .62fr;gap:9px;margin-top:9px}.panel{padding:10px;border-radius:10px;background:rgba(19,28,54,.71);border:1px solid rgba(148,163,184,.13)}.panelhead{display:flex;align-items:center;justify-content:space-between}.panelhead b{font-size:11px}.muted{color:#8391a6}.cyan{color:#4fdef2}.orange{color:#ff9b45}.up{color:#49d8a5}.down{color:#ff9b73}.required{color:#ff9b45}.fields{display:grid;gap:6px;margin-top:8px}.field{padding:7px 8px;border-radius:8px;background:rgba(255,255,255,.027);border:1px solid rgba(148,163,184,.13)}.field span{display:block;margin-bottom:3px;color:#8492a6}.optional{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:7px}.run{width:100%;margin-top:8px;padding:8px;border:0;border-radius:8px;background:#ee7b1f;color:#fff;font-size:9px;font-weight:800}.decision{padding:12px;background:linear-gradient(145deg,rgba(238,123,31,.12),rgba(19,28,54,.78));border-color:rgba(238,123,31,.31)}.confidence{padding:3px 6px;border-radius:999px;background:rgba(73,216,165,.09);color:#5adeab}.decision h3{font-size:19px;margin:8px 0 2px}.allocation{display:grid;grid-template-columns:1.2fr .8fr;gap:7px;margin-top:10px}.alloc{padding:9px;border-radius:9px;background:rgba(255,255,255,.03);border:1px solid rgba(148,163,184,.10)}.alloc strong{display:block;font-size:15px;margin-top:4px}.bar{height:6px;border-radius:999px;background:rgba(148,163,184,.12);overflow:hidden;margin-top:7px}.bar span{display:block;height:100%;background:#ee7b1f;width:60%}.triggers{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}.trigger{padding:7px;border-radius:8px;background:rgba(255,255,255,.026)}.trigger b{display:block;margin-top:4px}.why{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}.whybox{padding:8px;border-radius:8px;background:rgba(255,255,255,.024)}.whylist{display:grid;gap:4px;margin-top:6px}.whyrow{display:grid;grid-template-columns:12px 1fr auto;gap:5px;padding:5px;border-radius:6px;background:rgba(255,255,255,.02);line-height:1.35}.fact,.infer,.demo{font-size:8px;padding:2px 4px;border-radius:4px}.fact{color:#51dfef;background:rgba(34,211,238,.08)}.infer{color:#c5a8ff;background:rgba(150,100,255,.09)}.demo{color:#ffac68;background:rgba(238,123,31,.1)}.change{margin-top:8px;padding:8px;border-radius:8px;background:rgba(255,255,255,.025);line-height:1.5}.next{display:grid;gap:6px;margin-top:8px}.action{padding:8px;border-radius:8px;text-align:center;background:#ee7b1f;color:#fff;font-weight:800}.outline{padding:8px;border-radius:8px;text-align:center;border:1px solid rgba(148,163,184,.18);color:#a9b4c3}.handoff{padding:9px;border-radius:9px;background:rgba(34,211,238,.055);border:1px solid rgba(34,211,238,.14);line-height:1.5}.handoff b{display:block;margin-bottom:4px}.risk{margin-top:8px;padding:8px;border-radius:8px;background:rgba(255,155,115,.055);border:1px solid rgba(255,155,115,.14);line-height:1.45}.ask{margin-top:9px;padding:9px 11px;border-radius:10px;border:1px solid rgba(148,163,184,.18);color:#65758c}.ask span{float:right;color:#ff9b45}.process{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:17px}.step{position:relative;padding:12px 13px;border-radius:12px;background:#111a2e;border:1px solid rgba(148,163,184,.17)}.step:not(:last-child):after{content:"→";position:absolute;right:-9px;top:43%;z-index:2;color:#ee7b1f}.step b{display:block;margin-bottom:5px;color:#eef3f9}.step p{margin:0;color:#90a0b4;font-size:11px;line-height:1.5}.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}.rule{padding:11px 12px;border-radius:11px;background:#111a2e;border:1px solid rgba(148,163,184,.17)}.rule b{display:block;margin-bottom:4px}.rule span{color:#8f9db1;font-size:11px;line-height:1.45}.approve{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}.choice{cursor:pointer;padding:13px 15px;border-radius:12px;background:#111a2e;border:1px solid rgba(148,163,184,.2)}.choice:hover{border-color:rgba(34,211,238,.45)}.choice.selected{border-color:#ee7b1f;box-shadow:0 0 0 2px rgba(238,123,31,.18)}.choice b{display:block;margin-bottom:4px}.choice span{font-size:12px;color:#8d9bae}@media(max-width:1100px){.layout,.process,.rules,.approve{grid-template-columns:1fr}.step:not(:last-child):after{display:none}}
+</style>
+
+<h2>章节三：采购研判要产出行动方案，而不是一篇 AI 报告</h2>
+<p class="subtitle">示例：深圳饲料企业需在 7 天内采购 200 吨东北二等玉米。页面只要求三个关键条件，其余信息可选填。</p>
+
+<div class="mock">
+  <div class="top"><span class="brand">粮达网 Plus</span><span class="nav">粮掌柜　我的办事　企业知识库</span></div>
+  <div class="agent"><div class="who"><span class="avatar">瞻</span>瞻小二｜看行情</div><span class="switch">任务已保存 · 切换小二⌄</span></div>
+  <div class="tabs"><span>市场全景</span><span>品种行情</span><b>采购研判</b><span>我的关注</span><span>研判记录</span></div>
+  <div class="body">
+    <div class="context"><div><b>已继承当前研究上下文</b>　<span class="muted">无需重新选择行情范围</span></div><div class="context-tags"><span class="tag">玉米</span><span class="tag">东北二等</span><span class="tag">华南</span><span class="tag">近 30 天</span></div></div>
+    <div class="layout">
+      <div class="panel">
+        <div class="panelhead"><b>采购条件</b><span class="muted">可随时调整</span></div>
+        <div class="fields">
+          <div class="field"><span>到货地点 <i class="required">*</i></span><b>广东省深圳市</b></div>
+          <div class="field"><span>采购数量 <i class="required">*</i></span><b>200 吨</b></div>
+          <div class="field"><span>最晚到货 <i class="required">*</i></span><b>2026-08-29</b></div>
+        </div>
+        <div class="optional"><div class="field"><span>库存可用</span><b>9 天</b></div><div class="field"><span>目标到厂价</span><b>≤ 2,480</b></div></div>
+        <div class="field" style="margin-top:6px"><span>决策偏好（可选）</span><b>平衡缺货与高位锁价风险</b></div>
+        <button class="run">重新生成研判</button>
+        <p class="muted" style="line-height:1.45">最少只填地点、数量和到货时间；库存、目标价与偏好用于提高建议针对性。</p>
+      </div>
+
+      <div class="panel decision">
+        <div class="panelhead"><span class="muted">瞻小二行动建议 · 未来 7 天</span><span class="confidence">置信度较高</span></div>
+        <h3>建议分两批采购</h3><div class="orange">先锁定基本需求，保留部分数量等待价格机会</div>
+        <div class="allocation"><div class="alloc"><span class="muted">第一批 · 立即询价</span><strong>120 吨（60%）</strong><div class="bar"><span></span></div><small class="muted">建议 48 小时内完成比价</small></div><div class="alloc"><span class="muted">第二批 · 条件触发</span><strong>80 吨（40%）</strong><small class="muted">触价或最迟 3 天后启动</small></div></div>
+        <div class="triggers"><div class="trigger"><span class="muted">价格触发</span><b>到厂价 ≤ 2,440</b></div><div class="trigger"><span class="muted">时间触发</span><b>8 月 25 日 10:00</b></div><div class="trigger"><span class="muted">风险触发</span><b>港口库存再降 3%</b></div></div>
+        <div class="why">
+          <div class="whybox"><b>支持现在采购</b><div class="whylist"><div class="whyrow"><span class="up">↑</span><span>7 天到货窗口偏紧</span><span class="infer">推断</span></div><div class="whyrow"><span class="up">↑</span><span>北港库存持续回落</span><span class="demo">模拟</span></div><div class="whyrow"><span class="up">↑</span><span>华南补库需求回暖</span><span class="fact">公开</span></div></div></div>
+          <div class="whybox"><b>支持保留等待</b><div class="whylist"><div class="whyrow"><span class="down">↓</span><span>政策粮投放增加供应</span><span class="fact">公开</span></div><div class="whyrow"><span class="down">↓</span><span>近期涨幅接近压力位</span><span class="infer">推断</span></div><div class="whyrow"><span class="down">↓</span><span>产区售粮进度加快</span><span class="demo">模拟</span></div></div></div>
+        </div>
+        <div class="change"><b>什么情况会改变建议？</b><br><span class="muted">若到厂价突破 2,490 元/吨且港口库存继续下降，建议将第一批提高至 80%；若价格回落至 2,440 元/吨以下，可提前启动第二批。</span></div>
+      </div>
+
+      <div class="panel">
+        <b>把建议变成下一步</b>
+        <div class="next"><div class="action">让粮小二寻找 120 吨粮源</div><div class="outline">设置第二批价格提醒</div><div class="outline">保存为研判记录</div></div>
+        <div class="handoff" style="margin-top:9px"><b>交给粮小二的内容</b><span class="muted">东北二等玉米 · 120 吨 · 深圳到货 · 48 小时内询价 · 到厂价优先</span></div>
+        <div class="risk"><b>边界提示</b><br><span class="muted">瞻小二根据行情与采购条件提供研判，不代替用户确认报价、合同或交易。</span></div>
+        <div style="margin-top:9px;padding-top:8px;border-top:1px solid rgba(148,163,184,.13);line-height:1.5"><b>本次依据</b><br><span class="muted">公开事实 5 项<br>AI 推断 4 项<br>模拟数据 2 项<br>用户提供条件 5 项</span></div>
+      </div>
+    </div>
+    <div class="ask">追问：“如果我必须一次买完，最大的风险是什么？” <span>发送 ↑</span></div>
+  </div>
+</div>
+
+<div class="process">
+  <div class="step"><b>① 最少输入</b><p>地点、数量、到货日期必填；库存、目标价和偏好选填，不做冗长问卷。</p></div>
+  <div class="step"><b>② 形成建议</b><p>系统校验数据更新时间，比较趋势、区域价格、事件与采购紧迫度。</p></div>
+  <div class="step"><b>③ 输出触发条件</b><p>除了“立即/分批/观察”，必须给出数量、价格线、时间线和建议失效条件。</p></div>
+  <div class="step"><b>④ 推进办事</b><p>用户确认后，将第一批条件交给粮小二；第二批转为关注提醒，任务进入“我的办事”。</p></div>
+</div>
+
+<div class="rules"><div class="rule"><b>不伪装确定性</b><span>始终展示时间范围与置信度，并明确哪些变化会推翻当前建议。</span></div><div class="rule"><b>不混淆数据性质</b><span>公开事实、用户输入、AI 推断和模拟数据逐项标记。</span></div><div class="rule"><b>关键动作由人确认</b><span>生成研判不会自动询价、下单或邀请小二，必须由用户点击确认。</span></div></div>
+
+<div class="approve"><div class="choice" data-choice="approve-procurement-analysis" onclick="toggleSelect(this)"><b>A｜认可采购研判闭环</b><span>下一步设计“我的关注”和“研判记录”，随后汇总完整页面规格。</span></div><div class="choice" data-choice="adjust-procurement-analysis" onclick="toggleSelect(this)"><b>B｜需要调整</b><span>请指出输入、结论或后续动作哪里不符合预期。</span></div></div>
+</body>
+</html>

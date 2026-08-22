@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brainstorm</title>
+</head>
+<body>
+<style>
+  .direction-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; margin-top:22px; }
+  .direction-card { cursor:pointer; border:1px solid rgba(148,163,184,.22); border-radius:18px; overflow:hidden; background:#0b1220; transition:.2s ease; }
+  .direction-card:hover { transform:translateY(-2px); border-color:rgba(34,211,238,.5); }
+  .direction-card.selected { border-color:#ee7b1f; box-shadow:0 0 0 2px rgba(238,123,31,.22),0 20px 50px rgba(0,0,0,.28); }
+  .shot { height:405px; background:linear-gradient(150deg,#0d1730,#09101f); color:#e9eef7; font-family:system-ui,sans-serif; font-size:9px; }
+  .shot-top { height:32px; display:flex; align-items:center; justify-content:space-between; padding:0 12px; border-bottom:1px solid rgba(148,163,184,.14); background:rgba(19,28,54,.92); }
+  .brand { color:#ff9b45; font-weight:700; letter-spacing:.4px; }
+  .top-links { color:#8190a9; word-spacing:8px; }
+  .agent-head { height:48px; padding:8px 12px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid rgba(148,163,184,.12); }
+  .agent-name { display:flex; align-items:center; gap:7px; font-weight:700; }
+  .avatar { width:28px; height:28px; border-radius:50%; display:grid; place-items:center; color:#76e8ff; background:rgba(34,211,238,.12); border:1px solid rgba(34,211,238,.3); }
+  .switch { border:1px solid rgba(148,163,184,.22); color:#93a1b8; border-radius:10px; padding:4px 7px; }
+  .tabs { height:30px; display:flex; align-items:center; gap:12px; padding:0 12px; color:#7888a5; border-bottom:1px solid rgba(148,163,184,.12); white-space:nowrap; }
+  .tabs b { color:#f0f6ff; height:30px; display:flex; align-items:center; border-bottom:2px solid #ee7b1f; }
+  .mini-panel { background:rgba(19,28,54,.72); border:1px solid rgba(148,163,184,.14); border-radius:10px; }
+  .muted { color:#7f8da5; }
+  .cyan { color:#49dff5; }
+  .orange { color:#ff9b45; }
+  .green { color:#46d9a4; }
+  .chart { position:relative; height:114px; margin-top:8px; border-radius:8px; overflow:hidden; background:linear-gradient(rgba(34,211,238,.025),rgba(34,211,238,.01)),repeating-linear-gradient(0deg,transparent,transparent 22px,rgba(148,163,184,.08) 23px),repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(148,163,184,.07) 40px); }
+  .chart:before { content:""; position:absolute; left:7%; right:4%; top:26%; height:52%; border-top:2px solid #35d3ea; border-radius:50%; transform:skewY(-7deg); filter:drop-shadow(0 0 5px rgba(34,211,238,.4)); }
+  .pill { display:inline-flex; padding:3px 6px; border:1px solid rgba(148,163,184,.18); border-radius:999px; color:#a4b0c3; }
+  .recommend { border:1px solid rgba(238,123,31,.34); background:linear-gradient(145deg,rgba(238,123,31,.12),rgba(19,28,54,.75)); }
+  .card-caption { padding:16px 16px 18px; background:#111a2d; min-height:154px; }
+  .card-caption h3 { margin:0 0 7px; color:#f1f5f9; font-size:16px; }
+  .card-caption p { margin:0; color:#98a5ba; font-size:12px; line-height:1.65; }
+  .badge-rec { display:inline-block; margin-bottom:8px; padding:3px 7px; border-radius:999px; color:#ffd5b0; background:rgba(238,123,31,.14); font-size:10px; }
+  .dialog { display:flex; gap:7px; margin-bottom:7px; }
+  .bubble { padding:7px 9px; border-radius:9px; line-height:1.45; }
+  .user-bubble { margin-left:24px; background:rgba(238,123,31,.15); border:1px solid rgba(238,123,31,.2); }
+  .ai-bubble { margin-right:8px; background:rgba(34,211,238,.07); border:1px solid rgba(34,211,238,.15); }
+  .metric { padding:8px; }
+  .metric strong { display:block; margin-top:4px; font-size:14px; }
+  .tiny-list { display:grid; gap:5px; margin-top:7px; }
+  .tiny-row { display:flex; justify-content:space-between; padding:6px 7px; background:rgba(255,255,255,.025); border-radius:6px; }
+  @media (max-width:1000px){ .direction-grid{grid-template-columns:1fr;} .shot{height:420px;} }
+</style>
+
+<h2>瞻小二：主页面应该以什么为中心？</h2>
+<p class="subtitle">三种方案都支持玉米完整场景，并可切换小麦、稻谷和大豆。请重点看：用户进入页面后，是否马上知道“现在该怎么买”。</p>
+
+<div class="direction-grid">
+  <div class="direction-card" data-choice="a-decision-workbench" onclick="toggleSelect(this)">
+    <div class="shot">
+      <div class="shot-top"><span class="brand">粮达网 Plus</span><span class="top-links">粮掌柜　我的办事　企业知识库</span></div>
+      <div class="agent-head"><div class="agent-name"><span class="avatar">瞻</span><span>瞻小二｜看行情</span></div><span class="switch">切换小二⌄</span></div>
+      <div class="tabs"><b>采购研判</b><span>市场雷达</span><span>区域价差</span><span>关注提醒</span><span>研判记录</span></div>
+      <div style="padding:10px 12px;display:grid;grid-template-columns:1.55fr .85fr;gap:9px;">
+        <div>
+          <div style="display:flex;gap:5px;margin-bottom:7px"><span class="pill">玉米⌄</span><span class="pill">华南⌄</span><span class="pill">近30天⌄</span><span style="margin-left:auto" class="muted">数据更新 10:30</span></div>
+          <div class="mini-panel" style="padding:9px">
+            <div style="display:flex;justify-content:space-between"><span>玉米主流到厂价</span><b>2,468 元/吨 <span class="green">+0.6%</span></b></div>
+            <div class="chart"><span style="position:absolute;left:55%;top:35%;color:#ffbd7a">● 政策粮拍卖</span></div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:7px">
+              <div class="metric mini-panel"><span class="muted">北港平仓</span><strong>2,425</strong></div>
+              <div class="metric mini-panel"><span class="muted">蛇口到港</span><strong>2,510</strong></div>
+              <div class="metric mini-panel"><span class="muted">南北价差</span><strong class="cyan">+85</strong></div>
+            </div>
+          </div>
+          <div class="mini-panel" style="margin-top:8px;padding:8px;display:flex;align-items:center;justify-content:space-between">
+            <span>计划采购 <b>200 吨</b> · 深圳 · 7 天内到货</span><span class="orange">调整条件 →</span>
+          </div>
+        </div>
+        <div class="mini-panel recommend" style="padding:10px">
+          <span class="muted">瞻小二当前建议</span>
+          <div style="font-size:17px;font-weight:750;margin:7px 0 4px">建议分两批采购</div>
+          <div class="orange">先锁定 60%，其余设置价格提醒</div>
+          <div class="tiny-list">
+            <div class="tiny-row"><span>判断置信度</span><b>较高</b></div>
+            <div class="tiny-row"><span>立即行动</span><b>询价 120 吨</b></div>
+            <div class="tiny-row"><span>触发条件</span><b>≤ 2,440</b></div>
+          </div>
+          <div style="margin-top:9px;padding-top:8px;border-top:1px solid rgba(148,163,184,.14);line-height:1.5"><b>3 条核心依据</b><br><span class="muted">到港库存下降 · 产区售粮加快 · 7日交期偏紧</span></div>
+          <div style="margin-top:9px;background:#ee7b1f;text-align:center;padding:7px;border-radius:8px;color:white;font-weight:700">生成完整采购研判</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-caption">
+      <span class="badge-rec">推荐方案</span>
+      <h3>A｜采购决策工作台</h3>
+      <p>行情证据与行动建议并排呈现。默认直接回答“现在怎么买”，图表服务于决策，适合竞赛演示一条完整业务闭环。</p>
+    </div>
+  </div>
+
+  <div class="direction-card" data-choice="b-conversation-first" onclick="toggleSelect(this)">
+    <div class="shot">
+      <div class="shot-top"><span class="brand">粮达网 Plus</span><span class="top-links">粮掌柜　我的办事　企业知识库</span></div>
+      <div class="agent-head"><div class="agent-name"><span class="avatar">瞻</span><span>瞻小二｜看行情</span></div><span class="switch">切换小二⌄</span></div>
+      <div class="tabs"><b>对话研判</b><span>行情证据</span><span>我的关注</span><span>历史会话</span></div>
+      <div style="padding:11px 12px;display:grid;grid-template-columns:1.3fr .75fr;gap:9px;height:280px">
+        <div class="mini-panel" style="padding:10px;display:flex;flex-direction:column">
+          <div class="muted" style="text-align:center;margin-bottom:10px">瞻小二已读取玉米市场公开行情</div>
+          <div class="dialog"><div class="bubble user-bubble">我们深圳工厂 7 天内要采购 200 吨玉米，现在适合买吗？</div></div>
+          <div class="dialog"><span class="avatar" style="width:20px;height:20px;flex:none">瞻</span><div class="bubble ai-bubble">综合到港价格、产区售粮和交期，我建议先锁定 60%，剩余部分等待价格回落。</div></div>
+          <div class="dialog"><div class="bubble user-bubble">为什么不是一次买完？</div></div>
+          <div class="dialog"><span class="avatar" style="width:20px;height:20px;flex:none">瞻</span><div class="bubble ai-bubble">当前方向偏强，但短期供应释放可能带来回调。分批采购能同时控制缺货与高位锁价风险。</div></div>
+          <div style="margin-top:auto;border:1px solid rgba(148,163,184,.2);border-radius:10px;padding:8px;color:#66758d">继续追问… <span style="float:right;color:#ff9b45">发送 ↑</span></div>
+        </div>
+        <div class="mini-panel" style="padding:9px">
+          <b>本轮引用证据</b>
+          <div class="tiny-list">
+            <div class="tiny-row"><span>蛇口到港价</span><b>2,510</b></div>
+            <div class="tiny-row"><span>北港库存</span><b class="orange">-4.2%</b></div>
+            <div class="tiny-row"><span>政策粮投放</span><b class="cyan">已公布</b></div>
+          </div>
+          <div class="chart" style="height:80px"></div>
+          <div class="muted" style="line-height:1.55;margin-top:8px">事实 4 条 · 推断 2 条<br>模拟数据 1 项</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-caption">
+      <h3>B｜对话研判助手</h3>
+      <p>以自然语言对话作为主界面，证据在右侧随问答更新。上手自然，但关键信息容易埋在聊天记录里，产品辨识度相对较弱。</p>
+    </div>
+  </div>
+
+  <div class="direction-card" data-choice="c-market-dashboard" onclick="toggleSelect(this)">
+    <div class="shot">
+      <div class="shot-top"><span class="brand">粮达网 Plus</span><span class="top-links">粮掌柜　我的办事　企业知识库</span></div>
+      <div class="agent-head"><div class="agent-name"><span class="avatar">瞻</span><span>瞻小二｜看行情</span></div><span class="switch">切换小二⌄</span></div>
+      <div class="tabs"><b>市场全景</b><span>品种走势</span><span>区域价差</span><span>影响因素</span><span>我的关注</span></div>
+      <div style="padding:10px 12px">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">
+          <div class="metric mini-panel"><span class="muted">玉米</span><strong>2,468 <span class="green">↑</span></strong></div>
+          <div class="metric mini-panel"><span class="muted">小麦</span><strong>2,512 <span class="orange">↓</span></strong></div>
+          <div class="metric mini-panel"><span class="muted">稻谷</span><strong>2,734 <span class="muted">—</span></strong></div>
+          <div class="metric mini-panel"><span class="muted">大豆</span><strong>4,165 <span class="green">↑</span></strong></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1.4fr .8fr;gap:7px;margin-top:7px">
+          <div class="mini-panel" style="padding:9px"><b>全国价格走势</b><div class="chart" style="height:104px"></div></div>
+          <div class="mini-panel" style="padding:9px"><b>区域涨跌排行</b><div class="tiny-list"><div class="tiny-row"><span>广东</span><b class="green">+1.2%</b></div><div class="tiny-row"><span>山东</span><b class="green">+0.8%</b></div><div class="tiny-row"><span>辽宁</span><b class="orange">-0.3%</b></div></div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:7px">
+          <div class="mini-panel" style="padding:9px"><b>港口库存</b><div style="font-size:16px;margin-top:8px">312 万吨</div><span class="orange">周环比 -4.2%</span></div>
+          <div class="mini-panel" style="padding:9px"><b>重点事件</b><div class="muted" style="margin-top:8px;line-height:1.5">政策粮拍卖<br>天气扰动</div></div>
+          <div class="mini-panel" style="padding:9px"><b>市场情绪</b><div style="font-size:16px;margin-top:8px" class="cyan">偏强</div><span class="muted">热度 72</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-caption">
+      <h3>C｜行情数据驾驶舱</h3>
+      <p>多品种、多指标并列，信息覆盖最广。适合专业研究，但容易变成传统数据大屏，用户还要自己完成“数据到采购动作”的转换。</p>
+    </div>
+  </div>
+</div>
+
+<p style="margin-top:18px;color:#8f9db1;font-size:13px">点击任一方案即可选择；也可以在对话里告诉我想组合哪些部分。</p>
+</body>
+</html>

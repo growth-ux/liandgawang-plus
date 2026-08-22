@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brainstorm</title>
+</head>
+<body>
+<style>
+  .state-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px}.state-card{overflow:hidden;border-radius:18px;border:1px solid rgba(148,163,184,.18);background:#0b1220}.state-card.recommended{border-color:rgba(238,123,31,.4);box-shadow:0 0 0 2px rgba(238,123,31,.10)}.screen{height:470px;color:#e9eef7;font-size:8px;background:linear-gradient(145deg,#0d172b,#09111f)}.top{height:30px;display:flex;align-items:center;justify-content:space-between;padding:0 11px;background:#131c36;border-bottom:1px solid rgba(148,163,184,.13)}.brand{color:#ff9b45;font-weight:800}.nav{color:#8391a7;word-spacing:7px}.agent{height:43px;display:flex;align-items:center;justify-content:space-between;padding:0 11px;border-bottom:1px solid rgba(148,163,184,.12)}.who{display:flex;align-items:center;gap:7px;font-weight:750;font-size:10px}.avatar{width:24px;height:24px;display:grid;place-items:center;border-radius:50%;color:#ffd984;background:rgba(201,144,42,.13);border:1px solid rgba(201,144,42,.32)}.status{font-size:7px;color:#4bd9a7}.switch{padding:3px 6px;border:1px solid rgba(148,163,184,.17);border-radius:7px;color:#8f9db1}.tabs{height:28px;display:flex;align-items:center;gap:12px;padding:0 11px;color:#7d8ba0;border-bottom:1px solid rgba(148,163,184,.12)}.tabs b{height:28px;display:flex;align-items:center;color:#fff;border-bottom:2px solid #ee7b1f}.body{position:relative;height:369px;padding:8px 9px 50px}.market-head{display:flex;align-items:center;justify-content:space-between}.market-head h4{margin:0 0 2px;font-size:11px}.muted{color:#8290a5}.orange{color:#ff9b45}.cyan{color:#4fddee}.filters{display:grid;grid-template-columns:1.15fr repeat(4,1fr);gap:4px;margin-top:7px}.filter{padding:5px 6px;border-radius:6px;background:rgba(19,28,54,.72);border:1px solid rgba(148,163,184,.12);color:#99a7b9}.filter.search{color:#6f7e94;border-color:rgba(34,211,238,.16)}.main{display:grid;grid-template-columns:1.48fr .62fr;gap:6px;margin-top:6px}.panel{padding:7px;border-radius:8px;background:rgba(19,28,54,.7);border:1px solid rgba(148,163,184,.12)}.panelhead{display:flex;justify-content:space-between;align-items:center}.rows{display:grid;gap:4px;margin-top:5px}.listing{display:grid;grid-template-columns:1.25fr .55fr .54fr .45fr;gap:5px;padding:6px;border-radius:7px;background:rgba(255,255,255,.025)}.listing b{display:block;margin-bottom:2px}.badge{display:inline-flex;padding:2px 4px;border-radius:4px;background:rgba(34,211,238,.07);color:#51ddeb;font-size:7px}.demo{background:rgba(238,123,31,.09);color:#ffad67}.pick{padding:3px;text-align:center;border-radius:5px;background:rgba(238,123,31,.13);color:#ffae69}.assistant-panel{display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(145deg,rgba(201,144,42,.07),rgba(19,28,54,.73));border-color:rgba(201,144,42,.22)}.idea{margin-top:6px;padding:7px;border-radius:7px;background:rgba(255,255,255,.025);line-height:1.45}.chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}.chip{padding:3px 5px;border-radius:999px;border:1px solid rgba(148,163,184,.17);color:#9dabbc}.button{margin-top:6px;padding:6px;border-radius:6px;text-align:center;background:#ee7b1f;color:#fff;font-weight:700}.composer{position:absolute;left:9px;right:9px;bottom:8px;height:33px;display:flex;align-items:center;gap:6px;padding:0 7px;border:1px solid rgba(34,211,238,.2);border-radius:10px;background:rgba(19,28,54,.97)}.input{flex:1;color:#6f7e94}.send{height:22px;width:22px;border-radius:6px;display:grid;place-items:center;color:white;background:#ee7b1f}.task{display:flex;justify-content:space-between;align-items:center;padding:7px 8px;border-radius:8px;background:linear-gradient(120deg,rgba(238,123,31,.11),rgba(19,28,54,.72));border:1px solid rgba(238,123,31,.25)}.task strong{color:#ffc18a}.task-actions{display:flex;gap:4px}.action{padding:4px 6px;border-radius:6px;border:1px solid rgba(148,163,184,.16);color:#a3afc0}.candidate{padding:6px;border-radius:7px;background:rgba(255,255,255,.026);margin-top:5px}.candidate.primary{border:1px solid rgba(238,123,31,.28)}.candidate strong{display:block;margin:3px 0}.reason{color:#8593a7;line-height:1.4}.caption{padding:14px 15px 16px;background:#111a2d}.caption h3{margin:0 0 6px;font-size:15px;color:#eef3f9}.caption p{margin:0;color:#92a0b4;font-size:11px;line-height:1.6}.label{display:inline-block;margin-bottom:7px;padding:3px 6px;border-radius:999px;color:#ffd6b1;background:rgba(238,123,31,.13);font-size:9px}.flow{display:flex;align-items:center;justify-content:center;gap:10px;margin:17px auto 0;padding:10px;border-radius:12px;color:#9eacbe;background:rgba(19,28,54,.65);border:1px solid rgba(148,163,184,.14);font-size:12px}.flow b{color:#f0f4f8}.arrow{color:#ee7b1f}@media(max-width:1000px){.state-grid{grid-template-columns:1fr}.screen{height:470px}}
+</style>
+
+<h2>方案 A 的双入口：粮小二独立可用，瞻小二只是带条件进入</h2>
+<p class="subtitle">两种入口共用同一个“粮源市场”，差别只在是否已有明确采购任务；粮小二本身拥有完整的找粮、筛选、比较和解释能力。</p>
+
+<div class="state-grid">
+  <div class="state-card recommended">
+    <div class="screen">
+      <div class="top"><span class="brand">粮达网 Plus</span><span class="nav">粮掌柜　我的办事　企业知识库</span></div>
+      <div class="agent"><div class="who"><span class="avatar">粮</span><span>粮小二<br><span class="status">● 可独立为你找粮</span></span></div><span class="switch">切换小二⌄</span></div>
+      <div class="tabs"><b>粮源市场</b><span>候选方案</span><span>供应方</span><span>寻源任务</span><span>历史记录</span></div>
+      <div class="body">
+        <div class="market-head"><div><h4>今日粮源市场</h4><span class="muted">浏览全部公开挂牌，或直接告诉粮小二你要找什么粮</span></div><span class="orange">今日新增 26 条</span></div>
+        <div class="filters"><div class="filter search">搜索品种 / 产地 / 供应方</div><div class="filter">品种⌄</div><div class="filter">产地⌄</div><div class="filter">等级⌄</div><div class="filter">价格⌄</div></div>
+        <div class="main">
+          <div class="panel"><div class="panelhead"><b>全部粮源 128 条</b><span class="muted">最新发布⌄</span></div><div class="rows">
+            <div class="listing"><div><b>黑龙江北安 · 二等玉米</b><span class="badge">公开挂牌</span> <span class="badge demo">质检演示</span></div><div><b>2,356</b><span class="muted">元/吨</span></div><div><b>180 吨</b><span class="muted">可供应</span></div><span class="pick">查看</span></div>
+            <div class="listing"><div><b>吉林榆树 · 二等玉米</b><span class="badge">公开挂牌</span></div><div><b>2,372</b><span class="muted">元/吨</span></div><div><b>150 吨</b><span class="muted">可供应</span></div><span class="pick">查看</span></div>
+            <div class="listing"><div><b>辽宁铁岭 · 三等玉米</b><span class="badge">公开挂牌</span></div><div><b>2,318</b><span class="muted">元/吨</span></div><div><b>300 吨</b><span class="muted">可供应</span></div><span class="pick">查看</span></div>
+            <div class="listing"><div><b>内蒙古通辽 · 二等玉米</b><span class="badge">公开挂牌</span></div><div><b>2,348</b><span class="muted">元/吨</span></div><div><b>90 吨</b><span class="muted">可供应</span></div><span class="pick">查看</span></div>
+          </div></div>
+          <div class="panel assistant-panel"><div><div class="panelhead"><b>让粮小二帮你找</b><span class="cyan">AI</span></div><div class="idea">还没有采购条件时，不虚构“推荐”。你可以先逛市场，也可以一句话发起寻源。</div><div class="chips"><span class="chip">找 100 吨玉米</span><span class="chip">只看东北粮</span><span class="chip">筛二等以上</span></div></div><div class="button">新建寻源任务</div></div>
+        </div>
+        <div class="composer"><span class="avatar" style="width:20px;height:20px">粮</span><span class="input">例如：帮我找 120 吨二等玉米，送到深圳，7 天内到货</span><span class="send">↑</span></div>
+      </div>
+    </div>
+    <div class="caption"><span class="label">默认独立入口</span><h3>没有上游任务：先逛粮源，再随时唤起 AI</h3><p>顶部不显示“来自瞻小二”。默认展示完整粮源市场；右侧不是候选推荐，而是粮小二的任务引导区。用户通过对话、筛选或“新建寻源任务”补齐条件后，右侧才转成主推/备选候选篮。</p></div>
+  </div>
+
+  <div class="state-card">
+    <div class="screen">
+      <div class="top"><span class="brand">粮达网 Plus</span><span class="nav">粮掌柜　我的办事　企业知识库</span></div>
+      <div class="agent"><div class="who"><span class="avatar">粮</span><span>粮小二<br><span class="status">● 正在执行寻源任务</span></span></div><span class="switch">切换小二⌄</span></div>
+      <div class="tabs"><b>粮源市场</b><span>候选方案</span><span>供应方</span><span>寻源任务</span><span>历史记录</span></div>
+      <div class="body">
+        <div class="task"><div><strong>采购任务：120 吨二等玉米</strong><br><span class="muted">送达深圳 · 7 天内 · 来源：瞻小二</span></div><div class="task-actions"><span class="action">修改</span><span class="action">退出任务</span></div></div>
+        <div class="filters"><div class="filter search">在匹配结果中搜索</div><div class="filter">玉米</div><div class="filter">二等以上</div><div class="filter">≥120 吨</div><div class="filter">7 天可发</div></div>
+        <div class="main">
+          <div class="panel"><div class="panelhead"><b>符合硬条件 18 条</b><span class="muted">综合匹配排序⌄</span></div><div class="rows">
+            <div class="listing"><div><b>黑龙江北安 · 二等玉米</b><span class="badge">公开挂牌</span> <span class="badge demo">质检演示</span></div><div><b>2,356</b><span class="muted">库提价</span></div><div><b>180 吨</b><span class="muted">可供应</span></div><span class="pick">已入选</span></div>
+            <div class="listing"><div><b>吉林榆树 · 二等玉米</b><span class="badge">公开挂牌</span></div><div><b>2,372</b><span class="muted">车板价</span></div><div><b>150 吨</b><span class="muted">可供应</span></div><span class="pick">已入选</span></div>
+            <div class="listing"><div><b>辽宁铁岭 · 三等玉米</b><span class="badge">公开挂牌</span></div><div><b>2,318</b><span class="muted">库提价</span></div><div><b>300 吨</b><span class="muted">可供应</span></div><span class="orange">质量不符</span></div>
+            <div class="listing"><div><b>内蒙古通辽 · 二等玉米</b><span class="badge">公开挂牌</span></div><div><b>2,348</b><span class="muted">库提价</span></div><div><b>90 吨</b><span class="muted">可供应</span></div><span class="orange">数量不足</span></div>
+          </div></div>
+          <div class="panel assistant-panel"><div><div class="panelhead"><b>粮小二候选篮</b><span class="orange">2 / 3</span></div><div class="candidate primary"><span class="orange">主推</span><strong>黑龙江北安粮源</strong><div class="reason">等级匹配 · 数量充足<br>待核实：水分与排期</div></div><div class="candidate"><span class="cyan">备选</span><strong>吉林榆树粮源</strong><div class="reason">履约表现较好<br>报价高 16 元/吨</div></div></div><div class="button">生成候选方案</div></div>
+        </div>
+        <div class="composer"><span class="avatar" style="width:20px;height:20px">粮</span><span class="input">问粮小二：为什么最低价粮源没有入选？</span><span class="send">↑</span></div>
+      </div>
+    </div>
+    <div class="caption"><span class="label">携带任务入口</span><h3>从瞻小二进入：同一市场，自动进入任务态</h3><p>粮源列表仍是页面主体，只增加一条可退出的任务上下文，并按硬条件自动筛选。退出任务即可恢复完整市场，不形成两个割裂的页面。</p></div>
+  </div>
+</div>
+
+<div class="flow"><b>独立进入粮小二</b><span class="arrow">→</span>浏览全市场 / 对话描述需求<span class="arrow">→</span><b>形成寻源任务</b><span class="arrow">→</span>主推 + 备选 + 待核验项</div>
+
+<p style="margin-top:14px;color:#8f9db1;font-size:12px">关键原则：没有采购条件时只展示市场，不强行给推荐；一旦条件足够，页面无跳转切换为“任务态”。</p>
+</body>
+</html>

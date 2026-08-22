@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brainstorm</title>
+</head>
+<body>
+<style>
+  .decision-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px}.choice-card{cursor:pointer;overflow:hidden;border-radius:18px;border:1px solid rgba(148,163,184,.2);background:#0b1220;transition:.2s}.choice-card:hover{transform:translateY(-2px);border-color:rgba(34,211,238,.45)}.choice-card.selected{border-color:#ee7b1f;box-shadow:0 0 0 2px rgba(238,123,31,.2)}.visual{min-height:300px;padding:18px;color:#e9eef7;background:linear-gradient(145deg,#0d172b,#09111f)}.flag{display:inline-block;padding:4px 7px;border-radius:999px;color:#ffd6b1;background:rgba(238,123,31,.13);font-size:10px}.visual h3{margin:14px 0 5px;font-size:16px}.muted{color:#8795a9}.request{margin-top:17px;padding:11px;border-radius:10px;text-align:center;background:rgba(19,28,54,.8);border:1px solid rgba(148,163,184,.13)}.flow{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:9px;margin-top:13px}.source,.result{padding:12px;border-radius:10px;background:rgba(19,28,54,.72);border:1px solid rgba(148,163,184,.12)}.source.good{border-color:rgba(73,217,167,.25)}.source.warn{border-color:rgba(238,123,31,.22)}.source strong,.result strong{display:block;margin-bottom:4px}.arrow{color:#ee7b1f;font-size:18px;font-weight:800}.stack{display:grid;gap:7px}.badge{display:inline-block;margin-top:5px;padding:3px 5px;border-radius:5px;color:#4bd9a7;background:rgba(73,217,167,.08);font-size:9px}.risk{color:#ff9b7f}.caption{padding:14px 15px 16px;background:#111a2d}.caption h3{margin:0 0 7px;font-size:15px;color:#eef3f9}.caption p{margin:0;color:#92a0b4;font-size:11px;line-height:1.6}.pros{display:grid;gap:5px;margin-top:10px}.pro{padding:6px 7px;border-radius:6px;color:#a9b5c5;background:rgba(255,255,255,.025)}@media(max-width:850px){.decision-grid{grid-template-columns:1fr}}
+</style>
+
+<h2>首版寻源方案要不要支持“多粮源组合采购”？</h2>
+<p class="subtitle">例：需求 200 吨，但最匹配的单一粮源只有 120 吨。粮小二是把它淘汰，还是再找第二个粮源补齐 80 吨？</p>
+
+<div class="decision-grid">
+  <div class="choice-card" data-choice="a-single-source-first" onclick="toggleSelect(this)">
+    <div class="visual">
+      <span class="flag">推荐首版</span><h3>A｜单粮源优先</h3><span class="muted">每套方案只对应一个供应粮源</span>
+      <div class="request"><strong>采购需求</strong><br>二等玉米 200 吨</div>
+      <div class="flow"><div class="stack"><div class="source good"><strong>北安粮源 · 220 吨</strong><span class="muted">满足全部数量</span><br><span class="badge">进入主推</span></div><div class="source warn"><strong>通辽粮源 · 120 吨</strong><span class="muted">数量不足</span><br><span class="risk">列为淘汰 / 待补量</span></div></div><span class="arrow">→</span><div class="result"><strong>主推 1 个</strong><span class="muted">北安粮源</span><br><br><strong>备选 1 个</strong><span class="muted">另一个可独立满足数量的粮源</span></div></div>
+    </div>
+    <div class="caption"><h3>逻辑清楚，最适合竞赛首版</h3><p>主推、备选均能独立满足硬条件，价格和质量比较口径统一。数量不足的优质粮源仍会提示，但不自动拼单。</p><div class="pros"><div class="pro">优点：解释容易、数据要求低、与运小二交接简单</div><div class="pro">限制：可能错过两个小粮源组合后更优的机会</div></div></div>
+  </div>
+
+  <div class="choice-card" data-choice="b-multi-source-combination" onclick="toggleSelect(this)">
+    <div class="visual">
+      <span class="flag">增强能力</span><h3>B｜允许多粮源组合</h3><span class="muted">一套方案可包含 2–3 个供应粮源</span>
+      <div class="request"><strong>采购需求</strong><br>二等玉米 200 吨</div>
+      <div class="flow"><div class="stack"><div class="source good"><strong>通辽粮源 · 120 吨</strong><span class="muted">报价更低</span></div><div class="source good"><strong>榆树粮源 · 80 吨</strong><span class="muted">补齐缺口</span></div></div><span class="arrow">→</span><div class="result"><strong>组合主推</strong><span class="muted">通辽 120 + 榆树 80</span><br><br><span class="risk">需额外比较两地物流、到货批次、混粮质量与双供应方履约</span></div></div>
+    </div>
+    <div class="caption"><h3>更贴近复杂采购，但首版成本明显增加</h3><p>AI 需要同时优化数量、质量、价格、交期和多地物流；即使暂不计算落地成本，也必须说明组合风险。</p><div class="pros"><div class="pro">优点：供应不足时仍能给出可执行方案</div><div class="pro">风险：容易提前侵入运小二、算小二的职责边界</div></div></div>
+  </div>
+</div>
+
+<p style="margin-top:14px;color:#8f9db1;font-size:12px">建议首版选 A；界面保留“数量不足但值得关注”提示，为后续组合采购扩展留入口。</p>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brainstorm</title>
+</head>
+<body>
+<style>
+  .arch{margin-top:19px;padding:18px;border-radius:20px;border:1px solid rgba(148,163,184,.18);background:linear-gradient(145deg,#0d172b,#09111f);color:#e9eef7}.layer{display:grid;grid-template-columns:145px 1fr;gap:13px;align-items:stretch}.layer+.layer{margin-top:10px}.layer-name{display:flex;align-items:center;justify-content:center;padding:12px;border-radius:10px;color:#91a0b3;background:rgba(19,28,54,.7);border:1px solid rgba(148,163,184,.12);font-size:11px;font-weight:750;text-align:center}.nodes{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.node{padding:11px;border-radius:10px;background:rgba(19,28,54,.7);border:1px solid rgba(148,163,184,.12)}.node.agent{border-color:rgba(238,123,31,.3);background:linear-gradient(145deg,rgba(238,123,31,.07),rgba(19,28,54,.7))}.node.data{border-color:rgba(34,211,238,.2)}.node strong{display:block;margin-bottom:5px;font-size:11px}.node span{color:#8492a6;font-size:9px;line-height:1.5}.arrows{text-align:center;color:#ee7b1f;font-size:17px;letter-spacing:12px}.flow-note{margin-top:11px;padding:10px 12px;border-radius:9px;color:#99a7b9;background:rgba(34,211,238,.035);border:1px solid rgba(34,211,238,.11);font-size:10px;line-height:1.55}.orange{color:#ff9b45}.cyan{color:#4fddee}.green{color:#4bd9a7}.data-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}.data-card{padding:13px;border-radius:11px;background:rgba(19,28,54,.58);border:1px solid rgba(148,163,184,.12)}.data-card h3{margin:0 0 8px;font-size:14px}.record{display:grid;grid-template-columns:115px 1fr;gap:7px;padding:7px 0;border-bottom:1px solid rgba(148,163,184,.08);font-size:10px}.record:last-child{border:0}.record b{color:#dbe3ed}.record span{color:#8997aa}.refresh{margin-top:14px;overflow:hidden;border-radius:12px;border:1px solid rgba(148,163,184,.12)}.refresh-head{padding:10px 12px;background:rgba(255,255,255,.025);font-weight:750}.timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(148,163,184,.08)}.step{padding:12px;background:#111b2e}.step b{display:block;margin-bottom:5px;color:#e9eef7}.step p{margin:0;color:#8997aa;font-size:10px;line-height:1.5}.fallback{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}.fallback-card{padding:12px;border-radius:10px;background:rgba(19,28,54,.58);border:1px solid rgba(148,163,184,.12)}.fallback-card b{display:block;margin-bottom:6px}.fallback-card p{margin:0;color:#8d9baf;font-size:10px;line-height:1.55}.tests{margin-top:14px;padding:13px;border-radius:11px;background:rgba(238,123,31,.045);border:1px solid rgba(238,123,31,.16)}.tests h3{margin:0 0 8px;font-size:14px}.test-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.test{padding:8px;border-radius:7px;color:#a4b0c0;background:rgba(255,255,255,.027);font-size:10px;line-height:1.45}@media(max-width:950px){.layer{grid-template-columns:1fr}.nodes,.timeline,.fallback,.test-grid{grid-template-columns:1fr 1fr}.data-grid{grid-template-columns:1fr}}
+</style>
+
+<h2>粮小二技术与数据架构</h2>
+<p class="subtitle">沿用 React + FastAPI + 本地 Docker MySQL；Agent 使用 LangChain，筛选与推荐硬规则使用确定性 Python 服务。</p>
+
+<div class="arch">
+  <div class="layer"><div class="layer-name">React 前端</div><div class="nodes"><div class="node"><strong>粮源市场</strong><span>概览、筛选、列表、详情抽屉</span></div><div class="node"><strong>寻源方案</strong><span>主推、备选、淘汰解释、核验项</span></div><div class="node"><strong>任务与供应方</strong><span>进度、历史、供应方证据</span></div><div class="node agent"><strong>对话工作台</strong><span>流式消息、条件确认卡、工具执行摘要</span></div></div></div>
+  <div class="arrows">↕　↕　↕</div>
+  <div class="layer"><div class="layer-name">FastAPI 业务层</div><div class="nodes"><div class="node"><strong>Listing Service</strong><span>挂牌查询、筛选、统计、详情</span></div><div class="node"><strong>Sourcing Service</strong><span>硬条件过滤、候选比较、淘汰码</span></div><div class="node"><strong>Task / Supplier Service</strong><span>任务版本、供应方证据、交接确认</span></div><div class="node agent"><strong>Liang Agent Service</strong><span>LangChain create_agent + 结构化输出</span></div></div></div>
+  <div class="arrows">↕　↕　↕</div>
+  <div class="layer"><div class="layer-name">工具与数据</div><div class="nodes"><div class="node data"><strong>LangChain 只读 Tools</strong><span>search_listings / get_listing / compare_sources / get_task / get_supplier</span></div><div class="node"><strong>确认后写入 API</strong><span>创建任务、修改条件、确认方案、跨小二交接</span></div><div class="node data"><strong>MySQL</strong><span>粮源、演示扩展、任务、方案快照、会话消息</span></div><div class="node data"><strong>公开数据同步</strong><span>国家粮食交易中心公开页面与接口</span></div></div></div>
+  <div class="flow-note"><b class="orange">关键边界：</b>LangChain 负责理解需求、选择查询工具和组织解释；<b class="cyan">Sourcing Service</b>负责硬条件判定与候选顺序；写操作不作为 Agent Tool 直接执行，而是先返回 proposal，用户确认后调用普通业务接口。</div>
+</div>
+
+<div class="data-grid">
+  <div class="data-card"><h3>公开挂牌主表 · grain_listings</h3><div class="record"><b>真实字段</b><span>方向、品种、年份、粮源地、等级、委托方、挂牌日期、价格类型、报价、挂牌数量</span></div><div class="record"><b>溯源字段</b><span>source_item_id、source_url、source_published_at、fetched_at、data_kind=public</span></div><div class="record"><b>状态字段</b><span>active / expired；本次同步没返回时不立即删除，保留最后成功快照并标记数据时间</span></div></div>
+  <div class="data-card"><h3>演示扩展表 · listing_demo_details</h3><div class="record"><b>演示字段</b><span>可锁定库存、质检指标、发运窗口、报价有效期</span></div><div class="record"><b>供应方演示</b><span>历史履约、按期次数、异常记录摘要</span></div><div class="record"><b>强制标识</b><span>每个字段返回 data_kind=demo，前端字段级展示“演示”标签，不能与公开字段合并成事实</span></div></div>
+  <div class="data-card"><h3>寻源业务表</h3><div class="record"><b>sourcing_tasks</b><span>来源、当前条件、状态、关联 handoff_id</span></div><div class="record"><b>sourcing_runs</b><span>每次分析的条件快照、数据快照时间、结果与版本</span></div><div class="record"><b>candidate_results</b><span>粮源 ID、主推/备选/淘汰、硬条件结果、理由码、核验项</span></div></div>
+  <div class="data-card"><h3>复用现有基础设施</h3><div class="record"><b>agent_threads / messages</b><span>沿用瞻小二的会话与页面上下文结构，agent_id 使用 liang</span></div><div class="record"><b>handoff_tasks</b><span>读取瞻→粮交接；确认方案后创建粮→运的结构化交接</span></div><div class="record"><b>Agent runner</b><span>复用 LangChain 流式事件和结构化输出校验，不另引入 Agent 框架</span></div></div>
+</div>
+
+<div class="refresh"><div class="refresh-head">数据刷新不是“定时生成推荐”，而是刷新公开数据缓存</div><div class="timeline"><div class="step"><b>1｜后台轮询</b><p>每 10 分钟读取一次公开接口；这是因为上游没有推送能力，不宣称毫秒级实时。</p></div><div class="step"><b>2｜打开页面</b><p>立即展示本地最新成功快照；若已超过 10 分钟，后台触发一次刷新，不阻塞列表。</p></div><div class="step"><b>3｜用户手动刷新</b><p>允许“立即刷新”，但做短时间防抖，避免频繁压上游公开站点。</p></div><div class="step"><b>4｜立即分析</b><p>用户确认任务后立即用最新缓存运行推荐，不等待下一次定时任务。</p></div></div></div>
+
+<div class="fallback"><div class="fallback-card"><b>上游接口无数据或失败</b><p>继续展示最后一次成功公开快照，醒目标注发布时间与“数据可能已过期”；若从未同步成功，提供明确的演示模式入口。</p></div><div class="fallback-card"><b>LangChain / 模型失败</b><p>用户输入与任务条件不丢失；筛选列表仍可用。确定性服务生成基础候选，AI 解释区域提示稍后重试。</p></div><div class="fallback-card"><b>没有符合条件的粮源</b><p>不强行推荐。返回导致全量淘汰的硬条件、最接近的粮源和可选择放宽的条件，由用户确认后重跑。</p></div></div>
+
+<div class="tests"><h3>首版必须验证的 4 类行为</h3><div class="test-grid"><div class="test">公开字段解析、演示字段隔离、空响应与过期快照</div><div class="test">低价但等级不符、数量不足时绝不进入主推/备选</div><div class="test">对话条件提取、确认前不创建任务、修改条件产生新运行版本</div><div class="test">独立入口、瞻小二入口、LangChain 失败与跨小二交接流程</div></div></div>
+
+<p style="margin-top:14px;color:#8f9db1;font-size:12px">首版不引入向量数据库、消息队列、独立微服务或复杂信用模型；保持单体 FastAPI + MySQL 可演示、可验证。</p>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brainstorm</title>
+</head>
+<body>
+<style>
+  .agent-shell{display:grid;grid-template-columns:1fr 365px;margin-top:19px;overflow:hidden;border-radius:20px;border:1px solid rgba(148,163,184,.18);background:linear-gradient(145deg,#0d172b,#09111f);color:#e9eef7;font-size:10px}.page{position:relative;min-height:555px;border-right:1px solid rgba(148,163,184,.14)}.top{height:38px;display:flex;align-items:center;justify-content:space-between;padding:0 15px;background:#131c36;border-bottom:1px solid rgba(148,163,184,.13)}.brand{color:#ff9b45;font-weight:800}.tabs{display:flex;gap:25px;padding:0 15px;color:#7d8ba0;border-bottom:1px solid rgba(148,163,184,.12)}.tab{padding:12px 2px}.tab.active{color:#fff;border-bottom:2px solid #ee7b1f}.pagebody{padding:11px}.overview{display:grid;grid-template-columns:1.25fr repeat(3,.7fr);gap:6px}.box{padding:9px;border-radius:8px;background:rgba(19,28,54,.68);border:1px solid rgba(148,163,184,.11)}.box strong{display:block;margin-bottom:3px}.muted{color:#8290a5}.orange{color:#ff9b45}.cyan{color:#4fddee}.filters{display:grid;grid-template-columns:1.3fr repeat(4,.7fr);gap:5px;margin-top:7px}.filter{padding:7px;border-radius:7px;color:#8997aa;background:rgba(19,28,54,.68);border:1px solid rgba(148,163,184,.11)}.table{margin-top:7px;overflow:hidden;border-radius:9px;border:1px solid rgba(148,163,184,.11)}.row{display:grid;grid-template-columns:1.3fr .65fr .6fr .72fr;gap:7px;padding:9px;background:rgba(19,28,54,.64);border-bottom:1px solid rgba(148,163,184,.08)}.row.head{color:#77869a;background:rgba(255,255,255,.025)}.row.focus{background:rgba(238,123,31,.055);box-shadow:inset 2px 0 #ee7b1f}.badge{display:inline-flex;padding:2px 4px;border-radius:4px;color:#51ddeb;background:rgba(34,211,238,.07);font-size:7px}.dock{position:absolute;left:11px;right:11px;bottom:11px;height:38px;display:flex;align-items:center;gap:8px;padding:0 9px;border:1px solid rgba(34,211,238,.2);border-radius:10px;background:rgba(19,28,54,.97)}.avatar{width:24px;height:24px;display:grid;place-items:center;flex:0 0 auto;border-radius:50%;color:#ffd984;background:rgba(201,144,42,.13);border:1px solid rgba(201,144,42,.32)}.input{flex:1;color:#6f7e94}.context{padding:3px 5px;border-radius:5px;color:#4fddee;background:rgba(34,211,238,.07)}.send{height:25px;width:25px;display:grid;place-items:center;border-radius:7px;color:#fff;background:#ee7b1f}.conversation{display:flex;flex-direction:column;min-height:555px;background:#10192a}.chathead{display:flex;align-items:center;justify-content:space-between;height:48px;padding:0 12px;background:#151f34;border-bottom:1px solid rgba(148,163,184,.12)}.who{display:flex;align-items:center;gap:7px}.online{color:#4bd9a7;font-size:8px}.close{color:#8391a5}.messages{display:flex;flex-direction:column;gap:8px;flex:1;padding:11px;overflow:hidden}.bubble{max-width:88%;padding:8px 9px;border-radius:9px;line-height:1.5}.user{align-self:flex-end;background:#293852}.ai{align-self:flex-start;background:rgba(255,255,255,.045)}.process{padding:8px;border-radius:8px;color:#8f9caf;background:rgba(34,211,238,.035);border:1px solid rgba(34,211,238,.10)}.process b{display:block;margin-bottom:4px;color:#dce4ee}.steps{display:grid;gap:4px}.ok{color:#4bd9a7}.card{padding:9px;border-radius:9px;background:rgba(19,28,54,.82);border:1px solid rgba(238,123,31,.22)}.card h4{margin:0 0 6px;font-size:11px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:4px}.field{padding:6px;border-radius:6px;color:#8795a9;background:rgba(255,255,255,.026)}.field strong{display:block;margin-top:2px;color:#e9eef7}.notice{margin-top:6px;color:#ffad67}.actions{display:flex;gap:5px;margin-top:7px}.button{flex:1;padding:6px;border-radius:6px;text-align:center;color:#fff;background:#ee7b1f;font-weight:700}.button.ghost{color:#a9b5c4;background:rgba(255,255,255,.035);border:1px solid rgba(148,163,184,.13)}.chatinput{margin:0 10px 10px;padding:9px;border-radius:9px;color:#6f7e94;background:#182338;border:1px solid rgba(34,211,238,.18)}.rules{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}.rule{padding:12px;border-radius:11px;background:rgba(19,28,54,.58);border:1px solid rgba(148,163,184,.12)}.rule b{display:block;margin-bottom:6px;color:#eef3f9}.rule p{margin:0;color:#8d9baf;font-size:11px;line-height:1.55}@media(max-width:950px){.agent-shell{grid-template-columns:1fr}.page{min-height:430px;border-right:0;border-bottom:1px solid rgba(148,163,184,.14)}.conversation{min-height:520px}.rules{grid-template-columns:1fr 1fr}}
+</style>
+
+<h2>粮小二对话：常驻输入栏 + 可展开的 Agent 工作台</h2>
+<p class="subtitle">对话不是第五个 Tab。它跨越所有业务页面，自动带入当前粮源、当前筛选和当前寻源任务上下文。</p>
+
+<div class="agent-shell">
+  <div class="page">
+    <div class="top"><span class="brand">粮达网 Plus</span><span class="muted">粮小二 · 独立找粮工作台</span></div>
+    <div class="tabs"><span class="tab active">粮源市场</span><span class="tab">寻源方案</span><span class="tab">寻源任务</span><span class="tab">供应方</span></div>
+    <div class="pagebody">
+      <div class="overview"><div class="box"><strong>今日粮源市场</strong><span class="muted">公开挂牌与演示字段清晰区分</span></div><div class="box"><strong>128</strong><span class="muted">在架粮源</span></div><div class="box"><strong>26</strong><span class="muted">今日新增</span></div><div class="box"><strong class="orange">3.8 万吨</strong><span class="muted">挂牌总量</span></div></div>
+      <div class="filters"><div class="filter">搜索品种、产地、委托方</div><div class="filter">玉米</div><div class="filter">东北</div><div class="filter">二等以上</div><div class="filter">全部价格</div></div>
+      <div class="table"><div class="row head"><span>粮源</span><span>报价</span><span>数量</span><span>状态</span></div><div class="row focus"><span><b>黑龙江北安 · 二等玉米</b><span class="badge">公开挂牌</span></span><span>2,356 元/吨</span><span>180 吨</span><span class="orange">当前查看</span></div><div class="row"><span><b>吉林榆树 · 二等玉米</b><span class="badge">公开挂牌</span></span><span>2,372 元/吨</span><span>150 吨</span><span>加入候选</span></div><div class="row"><span><b>辽宁铁岭 · 三等玉米</b><span class="badge">公开挂牌</span></span><span>2,318 元/吨</span><span>300 吨</span><span>加入候选</span></div></div>
+    </div>
+    <div class="dock"><span class="avatar">粮</span><span class="context">当前：玉米筛选</span><span class="input">问粮小二，或直接描述找粮需求…</span><span class="send">↑</span></div>
+  </div>
+  <div class="conversation">
+    <div class="chathead"><div class="who"><span class="avatar">粮</span><span><b>粮小二</b><br><small class="online">● LangChain Agent 在线</small></span></div><span class="close">收起 ×</span></div>
+    <div class="messages">
+      <div class="bubble user">帮我从当前市场里找 120 吨二等玉米，7 天内能发。</div>
+      <div class="bubble ai">可以。目的地还没有提供，这不会影响我先筛选粮源，但会影响后续运输判断。需要现在补充吗？</div>
+      <div class="bubble user">送到深圳。</div>
+      <div class="card"><h4>请确认粮小二理解的采购条件</h4><div class="fields"><div class="field">品种<strong>玉米</strong></div><div class="field">数量<strong>120 吨</strong></div><div class="field">最低等级<strong>二等</strong></div><div class="field">最晚发运<strong>7 天内</strong></div><div class="field">目的地<strong>深圳</strong></div><div class="field">价格上限<strong>未限制</strong></div></div><div class="notice">确认后创建寻源任务并开始分析</div><div class="actions"><span class="button">确认并执行</span><span class="button ghost">继续修改</span></div></div>
+      <div class="process"><b>粮小二正在执行</b><div class="steps"><span><i class="ok">✓</i> 读取当前有效挂牌 128 条</span><span><i class="ok">✓</i> 硬条件过滤后保留 18 条</span><span><i class="ok">✓</i> 对 6 条信息较完整粮源进行比较</span></div></div>
+      <div class="bubble ai">方案已生成：北安粮源作为主推，榆树粮源作为备选。铁岭报价最低，但等级不符合，所以未入选。还有 4 项事实需要人工核验。</div>
+    </div>
+    <div class="chatinput">继续追问、修改条件，或输入“把方案交给运小二”…</div>
+  </div>
+</div>
+
+<div class="rules"><div class="rule"><b>自动携带页面上下文</b><p>当前 Tab、筛选条件、选中粮源和活动任务可直接被 Agent 使用；界面明确显示当前引用的上下文。</p></div><div class="rule"><b>只展示执行摘要</b><p>展示读取了多少条、过滤剩多少条、用了哪些业务工具；不暴露模型内部思维过程。</p></div><div class="rule"><b>按影响程度确认</b><p>查询、筛选和解释自动执行；创建任务、覆盖条件、交接其他小二前要求用户确认。</p></div><div class="rule"><b>LangChain 统一框架</b><p>后端使用 LangChain Agent 与结构化 Tools；业务硬规则放在确定性服务中，不交给大模型自由决定。</p></div></div>
+
+<p style="margin-top:14px;color:#8f9db1;font-size:12px">对话栏在四个 Tab 常驻；桌面端展开为右侧工作台，窄屏时改为底部抽屉。</p>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brainstorm</title>
+</head>
+<body>
+<style>
+  .layout-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px;margin-top:20px}.choice-card{cursor:pointer;overflow:hidden;border-radius:18px;border:1px solid rgba(148,163,184,.2);background:#0b1220;transition:.2s}.choice-card:hover{transform:translateY(-2px);border-color:rgba(34,211,238,.45)}.choice-card.selected{border-color:#ee7b1f;box-shadow:0 0 0 2px rgba(238,123,31,.2)}.shot{height:430px;color:#e9eef7;font-size:8px;background:linear-gradient(145deg,#0d172b,#09111f)}.top{height:29px;display:flex;align-items:center;justify-content:space-between;padding:0 10px;background:#131c36;border-bottom:1px solid rgba(148,163,184,.13)}.brand{color:#ff9b45;font-weight:800}.nav{color:#8391a7;word-spacing:7px}.agent{height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 10px;border-bottom:1px solid rgba(148,163,184,.12)}.who{display:flex;align-items:center;gap:6px;font-weight:750;font-size:10px}.avatar{width:24px;height:24px;display:grid;place-items:center;border-radius:50%;color:#ffd984;background:rgba(201,144,42,.13);border:1px solid rgba(201,144,42,.32)}.switch{padding:3px 5px;border:1px solid rgba(148,163,184,.17);border-radius:7px;color:#8f9db1}.tabs{height:27px;display:flex;align-items:center;gap:11px;padding:0 10px;color:#7d8ba0;border-bottom:1px solid rgba(148,163,184,.12);white-space:nowrap}.tabs b{height:27px;display:flex;align-items:center;color:#fff;border-bottom:2px solid #ee7b1f}.body{position:relative;padding:8px 9px 49px}.task{display:flex;justify-content:space-between;align-items:center;padding:7px 8px;border-radius:8px;background:linear-gradient(120deg,rgba(238,123,31,.11),rgba(19,28,54,.72));border:1px solid rgba(238,123,31,.25)}.task strong{color:#ffc18a}.pills{display:flex;gap:4px}.pill{padding:3px 5px;border-radius:999px;border:1px solid rgba(148,163,184,.16);color:#a3afc0}.filters{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:6px}.filter{padding:5px;border-radius:6px;background:rgba(19,28,54,.72);border:1px solid rgba(148,163,184,.12);color:#99a7b9}.main{display:grid;grid-template-columns:1.42fr .63fr;gap:6px;margin-top:6px}.panel{padding:7px;border-radius:8px;background:rgba(19,28,54,.7);border:1px solid rgba(148,163,184,.12)}.panelhead{display:flex;justify-content:space-between;align-items:center}.muted{color:#8290a5}.orange{color:#ff9b45}.cyan{color:#4fddee}.green{color:#4bd9a7}.warn{color:#ff9c75}.rows{display:grid;gap:4px;margin-top:5px}.listing{display:grid;grid-template-columns:1.2fr .55fr .6fr .5fr;gap:5px;padding:6px;border-radius:7px;background:rgba(255,255,255,.025);border:1px solid transparent}.listing:hover{border-color:rgba(34,211,238,.2)}.listing b{display:block;margin-bottom:2px}.badge{display:inline-flex;padding:2px 4px;border-radius:4px;background:rgba(34,211,238,.07);color:#51ddeb;font-size:7px}.demo{background:rgba(238,123,31,.09);color:#ffad67}.pick{padding:3px;text-align:center;border-radius:5px;background:rgba(238,123,31,.13);color:#ffae69}.shortlist{background:linear-gradient(145deg,rgba(201,144,42,.07),rgba(19,28,54,.73));border-color:rgba(201,144,42,.23)}.candidate{padding:6px;border-radius:7px;background:rgba(255,255,255,.026);margin-top:5px}.candidate strong{display:block;margin:3px 0}.candidate.primary{border:1px solid rgba(238,123,31,.28)}.reason{margin-top:4px;color:#8593a7;line-height:1.4}.button{margin-top:5px;padding:5px;border-radius:6px;text-align:center;background:#ee7b1f;color:white;font-weight:700}.composer{position:absolute;left:9px;right:9px;bottom:8px;height:32px;display:flex;align-items:center;gap:6px;padding:0 7px;border:1px solid rgba(34,211,238,.2);border-radius:10px;background:rgba(19,28,54,.96)}.input{flex:1;color:#6f7e94}.send{height:22px;width:22px;border-radius:6px;display:grid;place-items:center;color:white;background:#ee7b1f}.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:5px;margin-top:6px}.sourcecard{padding:7px;border-radius:8px;background:rgba(19,28,54,.72);border:1px solid rgba(148,163,184,.13)}.sourcecard.rec{border-color:rgba(238,123,31,.33)}.price{font-size:13px;margin:5px 0;font-weight:800}.score{float:right;padding:2px 4px;border-radius:5px;background:rgba(73,217,167,.08);color:#4bd9a7}.table{margin-top:6px;border-radius:7px;overflow:hidden;border:1px solid rgba(148,163,184,.12)}.tr{display:grid;grid-template-columns:1.2fr .65fr .5fr .55fr .55fr .35fr;gap:4px;padding:6px;background:rgba(19,28,54,.68);border-bottom:1px solid rgba(148,163,184,.09)}.tr.head{color:#8391a6;background:rgba(255,255,255,.02)}.ai-ribbon{display:flex;align-items:center;justify-content:space-between;margin-top:6px;padding:7px;border-radius:8px;background:rgba(34,211,238,.055);border:1px solid rgba(34,211,238,.14)}.caption{min-height:151px;padding:14px;background:#111a2d}.caption h3{margin:0 0 6px;font-size:15px;color:#eef3f9}.caption p{margin:0;color:#92a0b4;font-size:11px;line-height:1.58}.recommend{display:inline-block;margin-bottom:7px;padding:3px 6px;border-radius:999px;color:#ffd6b1;background:rgba(238,123,31,.13);font-size:9px}@media(max-width:1000px){.layout-grid{grid-template-columns:1fr}.shot{height:440px}}
+</style>
+
+<h2>粮小二默认页：粮源市场应该怎样融合 AI 优选？</h2>
+<p class="subtitle">三套方案都默认展示粮源，不要求用户先填表；从瞻小二进入时，顶部增加采购任务条并自动筛选。</p>
+
+<div class="layout-grid">
+  <div class="choice-card" data-choice="a-market-shortlist" onclick="toggleSelect(this)">
+    <div class="shot">
+      <div class="top"><span class="brand">粮达网 Plus</span><span class="nav">粮掌柜　我的办事　企业知识库</span></div>
+      <div class="agent"><div class="who"><span class="avatar">粮</span>粮小二｜找粮源</div><span class="switch">切换小二⌄</span></div>
+      <div class="tabs"><b>粮源市场</b><span>候选方案</span><span>供应方</span><span>寻源任务</span><span>历史记录</span></div>
+      <div class="body">
+        <div class="task"><div><strong>来自瞻小二：先采购 120 吨玉米</strong><br><span class="muted">深圳到货 · 48 小时内完成比价</span></div><div class="pills"><span class="pill">自动筛选中</span><span class="pill">调整条件</span></div></div>
+        <div class="filters"><div class="filter">玉米⌄</div><div class="filter">东北二等⌄</div><div class="filter">产地不限⌄</div><div class="filter">≥120 吨⌄</div><div class="filter">交期 7 天⌄</div></div>
+        <div class="main">
+          <div class="panel"><div class="panelhead"><b>匹配粮源 18 条</b><span class="muted">综合匹配排序⌄</span></div><div class="rows">
+            <div class="listing"><div><b>黑龙江北安 · 二等玉米</b><span class="badge">公开挂牌</span> <span class="badge demo">质检演示</span></div><div><b>2,356</b><span class="muted">库提价/吨</span></div><div><b>180 吨</b><span class="muted">可供应</span></div><div><span class="pick">加入候选</span></div></div>
+            <div class="listing"><div><b>吉林榆树 · 二等玉米</b><span class="badge">公开挂牌</span> <span class="badge demo">履约演示</span></div><div><b>2,372</b><span class="muted">车板价/吨</span></div><div><b>150 吨</b><span class="muted">可供应</span></div><div><span class="pick">加入候选</span></div></div>
+            <div class="listing"><div><b>辽宁铁岭 · 三等玉米</b><span class="badge">公开挂牌</span></div><div><b>2,318</b><span class="muted">库提价/吨</span></div><div><b>300 吨</b><span class="muted">可供应</span></div><div><span class="warn">质量不符</span></div></div>
+            <div class="listing"><div><b>内蒙古通辽 · 二等玉米</b><span class="badge">公开挂牌</span></div><div><b>2,348</b><span class="muted">库提价/吨</span></div><div><b>90 吨</b><span class="muted">可供应</span></div><div><span class="warn">数量不足</span></div></div>
+          </div></div>
+          <div class="panel shortlist"><div class="panelhead"><b>粮小二候选篮</b><span class="orange">2 / 3</span></div><div class="candidate primary"><span class="orange">主推</span><strong>黑龙江北安粮源</strong><div class="reason">等级匹配 · 数量充足 · 报价口径清晰<br><span class="warn">待核实：水分与发运排期</span></div></div><div class="candidate"><span class="cyan">备选</span><strong>吉林榆树粮源</strong><div class="reason">履约表现较好 · 车板交接更清晰<br><span class="warn">报价高 16 元/吨</span></div></div><div class="button">生成候选方案</div></div>
+        </div>
+        <div class="composer"><span class="avatar" style="width:20px;height:20px">粮</span><span class="input">问粮小二：“为什么低价的铁岭粮源没入选？”</span><span class="send">↑</span></div>
+      </div>
+    </div>
+    <div class="caption"><span class="recommend">推荐方案</span><h3>A｜交易列表 + AI 候选篮</h3><p>左侧保持粮达交易页的浏览和筛选习惯，右侧把选中的粮源组织成主推与备选。既能逛市场，也能看到 AI 为什么选、为什么淘汰。</p></div>
+  </div>
+
+  <div class="choice-card" data-choice="b-card-market" onclick="toggleSelect(this)">
+    <div class="shot">
+      <div class="top"><span class="brand">粮达网 Plus</span><span class="nav">粮掌柜　我的办事　企业知识库</span></div>
+      <div class="agent"><div class="who"><span class="avatar">粮</span>粮小二｜找粮源</div><span class="switch">切换小二⌄</span></div>
+      <div class="tabs"><b>粮源市场</b><span>AI 推荐</span><span>供应方</span><span>我的寻源</span></div>
+      <div class="body">
+        <div class="task"><div><strong>为 120 吨玉米寻找粮源</strong><br><span class="muted">深圳到货 · 来自瞻小二</span></div><span class="pill">匹配 6 条</span></div>
+        <div class="filters"><div class="filter">玉米⌄</div><div class="filter">东北二等⌄</div><div class="filter">全部产地⌄</div><div class="filter">价格不限⌄</div><div class="filter">综合推荐⌄</div></div>
+        <div class="cards">
+          <div class="sourcecard rec"><span class="score">92% 匹配</span><b>黑龙江北安</b><div class="price">2,356 元/吨</div><span class="badge">公开挂牌</span><p class="muted">二等 · 180吨 · 库提</p><div class="reason">数量与等级均满足<br>待核实水分</div><div class="button">选为主推</div></div>
+          <div class="sourcecard"><span class="score">87% 匹配</span><b>吉林榆树</b><div class="price">2,372 元/吨</div><span class="badge">公开挂牌</span><p class="muted">二等 · 150吨 · 车板</p><div class="reason">履约较好<br>价格略高</div><div class="pick">加入备选</div></div>
+          <div class="sourcecard"><span class="score" style="color:#ff9c75">61% 匹配</span><b>辽宁铁岭</b><div class="price">2,318 元/吨</div><span class="badge">公开挂牌</span><p class="muted">三等 · 300吨 · 库提</p><div class="reason"><span class="warn">等级不符合硬条件</span></div><div class="pick">查看详情</div></div>
+          <div class="sourcecard"><span class="score" style="color:#ff9c75">68% 匹配</span><b>内蒙古通辽</b><div class="price">2,348 元/吨</div><span class="badge">公开挂牌</span><p class="muted">二等 · 90吨 · 库提</p><div class="reason"><span class="warn">单一粮源数量不足</span></div><div class="pick">组合采购</div></div>
+        </div>
+        <div class="composer"><span class="avatar" style="width:20px;height:20px">粮</span><span class="input">描述其他找粮需求，或问我这些粮源有什么差异…</span><span class="send">↑</span></div>
+      </div>
+    </div>
+    <div class="caption"><h3>B｜粮源卡片市场</h3><p>每个粮源用卡片展示匹配率和优缺点，更友好、更像 AI 产品；但同屏比较数量少，大宗交易用户快速扫价的效率较低。</p></div>
+  </div>
+
+  <div class="choice-card" data-choice="c-classic-table" onclick="toggleSelect(this)">
+    <div class="shot">
+      <div class="top"><span class="brand">粮达网 Plus</span><span class="nav">粮掌柜　我的办事　企业知识库</span></div>
+      <div class="agent"><div class="who"><span class="avatar">粮</span>粮小二｜找粮源</div><span class="switch">切换小二⌄</span></div>
+      <div class="tabs"><b>挂牌粮源</b><span>询价交易</span><span>竞价交易</span><span>收藏</span><span>我的交易</span></div>
+      <div class="body">
+        <div class="filters"><div class="filter">品种⌄</div><div class="filter">地区⌄</div><div class="filter">年份⌄</div><div class="filter">等级⌄</div><div class="filter">价格区间⌄</div></div>
+        <div class="table"><div class="tr head"><span>粮源/产地</span><span>价格</span><span>等级</span><span>数量</span><span>日期</span><span>选择</span></div><div class="tr"><span>北安玉米</span><b>2,356</b><span>二等</span><span>180吨</span><span>08-22</span><span>□</span></div><div class="tr"><span>榆树玉米</span><b>2,372</b><span>二等</span><span>150吨</span><span>08-22</span><span>□</span></div><div class="tr"><span>铁岭玉米</span><b>2,318</b><span>三等</span><span>300吨</span><span>08-21</span><span>□</span></div><div class="tr"><span>通辽玉米</span><b>2,348</b><span>二等</span><span>90吨</span><span>08-21</span><span>□</span></div><div class="tr"><span>绥化玉米</span><b>2,362</b><span>二等</span><span>240吨</span><span>08-20</span><span>□</span></div></div>
+        <div class="ai-ribbon"><div><b>粮小二发现</b><br><span class="muted">按 120 吨、二等、7 天交期筛选，北安与榆树更合适</span></div><span class="button" style="margin:0">查看 AI 推荐</span></div>
+        <div class="panel" style="margin-top:6px"><b>交易公告 / 挂牌动态</b><div class="rows"><div class="row">08-22 新增黑龙江玉米挂牌 6 条</div><div class="row">08-21 吉林地区成交均价更新</div></div></div>
+        <div class="composer"><span class="avatar" style="width:20px;height:20px">粮</span><span class="input">让粮小二帮我筛选这批挂牌…</span><span class="send">↑</span></div>
+      </div>
+    </div>
+    <div class="caption"><h3>C｜传统交易表格 + AI 提示</h3><p>最接近现有交易页面，信息密度最高、学习成本最低；但 AI 只像附加功能，主推、备选和淘汰原因不够突出。</p></div>
+  </div>
+</div>
+
+<p style="margin-top:16px;color:#8f9db1;font-size:12px">点击方案进行选择；也可以告诉我希望组合哪些部分。</p>
+</body>
+</html>

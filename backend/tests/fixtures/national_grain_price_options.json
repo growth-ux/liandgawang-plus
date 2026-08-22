@@ -1,0 +1,946 @@
+{
+  "code": "001",
+  "message": "读取成功",
+  "data": {
+    "provinceList": [
+      {
+        "value": "北京市",
+        "key": "110000"
+      },
+      {
+        "value": "天津市",
+        "key": "120000"
+      },
+      {
+        "value": "河北省",
+        "key": "130000"
+      },
+      {
+        "value": "山西省",
+        "key": "140000"
+      },
+      {
+        "value": "内蒙古自治区",
+        "key": "150000"
+      },
+      {
+        "value": "辽宁省",
+        "key": "210000"
+      },
+      {
+        "value": "吉林省",
+        "key": "220000"
+      },
+      {
+        "value": "黑龙江省",
+        "key": "230000"
+      },
+      {
+        "value": "上海市",
+        "key": "310000"
+      },
+      {
+        "value": "江苏省",
+        "key": "320000"
+      },
+      {
+        "value": "浙江省",
+        "key": "330000"
+      },
+      {
+        "value": "安徽省",
+        "key": "340000"
+      },
+      {
+        "value": "福建省",
+        "key": "350000"
+      },
+      {
+        "value": "江西省",
+        "key": "360000"
+      },
+      {
+        "value": "山东省",
+        "key": "370000"
+      },
+      {
+        "value": "河南省",
+        "key": "410000"
+      },
+      {
+        "value": "湖北省",
+        "key": "420000"
+      },
+      {
+        "value": "湖南省",
+        "key": "430000"
+      },
+      {
+        "value": "广东省",
+        "key": "440000"
+      },
+      {
+        "value": "广西壮族自治区",
+        "key": "450000"
+      },
+      {
+        "value": "海南省",
+        "key": "460000"
+      },
+      {
+        "value": "重庆市",
+        "key": "500000"
+      },
+      {
+        "value": "四川省",
+        "key": "510000"
+      },
+      {
+        "value": "贵州省",
+        "key": "520000"
+      },
+      {
+        "value": "云南省",
+        "key": "530000"
+      },
+      {
+        "value": "陕西省",
+        "key": "610000"
+      },
+      {
+        "value": "甘肃省",
+        "key": "620000"
+      },
+      {
+        "value": "青海省",
+        "key": "630000"
+      },
+      {
+        "value": "宁夏回族自治区",
+        "key": "640000"
+      },
+      {
+        "value": "新疆维吾尔自治区",
+        "key": "650000"
+      }
+    ],
+    "varietyList": [
+      {
+        "areaCode": "110000",
+        "varietyID": "2101",
+        "varietyName": "小麦"
+      },
+      {
+        "areaCode": "110000",
+        "varietyID": "2102",
+        "varietyName": "玉米"
+      },
+      {
+        "areaCode": "110000",
+        "varietyID": "2103",
+        "varietyName": "稻谷"
+      },
+      {
+        "areaCode": "110000",
+        "varietyID": "2106",
+        "varietyName": "油脂"
+      },
+      {
+        "areaCode": "110000",
+        "varietyID": "2110",
+        "varietyName": "成品粮"
+      },
+      {
+        "areaCode": "120000",
+        "varietyID": "2101",
+        "varietyName": "小麦"
+      },
+      {
+        "areaCode": "120000",
+        "varietyID": "2103",
+        "varietyName": "稻谷"
+      },
+      {
+        "areaCode": "120000",
+        "varietyID": "2106",
+        "varietyName": "油脂"
+      },
+      {
+        "areaCode": "120000",
+        "varietyID": "2107",
+        "varietyName": "油料"
+      },
+      {
+        "areaCode": "120000",
+        "varietyID": "2110",
+        "varietyName": "成品粮"
+      },
+      {
+        "areaCode": "130000",
+        "varietyID": "2101",
+        "varietyName": "小麦"
+      },
+      {
+        "areaCode": "130000",
+        "varietyID": "2102",
+        "varietyName": "玉米"
+      },
+      {
+        "areaCode": "130000",
+        "varietyID": "2103",
+        "varietyName": "稻谷"
+      },
+      {
+        "areaCode": "130000",
+        "varietyID": "2106",
+        "varietyName": "油脂"
+      },
+      {
+        "areaCode": "130000",
+        "varietyID": "2107",
+        "varietyName": "油料"
+      },
+      {
+        "areaCode": "130000",
+        "varietyID": "2110",
+        "varietyName": "成品粮"
+      },
+      {
+        "areaCode": "140000",
+        "varietyID": "2101",
+        "varietyName": "小麦"
+      },
+      {
+        "areaCode": "140000",
+        "varietyID": "2102",
+        "varietyName": "玉米"
+      },
+      {
+        "areaCode": "140000",
+        "varietyID": "2110",
+        "varietyName": "成品粮"
+      },
+      {
+        "areaCode": "150000",
+        "varietyID": "2101",
+        "varietyName": "小麦"
+      },
+      {
+        "areaCode": "150000",
+        "varietyID": "2102",
+        "varietyName": "玉米"
+      },
+      {
+        "areaCode": "150000",
+        "varietyID": "2103",
+        "varietyName": "稻谷"
+      },
+      {
+        "areaCode": "150000",
+        "varietyID": "2106",
+        "varietyName": "油脂"
+      },
+      {
+        "areaCode": "150000",
+        "varietyID": "2107",
+        "varietyName": "油料"
+      },
+      {
+        "areaCode": "150000",
+        "varietyID": "2110",
+        "varietyName": "成品粮"
+      },
+      {
+        "areaCode": "150000",
+        "varietyID": "2116",
+        "varietyName": "其他"
+      },
+      {
+        "areaCode": "210000",
+        "varietyID": "2101",
+        "varietyName": "小麦"
+      },
+      {
+        "areaCode": "210000",
+        "varietyID": "2102",
+        "varietyName": "玉米"
+      },
+      {
+        "areaCode": "210000",
+        "varietyID": "2103",
+        "varietyName": "稻谷"
+      },
+      {
+        "areaCode": "210000",
+        "varietyID": "2106",
+        "varietyName": "油脂"
+      },
+      {
+        "areaCode": "210000",
+        "varietyID": "2107",
+        "varietyName": "油料"
+      },
+      {
+        "areaCode": "210000",
+        "varietyID": "2110",
+        "varietyName": "成品粮"
+      },
+      {
+        "areaCode": "220000",
+        "varietyID": "2101",
+        "varietyName": "小麦"
+      },
+      {
+        "areaCode": "220000",
+        "varietyID": "2102",
+        "varietyName": "玉米"
+      },
+      {
+        "areaCode": "220000",
+        "varietyID": "2103",
+        "varietyName": "稻谷"
+      },
+      {
+        "areaCode": "220000",
+        "varietyID": "2106",
+        "varietyName": "油脂"
+      },
+      {
+        "areaCode": "220000",
+        "varietyID": "2107",
+        "varietyName": "油料"
+      },
+      {
+        "areaCode": "230000",
+        "varietyID": "2101",
+        "varietyName": "小麦"
+      },
+      {
+        "areaCode": "230000",
+        "varietyID": "2102",
+        "varietyName": "玉米"
+      },
+      {
+        "areaCode": "230000",
+        "varietyID": "2103",
+        "varietyName": "稻谷"
+      },
+      {
+        "areaCode": "230000",
+        "varietyID": "2107",
+        "varietyName": "油料"
+      },
+      {
+        "areaCode": "230000",
+        "varietyID": "2109",
+        "varietyName": "贸易粮"
+      },
+      {
+        "areaCode": "230000",
+        "varietyID": "2110",
+        "varietyName": "成品粮"
+      },
+      {
+        "areaCode": "310000",
+        "varietyID": "2101",
+        "varietyName": "小麦"
+      },
+      {
+        "areaCode": "310000",
+        "varietyID": "2102",
+        "varietyName": "玉米"
+      },
+      {
+        "areaCode": "310000",
+        "varietyID": "2103",
+        "varietyName": "稻谷"
+      },
+      {
+        "areaCode": "310000",
+        "varietyID": "2106",
+        "varietyName": "油脂"
+      },
+      {
+        "areaCode": "310000",
+        "varietyID": "2109",
+        "varietyName": "贸易粮"
+      },
+      {
+        "areaCode": "310000",
+        "varietyID": "2110",
+        "varietyName": "成品粮"
+      },
+      {
+        "areaCode": "320000",
+        "varietyID": "2101",
+        "varietyName": "小麦"
+      },
+      {
+        "areaCode": "320000",
+        "varietyID": "2102",
+        "varietyName": "玉米"
+      },
+      {
+        "areaCode": "320000",
+        "varietyID": "2103",
+        "varietyName": "稻谷"
+      },
+      {
+        "areaCode": "320000",
+        "varietyID": "2106",
+        "varietyName": "油脂"
+      },
+      {
+        "areaCode": "320000",
+        "varietyID": "2107",
+        "varietyName": "油料"
+      },
+      {
+        "areaCode": "320000",
+        "varietyID": "2109",
+        "varietyName": "贸易粮"
+      },
+      {
+        "areaCode": "320000",
+        "varietyID": "2110",
+        "varietyName": "成品粮"
+      },
+      {
+        "areaCode": "330000",
+        "varietyID": "2101",
+        "varietyName": "小麦"
+      },
+      {
+        "areaCode": "330000",
+        "varietyID": "2102",
+        "varietyName": "玉米"
+      },
+      {
+        "areaCode": "330000",
+        "varietyID": "2103",
+        "varietyName": "稻谷"
+      },
+      {
+        "areaCode": "330000",
+        "varietyID": "2106",
+        "varietyName": "油脂"
+      },
+      {
+        "areaCode": "330000",
+        "varietyID": "2107",
+        "varietyName": "油料"
+      },
+      {
+        "areaCode": "330000",
+        "varietyID": "2109",
+        "varietyName": "贸易粮"
+      },
+      {
+        "areaCode": "330000",
+        "varietyID": "2110",
+        "varietyName": "成品粮"
+      },
+      {
+        "areaCode": "340000",
+        "varietyID": "2101",
+        "varietyName": "小麦"
+      },
+      {
+        "areaCode": "340000",
+        "varietyID": "2102",
+        "varietyName": "玉米"
+      },
+      {
+        "areaCode": "340000",
+        "varietyID": "2103",
+        "varietyName": "稻谷"
+      },
+      {
+        "areaCode": "340000",
+        "varietyID": "2106",
+        "varietyName": "油脂"
+      },
+      {
+        "areaCode": "340000",
+        "varietyID": "2107",
+        "varietyName": "油料"
+      },
+      {
+        "areaCode": "340000",
+        "varietyID": "2109",
+        "varietyName": "贸易粮"
+      },
+      {
+        "areaCode": "340000",
+        "varietyID": "2110",
+        "varietyName": "成品粮"
+      },
+      {
+        "areaCode": "350000",
+        "varietyID": "2101",
+        "varietyName": "小麦"
+      },
+      {
+        "areaCode": "350000",
+        "varietyID": "2102",
+        "varietyName": "玉米"
+      },
+      {
+        "areaCode": "350000",
+        "varietyID": "2103",
+        "varietyName": "稻谷"
+      },
+      {
+        "areaCode": "350000",
+        "varietyID": "2106",
+        "varietyName": "油脂"
+      },
+      {
+        "areaCode": "350000",
+        "varietyID": "2107",
+        "varietyName": "油料"
+      },
+      {
+        "areaCode": "350000",
+        "varietyID": "2110",
+        "varietyName": "成品粮"
+      },
+      {
+        "areaCode": "360000",
+        "varietyID": "2103",
+        "varietyName": "稻谷"
+      },
+      {
+        "areaCode": "360000",
+        "varietyID": "2106",
+        "varietyName": "油脂"
+      },
+      {
+        "areaCode": "360000",
+        "varietyID": "2110",
+        "varietyName": "成品粮"
+      },
+      {
+        "areaCode": "370000",
+        "varietyID": "2101",
+        "varietyName": "小麦"
+      },
+      {
+        "areaCode": "370000",
+        "varietyID": "2102",
+        "varietyName": "玉米"
+      },
+      {
+        "areaCode": "370000",
+        "varietyID": "2103",
+        "varietyName": "稻谷"
+      },
+      {
+        "areaCode": "370000",
+        "varietyID": "2106",
+        "varietyName": "油脂"
+      },
+      {
+        "areaCode": "370000",
+        "varietyID": "2107",
+        "varietyName": "油料"
+      },
+      {
+        "areaCode": "410000",
+        "varietyID": "2101",
+        "varietyName": "小麦"
+      },
+      {
+        "areaCode": "410000",
+        "varietyID": "2102",
+        "varietyName": "玉米"
+      },
+      {
+        "areaCode": "410000",
+        "varietyID": "2103",
+        "varietyName": "稻谷"
+      },
+      {
+        "areaCode": "410000",
+        "varietyID": "2106",
+        "varietyName": "油脂"
+      },
+      {
+        "areaCode": "410000",
+        "varietyID": "2107",
+        "varietyName": "油料"
+      },
+      {
+        "areaCode": "420000",
+        "varietyID": "2101",
+        "varietyName": "小麦"
+      },
+      {
+        "areaCode": "420000",
+        "varietyID": "2102",
+        "varietyName": "玉米"
+      },
+      {
+        "areaCode": "420000",
+        "varietyID": "2103",
+        "varietyName": "稻谷"
+      },
+      {
+        "areaCode": "420000",
+        "varietyID": "2106",
+        "varietyName": "油脂"
+      },
+      {
+        "areaCode": "420000",
+        "varietyID": "2110",
+        "varietyName": "成品粮"
+      },
+      {
+        "areaCode": "420000",
+        "varietyID": "2114",
+        "varietyName": "基差品类"
+      },
+      {
+        "areaCode": "430000",
+        "varietyID": "2101",
+        "varietyName": "小麦"
+      },
+      {
+        "areaCode": "430000",
+        "varietyID": "2102",
+        "varietyName": "玉米"
+      },
+      {
+        "areaCode": "430000",
+        "varietyID": "2103",
+        "varietyName": "稻谷"
+      },
+      {
+        "areaCode": "430000",
+        "varietyID": "2106",
+        "varietyName": "油脂"
+      },
+      {
+        "areaCode": "430000",
+        "varietyID": "2107",
+        "varietyName": "油料"
+      },
+      {
+        "areaCode": "430000",
+        "varietyID": "2110",
+        "varietyName": "成品粮"
+      },
+      {
+        "areaCode": "440000",
+        "varietyID": "2101",
+        "varietyName": "小麦"
+      },
+      {
+        "areaCode": "440000",
+        "varietyID": "2102",
+        "varietyName": "玉米"
+      },
+      {
+        "areaCode": "440000",
+        "varietyID": "2103",
+        "varietyName": "稻谷"
+      },
+      {
+        "areaCode": "440000",
+        "varietyID": "2106",
+        "varietyName": "油脂"
+      },
+      {
+        "areaCode": "440000",
+        "varietyID": "2107",
+        "varietyName": "油料"
+      },
+      {
+        "areaCode": "440000",
+        "varietyID": "2110",
+        "varietyName": "成品粮"
+      },
+      {
+        "areaCode": "440000",
+        "varietyID": "2116",
+        "varietyName": "其他"
+      },
+      {
+        "areaCode": "450000",
+        "varietyID": "2101",
+        "varietyName": "小麦"
+      },
+      {
+        "areaCode": "450000",
+        "varietyID": "2103",
+        "varietyName": "稻谷"
+      },
+      {
+        "areaCode": "450000",
+        "varietyID": "2106",
+        "varietyName": "油脂"
+      },
+      {
+        "areaCode": "450000",
+        "varietyID": "2107",
+        "varietyName": "油料"
+      },
+      {
+        "areaCode": "450000",
+        "varietyID": "2110",
+        "varietyName": "成品粮"
+      },
+      {
+        "areaCode": "460000",
+        "varietyID": "2101",
+        "varietyName": "小麦"
+      },
+      {
+        "areaCode": "460000",
+        "varietyID": "2102",
+        "varietyName": "玉米"
+      },
+      {
+        "areaCode": "460000",
+        "varietyID": "2103",
+        "varietyName": "稻谷"
+      },
+      {
+        "areaCode": "460000",
+        "varietyID": "2106",
+        "varietyName": "油脂"
+      },
+      {
+        "areaCode": "460000",
+        "varietyID": "2109",
+        "varietyName": "贸易粮"
+      },
+      {
+        "areaCode": "460000",
+        "varietyID": "2110",
+        "varietyName": "成品粮"
+      },
+      {
+        "areaCode": "500000",
+        "varietyID": "2101",
+        "varietyName": "小麦"
+      },
+      {
+        "areaCode": "500000",
+        "varietyID": "2102",
+        "varietyName": "玉米"
+      },
+      {
+        "areaCode": "500000",
+        "varietyID": "2103",
+        "varietyName": "稻谷"
+      },
+      {
+        "areaCode": "500000",
+        "varietyID": "2106",
+        "varietyName": "油脂"
+      },
+      {
+        "areaCode": "500000",
+        "varietyID": "2107",
+        "varietyName": "油料"
+      },
+      {
+        "areaCode": "500000",
+        "varietyID": "2110",
+        "varietyName": "成品粮"
+      },
+      {
+        "areaCode": "500000",
+        "varietyID": "2115",
+        "varietyName": "白砂糖"
+      },
+      {
+        "areaCode": "510000",
+        "varietyID": "2101",
+        "varietyName": "小麦"
+      },
+      {
+        "areaCode": "510000",
+        "varietyID": "2102",
+        "varietyName": "玉米"
+      },
+      {
+        "areaCode": "510000",
+        "varietyID": "2103",
+        "varietyName": "稻谷"
+      },
+      {
+        "areaCode": "510000",
+        "varietyID": "2106",
+        "varietyName": "油脂"
+      },
+      {
+        "areaCode": "510000",
+        "varietyID": "2107",
+        "varietyName": "油料"
+      },
+      {
+        "areaCode": "510000",
+        "varietyID": "2110",
+        "varietyName": "成品粮"
+      },
+      {
+        "areaCode": "520000",
+        "varietyID": "2101",
+        "varietyName": "小麦"
+      },
+      {
+        "areaCode": "520000",
+        "varietyID": "2102",
+        "varietyName": "玉米"
+      },
+      {
+        "areaCode": "520000",
+        "varietyID": "2103",
+        "varietyName": "稻谷"
+      },
+      {
+        "areaCode": "520000",
+        "varietyID": "2106",
+        "varietyName": "油脂"
+      },
+      {
+        "areaCode": "520000",
+        "varietyID": "2107",
+        "varietyName": "油料"
+      },
+      {
+        "areaCode": "520000",
+        "varietyID": "2110",
+        "varietyName": "成品粮"
+      },
+      {
+        "areaCode": "530000",
+        "varietyID": "2101",
+        "varietyName": "小麦"
+      },
+      {
+        "areaCode": "530000",
+        "varietyID": "2102",
+        "varietyName": "玉米"
+      },
+      {
+        "areaCode": "530000",
+        "varietyID": "2103",
+        "varietyName": "稻谷"
+      },
+      {
+        "areaCode": "530000",
+        "varietyID": "2106",
+        "varietyName": "油脂"
+      },
+      {
+        "areaCode": "530000",
+        "varietyID": "2110",
+        "varietyName": "成品粮"
+      },
+      {
+        "areaCode": "610000",
+        "varietyID": "2101",
+        "varietyName": "小麦"
+      },
+      {
+        "areaCode": "610000",
+        "varietyID": "2102",
+        "varietyName": "玉米"
+      },
+      {
+        "areaCode": "610000",
+        "varietyID": "2103",
+        "varietyName": "稻谷"
+      },
+      {
+        "areaCode": "610000",
+        "varietyID": "2106",
+        "varietyName": "油脂"
+      },
+      {
+        "areaCode": "620000",
+        "varietyID": "2101",
+        "varietyName": "小麦"
+      },
+      {
+        "areaCode": "620000",
+        "varietyID": "2102",
+        "varietyName": "玉米"
+      },
+      {
+        "areaCode": "620000",
+        "varietyID": "2106",
+        "varietyName": "油脂"
+      },
+      {
+        "areaCode": "620000",
+        "varietyID": "2110",
+        "varietyName": "成品粮"
+      },
+      {
+        "areaCode": "630000",
+        "varietyID": "2101",
+        "varietyName": "小麦"
+      },
+      {
+        "areaCode": "630000",
+        "varietyID": "2106",
+        "varietyName": "油脂"
+      },
+      {
+        "areaCode": "630000",
+        "varietyID": "2110",
+        "varietyName": "成品粮"
+      },
+      {
+        "areaCode": "630000",
+        "varietyID": "2112",
+        "varietyName": "生鲜"
+      },
+      {
+        "areaCode": "640000",
+        "varietyID": "2101",
+        "varietyName": "小麦"
+      },
+      {
+        "areaCode": "640000",
+        "varietyID": "2102",
+        "varietyName": "玉米"
+      },
+      {
+        "areaCode": "640000",
+        "varietyID": "2103",
+        "varietyName": "稻谷"
+      },
+      {
+        "areaCode": "640000",
+        "varietyID": "2106",
+        "varietyName": "油脂"
+      },
+      {
+        "areaCode": "650000",
+        "varietyID": "2101",
+        "varietyName": "小麦"
+      },
+      {
+        "areaCode": "650000",
+        "varietyID": "2102",
+        "varietyName": "玉米"
+      },
+      {
+        "areaCode": "650000",
+        "varietyID": "2106",
+        "varietyName": "油脂"
+      },
+      {
+        "areaCode": "650000",
+        "varietyID": "2107",
+        "varietyName": "油料"
+      }
+    ]
+  },
+  "ext": null
+}

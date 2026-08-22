@@ -1,0 +1,907 @@
+{
+  "code": "001",
+  "message": "读取成功",
+  "data": [
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "三级及以上",
+      "currentPrice": 3300.0,
+      "provinceName": "重庆市",
+      "varietyName": "大米",
+      "priceID": 2,
+      "basePrice": 3300.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "三等",
+      "currentPrice": 2700.0,
+      "provinceName": "黑龙江省",
+      "varietyName": "粳稻",
+      "priceID": 3,
+      "basePrice": 2700.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "等外",
+      "currentPrice": 1205.0,
+      "provinceName": "黑龙江省",
+      "varietyName": "稻谷筛下物",
+      "priceID": 4,
+      "basePrice": 1205.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "一等",
+      "currentPrice": 2480.0,
+      "provinceName": "重庆市",
+      "varietyName": "玉米",
+      "priceID": 5,
+      "basePrice": 2480.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "--",
+      "currentPrice": 2108.0,
+      "provinceName": "浙江省",
+      "varietyName": "饲料早籼稻谷",
+      "priceID": 6,
+      "basePrice": 2020.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "--",
+      "currentPrice": 2178.0,
+      "provinceName": "浙江省",
+      "varietyName": "晚籼谷",
+      "priceID": 7,
+      "basePrice": 2100.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "--",
+      "currentPrice": 2333.0,
+      "provinceName": "浙江省",
+      "varietyName": "早籼谷",
+      "priceID": 8,
+      "basePrice": 2200.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "--",
+      "currentPrice": 2900.0,
+      "provinceName": "浙江省",
+      "varietyName": "粳米",
+      "priceID": 9,
+      "basePrice": 2900.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "一等",
+      "currentPrice": 2910.0,
+      "provinceName": "云南省",
+      "varietyName": "粳稻",
+      "priceID": 10,
+      "basePrice": 2910.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "二等",
+      "currentPrice": 2355.0,
+      "provinceName": "云南省",
+      "varietyName": "中晚籼稻",
+      "priceID": 11,
+      "basePrice": 2350.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "二等及以上",
+      "currentPrice": 3450.0,
+      "provinceName": "云南省",
+      "varietyName": "粳稻",
+      "priceID": 12,
+      "basePrice": 3450.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "三等",
+      "currentPrice": 2195.0,
+      "provinceName": "广西壮族自治区",
+      "varietyName": "早籼谷",
+      "priceID": 13,
+      "basePrice": 2150.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "一等",
+      "currentPrice": 2450.0,
+      "provinceName": "广西壮族自治区",
+      "varietyName": "玉米",
+      "priceID": 14,
+      "basePrice": 2450.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "三级",
+      "currentPrice": 10550.0,
+      "provinceName": "青海省",
+      "varietyName": "菜籽油",
+      "priceID": 15,
+      "basePrice": 10250.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "三等",
+      "currentPrice": 2700.0,
+      "provinceName": "广西壮族自治区",
+      "varietyName": "籼稻谷(珍桂)",
+      "priceID": 16,
+      "basePrice": 2700.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "三级及以上",
+      "currentPrice": 10550.0,
+      "provinceName": "青海省",
+      "varietyName": "菜籽油",
+      "priceID": 17,
+      "basePrice": 10550.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "三等",
+      "currentPrice": 2150.0,
+      "provinceName": "广西壮族自治区",
+      "varietyName": "早籼稻",
+      "priceID": 18,
+      "basePrice": 2150.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "一等",
+      "currentPrice": 2352.0,
+      "provinceName": "山东省",
+      "varietyName": "玉米",
+      "priceID": 19,
+      "basePrice": 2347.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "三等",
+      "currentPrice": 2000.0,
+      "provinceName": "江西省",
+      "varietyName": "中晚籼稻",
+      "priceID": 20,
+      "basePrice": 2000.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "三等及以上",
+      "currentPrice": 2380.0,
+      "provinceName": "山东省",
+      "varietyName": "玉米",
+      "priceID": 21,
+      "basePrice": 2380.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "二等及以上",
+      "currentPrice": 2717.2,
+      "provinceName": "江苏省",
+      "varietyName": "粳稻",
+      "priceID": 22,
+      "basePrice": 2722.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "三等及以上",
+      "currentPrice": 2832.5,
+      "provinceName": "江苏省",
+      "varietyName": "粳/糯稻",
+      "priceID": 23,
+      "basePrice": 2825.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "二等",
+      "currentPrice": 2460.0,
+      "provinceName": "江苏省",
+      "varietyName": "粳稻",
+      "priceID": 24,
+      "basePrice": 2450.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "一等",
+      "currentPrice": 2520.0,
+      "provinceName": "江苏省",
+      "varietyName": "中晚籼稻",
+      "priceID": 25,
+      "basePrice": 2520.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "一等",
+      "currentPrice": 2441.11,
+      "provinceName": "江苏省",
+      "varietyName": "粳稻",
+      "priceID": 26,
+      "basePrice": 2441.11
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "一级",
+      "currentPrice": 3250.0,
+      "provinceName": "江苏省",
+      "varietyName": "粳米",
+      "priceID": 27,
+      "basePrice": 3380.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "三等及以上",
+      "currentPrice": 2520.0,
+      "provinceName": "江苏省",
+      "varietyName": "中晚籼稻",
+      "priceID": 28,
+      "basePrice": 2520.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "三级",
+      "currentPrice": 10410.0,
+      "provinceName": "江苏省",
+      "varietyName": "菜籽油",
+      "priceID": 29,
+      "basePrice": 10400.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "--",
+      "currentPrice": 1754.0,
+      "provinceName": "江苏省",
+      "varietyName": "稻谷副产品",
+      "priceID": 30,
+      "basePrice": 1754.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "三等及以上",
+      "currentPrice": 2687.33,
+      "provinceName": "江苏省",
+      "varietyName": "粳稻",
+      "priceID": 31,
+      "basePrice": 2700.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "--",
+      "currentPrice": 2627.22,
+      "provinceName": "江苏省",
+      "varietyName": "粳稻",
+      "priceID": 32,
+      "basePrice": 2580.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "一等",
+      "currentPrice": 2360.0,
+      "provinceName": "湖北省",
+      "varietyName": "小麦",
+      "priceID": 33,
+      "basePrice": 2360.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "二等及以上",
+      "currentPrice": 2600.0,
+      "provinceName": "湖北省",
+      "varietyName": "小麦",
+      "priceID": 34,
+      "basePrice": 2600.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "三等",
+      "currentPrice": 2170.0,
+      "provinceName": "湖北省",
+      "varietyName": "中晚籼稻",
+      "priceID": 35,
+      "basePrice": 2160.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "三等",
+      "currentPrice": 2280.0,
+      "provinceName": "湖南省",
+      "varietyName": "优质稻",
+      "priceID": 36,
+      "basePrice": 2280.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "二等",
+      "currentPrice": 2140.0,
+      "provinceName": "湖南省",
+      "varietyName": "中晚籼稻",
+      "priceID": 37,
+      "basePrice": 2140.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "三等",
+      "currentPrice": 2100.0,
+      "provinceName": "湖南省",
+      "varietyName": "早籼稻",
+      "priceID": 38,
+      "basePrice": 2100.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "二等",
+      "currentPrice": 2300.0,
+      "provinceName": "湖南省",
+      "varietyName": "优质中晚籼稻",
+      "priceID": 39,
+      "basePrice": 2300.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "二等及以上",
+      "currentPrice": 2330.0,
+      "provinceName": "陕西省",
+      "varietyName": "国产玉米",
+      "priceID": 40,
+      "basePrice": 2330.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "一等",
+      "currentPrice": 2271.05,
+      "provinceName": "辽宁省",
+      "varietyName": "玉米",
+      "priceID": 41,
+      "basePrice": 2270.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "三等",
+      "currentPrice": 2548.0,
+      "provinceName": "广东省",
+      "varietyName": "晚籼稻珍桂",
+      "priceID": 42,
+      "basePrice": 2500.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "二等及以上",
+      "currentPrice": 2870.0,
+      "provinceName": "辽宁省",
+      "varietyName": "稻谷（盐丰）",
+      "priceID": 43,
+      "basePrice": 2870.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "三等及以上",
+      "currentPrice": 2641.0,
+      "provinceName": "福建省",
+      "varietyName": "早籼稻谷（短圆粒）",
+      "priceID": 44,
+      "basePrice": 2730.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "三等",
+      "currentPrice": 2132.5,
+      "provinceName": "福建省",
+      "varietyName": "早籼稻谷",
+      "priceID": 45,
+      "basePrice": 2087.5
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "三等及以上",
+      "currentPrice": 2633.0,
+      "provinceName": "福建省",
+      "varietyName": "早籼稻谷",
+      "priceID": 46,
+      "basePrice": 2720.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "三等及以上",
+      "currentPrice": 2656.0,
+      "provinceName": "福建省",
+      "varietyName": "早籼稻",
+      "priceID": 47,
+      "basePrice": 2720.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "一级",
+      "currentPrice": 3250.0,
+      "provinceName": "四川省",
+      "varietyName": "籼米",
+      "priceID": 48,
+      "basePrice": 3250.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "二等",
+      "currentPrice": 2425.0,
+      "provinceName": "内蒙古自治区",
+      "varietyName": "玉米",
+      "priceID": 49,
+      "basePrice": 2425.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "二级",
+      "currentPrice": 3323.75,
+      "provinceName": "四川省",
+      "varietyName": "大米",
+      "priceID": 50,
+      "basePrice": 3317.5
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "三等及以上",
+      "currentPrice": 2641.67,
+      "provinceName": "四川省",
+      "varietyName": "中晚籼稻",
+      "priceID": 51,
+      "basePrice": 2673.33
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "三等",
+      "currentPrice": 2062.5,
+      "provinceName": "四川省",
+      "varietyName": "稻谷",
+      "priceID": 52,
+      "basePrice": 2059.17
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "三等",
+      "currentPrice": 1960.0,
+      "provinceName": "四川省",
+      "varietyName": "中晚籼稻",
+      "priceID": 53,
+      "basePrice": 1960.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "三等及以上",
+      "currentPrice": 2627.0,
+      "provinceName": "四川省",
+      "varietyName": "稻谷",
+      "priceID": 54,
+      "basePrice": 2688.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "二等",
+      "currentPrice": 2475.0,
+      "provinceName": "山西省",
+      "varietyName": "硬质白小麦",
+      "priceID": 55,
+      "basePrice": 2540.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "二等",
+      "currentPrice": 2200.0,
+      "provinceName": "山西省",
+      "varietyName": "玉米",
+      "priceID": 56,
+      "basePrice": 2200.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "三等及以上",
+      "currentPrice": 2435.45,
+      "provinceName": "山西省",
+      "varietyName": "硬质白小麦",
+      "priceID": 57,
+      "basePrice": 2470.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "一级",
+      "currentPrice": 3180.0,
+      "provinceName": "山西省",
+      "varietyName": "面粉",
+      "priceID": 58,
+      "basePrice": 3180.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "二等",
+      "currentPrice": 2210.0,
+      "provinceName": "重庆市",
+      "varietyName": "稻谷",
+      "priceID": 59,
+      "basePrice": 2175.0
+    },
+    {
+      "dateTime": "2026-08-21",
+      "gradeName": "三等",
+      "currentPrice": 2220.0,
+      "provinceName": "重庆市",
+      "varietyName": "稻谷",
+      "priceID": 60,
+      "basePrice": 2220.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "三等",
+      "currentPrice": 2149.0,
+      "provinceName": "重庆市",
+      "varietyName": "稻谷",
+      "priceID": 61,
+      "basePrice": 2147.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "一级",
+      "currentPrice": 9900.0,
+      "provinceName": "内蒙古自治区",
+      "varietyName": "大豆油",
+      "priceID": 62,
+      "basePrice": 9900.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "三等及以上",
+      "currentPrice": 2680.0,
+      "provinceName": "四川省",
+      "varietyName": "稻谷",
+      "priceID": 63,
+      "basePrice": 2680.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "一等",
+      "currentPrice": 2570.0,
+      "provinceName": "甘肃省",
+      "varietyName": "小麦",
+      "priceID": 64,
+      "basePrice": 2570.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "--",
+      "currentPrice": 2339.33,
+      "provinceName": "福建省",
+      "varietyName": "常规稻种子（佳辐占）",
+      "priceID": 65,
+      "basePrice": 2293.33
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "三等及以上",
+      "currentPrice": 2631.33,
+      "provinceName": "福建省",
+      "varietyName": "早籼稻谷",
+      "priceID": 66,
+      "basePrice": 2750.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "二级",
+      "currentPrice": 3240.0,
+      "provinceName": "广东省",
+      "varietyName": "早籼米（圆身短粒型）",
+      "priceID": 67,
+      "basePrice": 3180.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "--",
+      "currentPrice": 160.0,
+      "provinceName": "广东省",
+      "varietyName": "仓储服务费用（稻谷）",
+      "priceID": 68,
+      "basePrice": 160.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "三等",
+      "currentPrice": 2660.0,
+      "provinceName": "广东省",
+      "varietyName": "早籼稻",
+      "priceID": 69,
+      "basePrice": 2740.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "二级",
+      "currentPrice": 3790.0,
+      "provinceName": "广东省",
+      "varietyName": "丰两优米",
+      "priceID": 70,
+      "basePrice": 3950.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "三等",
+      "currentPrice": 2690.0,
+      "provinceName": "广东省",
+      "varietyName": "晚籼稻（黄花粘）",
+      "priceID": 71,
+      "basePrice": 2610.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "二级",
+      "currentPrice": 2900.0,
+      "provinceName": "广东省",
+      "varietyName": "丰两优米",
+      "priceID": 72,
+      "basePrice": 2900.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "一级",
+      "currentPrice": 9165.0,
+      "provinceName": "广东省",
+      "varietyName": "大豆油",
+      "priceID": 73,
+      "basePrice": 9300.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "三级",
+      "currentPrice": 2147.5,
+      "provinceName": "广东省",
+      "varietyName": "早籼稻",
+      "priceID": 74,
+      "basePrice": 2100.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "一等",
+      "currentPrice": 2260.0,
+      "provinceName": "辽宁省",
+      "varietyName": "玉米",
+      "priceID": 75,
+      "basePrice": 2260.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "二等",
+      "currentPrice": 2448.33,
+      "provinceName": "上海市",
+      "varietyName": "粳稻谷",
+      "priceID": 76,
+      "basePrice": 2300.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "三等",
+      "currentPrice": 2750.0,
+      "provinceName": "广东省",
+      "varietyName": "早籼稻（圆身短粒型）",
+      "priceID": 77,
+      "basePrice": 2780.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "--",
+      "currentPrice": 4900.0,
+      "provinceName": "广东省",
+      "varietyName": "综合储备费用（冻猪肉）",
+      "priceID": 78,
+      "basePrice": 4900.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "三等",
+      "currentPrice": 2250.0,
+      "provinceName": "湖南省",
+      "varietyName": "早籼稻",
+      "priceID": 79,
+      "basePrice": 2250.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "二等",
+      "currentPrice": 2160.0,
+      "provinceName": "湖南省",
+      "varietyName": "中晚籼稻",
+      "priceID": 80,
+      "basePrice": 2160.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "三等",
+      "currentPrice": 2025.0,
+      "provinceName": "湖南省",
+      "varietyName": "中晚籼稻",
+      "priceID": 81,
+      "basePrice": 2025.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "三等",
+      "currentPrice": 2413.33,
+      "provinceName": "湖北省",
+      "varietyName": "中晚籼稻",
+      "priceID": 82,
+      "basePrice": 2413.33
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "二等",
+      "currentPrice": 2335.0,
+      "provinceName": "湖北省",
+      "varietyName": "中晚籼稻",
+      "priceID": 83,
+      "basePrice": 2280.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "一级",
+      "currentPrice": 173.0,
+      "provinceName": "江苏省",
+      "varietyName": "大豆油",
+      "priceID": 84,
+      "basePrice": 175.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "三等及以上",
+      "currentPrice": 2720.0,
+      "provinceName": "江苏省",
+      "varietyName": "粳稻",
+      "priceID": 85,
+      "basePrice": 2726.67
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "二等",
+      "currentPrice": 2400.0,
+      "provinceName": "江苏省",
+      "varietyName": "混合麦",
+      "priceID": 86,
+      "basePrice": 2400.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "一等",
+      "currentPrice": 2520.0,
+      "provinceName": "江苏省",
+      "varietyName": "粳稻",
+      "priceID": 87,
+      "basePrice": 2520.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "三等",
+      "currentPrice": 2104.4,
+      "provinceName": "江西省",
+      "varietyName": "晚籼稻",
+      "priceID": 88,
+      "basePrice": 2060.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "三等",
+      "currentPrice": 2098.0,
+      "provinceName": "江西省",
+      "varietyName": "早籼稻",
+      "priceID": 89,
+      "basePrice": 2040.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "一级",
+      "currentPrice": 2862.0,
+      "provinceName": "江西省",
+      "varietyName": "晚籼米",
+      "priceID": 90,
+      "basePrice": 2865.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "三等",
+      "currentPrice": 1988.8,
+      "provinceName": "江西省",
+      "varietyName": "中晚籼稻",
+      "priceID": 91,
+      "basePrice": 1957.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "一级",
+      "currentPrice": 12665.0,
+      "provinceName": "贵州省",
+      "varietyName": "菜籽油",
+      "priceID": 92,
+      "basePrice": 13000.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "一级",
+      "currentPrice": 4435.0,
+      "provinceName": "贵州省",
+      "varietyName": "粳米",
+      "priceID": 93,
+      "basePrice": 4600.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "三等及以上",
+      "currentPrice": 2666.88,
+      "provinceName": "贵州省",
+      "varietyName": "中晚籼稻谷",
+      "priceID": 94,
+      "basePrice": 2727.5
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "一等",
+      "currentPrice": 2433.0,
+      "provinceName": "广西壮族自治区",
+      "varietyName": "黄玉米",
+      "priceID": 95,
+      "basePrice": 2430.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "二等及以上",
+      "currentPrice": 2780.0,
+      "provinceName": "青海省",
+      "varietyName": "混合麦",
+      "priceID": 96,
+      "basePrice": 2780.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "--",
+      "currentPrice": 348.0,
+      "provinceName": "浙江省",
+      "varietyName": "晚粳米",
+      "priceID": 97,
+      "basePrice": 400.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "--",
+      "currentPrice": 2320.0,
+      "provinceName": "浙江省",
+      "varietyName": "粳稻谷",
+      "priceID": 98,
+      "basePrice": 2320.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "--",
+      "currentPrice": 2483.0,
+      "provinceName": "浙江省",
+      "varietyName": "早籼稻谷",
+      "priceID": 99,
+      "basePrice": 2615.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "--",
+      "currentPrice": 2300.0,
+      "provinceName": "浙江省",
+      "varietyName": "早籼谷",
+      "priceID": 100,
+      "basePrice": 2300.0
+    },
+    {
+      "dateTime": "2026-08-20",
+      "gradeName": "三级",
+      "currentPrice": 10300.0,
+      "provinceName": "新疆维吾尔自治区",
+      "varietyName": "葵花籽油",
+      "priceID": 101,
+      "basePrice": 10300.0
+    }
+  ],
+  "ext": null
+}
