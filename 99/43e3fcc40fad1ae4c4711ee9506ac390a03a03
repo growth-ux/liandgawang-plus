@@ -1,0 +1,25 @@
+docs/粮达网Plus产品设计文档-V2.md
+  s_d746d3fe244f39::t_4cae96f41a67d7 308,310-314,320,322-328,330
+  s_d746d3fe244f39::t_0af9270058de32 343-344,346-347,349,353-354,364,366-367,591,593-595,619-623
+  s_d746d3fe244f39::t_ba64f2979474ce 3-6,287,289,304,358,368,403,629
+  s_d746d3fe244f39::t_376d7035b7fd47 8,81-88,266-276
+  s_d746d3fe244f39::t_ceeea43e82719d 282,355-356
+  s_d746d3fe244f39::t_ccf3a2c4411559 624
+  s_d746d3fe244f39::t_3c23af607a56c6 630
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "9943e3fcc40fad1ae4c4711ee9506ac390a03a03",
+  "prompts": {},
+  "sessions": {
+    "s_d746d3fe244f39": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0284e-c6f7-7b21-b315-35808a96c5a2",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
