@@ -1,0 +1,44 @@
+backend/app/main.py
+  h_7549b7dc6a6921 11-13,22,41
+backend/app/workflow/models.py
+  h_7549b7dc6a6921 1-33
+backend/app/workflow/repository.py
+  h_7549b7dc6a6921 1-52
+backend/app/workflow/routes.py
+  h_7549b7dc6a6921 1-113
+backend/app/workflow/rules.py
+  h_7549b7dc6a6921 1-52
+backend/app/workflow/seed.py
+  h_7549b7dc6a6921 1-53
+backend/tests/conftest.py
+  h_7549b7dc6a6921 9
+backend/tests/workflow/test_repository.py
+  h_7549b7dc6a6921 1-99
+backend/tests/workflow/test_routes.py
+  h_7549b7dc6a6921 1-129
+backend/tests/workflow/test_rules.py
+  h_7549b7dc6a6921 1-47
+docs/superpowers/plans/2026-08-23-zhan-watch-tab.md
+  h_7549b7dc6a6921 1-1397
+docs/superpowers/specs/2026-08-23-zhan-watch-tab-design.md
+  h_7549b7dc6a6921 1-179
+web/src/features/zhan/WatchesTab.tsx
+  h_7549b7dc6a6921 1-437
+web/src/features/zhan/ZhanPage.tsx
+  h_7549b7dc6a6921 14,136-137
+web/src/features/zhan/api.ts
+  h_7549b7dc6a6921 7,68-107
+web/src/features/zhan/types.ts
+  h_7549b7dc6a6921 154-175
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "b456dd820b56a7efad82ede49e193c18af4ebb96",
+  "prompts": {},
+  "humans": {
+    "h_7549b7dc6a6921": {
+      "author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
