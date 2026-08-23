@@ -166,3 +166,17 @@ export interface SourcingTask {
   handoff: TaskHandoff | null;
   created_at: string | null;
 }
+
+export interface ComparisonItemReview {
+  listing_id: number;
+  advantages: string[];
+  risks: string[];
+}
+
+export interface ComparisonInterpretation {
+  summary: string;
+  recommendation: string;
+  key_differences: string[];
+  item_reviews: ComparisonItemReview[];
+  source: "llm" | "rule";
+}

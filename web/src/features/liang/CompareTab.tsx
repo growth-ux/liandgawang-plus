@@ -1,223 +1,272 @@
-// web/src/features/liang/CompareTab.tsx
 import { useEffect, useState } from "react";
-import { fetchListings } from "./api";
+import { interpretCandidateComparison } from "./api";
 import { useCandidates } from "./CandidateContext";
-import { compareListings } from "./compare";
-import NeedInputBar from "./NeedInputBar";
-import { fmtInt, fmtQuality, fmtDate } from "./format";
-import type { CompareResult, Listing, NeedInput, NeedSummary, Pick } from "./types";
+import { fmtDate, fmtInt, fmtQuality } from "./format";
+import type { ComparisonInterpretation, Listing } from "./types";
 
-function NeedSummaryCard({ summary }: { summary: NeedSummary }) {
-  const parts: string[] = [];
-  if (summary.variety) parts.push(summary.variety);
-  if (summary.grade) parts.push(summary.grade);
-  if (summary.crop_year) parts.push(`${summary.crop_year} 年`);
-  if (summary.quantity_tons != null) parts.push(`${summary.quantity_tons} 吨`);
-  if (summary.deadline) parts.push(`最晚 ${summary.deadline} 发运`);
-  if (summary.budget_price != null) parts.push(`预算 ≤ ${summary.budget_price} 元/吨`);
+function CompareTable({ listings, onRemove }: { listings: Listing[]; onRemove: (id: number) => void }) {
   return (
-    <div className="rounded-2xl border border-line bg-panel px-5 py-4">
-      <span className="text-xs text-ink-soft">当前需求</span>
-      <div className="mt-1 text-sm font-medium text-ink">
-        {parts.length ? parts.join(" · ") : "未指定条件"}
-      </div>
-    </div>
-  );
-}
-
-function PickCard({ pick, label }: { pick: Pick; label: string }) {
-  const l = pick.listing;
-  return (
-    <div className="rounded-2xl border border-line bg-panel p-5">
-      <div className="flex items-center justify-between">
-        <span className="text-sm font-semibold text-brand-deep">{label}</span>
-        <span className="text-xs text-ink-soft">{l.listing_code}</span>
-      </div>
-      <div className="mt-2 text-lg font-semibold text-ink">
-        {l.variety_name} · {l.grade} · {l.crop_year}
-        <span className="ml-2 text-sm font-normal text-ink-soft">
-          {l.origin_province} {l.origin_city}
-        </span>
-      </div>
-      <div className="mt-2 text-2xl font-semibold tabular-nums text-tech">
-        {fmtInt(l.price)}
-        <span className="ml-1 text-xs font-normal text-ink-soft">元/吨 · {l.price_type}</span>
-      </div>
-      <div className="mt-3 space-y-1 text-sm text-ink">
-        <div>供应方：{l.supplier_name}</div>
-        <div>可用量：{fmtInt(l.available_quantity_tons)} 吨 · {l.delivery_type}</div>
-        <div>发运：{fmtDate(l.earliest_ship_at)} ~ {fmtDate(l.latest_ship_at)}</div>
-        <div>
-          质检：水分 {fmtQuality(l.moisture_pct)}% · 容重 {fmtQuality(l.test_weight_g_l)} g/L
-        </div>
-      </div>
-      <div className="mt-3 rounded-xl bg-rice px-4 py-2.5">
-        <div className="text-xs text-ink-soft">入选理由</div>
-        <div className="mt-1 text-sm text-ink">{pick.reasons.join("；")}</div>
-      </div>
-      {pick.risks.length > 0 && (
-        <div className="mt-2 text-xs text-amber-300">风险：{pick.risks.join("；")}</div>
-      )}
-      <div className="mt-2 text-xs text-ink-soft">待核验 {pick.verification_count} 项</div>
-    </div>
-  );
-}
-
-function EliminatedList({ eliminated }: { eliminated: CompareResult["eliminated"] }) {
-  if (eliminated.length === 0) return null;
-  return (
-    <div className="rounded-2xl border border-line bg-panel p-5">
-      <div className="mb-3 text-sm font-semibold">未入选原因</div>
-      <ul className="space-y-2">
-        {eliminated.map((e) => (
-          <li key={e.listing.id} className="flex items-start justify-between gap-4 text-sm">
-            <span className="shrink-0 text-ink">
-              {e.listing.variety_name}·{e.listing.grade} · {e.listing.supplier_name}
-            </span>
-            <span className="text-right text-ink-soft">{e.reason_text}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-function VerificationList({ verifications }: { verifications: string[] }) {
-  if (verifications.length === 0) return null;
-  return (
-    <div className="rounded-2xl border border-line bg-panel p-5">
-      <div className="mb-3 text-sm font-semibold">交易前待核验清单</div>
-      <ol className="space-y-1.5">
-        {verifications.map((v, i) => (
-          <li key={v} className="text-sm text-ink">
-            <span className="mr-2 text-ink-soft">{i + 1}.</span>
-            {v}
-          </li>
-        ))}
-      </ol>
-    </div>
-  );
-}
-
-function CompareTable({ result }: { result: CompareResult }) {
-  const reasonOf = (id: number) =>
-    result.eliminated.find((e) => e.listing.id === id)?.reason_code;
-  return (
-    <div className="overflow-x-auto rounded-2xl border border-line bg-panel">
-      <table className="w-full min-w-[860px] text-sm">
+    <div className="overflow-x-auto rounded-2xl border border-line bg-panel shadow-[0_16px_36px_rgba(0,0,0,0.12)]">
+      <table className="w-full min-w-[1080px] text-sm">
         <thead>
-          <tr className="border-b border-line text-left text-xs text-ink-soft">
+          <tr className="border-b border-line bg-rice/40 text-left text-[11px] tracking-wide text-ink-soft">
             <th className="px-4 py-3 font-normal">品种·等级·年份</th>
             <th className="px-4 py-3 font-normal">产地</th>
             <th className="px-4 py-3 font-normal">供应方</th>
             <th className="px-4 py-3 font-normal">报价（口径）</th>
             <th className="px-4 py-3 font-normal">可用量</th>
-            <th className="px-4 py-3 font-normal">发运</th>
-            <th className="px-4 py-3 font-normal">质检</th>
-            <th className="px-4 py-3 font-normal">状态</th>
+            <th className="px-4 py-3 font-normal">交收方式</th>
+            <th className="px-4 py-3 font-normal">发运窗口</th>
+            <th className="px-4 py-3 font-normal">质检指标</th>
+            <th className="px-4 py-3 font-normal">操作</th>
           </tr>
         </thead>
         <tbody>
-          {result.scope.map((l) => {
-            const code = reasonOf(l.id);
-            const isPrimary = result.primary?.listing.id === l.id;
-            const isBackup = result.backup?.listing.id === l.id;
-            return (
-              <tr key={l.id} className="border-b border-line/60 last:border-0">
-                <td className="px-4 py-3 text-ink">
-                  {l.variety_name}·{l.grade}·{l.crop_year}
-                </td>
-                <td className="px-4 py-3 text-ink">
-                  {l.origin_province} {l.origin_city}
-                </td>
-                <td className="px-4 py-3 text-ink">{l.supplier_name}</td>
-                <td className="px-4 py-3 tabular-nums text-ink">
-                  {fmtInt(l.price)}
-                  <span className="ml-1 text-xs text-ink-soft">{l.price_type}</span>
-                </td>
-                <td className="px-4 py-3 tabular-nums text-ink">
-                  {fmtInt(l.available_quantity_tons)}吨
-                </td>
-                <td className="px-4 py-3 text-ink">{fmtDate(l.latest_ship_at)}</td>
-                <td className="px-4 py-3 text-xs text-ink-soft">
-                  {l.moisture_pct ? `水分${fmtQuality(l.moisture_pct)}%` : "--"}
-                </td>
-                <td className="px-4 py-3">
-                  {isPrimary ? (
-                    <span className="rounded-full bg-brand px-2 py-0.5 text-xs text-white">主推</span>
-                  ) : isBackup ? (
-                    <span className="rounded-full bg-tech px-2 py-0.5 text-xs text-rice">备选</span>
-                  ) : code ? (
-                    <span className="text-xs text-ink-soft">{code}</span>
-                  ) : (
-                    <span className="text-xs text-ink-soft">候选</span>
-                  )}
-                </td>
-              </tr>
-            );
-          })}
+          {listings.map((listing) => (
+            <tr key={listing.id} className="border-b border-line/60 last:border-0 transition-colors hover:bg-rice-deep/45">
+              <td className="px-4 py-3.5 font-medium text-ink">
+                {listing.variety_name} · {listing.grade}
+                <div className="mt-1 text-[11px] font-normal text-ink-soft">
+                  {listing.listing_code} · {listing.crop_year} 年
+                </div>
+              </td>
+              <td className="px-4 py-3 text-ink">{listing.origin_province} {listing.origin_city}</td>
+              <td className="px-4 py-3 text-ink">{listing.supplier_name}</td>
+              <td className="px-4 py-3.5 tabular-nums text-brand-deep">
+                <span className="text-base font-semibold">{fmtInt(listing.price)}</span>
+                <span className="ml-1 text-[11px] text-ink-soft">元/吨</span>
+                <div className="mt-1 text-[11px] font-normal text-ink-soft">{listing.price_type}</div>
+              </td>
+              <td className="px-4 py-3 tabular-nums text-ink">{fmtInt(listing.available_quantity_tons)} 吨</td>
+              <td className="px-4 py-3 text-ink">{listing.delivery_type}</td>
+              <td className="px-4 py-3 text-ink">
+                {fmtDate(listing.earliest_ship_at)}
+                <span className="mx-1 text-ink-soft">~</span>
+                {fmtDate(listing.latest_ship_at)}
+              </td>
+              <td className="px-4 py-3 text-xs leading-5 text-ink-soft">
+                <div>水分 {fmtQuality(listing.moisture_pct)}%</div>
+                <div>容重 {fmtQuality(listing.test_weight_g_l)} g/L</div>
+              </td>
+              <td className="px-4 py-3">
+                <button
+                  type="button"
+                  onClick={() => onRemove(listing.id)}
+                  className="rounded-full border border-line px-3 py-1 text-xs text-ink-soft transition-colors hover:border-red-400 hover:text-red-400"
+                >
+                  移出对比
+                </button>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>
   );
 }
 
-export default function CompareTab({
-  need,
-  onNeedChange,
+function CandidateSelector({
+  listings,
+  selectedIds,
+  onToggle,
 }: {
-  need: NeedInput | null;
-  onNeedChange: (need: NeedInput, raw: string) => void;
+  listings: Listing[];
+  selectedIds: number[];
+  onToggle: (id: number) => void;
 }) {
-  const { candidates } = useCandidates();
-  const [all, setAll] = useState<Listing[]>([]);
+  const selected = new Set(selectedIds);
+  return (
+    <div className="overflow-x-auto rounded-2xl border border-line bg-panel">
+      <table className="w-full min-w-[760px] text-sm">
+        <thead>
+          <tr className="border-b border-line bg-rice/40 text-left text-[11px] tracking-wide text-ink-soft">
+            <th className="w-14 px-4 py-3 text-center font-normal">选择</th>
+            <th className="px-4 py-3 font-normal">粮源</th>
+            <th className="px-4 py-3 font-normal">产地</th>
+            <th className="px-4 py-3 font-normal">供应方</th>
+            <th className="px-4 py-3 font-normal">报价</th>
+            <th className="px-4 py-3 font-normal">可用量</th>
+            <th className="px-4 py-3 font-normal">最晚可发</th>
+          </tr>
+        </thead>
+        <tbody>
+          {listings.map((listing) => (
+            <tr key={listing.id} className={`border-b border-line/60 last:border-0 ${selected.has(listing.id) ? "bg-brand-faint/40" : ""}`}>
+              <td className="px-4 py-3 text-center">
+                <input
+                  type="checkbox"
+                  checked={selected.has(listing.id)}
+                  onChange={() => onToggle(listing.id)}
+                  aria-label={`选择 ${listing.variety_name} ${listing.grade}，${listing.supplier_name}`}
+                  className="h-4 w-4 cursor-pointer accent-brand"
+                />
+              </td>
+              <td className="px-4 py-3 font-medium text-ink">
+                {listing.variety_name} · {listing.grade}
+                <span className="ml-1.5 text-xs font-normal text-ink-soft">{listing.crop_year} 年</span>
+              </td>
+              <td className="px-4 py-3 text-ink">{listing.origin_province} {listing.origin_city}</td>
+              <td className="px-4 py-3 text-ink">{listing.supplier_name}</td>
+              <td className="px-4 py-3 tabular-nums text-brand-deep">
+                {fmtInt(listing.price)}<span className="ml-1 text-[11px] text-ink-soft">元/吨</span>
+              </td>
+              <td className="px-4 py-3 tabular-nums text-ink">{fmtInt(listing.available_quantity_tons)} 吨</td>
+              <td className="px-4 py-3 text-ink">{fmtDate(listing.latest_ship_at)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function AiInterpretation({ interpretation, listings }: { interpretation: ComparisonInterpretation; listings: Listing[] }) {
+  const listingName = (id: number) => {
+    const listing = listings.find((item) => item.id === id);
+    return listing ? `${listing.listing_code} · ${listing.supplier_name}` : "候选粮源";
+  };
+  return (
+    <section className="rounded-2xl border border-brand/35 bg-brand-faint/35 p-5">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <div className="text-[11px] font-medium tracking-[0.14em] text-brand-deep">AI COMPARISON INSIGHT</div>
+          <h3 className="mt-1 text-base font-semibold text-ink">粮小二深度解读</h3>
+        </div>
+        <span className="rounded-full border border-brand/25 bg-panel px-2.5 py-1 text-[11px] text-brand-deep">{interpretation.source === "llm" ? "AI 生成" : "智能解读"}</span>
+      </div>
+      <p className="mt-3 text-sm leading-6 text-ink">{interpretation.summary}</p>
+      <div className="mt-4 grid gap-3 lg:grid-cols-2">
+        <div className="rounded-xl border border-line bg-panel/80 p-4">
+          <div className="text-xs font-medium text-brand-deep">建议关注</div>
+          <p className="mt-2 text-sm leading-6 text-ink">{interpretation.recommendation}</p>
+        </div>
+        <div className="rounded-xl border border-line bg-panel/80 p-4">
+          <div className="text-xs font-medium text-brand-deep">关键差异</div>
+          <ul className="mt-2 space-y-1.5">
+            {interpretation.key_differences.map((item) => <li key={item} className="text-sm leading-5 text-ink">· {item}</li>)}
+          </ul>
+        </div>
+      </div>
+      <div className="mt-4 grid gap-3 lg:grid-cols-2">
+        {interpretation.item_reviews.map((review) => (
+          <div key={review.listing_id} className="rounded-xl border border-line bg-panel/80 p-4">
+            <div className="text-sm font-medium text-ink">{listingName(review.listing_id)}</div>
+            <div className="mt-2 text-xs font-medium text-tech">优势</div>
+            <p className="mt-1 text-xs leading-5 text-ink-soft">{review.advantages.join("；")}</p>
+            <div className="mt-2 text-xs font-medium text-amber-300">需核验</div>
+            <p className="mt-1 text-xs leading-5 text-ink-soft">{review.risks.join("；")}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+export default function CompareTab({ onGoFind }: { onGoFind: () => void }) {
+  const { candidates, clear, remove } = useCandidates();
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [compared, setCompared] = useState(false);
+  const [interpretation, setInterpretation] = useState<ComparisonInterpretation | null>(null);
+  const [interpreting, setInterpreting] = useState(false);
+  const [interpretError, setInterpretError] = useState<string | null>(null);
 
   useEffect(() => {
-    let cancelled = false;
-    fetchListings()
-      .then((d) => {
-        if (!cancelled) setAll(d);
-      })
-      .catch(() => {});
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+    setSelectedIds((previous) => {
+      const activeIds = new Set(candidates.map((candidate) => candidate.id));
+      const retained = previous.filter((id) => activeIds.has(id));
+      const additions = candidates.map((candidate) => candidate.id).filter((id) => !retained.includes(id));
+      return [...retained, ...additions];
+    });
+    setCompared(false);
+    setInterpretation(null);
+  }, [candidates]);
 
-  const result = compareListings(all, candidates, need);
+  const selectedListings = candidates.filter((candidate) => selectedIds.includes(candidate.id));
+  const toggle = (id: number) => {
+    setSelectedIds((previous) => previous.includes(id) ? previous.filter((item) => item !== id) : [...previous, id]);
+    setCompared(false);
+    setInterpretation(null);
+  };
+
+  async function runComparison() {
+    if (selectedListings.length < 2 || interpreting) return;
+    setInterpreting(true);
+    setInterpretError(null);
+    setInterpretation(null);
+    try {
+      const result = await interpretCandidateComparison(selectedListings.map((listing) => listing.id));
+      setInterpretation(result);
+      setCompared(true);
+    } catch (error) {
+      setInterpretError(error instanceof Error ? error.message : "暂时无法生成对比解读");
+    } finally {
+      setInterpreting(false);
+    }
+  }
+
+  if (candidates.length === 0) {
+    return (
+      <div className="flex min-h-[420px] flex-col items-center justify-center rounded-3xl border border-dashed border-line bg-panel/60 px-6 text-center">
+        <span className="text-[11px] font-medium tracking-[0.16em] text-tech">CANDIDATE COMPARISON</span>
+        <h2 className="mt-3 text-lg font-semibold text-ink">暂未选择粮源</h2>
+        <p className="mt-2 max-w-sm text-sm leading-6 text-ink-soft">
+          前往「找粮源」勾选至少 2 条粮源，再从报价、可用量、发运和质检指标中进行横向比较。
+        </p>
+        <button
+          type="button"
+          onClick={onGoFind}
+          className="mt-5 h-10 rounded-full bg-brand px-6 text-sm font-medium text-white"
+        >
+          去找粮源
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-4">
-      <NeedInputBar onSubmit={onNeedChange} />
-
-      {result.scope.length === 0 ? (
-        <div className="flex min-h-[360px] flex-col items-center justify-center rounded-3xl border border-dashed border-line bg-panel/60 text-center">
-          <p className="text-sm text-ink-soft">还没有可对比的粮源</p>
-          <p className="mt-2 text-xs text-ink-soft">
-            去「找粮源」收藏候选，或在上方描述你的采购需求。
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-line bg-panel px-5 py-4">
+        <div>
+          <div className="text-[11px] font-medium tracking-[0.14em] text-tech">CANDIDATE POOL</div>
+          <h2 className="mt-1 text-base font-semibold text-ink">候选粮源 {candidates.length} 条</h2>
+          <p className="mt-1 text-xs text-ink-soft">
+            勾选本次需要比较的粮源，再生成横向对比结果。
           </p>
         </div>
-      ) : (
-        <>
-          {result.need_summary && <NeedSummaryCard summary={result.need_summary} />}
-
-          {result.primary && (
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <PickCard pick={result.primary} label="主推粮源" />
-              {result.backup ? (
-                <PickCard pick={result.backup} label="备选粮源" />
-              ) : (
-                <div className="flex items-center justify-center rounded-2xl border border-dashed border-line bg-panel/40 text-sm text-ink-soft">
-                  暂无满足硬条件的备选
-                </div>
-              )}
+        <div className="flex items-center gap-2">
+          <button type="button" onClick={onGoFind} className="h-9 rounded-full border border-line px-4 text-sm text-ink transition-colors hover:border-tech">
+            继续找粮
+          </button>
+          <button type="button" onClick={clear} className="h-9 rounded-full px-3 text-sm text-ink-soft transition-colors hover:text-red-400">
+            清空候选
+          </button>
+        </div>
+      </div>
+      <CandidateSelector listings={candidates} selectedIds={selectedIds} onToggle={toggle} />
+      <div className="flex items-center justify-between rounded-2xl border border-line bg-rice/50 px-5 py-3.5">
+        <span className="text-sm text-ink-soft">本次已勾选 <span className="font-semibold text-ink">{selectedListings.length}</span> 条粮源</span>
+        <button
+          type="button"
+          disabled={selectedListings.length < 2}
+          onClick={runComparison}
+          className="h-10 rounded-full bg-brand px-6 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          {interpreting ? "粮小二分析中…" : `一键对比 ${selectedListings.length > 0 ? `${selectedListings.length} 条` : ""}`}
+        </button>
+      </div>
+      {interpretError && <p className="text-sm text-red-400">{interpretError}</p>}
+      {compared && (
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center justify-between px-1">
+            <div>
+              <div className="text-[11px] font-medium tracking-[0.14em] text-tech">COMPARISON RESULT</div>
+              <h3 className="mt-1 text-base font-semibold text-ink">横向对比结果</h3>
             </div>
-          )}
-
-          <EliminatedList eliminated={result.eliminated} />
-          <VerificationList verifications={result.verifications} />
-          <CompareTable result={result} />
-        </>
+            <span className="text-xs text-ink-soft">共 {selectedListings.length} 条</span>
+          </div>
+          {interpretation && <AiInterpretation interpretation={interpretation} listings={selectedListings} />}
+          <CompareTable listings={selectedListings} onRemove={remove} />
+        </div>
       )}
     </div>
   );

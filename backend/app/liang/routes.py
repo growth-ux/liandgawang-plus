@@ -6,9 +6,14 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.liang import metrics, repository
+from app.liang.llm import interpret_comparison
 from app.liang.models import SourcingTask
 
 router = APIRouter(prefix="/api/liang", tags=["liang"])
+
+
+class ComparisonRequest(BaseModel):
+    listing_ids: list[int]
 
 
 def _serialize(l):
@@ -81,6 +86,26 @@ def get_market_summary(db: Session = Depends(get_db)):
         "summary": metrics.build_summary(listings),
         "discoveries": metrics.build_discoveries(listings),
     }
+
+
+@router.post("/compare/interpret")
+def interpret_candidate_comparison(
+    body: ComparisonRequest,
+    db: Session = Depends(get_db),
+):
+    """按候选粮源 ID 生成 AI 深度对比，模型不可用时使用规则解读。"""
+    ids = list(dict.fromkeys(body.listing_ids))
+    if len(ids) < 2:
+        raise HTTPException(status_code=422, detail="至少选择 2 条粮源后才能对比")
+    if len(ids) > 8:
+        raise HTTPException(status_code=422, detail="单次最多对比 8 条粮源")
+    listings = []
+    for listing_id in ids:
+        listing = repository.get_listing(db, listing_id)
+        if listing is None:
+            raise HTTPException(status_code=404, detail=f"粮源 {listing_id} 不存在")
+        listings.append(_serialize(listing))
+    return interpret_comparison(listings)
 
 
 class TaskCreate(BaseModel):
