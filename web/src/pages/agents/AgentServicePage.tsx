@@ -4,6 +4,7 @@ import { getAgent, taskStatuses } from "../../data/agents";
 import AgentAvatar from "../../components/AgentAvatar";
 import AgentSwitcher from "../../components/AgentSwitcher";
 import ZhanPage from "../../features/zhan/ZhanPage";
+import LiangPage from "../../features/liang/LiangPage";
 
 /** 七位小二共用的专业服务页模板（轻占位） */
 export default function AgentServicePage() {
@@ -13,6 +14,7 @@ export default function AgentServicePage() {
 
   if (!agent) return <Navigate to="/" replace />;
   if (agent.id === "zhan") return <ZhanPage />;
+  if (agent.id === "liang") return <LiangPage />;
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)] flex-col">
