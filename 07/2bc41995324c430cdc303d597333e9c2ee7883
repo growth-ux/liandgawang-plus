@@ -1,0 +1,180 @@
+web/src/features/yun/PlanDecisionCard.tsx
+  s_7d7b0013a900f3::t_4ebefab0ef2acb 1-80
+web/src/features/yun/LogisticsFilterPanel.tsx
+  s_dc79982f943374::t_d74f177bc36c48 1-95
+  s_dc79982f943374::t_06c9d21dd0e7f7 96-98
+  h_7549b7dc6a6921 99-153
+web/src/features/yun/TransportPlanComposer.tsx
+  s_7d7b0013a900f3::t_2aef0434407770 2-5,7-32,34-89,92-161,163-207,211-212
+  s_1150b48169bb20::t_6336ce66eec9dc 33
+  s_1150b48169bb20::t_d48f24f3af41ec 6
+  s_7d7b0013a900f3::t_6392800b961ac5 90-91
+  h_7549b7dc6a6921 162
+  s_7d7b0013a900f3::t_559162d341f1d5 1
+  s_7d7b0013a900f3::t_f67618cb275ad7 208-210
+backend/app/logistics/seed.py
+  s_7d7b0013a900f3::t_9192a46429633e 71-78
+  s_dc79982f943374::t_e2c1bf6fed36b9 1,13-70,81-103,106-151,156-204
+backend/app/logistics/rules.py
+  s_7d7b0013a900f3::t_a487f4db3b579c 148-159
+  s_1150b48169bb20::t_3873355dd295bc 1
+  s_7d7b0013a900f3::t_576ab8b2727dd6 12-45
+  s_dc79982f943374::t_178db187bfcb07 61
+web/src/features/yun/api.ts
+  s_dc79982f943374::t_259ddff5c689b7 28-30
+  s_7d7b0013a900f3::t_6df710bc3331a5 2
+  s_7d7b0013a900f3::t_7616b4ee291f4b 33-37
+  s_7f9e44e26f95b9::t_5ef73600d4e08f 5,45
+README.md
+  h_7549b7dc6a6921 1,3-5
+web/src/features/yun/YunPage.tsx
+  s_7d7b0013a900f3::t_78bb2e725a154f 14
+  s_7d7b0013a900f3::t_200afc87fc6e20 83-84
+  s_7d7b0013a900f3::t_60551b386ae174 15-17
+  s_7d7b0013a900f3::t_99e7e0fed41618 82
+  s_7d7b0013a900f3::t_4a3c7c6a87753e 85-87
+  h_7549b7dc6a6921 1,11,18-35,80,88-89,91,99
+web/src/features/yun/Pagination.tsx
+  s_dc79982f943374::t_57e51c8ae0c685 1-37
+backend/app/logistics/models.py
+  s_7d7b0013a900f3::t_f8b8efbaaeccf1 64
+  s_1150b48169bb20::t_5de5a604686197 61
+backend/app/logistics/routes.py
+  s_7d7b0013a900f3::t_bafe953f4428b6 145
+  s_1150b48169bb20::t_1fe97ec3e50a00 45
+  s_7d7b0013a900f3::t_454c29c8e823d8 223,227-229,240
+  s_7d7b0013a900f3::t_53e3bb6106a4db 3
+  s_dc79982f943374::t_140eacb3652c45 118,127,129
+  s_7d7b0013a900f3::t_69a2da327af6fe 55-59
+  s_1150b48169bb20::t_1723869db2fc39 11
+  s_7d7b0013a900f3::t_5f3cbf3d54a8a0 42
+  s_7d7b0013a900f3::t_6755753d35523e 198
+  s_1150b48169bb20::t_59428e32d8376b 44
+  s_7f9e44e26f95b9::t_2ab2c2f176cac0 293-305
+web/src/features/yun/types.ts
+  s_1150b48169bb20::t_b3fe251115c5c5 1
+  s_1150b48169bb20::t_753758e85dced0 70
+  s_7d7b0013a900f3::t_e722e6cddf3fe7 105-115
+  s_1150b48169bb20::t_94db4f1367b897 34,42
+  s_7d7b0013a900f3::t_2f0ef9fe6d08e1 47
+  s_dc79982f943374::t_b83d317970c96f 9-11
+  s_1150b48169bb20::t_1373ca4a0870b6 102
+  s_dc79982f943374::t_be5002be648435 6
+  s_7d7b0013a900f3::t_11aec9e85b95b2 63
+  s_dc79982f943374::t_127418b2cf1f03 20,29,31
+  s_7f9e44e26f95b9::t_ed933d995bf64c 90-93
+web/src/features/yun/LogisticsSummaryBar.tsx
+  s_dc79982f943374::t_ef199613d3e301 1-51
+web/src/features/yun/planReferences.ts
+  s_7d7b0013a900f3::t_d55f3ca24424c1 1-17
+web/src/features/yun/PlansTab.tsx
+  s_7d7b0013a900f3::t_d4e84c9da8410f 2-14,16-18,29-33,35,37,51,58,79-83,106-114,122,124,129,132-133,136,138,140-163,179,181-192,194-208,210-216,218-221,257-259,261,263-271
+  s_7d7b0013a900f3::t_d629416cfe3def 15,167-171
+  s_dc79982f943374::t_eb2dc15cdeebfb 1,24-25,50,52-53,55,57,59-78,86-88,93-94,97,117,130-131,134-135,139,164-166,174-178,180,193,273
+  s_dc79982f943374::t_9cbb113d1e1b19 34,36,209,222-256,260,262
+  s_7d7b0013a900f3::t_c63a13e02eb913 38-45
+  s_7d7b0013a900f3::t_b51e1a489674e7 22-23
+  s_7d7b0013a900f3::t_339e042c9627b9 120-121,123,125
+  s_1150b48169bb20::t_597b1423450a1c 137
+  s_1150b48169bb20::t_048daa9f60ad09 115-116,118-119
+web/src/features/yun/RequirementConfirmCard.tsx
+  s_7d7b0013a900f3::t_0ae7a094214563 1-127
+web/src/features/yun/PlanReferenceCards.tsx
+  s_7d7b0013a900f3::t_254c7d4434bd90 1-69
+web/src/features/yun/FindLogisticsTab.tsx
+  s_7d7b0013a900f3::t_89c0f32e1e3253 3
+  s_dc79982f943374::t_1c9707bd3c4205 31,77
+  s_7d7b0013a900f3::t_e4942ea0ed612e 138
+  s_dc79982f943374::t_af48e9c9326f9f 1-2,4-8,10,12-13,15-16,18,21-30,32,34-40,42,44-45,47-49,52-53,55-67,69-72,74-76,78-79,83-84,86,88,90-137,139-161,163-164
+backend/app/liang/mock_seed.py
+  s_dc79982f943374::t_a2e401fa3e21c1 1,16,41-42,49-50,57-178
+web/src/index.css
+  s_dc79982f943374::t_66a8bacb0842f6 147-148,152-162
+web/src/features/yun/LineDetailDrawer.tsx
+  s_dc79982f943374::t_83200165438e91 1-62
+backend/app/logistics/llm.py
+  s_7d7b0013a900f3::t_ce531a618b782e 115
+  s_7d7b0013a900f3::t_e801c8f69a3d34 93
+  s_7d7b0013a900f3::t_e5f7d51eef3c12 11
+  s_7d7b0013a900f3::t_30eeedfee56dba 47-50
+web/src/features/yun/format.ts
+  s_dc79982f943374::t_33d0a744cab72c 1-4
+backend/migrations/20260823_add_logistics_decision_preference.sql
+  s_7d7b0013a900f3::t_83075a4eb0707a 1-2
+web/src/features/yun/TasksTab.tsx
+  s_dc79982f943374::t_dfd69d497ca234 9,15-16
+  s_1150b48169bb20::t_f6b2bef665ee8d 2-3,10
+  s_7d7b0013a900f3::t_4667772edd5ad2 29
+backend/tests/logistics/test_rules.py
+  s_1150b48169bb20::t_0f88c25511f120 4
+  s_7d7b0013a900f3::t_9bd09e619d3688 11
+  s_7d7b0013a900f3::t_f4edea8849acda 109-150
+web/src/features/yun/RouteDiagram.tsx
+  s_1150b48169bb20::t_a249fa7d09faf4 24
+  s_dc79982f943374::t_04091659b4a92d 2-23,25-43,45-57
+  s_1150b48169bb20::t_74061892b36bc7 1
+  s_1150b48169bb20::t_053aa4ba5dd51e 44
+backend/app/logistics/repository.py
+  s_7f9e44e26f95b9::t_702bbd775e10c7 91-94
+docs/superpowers/plans/2026-08-23-yun-transport-plan-ai.md
+  s_d16aaf3af4767a::t_0086c1225f43bd 1,3,5,7,9,11,13,15-21,23,25,27,29-36,38,40-50,52,54-220,222,228,231-232,234-236,238-240,242-249,252,259,262-263,265,267,269-271,273-275,277,279,281-283,285,287,289,291-293,295-817
+docs/superpowers/specs/2026-08-23-yun-transport-plan-ai-design.md
+  s_d16aaf3af4767a::t_d6d3fee3890ee2 1-299
+web/src/features/yun/InquiryTab.tsx
+  s_7f9e44e26f95b9::t_aa944193575fd8 2-3,5-15,17-20,24-33,35-39,41-44,46,48-71,73-136,139,143-144,155-178
+web/src/data/agents.ts
+  h_7549b7dc6a6921 102
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "072bc41995324c430cdc303d597333e9c2ee7883",
+  "prompts": {},
+  "humans": {
+    "h_7549b7dc6a6921": {
+      "author": "tiger <1360055716@qq.com>"
+    }
+  },
+  "sessions": {
+    "s_1150b48169bb20": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7aa7a5bc-69c4-4e60-a32f-5f15843ab387",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    },
+    "s_7d7b0013a900f3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f9b6686d-311e-447c-af4f-bfe439058b0e",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    },
+    "s_7f9e44e26f95b9": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a02f10-00bd-7c33-b59f-6ebf44fbf89c",
+        "model": "unknown"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    },
+    "s_d16aaf3af4767a": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a02ebc-0a84-7ff1-8673-f05e7fb16493",
+        "model": "unknown"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    },
+    "s_dc79982f943374": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c758ef78-2ae0-4a86-9150-811060d3821d",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
