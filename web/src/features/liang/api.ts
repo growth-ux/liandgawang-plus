@@ -5,9 +5,21 @@ import type {
   MarketSummaryResponse,
   ComparisonInterpretation,
   SourcingTask,
+  SourcingRunResult,
   TaskNeedSummary,
   TaskPlan,
 } from "./types";
+
+const BASKET_VISITOR_KEY = "liang-candidate-basket-visitor";
+
+function candidateBasketHeaders(): HeadersInit {
+  let visitorId = window.localStorage.getItem(BASKET_VISITOR_KEY);
+  if (!visitorId) {
+    visitorId = crypto.randomUUID();
+    window.localStorage.setItem(BASKET_VISITOR_KEY, visitorId);
+  }
+  return { "X-Visitor-Id": visitorId };
+}
 
 export async function fetchListings(
   filters: ListingFilters = {},
@@ -47,6 +59,52 @@ export async function interpretCandidateComparison(
   });
   if (!resp.ok) throw new Error(`对比解读失败（${resp.status}）`);
   return resp.json();
+}
+
+export async function runSourcingWorkflow(text: string): Promise<SourcingRunResult> {
+  const resp = await fetch("/api/liang/sourcing-runs", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text }),
+  });
+  if (!resp.ok) throw new Error(`寻源执行失败（${resp.status}）`);
+  return resp.json();
+}
+
+export async function fetchCandidateBasket(): Promise<Listing[]> {
+  const resp = await fetch("/api/liang/candidate-basket", { headers: candidateBasketHeaders() });
+  if (!resp.ok) throw new Error(`候选篮加载失败（${resp.status}）`);
+  const data = await resp.json();
+  return data.items as Listing[];
+}
+
+export async function addCandidateBasketItem(listingId: number): Promise<Listing[]> {
+  const resp = await fetch("/api/liang/candidate-basket", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...candidateBasketHeaders() },
+    body: JSON.stringify({ listing_id: listingId }),
+  });
+  if (!resp.ok) throw new Error(`候选篮保存失败（${resp.status}）`);
+  const data = await resp.json();
+  return data.items as Listing[];
+}
+
+export async function removeCandidateBasketItem(listingId: number): Promise<Listing[]> {
+  const resp = await fetch(`/api/liang/candidate-basket/${listingId}`, {
+    method: "DELETE",
+    headers: candidateBasketHeaders(),
+  });
+  if (!resp.ok) throw new Error(`候选篮更新失败（${resp.status}）`);
+  const data = await resp.json();
+  return data.items as Listing[];
+}
+
+export async function clearCandidateBasket(): Promise<void> {
+  const resp = await fetch("/api/liang/candidate-basket", {
+    method: "DELETE",
+    headers: candidateBasketHeaders(),
+  });
+  if (!resp.ok) throw new Error(`候选篮清空失败（${resp.status}）`);
 }
 
 export async function fetchTasks(): Promise<SourcingTask[]> {

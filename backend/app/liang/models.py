@@ -1,7 +1,7 @@
 from datetime import date, datetime
 from decimal import Decimal
 
-from sqlalchemy import JSON, Date, DateTime, Integer, Numeric, String, func
+from sqlalchemy import JSON, Date, DateTime, ForeignKey, Integer, Numeric, String, UniqueConstraint, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database import Base
@@ -52,3 +52,15 @@ class SourcingTask(Base):
     updated_at: Mapped[datetime] = mapped_column(
         DateTime, server_default=func.now(), onupdate=func.now()
     )
+
+
+class CandidateBasketItem(Base):
+    """匿名访客保存到候选篮的粮源。"""
+
+    __tablename__ = "candidate_basket_items"
+    __table_args__ = (UniqueConstraint("visitor_id", "listing_id", name="uq_candidate_basket_visitor_listing"),)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    visitor_id: Mapped[str] = mapped_column(String(64), index=True)
+    listing_id: Mapped[int] = mapped_column(ForeignKey("grain_listings.id"), index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())

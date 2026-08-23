@@ -11,8 +11,9 @@ const NODE_POS: Record<DagNodeId, { x: number; y: number }> = {
   sort: { x: 414, y: 24 },
   eliminate: { x: 414, y: 112 },
   pick: { x: 554, y: 24 },
-  verify: { x: 694, y: 68 },
-  save: { x: 834, y: 68 },
+  review: { x: 694, y: 24 },
+  verify: { x: 834, y: 68 },
+  save: { x: 974, y: 68 },
 };
 
 const EDGES: { from: DagNodeId; to: DagNodeId }[] = [
@@ -21,7 +22,8 @@ const EDGES: { from: DagNodeId; to: DagNodeId }[] = [
   { from: "filter", to: "sort" },
   { from: "filter", to: "eliminate" },
   { from: "sort", to: "pick" },
-  { from: "pick", to: "verify" },
+  { from: "pick", to: "review" },
+  { from: "review", to: "verify" },
   { from: "eliminate", to: "verify" },
   { from: "verify", to: "save" },
 ];
@@ -33,6 +35,7 @@ const NODE_LABEL: Record<DagNodeId, string> = {
   sort: "排序比较",
   eliminate: "淘汰归因",
   pick: "主推/备选",
+  review: "LLM 排序复核",
   verify: "待核验清单",
   save: "沉淀任务",
 };
@@ -68,11 +71,11 @@ export default function DagCanvas({
 }) {
   return (
     <div className="overflow-x-auto rounded-2xl border border-line bg-panel/60 px-2 py-4">
-      <div className="relative mx-auto h-[180px] w-[940px]">
+      <div className="relative mx-auto h-[180px] w-[1080px]">
         <svg
           className="absolute inset-0"
-          viewBox="0 0 940 180"
-          width={940}
+          viewBox="0 0 1080 180"
+          width={1080}
           height={180}
         >
           <defs>

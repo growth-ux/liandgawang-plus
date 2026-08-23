@@ -3,7 +3,7 @@ from datetime import datetime
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.liang.models import GrainListing, SourcingTask
+from app.liang.models import CandidateBasketItem, GrainListing, SourcingTask
 
 
 def list_listings(db: Session, filters: dict | None = None) -> list[GrainListing]:
@@ -35,6 +35,51 @@ def list_listings(db: Session, filters: dict | None = None) -> list[GrainListing
 
 def get_listing(db: Session, listing_id: int) -> GrainListing | None:
     return db.get(GrainListing, listing_id)
+
+
+def list_candidate_basket(db: Session, visitor_id: str) -> list[GrainListing]:
+    stmt = (
+        select(GrainListing)
+        .join(CandidateBasketItem, CandidateBasketItem.listing_id == GrainListing.id)
+        .where(CandidateBasketItem.visitor_id == visitor_id)
+        .order_by(CandidateBasketItem.created_at, CandidateBasketItem.id)
+    )
+    return db.scalars(stmt).all()
+
+
+def add_candidate_basket_item(db: Session, visitor_id: str, listing_id: int) -> bool:
+    existing = db.scalar(
+        select(CandidateBasketItem).where(
+            CandidateBasketItem.visitor_id == visitor_id,
+            CandidateBasketItem.listing_id == listing_id,
+        )
+    )
+    if existing is not None:
+        return False
+    db.add(CandidateBasketItem(visitor_id=visitor_id, listing_id=listing_id))
+    db.commit()
+    return True
+
+
+def remove_candidate_basket_item(db: Session, visitor_id: str, listing_id: int) -> bool:
+    item = db.scalar(
+        select(CandidateBasketItem).where(
+            CandidateBasketItem.visitor_id == visitor_id,
+            CandidateBasketItem.listing_id == listing_id,
+        )
+    )
+    if item is None:
+        return False
+    db.delete(item)
+    db.commit()
+    return True
+
+
+def clear_candidate_basket(db: Session, visitor_id: str) -> None:
+    items = db.scalars(select(CandidateBasketItem).where(CandidateBasketItem.visitor_id == visitor_id)).all()
+    for item in items:
+        db.delete(item)
+    db.commit()
 
 
 def _next_task_code(db: Session) -> str:

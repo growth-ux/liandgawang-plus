@@ -14,6 +14,7 @@ export type DagNodeId =
   | "sort"
   | "eliminate"
   | "pick"
+  | "review"
   | "verify"
   | "save";
 
@@ -32,7 +33,8 @@ export const DAG_NODES: DagNode[] = [
   { id: "sort", label: "排序比较", deps: ["filter"] },
   { id: "eliminate", label: "淘汰归因", deps: ["filter"] },
   { id: "pick", label: "主推/备选", deps: ["sort"] },
-  { id: "verify", label: "待核验清单", deps: ["pick", "eliminate"] },
+  { id: "review", label: "LLM 排序复核", deps: ["pick"] },
+  { id: "verify", label: "待核验清单", deps: ["review", "eliminate"] },
   { id: "save", label: "沉淀任务", deps: ["verify"] },
 ];
 

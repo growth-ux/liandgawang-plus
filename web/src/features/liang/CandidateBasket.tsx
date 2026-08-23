@@ -71,18 +71,20 @@ export default function CandidateBasket({ onGoCompare }: { onGoCompare: () => vo
           </div>
         </div>
       )}
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-full bg-brand px-5 py-3 text-sm font-medium text-white shadow-[0_8px_24px_rgba(0,0,0,0.4)]"
-      >
-        🛒 候选篮
-        {candidates.length > 0 && (
-          <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs tabular-nums">
-            {candidates.length}
-          </span>
-        )}
-      </button>
+      {!open && (
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-full bg-brand px-5 py-3 text-sm font-medium text-white shadow-[0_8px_24px_rgba(0,0,0,0.4)]"
+        >
+          🛒 候选篮
+          {candidates.length > 0 && (
+            <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs tabular-nums">
+              {candidates.length}
+            </span>
+          )}
+        </button>
+      )}
     </>
   );
 }

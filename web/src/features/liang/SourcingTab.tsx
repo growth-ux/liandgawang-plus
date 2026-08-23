@@ -1,26 +1,24 @@
 // web/src/features/liang/SourcingTab.tsx
-import { useRef, useState } from "react";
-import { createTask, fetchListings, handoffTask } from "./api";
-import { compareListings } from "./compare";
+import { useState } from "react";
+import { createTask, handoffTask, runSourcingWorkflow } from "./api";
 import DagCanvas from "./DagCanvas";
 import HistoryTab from "./HistoryTab";
 import { fmtDate, fmtInt, fmtQuality } from "./format";
-import { parseNeed } from "./parseNeed";
-import { AUTO_BATCHES, buildPlan, initialStatus } from "./workflow";
+import { initialStatus } from "./workflow";
 import type { DagNodeId, NodeStatus } from "./workflow";
-import type { CompareResult, Listing, NeedInput, SourcingTask, TaskPick } from "./types";
+import type { SourcingTask, TaskNeedSummary, TaskPick, TaskPlan } from "./types";
 
-const STEP_MS = 500;
+const STEP_MS = 260;
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-function needText(need: NeedInput | null): string {
+function needText(need: TaskNeedSummary | null): string {
   if (!need) return "未指定条件";
   const parts: string[] = [];
   if (need.variety) parts.push(need.variety);
   if (need.grade) parts.push(need.grade);
   if (need.crop_year != null) parts.push(`${need.crop_year} 年`);
   if (need.quantity_tons != null) parts.push(`${need.quantity_tons} 吨`);
-  if (need.deadline_days != null) parts.push(`${need.deadline_days} 天内可发`);
+  if (need.deadline) parts.push(`最晚可发 ${need.deadline}`);
   if (need.budget_price != null) parts.push(`预算 ≤ ${need.budget_price} 元/吨`);
   return parts.length ? parts.join(" · ") : "未指定条件";
 }
@@ -67,94 +65,52 @@ function PickCard({ pick, label }: { pick: TaskPick; label: string }) {
 export default function SourcingTab() {
   const [text, setText] = useState("");
   const [status, setStatus] = useState<Record<DagNodeId, NodeStatus>>(initialStatus);
-  const [need, setNeed] = useState<NeedInput | null>(null);
+  const [need, setNeed] = useState<TaskNeedSummary | null>(null);
   const [listingCount, setListingCount] = useState(0);
-  const [compare, setCompare] = useState<CompareResult | null>(null);
+  const [parserSource, setParserSource] = useState<"llm" | "rule">("rule");
+  const [plan, setPlan] = useState<TaskPlan | null>(null);
   const [running, setRunning] = useState(false);
   const [saved, setSaved] = useState<SourcingTask | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [handoffOpen, setHandoffOpen] = useState(false);
   const [destination, setDestination] = useState("");
   const [historyKey, setHistoryKey] = useState(0);
-  const runId = useRef(0);
-
   async function startRun() {
     const raw = text.trim();
     if (!raw || running) return;
-    const id = ++runId.current;
     setRunning(true);
     setSaved(null);
     setError(null);
-    setCompare(null);
+    setPlan(null);
     setListingCount(0);
     setHandoffOpen(false);
     setDestination("");
     setStatus(initialStatus());
 
-    // ① 理解需求
-    setStatus((s) => ({ ...s, parse: "running" }));
-    await sleep(STEP_MS);
-    const parsed = parseNeed(raw);
-    setNeed(parsed);
-    if (runId.current !== id) return;
-    setStatus((s) => ({ ...s, parse: "done" }));
-
-    // ② 读取粮源
-    setStatus((s) => ({ ...s, load: "running" }));
-    let listings: Listing[];
     try {
-      listings = await fetchListings();
+      const result = await runSourcingWorkflow(raw);
+      setNeed(result.need);
+      setListingCount(result.listing_count);
+      setParserSource(result.parser_source);
+      setPlan(result.plan);
+      for (const event of result.trace) {
+        setStatus((previous) => ({ ...previous, [event.node]: "running" }));
+        await sleep(STEP_MS);
+        setStatus((previous) => ({ ...previous, [event.node]: event.status }));
+      }
     } catch (e) {
-      if (runId.current !== id) return;
       setError(e instanceof Error ? e.message : "粮源加载失败");
+    } finally {
       setRunning(false);
-      return;
     }
-    await sleep(STEP_MS);
-    if (runId.current !== id) return;
-    setListingCount(listings.length);
-    setStatus((s) => ({ ...s, load: "done" }));
-
-    // 计算 + 逐步揭示 ③~⑦
-    const result = compareListings(listings, [], parsed);
-    setCompare(result);
-
-    if (!result.has_need) {
-      setStatus((s) => ({
-        ...s,
-        filter: "skipped",
-        sort: "skipped",
-        eliminate: "skipped",
-        pick: "skipped",
-        verify: "skipped",
-      }));
-      setRunning(false);
-      return;
-    }
-
-    for (const batch of AUTO_BATCHES.slice(2)) {
-      setStatus((s) => {
-        const next = { ...s };
-        for (const nid of batch) next[nid] = "running";
-        return next;
-      });
-      await sleep(STEP_MS);
-      if (runId.current !== id) return;
-      setStatus((s) => {
-        const next = { ...s };
-        for (const nid of batch) next[nid] = "done";
-        return next;
-      });
-    }
-    setRunning(false);
   }
 
   async function onSave() {
-    if (!compare || !compare.primary) return;
+    if (!plan || !plan.primary) return;
     try {
       const t = await createTask({
-        need: compare.need_summary ?? {},
-        plan: buildPlan(compare),
+        need: plan.need_summary ?? {},
+        plan,
       });
       setSaved(t);
       setStatus((s) => ({ ...s, save: "done" }));
@@ -177,7 +133,6 @@ export default function SourcingTab() {
     }
   }
 
-  const plan = compare ? buildPlan(compare) : null;
   const primary = plan?.primary ?? null;
   const backup = plan?.backup ?? null;
 
@@ -218,12 +173,12 @@ export default function SourcingTab() {
         <div className="flex flex-col gap-4">
           <div className="rounded-2xl border border-line bg-panel px-5 py-4">
             <span className="text-xs text-ink-soft">
-              {status.parse === "done" ? "已识别需求" : ""} · 已加载 {listingCount} 笔粮源
+              {status.parse === "done" ? parserSource === "llm" ? "LLM 已理解需求" : "已识别需求" : ""} · 已加载 {listingCount} 笔粮源
             </span>
             <div className="mt-1 text-sm font-medium text-ink">{needText(need)}</div>
           </div>
 
-          {compare && compare.has_need && primary && (
+          {plan && primary && (
             <>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <PickCard pick={primary} label="主推粮源" />
@@ -236,14 +191,14 @@ export default function SourcingTab() {
                 )}
               </div>
 
-              {compare.eliminated.length > 0 && (
+              {plan.eliminated.length > 0 && (
                 <div className="rounded-2xl border border-line bg-panel p-5">
                   <div className="mb-3 text-sm font-semibold">未入选原因</div>
                   <ul className="space-y-2">
-                    {compare.eliminated.map((e) => (
-                      <li key={e.listing.id} className="flex items-start justify-between gap-4 text-sm">
+                    {plan.eliminated.map((e) => (
+                      <li key={`${e.listing_code}-${e.reason_code}`} className="flex items-start justify-between gap-4 text-sm">
                         <span className="shrink-0 text-ink">
-                          {e.listing.variety_name}·{e.listing.grade} · {e.listing.supplier_name}
+                          {e.variety_name}·{e.grade} · {e.supplier_name}
                         </span>
                         <span className="text-right text-ink-soft">{e.reason_text}</span>
                       </li>
@@ -255,7 +210,7 @@ export default function SourcingTab() {
               <div className="rounded-2xl border border-line bg-panel p-5">
                 <div className="mb-3 text-sm font-semibold">交易前待核验清单</div>
                 <ol className="space-y-1.5">
-                  {compare.verifications.map((v, i) => (
+                  {plan.verifications.map((v, i) => (
                     <li key={v} className="text-sm text-ink">
                       <span className="mr-2 text-ink-soft">{i + 1}.</span>
                       {v}
@@ -263,10 +218,24 @@ export default function SourcingTab() {
                   ))}
                 </ol>
               </div>
+
+              {plan.ranking_review && (
+                <div className="rounded-2xl border border-brand/35 bg-brand-faint/30 p-5">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="text-sm font-semibold">LLM 排序复核</div>
+                    <span className="text-xs text-brand-deep">{plan.ranking_review.source === "llm" ? "AI 生成" : "规则说明"}</span>
+                  </div>
+                  <p className="mt-2 text-sm leading-6 text-ink">{plan.ranking_review.summary}</p>
+                  <ul className="mt-3 space-y-1.5 text-sm text-ink-soft">
+                    {plan.ranking_review.decision_basis.map((item) => <li key={item}>· {item}</li>)}
+                  </ul>
+                  <div className="mt-3 rounded-xl bg-panel/80 px-4 py-3 text-sm text-ink">下一步：{plan.ranking_review.procurement_advice}</div>
+                </div>
+              )}
             </>
           )}
 
-          {compare && compare.has_need && !primary && (
+          {plan && !primary && (
             <div className="rounded-2xl border border-dashed border-line bg-panel/40 p-5 text-sm text-ink-soft">
               无粮源通过硬条件，请放宽品种、数量、等级或发运时间后重试。
             </div>
@@ -275,7 +244,7 @@ export default function SourcingTab() {
       )}
 
       {/* 结论区：保存 / 交接 */}
-      {compare && primary && (
+      {plan && primary && (
         <div className="flex flex-col gap-3 rounded-2xl border border-line bg-panel p-5">
           {!saved ? (
             <button

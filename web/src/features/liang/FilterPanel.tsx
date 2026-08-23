@@ -1,39 +1,10 @@
 // web/src/features/liang/FilterPanel.tsx
 import type { ListingFilters } from "./types";
+import TechSelect from "../../components/TechSelect";
 
 const VARIETIES = ["玉米", "小麦", "大豆", "稻谷"];
 const GRADES = ["一等", "二等", "三等"];
 const PRICE_TYPES = ["出厂价", "到库价", "港口价"];
-
-function Select({
-  label,
-  value,
-  options,
-  onChange,
-}: {
-  label: string;
-  value: string;
-  options: string[];
-  onChange: (v: string) => void;
-}) {
-  return (
-    <label className="block">
-      <span className="text-[11px] text-ink-soft">{label}</span>
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="mt-1 w-full rounded-lg border border-line bg-rice px-2.5 py-2 text-sm text-ink"
-      >
-        <option value="">全部</option>
-        {options.map((o) => (
-          <option key={o} value={o}>
-            {o}
-          </option>
-        ))}
-      </select>
-    </label>
-  );
-}
 
 export default function FilterPanel({
   filters,
@@ -60,11 +31,11 @@ export default function FilterPanel({
         </button>
       </div>
       <div className="space-y-3.5">
-        <Select label="品种" value={filters.variety_name ?? ""} options={VARIETIES}
+        <TechSelect label="品种" value={filters.variety_name ?? ""} options={[{ value: "", label: "全部" }, ...VARIETIES.map((item) => ({ value: item, label: item }))]}
           onChange={(v) => set({ variety_name: v || undefined })} />
-        <Select label="等级" value={filters.grade ?? ""} options={GRADES}
+        <TechSelect label="等级" value={filters.grade ?? ""} options={[{ value: "", label: "全部" }, ...GRADES.map((item) => ({ value: item, label: item }))]}
           onChange={(v) => set({ grade: v || undefined })} />
-        <Select label="价格口径" value={filters.price_type ?? ""} options={PRICE_TYPES}
+        <TechSelect label="价格口径" value={filters.price_type ?? ""} options={[{ value: "", label: "全部" }, ...PRICE_TYPES.map((item) => ({ value: item, label: item }))]}
           onChange={(v) => set({ price_type: v || undefined })} />
         <label className="block">
           <span className="text-[11px] text-ink-soft">价格上限（元/吨）</span>

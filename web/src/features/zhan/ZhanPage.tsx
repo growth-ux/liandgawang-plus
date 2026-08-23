@@ -127,14 +127,14 @@ export default function ZhanPage() {
             onVarietyChange={setVarietyCode}
           />
         ) : activeTab === 2 ? (
+          <WatchesTab />
+        ) : activeTab === 3 ? (
           <ProcurementAnalysisTab
             varietyCode={varietyCode}
             onVarietyChange={setVarietyCode}
             prefill={prefill}
             onPrefillConsumed={() => setPrefill(null)}
           />
-        ) : activeTab === 3 ? (
-          <WatchesTab />
         ) : activeTab === 4 ? (
           <AnalysisRecordsTab onReuse={reuseRecord} />
         ) : activeTab !== 0 ? (

@@ -69,7 +69,7 @@ export const agents: Agent[] = [
     symbol: "数据目镜、趋势波形",
     zone: "行情与资讯屏",
     accent: "#2f7fb8",
-    tabs: ["市场全景", "品种行情", "采购研判", "我的关注", "研判记录"],
+    tabs: ["市场全景", "品种行情", "我的关注", "采购研判", "研判记录"],
     image: "/images/agents/zhan.png",
     doing: "跟踪玉米拍卖底价与港口平仓价，整理本周行情研判",
     pos: { x: 28, y: 31, size: 19 },
