@@ -99,7 +99,7 @@ export const agents: Agent[] = [
     symbol: "路线投影、运输轮组",
     zone: "仓储与物流区",
     accent: "#3f9d6e",
-    tabs: ["找物流", "运输方案", "询运对接", "运输任务"],
+    tabs: ["找物流", "运输方案", "运输任务", "询运对接"],
     image: "/images/agents/yun.png",
     doing: "规划港口到厂的 2 条运输路线，核对车辆排期",
     pos: { x: 89, y: 57, size: 20 },

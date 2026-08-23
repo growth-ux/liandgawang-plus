@@ -6,7 +6,6 @@ from sqlalchemy.orm import Session
 from app.logistics.models import (
     Inquiry,
     LogisticsService,
-    QuickEstimate,
     RouteSegment,
     TransportPlan,
     TransportTask,
@@ -25,35 +24,6 @@ def list_nodes(db: Session) -> list[str]:
     rows = db.query(RouteSegment.origin, RouteSegment.destination).all()
     names = {n for row in rows for n in row}
     return sorted(names)
-
-
-def create_estimate(
-    db: Session,
-    origin: str,
-    destination: str,
-    variety_code: str,
-    variety_name: str,
-    quantity_tons: int,
-    deadline_date: date | None,
-    results: list[dict],
-) -> QuickEstimate:
-    rec = QuickEstimate(
-        origin=origin,
-        destination=destination,
-        variety_code=variety_code,
-        variety_name=variety_name,
-        quantity_tons=quantity_tons,
-        deadline_date=deadline_date,
-        results_json=json.dumps(results, ensure_ascii=False),
-    )
-    db.add(rec)
-    db.commit()
-    db.refresh(rec)
-    return rec
-
-
-def list_estimates(db: Session, limit: int = 10) -> list[QuickEstimate]:
-    return db.query(QuickEstimate).order_by(QuickEstimate.id.desc()).limit(limit).all()
 
 
 def create_task(db: Session, fields: dict) -> TransportTask:
@@ -116,6 +86,10 @@ def get_inquiry_by_task(db: Session, task_id: int) -> Inquiry | None:
         .order_by(Inquiry.id.desc())
         .first()
     )
+
+
+def list_all_inquiries(db: Session) -> list[Inquiry]:
+    return db.query(Inquiry).order_by(Inquiry.id.desc()).all()
 
 
 def submit_inquiry(db: Session, inquiry: Inquiry, feedback: dict) -> None:

@@ -1,19 +1,38 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AgentSwitcher from "../../components/AgentSwitcher";
 import { getAgent } from "../../data/agents";
 import FindLogisticsTab from "./FindLogisticsTab";
 import PlansTab from "./PlansTab";
 import InquiryTab from "./InquiryTab";
 import TasksTab from "./TasksTab";
-import type { QuickEstimateRecord } from "./types";
 
 const agent = getAgent("yun")!;
 
-/** 运小二｜找物流：智能受理 + 即时测算 + 运输方案 + 询运对接 + 运输任务 */
+/** 运小二：找物流市场浏览 + 运输方案智能决策 + 运输任务 + 询运对接 */
 export default function YunPage() {
   const [activeTab, setActiveTab] = useState(0);
-  const [taskId, setTaskId] = useState<number | null>(null);
-  const [reuse, setReuse] = useState<QuickEstimateRecord | null>(null);
+  const [taskId, setTaskIdRaw] = useState<number | null>(() => {
+    const stored = localStorage.getItem("yun_active_task");
+    return stored ? Number(stored) : null;
+  });
+  const setTaskId = (id: number | null) => {
+    setTaskIdRaw(id);
+    if (id != null) {
+      localStorage.setItem("yun_active_task", String(id));
+    } else {
+      localStorage.removeItem("yun_active_task");
+    }
+  };
+
+  // 页面加载时校验 taskId 是否仍存在，不存在则清除
+  useEffect(() => {
+    if (taskId == null) return;
+    fetch(`/api/logistics/tasks/${taskId}`).then((r) => {
+      if (!r.ok) {
+        setTaskId(null);
+      }
+    });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)] flex-col">
@@ -58,32 +77,26 @@ export default function YunPage() {
 
       {/* 内容：跨 tab 保留当前任务上下文 */}
       <div className="mx-auto w-full max-w-[1280px] flex-1 px-6 py-6">
-        {activeTab === 0 && (
-          <FindLogisticsTab
-            prefill={reuse}
-            onPrefillConsumed={() => setReuse(null)}
-            onTaskCreated={(id) => {
-              setTaskId(id);
-              setActiveTab(1);
-            }}
+        {activeTab === 0 && <FindLogisticsTab />}
+        {activeTab === 1 && (
+          <PlansTab
+            taskId={taskId}
+            prefill={null}
+            onPrefillConsumed={() => {}}
+            onTaskCreated={(id) => setTaskId(id)}
+            onNewTask={() => setTaskId(null)}
+            onInquiryCreated={() => setActiveTab(3)}
           />
         )}
-        {activeTab === 1 && (
-          <PlansTab taskId={taskId} onInquiryCreated={() => setActiveTab(2)} />
-        )}
-        {activeTab === 2 && <InquiryTab taskId={taskId} />}
-        {activeTab === 3 && (
+        {activeTab === 2 && (
           <TasksTab
             onOpenTask={(id) => {
               setTaskId(id);
               setActiveTab(1);
             }}
-            onReuseEstimate={(rec) => {
-              setReuse(rec);
-              setActiveTab(0);
-            }}
           />
         )}
+        {activeTab === 3 && <InquiryTab />}
       </div>
     </div>
   );

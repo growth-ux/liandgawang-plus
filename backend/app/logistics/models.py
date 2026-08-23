@@ -45,22 +45,6 @@ class LogisticsService(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
 
-class QuickEstimate(Base):
-    """即时测算记录：条件快照 + 各方式测算结果（不产生运输任务）。"""
-
-    __tablename__ = "logistics_quick_estimates"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    origin: Mapped[str] = mapped_column(String(64))
-    destination: Mapped[str] = mapped_column(String(64))
-    variety_code: Mapped[str] = mapped_column(String(32))
-    variety_name: Mapped[str] = mapped_column(String(32))
-    quantity_tons: Mapped[int] = mapped_column(Integer)
-    deadline_date: Mapped[date | None] = mapped_column(Date, nullable=True)
-    results_json: Mapped[str] = mapped_column(Text)  # JSON 数组
-    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
-
-
 class TransportTask(Base):
     """运输任务：正式运输需求从创建到询运结束的全过程。"""
 
@@ -74,9 +58,10 @@ class TransportTask(Base):
     quantity_tons: Mapped[int] = mapped_column(Integer)
     deadline_date: Mapped[date | None] = mapped_column(Date, nullable=True)
     allow_split: Mapped[int] = mapped_column(Integer, default=1)  # 1 允许分批
-    source_type: Mapped[str] = mapped_column(String(16), default="self")  # self/handover/estimate
+    source_type: Mapped[str] = mapped_column(String(16), default="self")  # self/handover
     source_ref: Mapped[str] = mapped_column(String(64), default="")
     extra_note: Mapped[str] = mapped_column(Text, default="")
+    decision_preference: Mapped[str] = mapped_column(String(16), default="balanced")
     status: Mapped[str] = mapped_column(String(24), default="working")
     blocked_note: Mapped[str] = mapped_column(String(256), default="")
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())

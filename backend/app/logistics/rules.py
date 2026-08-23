@@ -1,4 +1,4 @@
-"""物流确定性规则：即时测算（轻量层）与正式匹配（完整层）。
+"""物流确定性规则：正式匹配（完整层）。
 
 模型只解释这里的结构化结果，不参与排序与数字生成。
 """
@@ -8,6 +8,40 @@ from __future__ import annotations
 from datetime import date
 
 MODE_NAMES = {"road": "公路", "rail": "铁路", "water": "水运", "combined": "公水联运"}
+
+DECISION_PREFERENCES = {"on_time", "cost", "balanced"}
+
+
+def normalize_preference(value: str | None) -> str:
+    return value if value in DECISION_PREFERENCES else "balanced"
+
+
+def _mid_price(candidate: dict) -> float:
+    return (candidate["price_low"] + candidate["price_high"]) / 2
+
+
+def plan_sort_key(candidate: dict, preference: str) -> tuple:
+    preference = normalize_preference(preference)
+    if preference == "on_time":
+        return candidate["days_high"], _mid_price(candidate), candidate["transship_count"]
+    return _mid_price(candidate), candidate["days_high"], candidate["transship_count"]
+
+
+def remove_dominated(candidates: list[dict]) -> list[dict]:
+    return [
+        candidate
+        for candidate in candidates
+        if not any(
+            other is not candidate
+            and _mid_price(other) <= _mid_price(candidate)
+            and other["days_high"] <= candidate["days_high"]
+            and (
+                _mid_price(other) < _mid_price(candidate)
+                or other["days_high"] < candidate["days_high"]
+            )
+            for other in candidates
+        )
+    ]
 
 
 def _make_result(mode: str, legs: list, transship_count: int) -> dict:
@@ -24,6 +58,7 @@ def _make_result(mode: str, legs: list, transship_count: int) -> dict:
                 "destination": l.destination,
                 "mode": l.mode,
                 "mode_name": MODE_NAMES[l.mode],
+                "distance_km": l.distance_km,
             }
             for l in legs
         ],
@@ -56,28 +91,6 @@ def compose_candidates(segments: list, origin: str, destination: str) -> list[di
             if s.origin == road.destination and s.destination == destination and s.mode == "water"
         ]:
             results.append(_make_result("combined", [road, water], 1))
-    return results
-
-
-def quick_estimate_modes(
-    segments: list,
-    origin: str,
-    destination: str,
-    deadline_date: date | None = None,
-    today: date | None = None,
-) -> list[dict]:
-    """即时测算（轻量层）：按方式聚合给参考区间，不硬过滤、不选主推。"""
-    results = compose_candidates(segments, origin, destination)
-    if deadline_date is not None and today is not None:
-        allowed = (deadline_date - today).days
-        for r in results:
-            r["deadline_ok"] = r["days_high"] <= allowed
-            r["over_days"] = max(0, r["days_high"] - allowed)
-    if results:
-        cheapest = min(results, key=lambda r: r["price_low"])
-        fastest = min(results, key=lambda r: r["days_low"])
-        cheapest["tags"].append("更省钱")
-        fastest["tags"].append("更快到货")
     return results
 
 
@@ -132,10 +145,18 @@ def match_plans(segments: list, services: list, req: dict) -> dict:
             continue
         feasible.append(c)
 
-    # 比较：到货已由硬条件保证，此后费用中位 → 时效上限 → 换装复杂度
-    feasible.sort(
-        key=lambda c: ((c["price_low"] + c["price_high"]) / 2, c["days_high"], c["transship_count"])
-    )
+    # 比较：到货已由硬条件保证，此后按决策偏好排序（默认 balanced）
+    preference = normalize_preference(req.get("decision_preference"))
+    if preference == "balanced":
+        rankable = remove_dominated(feasible)
+        dominated = [candidate for candidate in feasible if candidate not in rankable]
+        feasible = rankable
+        for candidate in dominated:
+            rejected.append(
+                {**candidate, "reason": "费用与时效同时弱于其他可行方案，作为比较参照"}
+            )
+
+    feasible.sort(key=lambda candidate: plan_sort_key(candidate, preference))
 
     primary = feasible[0] if feasible else None
     backup = feasible[1] if len(feasible) > 1 else None

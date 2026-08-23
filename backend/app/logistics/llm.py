@@ -8,6 +8,7 @@ import logging
 import os
 from datetime import date, timedelta
 from pathlib import Path
+from typing import Literal
 
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field
@@ -43,6 +44,10 @@ class RequirementExtraction(BaseModel):
     deadline_days: int | None = Field(None, description="从今天起到最晚到货的天数")
     assumptions: list[str] = Field(default_factory=list, description="对模糊表达的解释")
     question: str | None = Field(None, description="影响匹配的最关键缺失问题，无则留空")
+    decision_preference: Literal["on_time", "cost", "balanced"] | None = Field(
+        None,
+        description="用户明确表达的决策偏好：准时 on_time、成本 cost、稳妥或综合 balanced",
+    )
 
 
 def _config() -> tuple[str, str, str]:
@@ -85,6 +90,7 @@ def extract_requirements(text: str, nodes: list[str], today: date) -> dict | Non
             f"今天：{today.isoformat()}\n"
             f"用户描述：{text}\n"
             "请抽取结构化条件；'几天内到'请换算为 deadline_days。"
+            "只有用户明确表达偏好时才填写 decision_preference，否则留空。"
         )
         result = llm.with_structured_output(RequirementExtraction).invoke(
             [("system", SYSTEM_PROMPT), ("human", prompt)]
@@ -106,6 +112,7 @@ def extract_requirements(text: str, nodes: list[str], today: date) -> dict | Non
             },
             "assumptions": result.assumptions,
             "question": result.question,
+            "decision_preference": result.decision_preference,
         }
     except Exception:
         logger.exception("Qwen 需求抽取失败")

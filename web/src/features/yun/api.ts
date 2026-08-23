@@ -1,12 +1,10 @@
 import type {
-  EstimateRequest,
-  EstimateResponse,
+  DecisionPreference,
   ExtractResponse,
-  HotRoute,
   Inquiry,
+  InquiryListItem,
   LogisticsLine,
   LogisticsMeta,
-  QuickEstimateRecord,
   TaskDetail,
   TaskRequest,
   TransportTask,
@@ -26,16 +24,17 @@ function post<T>(url: string, body?: unknown): Promise<T> {
   });
 }
 
-export const fetchLogisticsMeta = () => http<LogisticsMeta>("/api/logistics/meta");
-export const fetchHotRoutes = () => http<HotRoute[]>("/api/logistics/hot-routes");
 export const fetchLogisticsLines = () => http<LogisticsLine[]>("/api/logistics/lines");
-export const createEstimate = (body: EstimateRequest) =>
-  post<EstimateResponse>("/api/logistics/estimates", body);
-export const listEstimates = () => http<QuickEstimateRecord[]>("/api/logistics/estimates");
+export const fetchLogisticsMeta = () => http<LogisticsMeta>("/api/logistics/meta");
+export const extractRequirements = (text: string) =>
+  post<ExtractResponse>("/api/logistics/extract", { text });
 export const createTask = (body: TaskRequest) =>
   post<TransportTask>("/api/logistics/tasks", body);
-export const matchTask = (taskId: number) =>
-  post<{ matched: number; primary: boolean }>(`/api/logistics/tasks/${taskId}/match`);
+export const matchTask = (taskId: number, decisionPreference?: DecisionPreference) =>
+  post<{ matched: number; primary: boolean }>(
+    `/api/logistics/tasks/${taskId}/match`,
+    decisionPreference ? { decision_preference: decisionPreference } : undefined
+  );
 export const listTasks = () => http<TransportTask[]>("/api/logistics/tasks");
 export const fetchTaskDetail = (taskId: number) =>
   http<TaskDetail>(`/api/logistics/tasks/${taskId}`);
@@ -43,7 +42,6 @@ export const createInquiry = (taskId: number, planId: number) =>
   post<Inquiry>(`/api/logistics/tasks/${taskId}/inquiry`, { plan_id: planId });
 export const submitInquiry = (inquiryId: number) =>
   post<Inquiry>(`/api/logistics/inquiries/${inquiryId}/submit`);
-export const extractRequirements = (text: string) =>
-  post<ExtractResponse>("/api/logistics/extract", { text });
+export const listInquiries = () => http<InquiryListItem[]>("/api/logistics/inquiries");
 export const explainPlans = (taskId: number, question: string) =>
   post<{ answer: string }>("/api/logistics/explain", { task_id: taskId, question });

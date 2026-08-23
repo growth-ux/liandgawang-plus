@@ -1,5 +1,6 @@
 import json
 from datetime import date
+from typing import Literal
 
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
@@ -7,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.logistics import llm, repository
-from app.logistics.rules import MODE_NAMES, match_plans, quick_estimate_modes
+from app.logistics.rules import MODE_NAMES, match_plans
 from app.logistics.seed import DATA_UPDATED_AT, TODAY
 
 router = APIRouter(prefix="/api/logistics", tags=["logistics"])
@@ -38,20 +39,24 @@ STATUS_LABELS = {
     "feedback": "已反馈",
 }
 
+DecisionPreference = Literal["on_time", "cost", "balanced"]
 
-class EstimateBody(BaseModel):
+
+class TaskBody(BaseModel):
     origin: str
     destination: str
     variety_code: str = "corn"
     quantity_tons: int
     deadline_date: str | None = None
-
-
-class TaskBody(EstimateBody):
     allow_split: bool = True
     source_type: str = "self"
     source_ref: str = ""
     extra_note: str = ""
+    decision_preference: DecisionPreference = "balanced"
+
+
+class MatchBody(BaseModel):
+    decision_preference: DecisionPreference | None = None
 
 
 class InquiryBody(BaseModel):
@@ -110,6 +115,7 @@ def get_lines(db: Session = Depends(get_db)):
                 "destination": seg.destination,
                 "mode": seg.mode,
                 "mode_name": MODE_NAMES[seg.mode],
+                "distance_km": seg.distance_km,
                 "carrier": svc.carrier,
                 "tonnage_min": svc.tonnage_min,
                 "tonnage_max": svc.tonnage_max,
@@ -118,51 +124,12 @@ def get_lines(db: Session = Depends(get_db)):
                 "days_low": seg.days_low,
                 "days_high": seg.days_high,
                 "dispatch_window": svc.dispatch_window,
+                "loading_note": svc.loading_note,
                 "performance_note": svc.performance_note,
+                "risk_note": seg.risk_note,
             }
         )
     return items
-
-
-@router.post("/estimates")
-def post_estimate(body: EstimateBody, db: Session = Depends(get_db)):
-    deadline = date.fromisoformat(body.deadline_date) if body.deadline_date else None
-    results = quick_estimate_modes(
-        repository.list_segments(db), body.origin, body.destination, deadline, TODAY
-    )
-    rec = repository.create_estimate(
-        db,
-        body.origin,
-        body.destination,
-        body.variety_code,
-        VARIETY_NAMES.get(body.variety_code, body.variety_code),
-        body.quantity_tons,
-        deadline,
-        results,
-    )
-    return {
-        "estimate_id": rec.id,
-        "results": results,
-        "data_updated_at": DATA_UPDATED_AT,
-    }
-
-
-@router.get("/estimates")
-def get_estimates(db: Session = Depends(get_db)):
-    return [
-        {
-            "id": e.id,
-            "origin": e.origin,
-            "destination": e.destination,
-            "variety_code": e.variety_code,
-            "variety_name": e.variety_name,
-            "quantity_tons": e.quantity_tons,
-            "deadline_date": e.deadline_date.isoformat() if e.deadline_date else None,
-            "results": json.loads(e.results_json),
-            "created_at": e.created_at.isoformat() if e.created_at else "",
-        }
-        for e in repository.list_estimates(db)
-    ]
 
 
 def _task_dict(t):
@@ -175,6 +142,7 @@ def _task_dict(t):
         "quantity_tons": t.quantity_tons,
         "deadline_date": t.deadline_date.isoformat() if t.deadline_date else None,
         "source_type": t.source_type,
+        "decision_preference": t.decision_preference,
         "status": t.status,
         "status_label": STATUS_LABELS.get(t.status, t.status),
         "blocked_note": t.blocked_note,
@@ -227,6 +195,7 @@ def post_task(body: TaskBody, db: Session = Depends(get_db)):
             "source_type": body.source_type,
             "source_ref": body.source_ref,
             "extra_note": body.extra_note,
+            "decision_preference": body.decision_preference,
         },
     )
     return _task_dict(task)
@@ -251,10 +220,13 @@ def get_task_detail(task_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/tasks/{task_id}/match")
-def post_match(task_id: int, db: Session = Depends(get_db)):
+def post_match(task_id: int, body: MatchBody | None = None, db: Session = Depends(get_db)):
     task = repository.get_task(db, task_id)
     if task is None:
         raise HTTPException(status_code=404, detail="任务不存在")
+    if body is not None and body.decision_preference is not None:
+        task.decision_preference = body.decision_preference
+        db.commit()
     out = match_plans(
         repository.list_segments(db),
         repository.list_services(db),
@@ -265,6 +237,7 @@ def post_match(task_id: int, db: Session = Depends(get_db)):
             "quantity_tons": task.quantity_tons,
             "deadline_date": task.deadline_date,
             "allow_split": bool(task.allow_split),
+            "decision_preference": task.decision_preference,
             "today": TODAY,
         },
     )
@@ -315,6 +288,19 @@ def post_match(task_id: int, db: Session = Depends(get_db)):
     task.blocked_note = "" if out["primary"] else "；".join(out["suggestions"])
     db.commit()
     return {"matched": len(plans), "primary": bool(out["primary"])}
+
+
+@router.get("/inquiries")
+def get_inquiries(db: Session = Depends(get_db)):
+    """列出所有询运单，附带对应任务摘要。"""
+    items = []
+    for inq in repository.list_all_inquiries(db):
+        task = repository.get_task(db, inq.task_id)
+        items.append({
+            **_inquiry_dict(inq),
+            "task": _task_dict(task) if task else None,
+        })
+    return items
 
 
 @router.post("/tasks/{task_id}/inquiry")

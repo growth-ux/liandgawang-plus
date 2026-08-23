@@ -1,13 +1,14 @@
 from datetime import date
 from types import SimpleNamespace
 
-from app.logistics.rules import MODE_NAMES, quick_estimate_modes
+from app.logistics.rules import MODE_NAMES
 
 
 def seg(code, origin, dest, mode, pl, ph, dl, dh):
     return SimpleNamespace(
         segment_code=code, origin=origin, destination=dest, mode=mode,
         price_low=pl, price_high=ph, days_low=dl, days_high=dh, risk_note="",
+        distance_km=0,
     )
 
 
@@ -17,50 +18,6 @@ SEGMENTS = [
     seg("BC-SZ-RAIL", "白城", "深圳港", "rail", 500, 570, 5, 7),
     seg("JZ-SZ-WATER", "锦州港", "深圳港", "water", 95, 120, 6, 9),
 ]
-
-
-def test_direct_modes_returned():
-    results = quick_estimate_modes(SEGMENTS, "白城", "深圳港")
-    modes = {r["mode"] for r in results}
-    assert modes == {"road", "rail", "combined"}
-
-
-def test_combined_composes_road_and_water():
-    results = quick_estimate_modes(SEGMENTS, "白城", "深圳港")
-    combined = next(r for r in results if r["mode"] == "combined")
-    assert combined["price_low"] == 305  # 210 + 95
-    assert combined["price_high"] == 370  # 250 + 120
-    assert combined["days_low"] == 7  # 1 + 6
-    assert combined["days_high"] == 11  # 2 + 9
-    assert combined["transship_count"] == 1
-    assert [l["origin"] for l in combined["legs"]] == ["白城", "锦州港"]
-
-
-def test_no_route_returns_empty():
-    assert quick_estimate_modes(SEGMENTS, "哈尔滨", "深圳港") == []
-
-
-def test_deadline_flags_overdue():
-    today = date(2026, 8, 23)
-    deadline = date(2026, 8, 30)  # 7 天
-    results = quick_estimate_modes(SEGMENTS, "白城", "深圳港", deadline, today)
-    by_mode = {r["mode"]: r for r in results}
-    assert by_mode["rail"]["deadline_ok"] is True
-    assert by_mode["road"]["deadline_ok"] is True
-    assert by_mode["combined"]["deadline_ok"] is False
-    assert by_mode["combined"]["over_days"] == 4  # 11 - 7
-
-
-def test_no_deadline_means_unknown():
-    results = quick_estimate_modes(SEGMENTS, "白城", "深圳港")
-    assert all(r["deadline_ok"] is None for r in results)
-
-
-def test_tags_cheapest_and_fastest():
-    results = quick_estimate_modes(SEGMENTS, "白城", "深圳港")
-    by_mode = {r["mode"]: r for r in results}
-    assert "更省钱" in by_mode["combined"]["tags"]
-    assert "更快到货" in by_mode["road"]["tags"]
 
 
 def test_mode_names():
@@ -149,3 +106,45 @@ def test_stable_result():
     b = match_plans(SEGMENTS, SERVICES, REQ)
     assert a["primary"]["mode"] == b["primary"]["mode"]
     assert a["primary"]["price_low"] == b["primary"]["price_low"]
+
+
+def test_decision_preferences_change_primary():
+    from app.logistics.rules import match_plans
+
+    base = REQ | {"deadline_date": None}
+    cost = match_plans(SEGMENTS, SERVICES, base | {"decision_preference": "cost"})
+    on_time = match_plans(
+        SEGMENTS, SERVICES, base | {"decision_preference": "on_time"}
+    )
+    balanced = match_plans(
+        SEGMENTS, SERVICES, base | {"decision_preference": "balanced"}
+    )
+
+    assert cost["primary"]["mode"] == "combined"
+    assert on_time["primary"]["mode"] == "road"
+    assert balanced["primary"]["mode"] == "combined"
+
+
+def test_unknown_preference_falls_back_to_balanced():
+    from app.logistics.rules import match_plans
+
+    base = REQ | {"deadline_date": None}
+    unknown = match_plans(
+        SEGMENTS, SERVICES, base | {"decision_preference": "unknown"}
+    )
+    balanced = match_plans(
+        SEGMENTS, SERVICES, base | {"decision_preference": "balanced"}
+    )
+    assert unknown["primary"]["mode"] == balanced["primary"]["mode"]
+
+
+def test_deadline_remains_hard_constraint_for_cost_preference():
+    from app.logistics.rules import match_plans
+
+    out = match_plans(
+        SEGMENTS,
+        SERVICES,
+        REQ | {"decision_preference": "cost"},
+    )
+    assert out["primary"]["mode"] == "rail"
+    assert any(r["mode"] == "combined" and "超期" in r["reason"] for r in out["rejected"])
