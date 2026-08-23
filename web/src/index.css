@@ -23,6 +23,11 @@ body,
   height: 100%;
 }
 
+html {
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
+}
+
 body {
   background-color: var(--color-rice);
   color: var(--color-ink);

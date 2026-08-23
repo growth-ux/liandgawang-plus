@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, Header, HTTPException
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
@@ -8,12 +8,28 @@ from app.database import get_db
 from app.liang import metrics, repository
 from app.liang.llm import interpret_comparison
 from app.liang.models import SourcingTask
+from app.liang.sourcing_graph import run_sourcing_graph
 
 router = APIRouter(prefix="/api/liang", tags=["liang"])
 
 
 class ComparisonRequest(BaseModel):
     listing_ids: list[int]
+
+
+class CandidateBasketCreate(BaseModel):
+    listing_id: int
+
+
+class SourcingRunRequest(BaseModel):
+    text: str
+
+
+def _visitor_id(x_visitor_id: str | None) -> str:
+    visitor_id = (x_visitor_id or "").strip()
+    if not visitor_id or len(visitor_id) > 64:
+        raise HTTPException(status_code=400, detail="缺少有效的访客标识")
+    return visitor_id
 
 
 def _serialize(l):
@@ -88,6 +104,45 @@ def get_market_summary(db: Session = Depends(get_db)):
     }
 
 
+@router.get("/candidate-basket")
+def get_candidate_basket(
+    x_visitor_id: str | None = Header(default=None),
+    db: Session = Depends(get_db),
+):
+    return {"items": [_serialize(item) for item in repository.list_candidate_basket(db, _visitor_id(x_visitor_id))]}
+
+
+@router.post("/candidate-basket")
+def add_candidate_basket(
+    body: CandidateBasketCreate,
+    x_visitor_id: str | None = Header(default=None),
+    db: Session = Depends(get_db),
+):
+    if repository.get_listing(db, body.listing_id) is None:
+        raise HTTPException(status_code=404, detail="粮源不存在")
+    repository.add_candidate_basket_item(db, _visitor_id(x_visitor_id), body.listing_id)
+    return {"items": [_serialize(item) for item in repository.list_candidate_basket(db, _visitor_id(x_visitor_id))]}
+
+
+@router.delete("/candidate-basket/{listing_id}")
+def remove_candidate_basket(
+    listing_id: int,
+    x_visitor_id: str | None = Header(default=None),
+    db: Session = Depends(get_db),
+):
+    repository.remove_candidate_basket_item(db, _visitor_id(x_visitor_id), listing_id)
+    return {"items": [_serialize(item) for item in repository.list_candidate_basket(db, _visitor_id(x_visitor_id))]}
+
+
+@router.delete("/candidate-basket")
+def clear_candidate_basket(
+    x_visitor_id: str | None = Header(default=None),
+    db: Session = Depends(get_db),
+):
+    repository.clear_candidate_basket(db, _visitor_id(x_visitor_id))
+    return {"items": []}
+
+
 @router.post("/compare/interpret")
 def interpret_candidate_comparison(
     body: ComparisonRequest,
@@ -106,6 +161,16 @@ def interpret_candidate_comparison(
             raise HTTPException(status_code=404, detail=f"粮源 {listing_id} 不存在")
         listings.append(_serialize(listing))
     return interpret_comparison(listings)
+
+
+@router.post("/sourcing-runs")
+def run_sourcing_task(body: SourcingRunRequest, db: Session = Depends(get_db)):
+    """执行粮小二 LangGraph 寻源状态机并返回节点轨迹与方案。"""
+    text = body.text.strip()
+    if not text:
+        raise HTTPException(status_code=422, detail="请描述寻源需求")
+    listings = [_serialize(item) for item in repository.list_listings(db)]
+    return run_sourcing_graph(text, listings)
 
 
 class TaskCreate(BaseModel):

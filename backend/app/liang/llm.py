@@ -26,6 +26,23 @@ class ComparisonInterpretation(BaseModel):
     item_reviews: list[ItemReview]
 
 
+class SourcingNeedExtraction(BaseModel):
+    """LLM 从采购员自然语言中提取的寻源条件。"""
+
+    variety: str | None = None
+    quantity_tons: int | None = Field(default=None, ge=1)
+    grade: str | None = None
+    crop_year: int | None = Field(default=None, ge=2000, le=2100)
+    deadline_days: int | None = Field(default=None, ge=1, le=90)
+    budget_price: int | None = Field(default=None, ge=1)
+
+
+class RankingReview(BaseModel):
+    summary: str
+    decision_basis: list[str] = Field(min_length=1, max_length=3)
+    procurement_advice: str
+
+
 def _config() -> tuple[str, str, str]:
     load_dotenv(_ENV_PATH, override=True)
     return (
@@ -72,6 +89,60 @@ def _fallback(listings: list[dict]) -> dict:
         "item_reviews": reviews,
         "source": "rule",
     }
+
+
+def extract_sourcing_need(text: str, fallback: dict) -> tuple[dict, str]:
+    """优先由 LLM 理解自然语言需求；不可用时保留确定性解析结果。"""
+    api_key, model, base_url = _config()
+    if not api_key:
+        return fallback, "rule"
+    try:
+        from langchain_openai import ChatOpenAI
+
+        llm = ChatOpenAI(model=model, api_key=api_key, base_url=base_url, temperature=0, timeout=30, max_retries=1)
+        result = llm.with_structured_output(SourcingNeedExtraction).invoke([
+            ("system", "你是粮食采购需求解析助手。仅提取用户明确表达的品种、数量（吨）、等级、粮食年份、最晚发运天数和预算单价（元/吨）；未明确表达的字段必须为 null，禁止推测或补全。"),
+            ("human", text),
+        ])
+        parsed = result.model_dump(exclude_none=True) if result else {}
+        valid_varieties = {"玉米", "小麦", "大豆"}
+        valid_grades = {"一等", "二等", "三等", "四等"}
+        if parsed.get("variety") not in valid_varieties:
+            parsed.pop("variety", None)
+        if parsed.get("grade") not in valid_grades:
+            parsed.pop("grade", None)
+        return parsed or fallback, "llm"
+    except Exception:
+        logger.exception("寻源需求 LLM 解析失败，回退规则解析")
+        return fallback, "rule"
+
+
+def review_sourcing_ranking(need: dict | None, primary: dict, backup: dict | None) -> dict:
+    """解释规则排序的业务取舍，绝不改变已确定的主推与备选。"""
+    fallback = {
+        "summary": f"主推 {primary['listing_code']} 已在信息完整度、综合到厂成本与发运条件的规则排序中优先；最终下单前仍需完成库存和质检核验。",
+        "decision_basis": [
+            f"主推综合到厂成本为 {primary['delivered_price']} 元/吨",
+            f"主推可用量为 {primary['available_quantity_tons']} 吨，最晚可发 {primary['latest_ship_at'] or '待确认'}",
+        ],
+        "procurement_advice": f"优先向 {primary['supplier_name']} 确认库存锁定与正式质检单。" if not backup else f"成本优先可先核验 {primary['supplier_name']}；如更看重备选供应连续性，可同步保留 {backup['supplier_name']} 议价。",
+        "source": "rule",
+    }
+    api_key, model, base_url = _config()
+    if not api_key:
+        return fallback
+    try:
+        from langchain_openai import ChatOpenAI
+
+        llm = ChatOpenAI(model=model, api_key=api_key, base_url=base_url, temperature=0.2, timeout=20, max_retries=0)
+        result = llm.with_structured_output(RankingReview).invoke([
+            ("system", "你是粮食采购决策助手。你只能解释给定的规则排序结果，不得调整主推或备选顺序，不得编造运费、库存、信用或行情。请说明成本、质量、发运和信息完整度之间的取舍，并给出谨慎的下一步建议。"),
+            ("human", f"采购需求：{need or {}}\n规则主推（名次不可修改）：{primary}\n规则备选（名次不可修改）：{backup or {}}"),
+        ])
+        return {**result.model_dump(), "source": "llm"} if result else fallback
+    except Exception:
+        logger.exception("寻源排序 LLM 复核失败，回退规则说明")
+        return fallback
 
 
 def interpret_comparison(listings: list[dict]) -> dict:

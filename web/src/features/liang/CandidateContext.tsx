@@ -3,18 +3,25 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
 } from "react";
+import {
+  addCandidateBasketItem,
+  clearCandidateBasket,
+  fetchCandidateBasket,
+  removeCandidateBasketItem,
+} from "./api";
 import type { Listing } from "./types";
 
 interface CandidateState {
   candidates: Listing[];
-  add: (listing: Listing) => void;
-  remove: (id: number) => void;
+  add: (listing: Listing) => Promise<void>;
+  remove: (id: number) => Promise<void>;
   has: (id: number) => boolean;
-  clear: () => void;
+  clear: () => Promise<void>;
 }
 
 const CandidateContext = createContext<CandidateState | null>(null);
@@ -22,14 +29,18 @@ const CandidateContext = createContext<CandidateState | null>(null);
 export function CandidateProvider({ children }: { children: ReactNode }) {
   const [candidates, setCandidates] = useState<Listing[]>([]);
 
-  const add = useCallback((listing: Listing) => {
-    setCandidates((prev) =>
-      prev.some((c) => c.id === listing.id) ? prev : [...prev, listing],
-    );
+  useEffect(() => {
+    fetchCandidateBasket().then(setCandidates).catch(() => {});
   }, []);
 
-  const remove = useCallback((id: number) => {
-    setCandidates((prev) => prev.filter((c) => c.id !== id));
+  const add = useCallback(async (listing: Listing) => {
+    const items = await addCandidateBasketItem(listing.id);
+    setCandidates(items);
+  }, []);
+
+  const remove = useCallback(async (id: number) => {
+    const items = await removeCandidateBasketItem(id);
+    setCandidates(items);
   }, []);
 
   const has = useCallback(
@@ -37,7 +48,10 @@ export function CandidateProvider({ children }: { children: ReactNode }) {
     [candidates],
   );
 
-  const clear = useCallback(() => setCandidates([]), []);
+  const clear = useCallback(async () => {
+    await clearCandidateBasket();
+    setCandidates([]);
+  }, []);
 
   const value = useMemo(
     () => ({ candidates, add, remove, has, clear }),

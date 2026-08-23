@@ -8,7 +8,7 @@ const navItems = [
 
 export default function TopNav() {
   return (
-    <header className="sticky top-0 z-40 h-16 border-b border-line bg-panel/85 backdrop-blur">
+    <header className="sticky top-0 z-40 h-16 border-b border-line bg-panel">
       <div className="mx-auto flex h-full max-w-[1440px] items-center justify-between px-6">
         {/* 品牌标识，点击返回首页 */}
         <NavLink to="/" className="flex items-center gap-2.5">

@@ -5,13 +5,13 @@ from app.liang import repository
 def test_list_all(db_session):
     seed_liang_mock_data(db_session)
     result = repository.list_listings(db_session)
-    assert len(result) == 12
+    assert len(result) == 200
 
 
 def test_list_by_variety(db_session):
     seed_liang_mock_data(db_session)
     result = repository.list_listings(db_session, {"variety_name": "玉米"})
-    assert len(result) == 8
+    assert len(result) > 8
     assert all(l.variety_name == "玉米" for l in result)
 
 

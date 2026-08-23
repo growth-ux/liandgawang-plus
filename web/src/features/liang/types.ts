@@ -151,6 +151,12 @@ export interface TaskPlan {
   backup: TaskPick | null;
   eliminated: TaskEliminated[];
   verifications: string[];
+  ranking_review?: {
+    summary: string;
+    decision_basis: string[];
+    procurement_advice: string;
+    source: "llm" | "rule";
+  };
 }
 
 export interface TaskHandoff {
@@ -176,6 +182,20 @@ export interface SourcingTask {
   plan: TaskPlan | null;
   handoff: TaskHandoff | null;
   created_at: string | null;
+}
+
+export interface SourcingRunTrace {
+  node: "parse" | "load" | "filter" | "sort" | "eliminate" | "pick" | "review" | "verify";
+  status: "done" | "skipped";
+  detail: string;
+}
+
+export interface SourcingRunResult {
+  need: TaskNeedSummary | null;
+  plan: TaskPlan;
+  listing_count: number;
+  trace: SourcingRunTrace[];
+  parser_source: "llm" | "rule";
 }
 
 export interface ComparisonItemReview {

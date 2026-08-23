@@ -6,7 +6,7 @@ def test_seed_is_idempotent(db_session):
     seed_liang_mock_data(db_session)
     seed_liang_mock_data(db_session)
     count = db_session.query(GrainListing).count()
-    assert count == 12
+    assert count == 200
 
 
 def test_seed_covers_demo_scenarios(db_session):

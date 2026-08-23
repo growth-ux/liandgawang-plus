@@ -39,16 +39,48 @@ SERVICES = [
 ]
 
 
+def _generated_services() -> list[tuple]:
+    """补齐到 200 条承运服务，覆盖现有主干线路的不同运力与发运安排。"""
+    carriers = ["中北公铁联运", "粮运供应链", "华北仓配物流", "东北陆港运输", "安达货运", "丰收航运", "新程物流", "兴达铁路服务"]
+    variety_options = ["corn,wheat", "corn,soybean", "corn,wheat,soybean", "corn,wheat,soybean,rice"]
+    windows = ["每日发运", "隔日发运", "每周一、四装车", "每周二、五装车", "预约后48小时内发运"]
+    loadings = ["散粮自卸车", "吨包集装箱", "散粮/吨包", "港口散粮装船"]
+    rows = []
+    for number in range(11, 201):
+        index = number - 11
+        segment = SEGMENTS[index % len(SEGMENTS)]
+        carrier = carriers[index % len(carriers)]
+        rows.append((
+            f"YUN-SVC-V1-{number:03d}", f"{carrier}{index // len(carriers) + 1}号运力中心", segment[0],
+            variety_options[index % len(variety_options)], 30 + (index % 5) * 20,
+            300 + (index * 175) % 5000, windows[index % len(windows)], loadings[index % len(loadings)],
+            f"近30天准点率{90 + index % 9}%",
+        ))
+    return rows
+
+
+ALL_SERVICES = [*SERVICES, *_generated_services()]
+
+
 def seed_logistics_mock_data(db: Session) -> None:
-    if db.query(RouteSegment).count() > 0:
-        return
+    expected_service_codes = {row[0] for row in ALL_SERVICES}
+    # 清理早期版本遗留的 YUN-SVC-001 ～ YUN-SVC-050 Mock 服务，确保演示库稳定为 200 条。
+    for service in db.query(LogisticsService).filter(LogisticsService.service_code.like("YUN-SVC-%")).all():
+        if service.service_code not in expected_service_codes:
+            db.delete(service)
+    existing_segments = {code for (code,) in db.query(RouteSegment.segment_code).all()}
     for code, origin, dest, mode, km, pl, ph, dl, dh, risk in SEGMENTS:
+        if code in existing_segments:
+            continue
         db.add(RouteSegment(
             segment_code=code, origin=origin, destination=dest, mode=mode,
             distance_km=km, price_low=pl, price_high=ph, days_low=dl, days_high=dh,
             risk_note=risk, data_updated_at=DATA_UPDATED_AT,
         ))
-    for code, carrier, seg, varieties, tmin, tmax, window, loading, perf in SERVICES:
+    existing_services = {code for (code,) in db.query(LogisticsService.service_code).all()}
+    for code, carrier, seg, varieties, tmin, tmax, window, loading, perf in ALL_SERVICES:
+        if code in existing_services:
+            continue
         db.add(LogisticsService(
             service_code=code, carrier=carrier, segment_code=seg, varieties=varieties,
             tonnage_min=tmin, tonnage_max=tmax, dispatch_window=window,

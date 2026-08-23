@@ -6,15 +6,16 @@ def test_seed_loads_segments_and_services(db_session):
 
     seed_logistics_mock_data(db_session)
     assert db_session.query(RouteSegment).count() == 10
-    assert db_session.query(LogisticsService).count() == 10
+    assert db_session.query(LogisticsService).count() == 200
 
 
 def test_seed_idempotent(db_session):
-    from app.logistics.models import RouteSegment
+    from app.logistics.models import LogisticsService, RouteSegment
 
     seed_logistics_mock_data(db_session)
     seed_logistics_mock_data(db_session)
     assert db_session.query(RouteSegment).count() == 10
+    assert db_session.query(LogisticsService).count() == 200
 
 
 # ---------- 测算与市场接口 ----------

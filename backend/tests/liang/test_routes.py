@@ -5,7 +5,7 @@ def test_listings_ok(client, db_session):
     seed_liang_mock_data(db_session)
     resp = client.get("/api/liang/listings")
     assert resp.status_code == 200
-    assert len(resp.json()["items"]) == 12
+    assert len(resp.json()["items"]) == 200
 
 
 def test_listings_filter(client, db_session):
@@ -28,5 +28,5 @@ def test_market_summary(client, db_session):
     resp = client.get("/api/liang/market/summary")
     assert resp.status_code == 200
     body = resp.json()
-    assert body["summary"]["total_listings"] == 12
+    assert body["summary"]["total_listings"] == 200
     assert len(body["discoveries"]) >= 3

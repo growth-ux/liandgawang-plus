@@ -1,5 +1,5 @@
 """liang-v1 固定粮源数据集：覆盖主推、备选、低价等级不符、数量不足、字段缺失等场景。"""
-from datetime import date
+from datetime import date, timedelta
 from decimal import Decimal
 
 from sqlalchemy.orm import Session
@@ -52,15 +52,55 @@ LISTINGS = [
 ]
 
 
+def _generated_listings() -> list[tuple]:
+    """补齐到 200 条可筛选的真实感粮源挂牌，固定生成以保证演示可复现。"""
+    sources = [
+        ("corn", "玉米", "黑龙江", "齐齐哈尔", 2360, 14.0, 685),
+        ("corn", "玉米", "吉林", "长春", 2390, 14.0, 685),
+        ("corn", "玉米", "辽宁", "沈阳", 2420, 14.0, 685),
+        ("wheat", "小麦", "河南", "周口", 2480, 12.5, 770),
+        ("wheat", "小麦", "山东", "聊城", 2550, 12.5, 770),
+        ("soybean", "大豆", "黑龙江", "绥化", 3920, 13.0, 680),
+        ("soybean", "大豆", "内蒙古", "呼伦贝尔", 4010, 13.0, 680),
+    ]
+    suppliers = ["北方粮贸", "丰年粮食", "中粮东北", "华粮供应链", "金穗粮贸", "兴农仓储", "恒泰农产品", "嘉禾粮行"]
+    grades = ["一等", "二等", "二等", "三等"]
+    price_types = ["出厂价", "出厂价", "到库价", "港口价"]
+    rows = []
+    for number in range(13, 201):
+        index = number - 13
+        vcode, vname, province, city, base_price, moisture_std, weight_std = sources[index % len(sources)]
+        grade = grades[index % len(grades)]
+        price_type = price_types[index % len(price_types)]
+        earliest = PRICE_DATE + timedelta(days=1 + index % 12)
+        latest = earliest + timedelta(days=2 + index % 6)
+        # 少量记录保留待补字段，供核验和筛选场景使用。
+        missing_window = index % 17 == 0
+        rows.append((
+            f"LIANG-V1-{number:03d}", vcode, vname, 2025 if index % 5 else 2024,
+            province, city, grade, str(base_price + (index * 17) % 260), price_type,
+            180 + (index * 95) % 2200, "集装箱" if price_type == "港口价" else "散粮",
+            None if missing_window else earliest, None if missing_window else latest,
+            str(round(moisture_std + ((index % 8) - 3) * 0.15, 2)),
+            str(int(weight_std + ((index % 9) - 4) * 3)),
+            str(round(0.6 + (index % 7) * 0.15, 2)),
+            f"{suppliers[index % len(suppliers)]}{province}{index // len(sources) + 1}部", f"{province}{city}",
+        ))
+    return rows
+
+
+ALL_LISTINGS = [*LISTINGS, *_generated_listings()]
+
+
 def seed_liang_mock_data(db: Session) -> None:
     """幂等写入 liang-v1 粮源，已存在的 listing_code 跳过。"""
-    for row in LISTINGS:
+    existing_codes = {code for (code,) in db.query(GrainListing.listing_code).all()}
+    for row in ALL_LISTINGS:
         (
             code, vcode, vname, year, prov, city, grade, price, ptype, qty, dtype,
             early, late, moisture, tw, impurity, supplier, sregion,
         ) = row
-        exists = db.query(GrainListing.listing_code).filter_by(listing_code=code).first()
-        if exists:
+        if code in existing_codes:
             continue
         db.add(
             GrainListing(
