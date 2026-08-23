@@ -1,0 +1,86 @@
+backend/tests/market/test_price_series.py
+  s_b03f00c9332fec::t_ee0a2d2bafc5aa 22-23
+  s_b03f00c9332fec::t_a6a33f807ec73d 4-5,24-89
+  s_b03f00c9332fec::t_2e2d438503ce4e 151-173
+  s_b03f00c9332fec::t_bed25ce58bea48 1-3,6-21
+  s_b03f00c9332fec::t_a4b4988352f12b 90-150
+web/src/features/zhan/types.ts
+  s_b03f00c9332fec::t_00ebc07ec875e3 29-63
+backend/app/market/mock_seed.py
+  s_b03f00c9332fec::t_ea6dd132a01138 278-282,307-308
+  s_b03f00c9332fec::t_a7ca0cfef7751c 245-250,258-259,271,274-277,285-306
+  s_b03f00c9332fec::t_dd9aa7f66fdfae 3
+  s_b03f00c9332fec::t_ac40ab55d71652 9,17,19,21,23-24
+  s_b03f00c9332fec::t_75922ecf01e630 16,18,20,22
+  s_b03f00c9332fec::t_8383139dd5b6d7 251-257,260-270,272-273
+  s_b03f00c9332fec::t_7719fcce9ea227 283-284
+  s_b03f00c9332fec::t_c3f03c39d28681 25
+backend/tests/market/test_metrics.py
+  s_b03f00c9332fec::t_d53346e4c813ec 1-27
+.gitignore
+  s_b03f00c9332fec::t_3e14d91a312121 3-5
+  s_b03f00c9332fec::t_6d5694ce4a129b 1-2
+web/src/features/zhan/PriceTrendChart.tsx
+  s_b03f00c9332fec::t_2bde1c63ed1069 1,6-7,16-19,28-29,33,37,54-76,132-133,139
+  s_b03f00c9332fec::t_bf47e5d49fe2ee 2-5,8-15,20-27,30-32,34-36,38-53,77-131,134-138,140-144
+web/src/features/zhan/format.ts
+  s_b03f00c9332fec::t_0d3ebd332a45e7 18,20,22
+  s_b03f00c9332fec::t_f6e2352f31c00e 19,21
+backend/app/market/routes.py
+  s_b03f00c9332fec::t_08b8f50be83c0e 6
+  s_b03f00c9332fec::t_fbfbfa17db82b0 48-80
+web/src/features/zhan/VarietyMarketTab.tsx
+  s_b03f00c9332fec::t_8f9151819aabd2 107
+  s_b03f00c9332fec::t_c3e8434ca053b9 2-8,86-106,108-122,126-134,141-196,198-199,226,234-293,295-299
+  s_b03f00c9332fec::t_97ab1692a8fa01 39
+  s_b03f00c9332fec::t_b968293a9b8c96 135-140
+  s_b03f00c9332fec::t_37cbed376f58a3 42
+  s_b03f00c9332fec::t_5285450ab990a3 197
+  s_b03f00c9332fec::t_c0c68cb58754b0 200-224
+  s_b03f00c9332fec::t_b5aebb3bd9ed8a 9-38,40-41,43-57,59-85
+  s_b03f00c9332fec::t_902b8c92a9a6d5 1
+  s_b03f00c9332fec::t_16b5c8a20d164c 58
+  s_b03f00c9332fec::t_746126d7f2721c 123-125
+  s_b03f00c9332fec::t_cbe53dbf91d49b 225,227-233
+  h_7549b7dc6a6921 294
+backend/app/market/models.py
+  s_b03f00c9332fec::t_4be7169c54a07e 36-55
+web/src/features/zhan/api.ts
+  s_b03f00c9332fec::t_b4c1c9771ff3a2 1,12-19
+  s_b03f00c9332fec::t_26da2b7fe6769a 20-22
+  s_b03f00c9332fec::t_0e0efb16995992 23-24
+backend/app/market/repository.py
+  s_b03f00c9332fec::t_0752df134876b6 4,14-31
+  s_b03f00c9332fec::t_9efb7b9ff2f6a9 32
+web/src/data/agents.ts
+  s_b03f00c9332fec::t_e86b6a4ab4530f 72
+web/src/features/zhan/ZhanPage.tsx
+  s_b03f00c9332fec::t_51d4cf67d2ec28 101-106
+  s_b03f00c9332fec::t_79e0a649ef7021 9
+web/vite.config.ts
+  s_b03f00c9332fec::t_85021f07b1c53d 5,7
+  s_b03f00c9332fec::t_ddaad060c26201 6,8-13,15
+backend/app/market/metrics.py
+  s_b03f00c9332fec::t_d15c9caa4725cc 1-34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "1738a611b58c4a079cea9e732eb0075111ab05fa",
+  "prompts": {},
+  "humans": {
+    "h_7549b7dc6a6921": {
+      "author": "tiger <1360055716@qq.com>"
+    }
+  },
+  "sessions": {
+    "s_b03f00c9332fec": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ee3d658-8fa6-44aa-813b-81aa3248724e",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
