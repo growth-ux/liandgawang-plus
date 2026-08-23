@@ -1,0 +1,24 @@
+backend/app/logistics/seed.py
+  h_7549b7dc6a6921 1,9-10,13-78,81,85-90,94-96,101-103,106-119,122-127,129,131-134,137-142,145-150,154-177,179-204
+backend/app/main.py
+  h_7549b7dc6a6921 7,14
+backend/app/market/mock_seed.py
+  h_7549b7dc6a6921 381-385
+backend/seed_db.py
+  h_7549b7dc6a6921 1-38
+web/src/features/yun/FindLogisticsTab.tsx
+  h_7549b7dc6a6921 1-8,10,12-13,15-16,18,21-32,34-40,42,44-45,47-49,52-53,55-67,69-72,74-79,83-84,86,88,90-161,163-164
+web/vite.config.ts
+  h_7549b7dc6a6921 7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "4748895658c13cd9daac27a4307d28c108b8e7c2",
+  "prompts": {},
+  "humans": {
+    "h_7549b7dc6a6921": {
+      "author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
