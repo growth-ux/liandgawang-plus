@@ -5,6 +5,12 @@ import { fmtInt, shortName } from "./format";
 
 let chinaRegistered = false;
 
+/** 涨跌着色遵循国内行情习惯：红涨绿跌 */
+function chgColor(change: string): string {
+  const n = Number(change);
+  return n > 0 ? "#f87171" : n < 0 ? "#34d399" : "#93a1b8";
+}
+
 function buildOption(spots: SpotPrice[]) {
   const data = spots.map((s) => ({
     name: s.region_name,
@@ -28,12 +34,12 @@ function buildOption(spots: SpotPrice[]) {
       formatter: (p: any) => {
         const d = p.data;
         const n = Number(d.change);
-        const chgColor = n > 0 ? "#34d399" : n < 0 ? "#f87171" : "#93a1b8";
+        const chgColorCss = n > 0 ? "#f87171" : n < 0 ? "#34d399" : "#93a1b8";
         return [
-          `<b>${d.name}</b>`,
+          `<b>${d.name}</b>（${d.regionType}）`,
           `价格（${d.quoteType}）：${d.price} 元/吨`,
           `品质：${d.remark}`,
-          `涨跌：<span style="color:${chgColor}">${n > 0 ? "+" : ""}${d.change}%</span>`,
+          `涨跌：<span style="color:${chgColorCss}">${n > 0 ? "+" : ""}${d.change}%</span>`,
           `去年同期：${d.lastYear}`,
         ].join("<br/>");
       },
@@ -60,9 +66,11 @@ function buildOption(spots: SpotPrice[]) {
         type: "scatter",
         coordinateSystem: "geo",
         data,
-        symbolSize: 11,
+        // 点越大代表当日波动越大
+        symbolSize: (_value: number[], p: any) =>
+          Math.min(17, 9 + Math.abs(Number(p.data.change)) * 4),
         itemStyle: {
-          color: (p: any) => (p.data.regionType === "产区" ? "#22d3ee" : "#ee7b1f"),
+          color: (p: any) => chgColor(p.data.change),
           borderColor: "#0b1220",
           borderWidth: 1,
         },
@@ -117,5 +125,27 @@ export default function ChinaMap({ spots }: { spots: SpotPrice[] }) {
       });
   }, [spots]);
 
-  return <div ref={containerRef} className="h-[440px] w-full" />;
+  return (
+    <div className="rounded-xl border border-line bg-panel p-5">
+      <div className="mb-2 flex items-center justify-between">
+        <div className="text-sm font-semibold">全国市场监测分布</div>
+        <div className="flex items-center gap-3 text-[11px] text-ink-soft">
+          <span>
+            <span className="mr-1 inline-block h-2 w-2 rounded-full bg-red-400" />
+            上涨
+          </span>
+          <span>
+            <span className="mr-1 inline-block h-2 w-2 rounded-full bg-emerald-400" />
+            下跌
+          </span>
+          <span>
+            <span className="mr-1 inline-block h-2 w-2 rounded-full bg-ink-soft" />
+            持平
+          </span>
+          <span className="text-ink-soft/60">点越大波动越大</span>
+        </div>
+      </div>
+      <div ref={containerRef} className="h-[420px] w-full" />
+    </div>
+  );
 }

@@ -1,7 +1,7 @@
 from datetime import date, datetime
 from decimal import Decimal
 
-from sqlalchemy import Date, DateTime, Float, Integer, Numeric, String, func
+from sqlalchemy import Date, DateTime, Float, Integer, Numeric, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database import Base
@@ -33,3 +33,24 @@ class MarketSpotPrice(Base):
     updated_at: Mapped[datetime] = mapped_column(
         DateTime, server_default=func.now(), onupdate=func.now()
     )
+
+
+class MarketEvent(Base):
+    """市场关键事件：标题、摘要、影响方向与强度。"""
+
+    __tablename__ = "market_events"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    event_code: Mapped[str] = mapped_column(String(64), unique=True, index=True)
+    variety_code: Mapped[str] = mapped_column(String(32), index=True)
+    title: Mapped[str] = mapped_column(String(128))
+    summary: Mapped[str] = mapped_column(Text)
+    event_at: Mapped[datetime] = mapped_column(DateTime)
+    impact_regions: Mapped[str] = mapped_column(String(256))  # JSON 数组字符串
+    direction: Mapped[str] = mapped_column(String(16))  # bullish / bearish / neutral
+    strength: Mapped[str] = mapped_column(String(16))  # strong / moderate / mild
+    duration_hint: Mapped[str] = mapped_column(String(32))
+    data_kind: Mapped[str] = mapped_column(String(16), default="simulated")
+    mock_dataset_version: Mapped[str] = mapped_column(String(32), default="zhan-v1")
+    mock_generated_at: Mapped[datetime] = mapped_column(DateTime)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())

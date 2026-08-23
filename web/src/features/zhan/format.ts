@@ -10,6 +10,11 @@ export function fmtPct(v: string): string {
   return `${n > 0 ? "+" : ""}${n}%`;
 }
 
+/** 数字转带符号百分比（保留 1 位小数），用于均价环比等统计 */
+export function fmtSignedPct(n: number): string {
+  return `${n > 0 ? "+" : ""}${n.toFixed(1)}%`;
+}
+
 /** 去掉省份前缀："黑龙江·绥化" -> "绥化"；"天津" -> "天津" */
 export function shortName(regionName: string): string {
   const idx = regionName.indexOf("·");

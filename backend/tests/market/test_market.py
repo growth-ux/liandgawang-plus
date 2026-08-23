@@ -37,6 +37,7 @@ def test_overview_returns_corn_spots(client, db_session):
         "price",
         "change_pct",
         "last_year_price",
+        "interpretation",
     }
 
 

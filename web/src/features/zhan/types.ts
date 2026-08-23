@@ -11,6 +11,32 @@ export interface SpotPrice {
   price: string;
   change_pct: string;
   last_year_price: string;
+  interpretation: string;
+}
+
+export interface MarketEvent {
+  event_code: string;
+  title: string;
+  summary: string;
+  event_at: string;
+  impact_regions: string[];
+  direction: "bullish" | "bearish" | "neutral";
+  strength: "strong" | "moderate" | "mild";
+  duration_hint: string;
+}
+
+export interface EvidenceItem {
+  text: string;
+  type: "price" | "event";
+}
+
+export interface MarketJudgment {
+  summary: string;
+  direction: "bullish" | "bearish" | "neutral";
+  supporting: EvidenceItem[];
+  opposing: EvidenceItem[];
+  evidence_completeness: "high" | "medium" | "low";
+  watch_suggestions: string[];
 }
 
 export interface MarketOverview {
@@ -18,6 +44,8 @@ export interface MarketOverview {
   variety_name: string;
   price_date: string;
   spots: SpotPrice[];
+  events: MarketEvent[];
+  judgment: MarketJudgment;
 }
 
 export const VARIETIES = [

@@ -71,6 +71,16 @@ body {
 .ld-bob { animation: ld-bob 3.4s ease-in-out infinite; }
 .ld-sway { animation: ld-sway 5.2s ease-in-out infinite; transform-origin: 50% 96%; }
 
+/* 对话窗“思考中”连续跳动的圆点 */
+@keyframes ld-dot {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-3px); opacity: 1; }
+}
+
+.ld-dot { animation: ld-dot 1.2s ease-in-out infinite; }
+.ld-dot:nth-child(2) { animation-delay: 0.15s; }
+.ld-dot:nth-child(3) { animation-delay: 0.3s; }
+
 /* ===== 全息道具动画（首页 HoloProp） ===== */
 
 @keyframes ld-holo-breathe {
@@ -120,7 +130,7 @@ body {
 .ld-sweep { animation: ld-sweep 4s ease-in-out infinite; }
 
 @media (prefers-reduced-motion: reduce) {
-  .ld-bob, .ld-sway,
+  .ld-bob, .ld-sway, .ld-dot,
   .ld-holo-breathe, .ld-blink, .ld-dash-flow, .ld-draw, .ld-scan-y, .ld-sweep {
     animation: none;
   }

@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
 import AgentSwitcher from "../../components/AgentSwitcher";
-import HoloProp from "../../components/field/HoloProp";
 import { getAgent } from "../../data/agents";
 import { fetchMarketOverview } from "./api";
 import { VARIETIES, type MarketOverview } from "./types";
 import ChinaMap from "./ChinaMap";
 import PriceIndexTable from "./PriceIndexTable";
+import MarketJudgment from "./components/MarketJudgment";
+import MarketEventList from "./components/MarketEventList";
+import MarketStatsBar from "./components/MarketStatsBar";
 
 const agent = getAgent("zhan")!;
 
-/** 市场全景主页面：品种切换 + 左地图 + 右指数表 */
+/** 市场全景主页面：品种切换 + AI 判断 + 地图 + 指数表 + 事件 */
 export default function ZhanPage() {
   const [varietyCode, setVarietyCode] = useState<string>("corn");
   const [activeTab, setActiveTab] = useState(0);
@@ -34,22 +36,6 @@ export default function ZhanPage() {
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)] flex-col">
-      {/* 右下角角色伙伴 — 角色 + 全息投影，后期可点击对话 */}
-      <button
-        type="button"
-        className="ld-bob fixed bottom-4 right-40 z-50 cursor-pointer"
-        title={`与${agent.name}对话`}
-      >
-        <div className="relative h-[220px] transition-transform duration-300 hover:scale-[1.04]">
-          <img
-            src={agent.image}
-            alt={agent.name}
-            className="h-full w-auto drop-shadow-[0_0_18px_rgba(47,127,184,0.45)] hover:drop-shadow-[0_0_28px_rgba(34,211,238,0.6)]"
-            draggable={false}
-          />
-          <HoloProp holo={agent.holo} />
-        </div>
-      </button>
       {/* 头部：全宽背景 + 内容居中约束 */}
       <div className="border-b border-line bg-panel">
         <div className="mx-auto flex max-w-[1280px] items-center justify-between px-6 py-4">
@@ -65,6 +51,24 @@ export default function ZhanPage() {
                 <span className="ml-2.5 rounded-full bg-brand-faint px-2.5 py-0.5 text-xs font-normal text-brand-deep">
                   {agent.role}
                 </span>
+                {/* 市场方向标签 */}
+                {data?.judgment && (
+                  <span
+                    className={`ml-2 text-[11px] font-normal ${
+                      data.judgment.direction === "bullish"
+                        ? "text-emerald-400"
+                        : data.judgment.direction === "bearish"
+                          ? "text-red-400"
+                          : "text-amber-300"
+                    }`}
+                  >
+                    {data.judgment.direction === "bullish"
+                      ? "↑ 偏强"
+                      : data.judgment.direction === "bearish"
+                        ? "↓ 偏弱"
+                        : "↔ 震荡"}
+                  </span>
+                )}
               </h1>
             </div>
           </div>
@@ -98,7 +102,7 @@ export default function ZhanPage() {
       {/* 内容 */}
       <div className="mx-auto w-full max-w-[1280px] flex-1 px-6 py-6">
         {activeTab !== 0 ? (
-          <div className="flex min-h-[420px] flex-col items-center justify-center rounded-3xl border border-dashed border-line bg-panel/60 text-center">
+          <div className="flex min-h-[420px] flex-col items-center justify-center rounded-3xl border border-line bg-panel/60 text-center">
             <img
               src={agent.image}
               alt={agent.name}
@@ -135,66 +139,44 @@ export default function ZhanPage() {
 
             {/* 加载 / 错误 */}
             {error ? (
-              <div className="flex min-h-[360px] flex-col items-center justify-center rounded-3xl border border-dashed border-line bg-panel/60 text-center">
+              <div className="flex min-h-[360px] flex-col items-center justify-center rounded-3xl border border-line bg-panel/60 text-center">
                 <p className="text-sm text-red-400">行情加载失败：{error}</p>
                 <p className="mt-2 text-xs text-ink-soft">请确认后端服务已启动、本地数据库已初始化。</p>
               </div>
             ) : !data ? (
-              <div className="flex min-h-[360px] items-center justify-center rounded-3xl border border-dashed border-line bg-panel/60 text-sm text-ink-soft">
-                正在读取行情…
+              <div className="flex min-h-[360px] items-center justify-center rounded-3xl border border-line bg-panel/60 text-sm text-ink-soft">
+                <div className="flex items-center gap-2">
+                  <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-tech" />
+                  瞻小二正在整理行情…
+                </div>
               </div>
             ) : (
               <>
+                {/* 行情概览统计条 */}
+                <MarketStatsBar spots={data.spots} />
+
+                {/* AI 判断面板 */}
+                {data.judgment && (
+                  <MarketJudgment judgment={data.judgment} priceDate={data.price_date} />
+                )}
+
                 {/* 左地图 + 右指数表 */}
                 <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1.55fr_1fr]">
-                  <div className="rounded-2xl border border-line bg-panel p-5">
-                    <ChinaMap spots={data.spots} />
-                    <div className="mt-3 flex items-center justify-center gap-4 text-xs text-ink-soft">
-                      <span>
-                        <span className="mr-1.5 inline-block h-2 w-2 rounded-full bg-tech" />
-                        产区库点
-                      </span>
-                      <span>
-                        <span className="mr-1.5 inline-block h-2 w-2 rounded-full bg-brand" />
-                        销区 / 港口
-                      </span>
-                    </div>
-                  </div>
+                  <ChinaMap spots={data.spots} />
 
-                  <div className="rounded-2xl border border-line bg-panel p-5">
+                  <div className="rounded-xl border border-line bg-panel p-5">
                     <div className="mb-3 text-sm font-semibold">价格指数</div>
-                    {/* 固定表头 */}
-                    <table className="w-full table-fixed border-collapse text-xs">
-                      <colgroup>
-                        <col className="w-[20%]" />
-                        <col className="w-[12%]" />
-                        <col className="w-[12%]" />
-                        <col className="w-[15%]" />
-                        <col className="w-[23%]" />
-                        <col className="w-[12%]" />
-                      </colgroup>
-                      <thead>
-                        <tr className="border-b border-line text-left text-ink-soft">
-                          <th className="pb-2 pr-2 font-normal">地点</th>
-                          <th className="pb-2 pr-2 text-right font-normal">价格</th>
-                          <th className="pb-2 pr-2 text-right font-normal">涨跌</th>
-                          <th className="pb-2 pl-6 pr-2 font-normal">口径</th>
-                          <th className="pb-2 pl-6 pr-2 font-normal">备注</th>
-                          <th className="pb-2 text-right font-normal">去年同期</th>
-                        </tr>
-                      </thead>
-                    </table>
-                    {/* 可滚动数据区 */}
-                    <div className="max-h-[400px] overflow-y-auto">
-                      <PriceIndexTable spots={data.spots} />
-                    </div>
+                    <PriceIndexTable spots={data.spots} />
                   </div>
                 </div>
 
+                {/* 关键事件卡片 */}
+                <MarketEventList events={data.events} />
+
                 {/* 备注 */}
-                <div className="rounded-xl border border-dashed border-line bg-panel/40 px-4 py-3 text-xs leading-6 text-ink-soft">
-                  <span className="font-medium text-ink">备注：</span>
-                  均为市场主流粮型、容重二等以上、水分达标；价格由各大区业务员在所在区域市场一手采集的实际成交价。涨跌为环比，去年同期为同比参考。
+                <div className="rounded-xl border border-line bg-panel/40 px-4 py-3 text-xs leading-6 text-ink-soft">
+                  <span className="font-medium text-ink">口径说明：</span>
+                  均为市场主流粮型、容重二等以上、水分达标；价格由各大区业务员在所在区域市场一手采集的实际成交价（每个监测点为当地代表性报价），涨跌为环比上一报价日，去年同期为同比参考。
                 </div>
               </>
             )}

@@ -5,7 +5,7 @@ from datetime import date, datetime, timedelta, timezone
 
 from sqlalchemy.orm import Session
 
-from app.market.models import MarketSpotPrice
+from app.market.models import MarketEvent, MarketSpotPrice
 
 MOCK_DATASET_VERSION = "zhan-v1"
 CHINA_TZ = timezone(timedelta(hours=8))
@@ -14,15 +14,90 @@ PRICE_DATE = date(2026, 8, 22)
 
 QUOTE_BY_TYPE = {"产区": "收购价", "港口": "平仓价", "销区": "到货价"}
 
+# ---------- 关键事件（玉米 2多1空、小麦震荡、大豆偏弱、稻谷无事件） ----------
+EVENTS = [
+    {
+        "event_code": "ZHAN-V1-EVT-CORN-01",
+        "variety_code": "corn",
+        "title": "东北临储拍卖底价连续两周上调",
+        "summary": (
+            "临储玉米拍卖底价较两周前累计上调 20 元/吨，成交率维持在 85% 以上，"
+            "市场对产区供给偏紧的预期有所强化。"
+        ),
+        "event_at": datetime(2026, 8, 18, tzinfo=CHINA_TZ),
+        "impact_regions": '["东北", "华北"]',
+        "direction": "bullish",
+        "strength": "moderate",
+        "duration_hint": "2～3 周",
+    },
+    {
+        "event_code": "ZHAN-V1-EVT-CORN-02",
+        "variety_code": "corn",
+        "title": "北方港口到货量持续偏低",
+        "summary": (
+            "锦州、鲅鱼圈等主要港口玉米日到货量低于同期均值约 30%，"
+            "港口平仓价获得支撑，南北价差扩大。"
+        ),
+        "event_at": datetime(2026, 8, 20, tzinfo=CHINA_TZ),
+        "impact_regions": '["港口", "销区"]',
+        "direction": "bullish",
+        "strength": "moderate",
+        "duration_hint": "1～2 周",
+    },
+    {
+        "event_code": "ZHAN-V1-EVT-CORN-03",
+        "variety_code": "corn",
+        "title": "进口玉米到港预期增加",
+        "summary": (
+            "据船期推算，未来 3～4 周南方港口进口玉米到港量将明显回升，"
+            "可能对销区到货价形成一定压制。"
+        ),
+        "event_at": datetime(2026, 8, 15, tzinfo=CHINA_TZ),
+        "impact_regions": '["广东", "福建", "港口"]',
+        "direction": "bearish",
+        "strength": "mild",
+        "duration_hint": "3～4 周后显现",
+    },
+    {
+        "event_code": "ZHAN-V1-EVT-WHEAT-01",
+        "variety_code": "wheat",
+        "title": "主产区新麦上市供应充足",
+        "summary": (
+            "河南、山东新季小麦集中上市，产区收购价整体平稳，"
+            "局部小幅波动，供需基本平衡。"
+        ),
+        "event_at": datetime(2026, 8, 16, tzinfo=CHINA_TZ),
+        "impact_regions": '["河南", "山东", "河北"]',
+        "direction": "neutral",
+        "strength": "mild",
+        "duration_hint": "2～4 周",
+    },
+    {
+        "event_code": "ZHAN-V1-EVT-SOYBEAN-01",
+        "variety_code": "soybean",
+        "title": "进口大豆集中到港，压榨利润收窄",
+        "summary": (
+            "8 月进口大豆到港量预计超 900 万吨，油厂开机率回升，"
+            "豆粕供应增加，国产大豆价格承压。"
+        ),
+        "event_at": datetime(2026, 8, 19, tzinfo=CHINA_TZ),
+        "impact_regions": '["东北", "港口"]',
+        "direction": "bearish",
+        "strength": "moderate",
+        "duration_hint": "2～3 周",
+    },
+]
+
 # 每品种：库点集合不同（体现品种产区分布）；价格/涨跌区间按产区/港口/销区分档。
+# 价格链条遵循现货贸易逻辑：产区收购价 < 港口平仓价 < 销区到货价（销区含南北运费、损耗与贸易毛利）。
 # 库点：(地点, 类型, 经度, 纬度)
 VARIETIES = {
     "corn": {
         "name": "玉米",
         "producing": (2280, 2340),
         "port": (2400, 2480),
-        "sale": (2350, 2430),
-        "chg": (0.2, 1.8),
+        "sale": (2490, 2610),
+        "chg": (-0.6, 1.8),
         "spots": [
             ("黑龙江·绥化", "产区", 126.98, 46.63),
             ("吉林·长春", "产区", 125.32, 43.90),
@@ -71,7 +146,7 @@ VARIETIES = {
         "name": "小麦",
         "producing": (2460, 2520),
         "port": (2600, 2680),
-        "sale": (2520, 2600),
+        "sale": (2690, 2810),
         "chg": (-0.6, 0.6),
         "spots": [
             ("河南·新乡", "产区", 113.87, 35.30),
@@ -110,8 +185,8 @@ VARIETIES = {
         "name": "大豆",
         "producing": (3960, 4040),
         "port": (4080, 4160),
-        "sale": (4040, 4120),
-        "chg": (-1.4, 0.0),
+        "sale": (4170, 4290),
+        "chg": (-1.4, 0.4),
         "spots": [
             ("黑龙江·哈尔滨", "产区", 126.63, 45.80),
             ("黑龙江·绥化", "产区", 126.98, 46.63),
@@ -147,8 +222,8 @@ VARIETIES = {
         "name": "稻谷",
         "producing": (2560, 2640),
         "port": (2680, 2760),
-        "sale": (2620, 2700),
-        "chg": (-0.5, 1.0),
+        "sale": (2770, 2890),
+        "chg": (-0.35, 0.4),
         "spots": [
             ("黑龙江·哈尔滨", "产区", 126.63, 45.80),
             ("黑龙江·佳木斯", "产区", 130.32, 46.80),
@@ -230,4 +305,27 @@ def seed_zhan_mock_data(db: Session) -> None:
                     mock_generated_at=MOCK_GENERATED_AT,
                 )
             )
+    # 写入事件
+    for evt in EVENTS:
+        exists = (
+            db.query(MarketEvent.event_code).filter_by(event_code=evt["event_code"]).first()
+        )
+        if exists:
+            continue
+        db.add(
+            MarketEvent(
+                event_code=evt["event_code"],
+                variety_code=evt["variety_code"],
+                title=evt["title"],
+                summary=evt["summary"],
+                event_at=evt["event_at"],
+                impact_regions=evt["impact_regions"],
+                direction=evt["direction"],
+                strength=evt["strength"],
+                duration_hint=evt["duration_hint"],
+                data_kind="simulated",
+                mock_dataset_version=MOCK_DATASET_VERSION,
+                mock_generated_at=MOCK_GENERATED_AT,
+            )
+        )
     db.commit()
