@@ -1,0 +1,68 @@
+web/src/features/liang/ListingTable.tsx
+  s_c702010a949c5f::t_ca19d13f105dbd 24
+  s_c702010a949c5f::t_280bd1baa55fa9 23
+  s_3d361b8c4f6a46::t_0f7749aa2a1159 26,42-45,51-54,59-61
+backend/app/liang/llm.py
+  s_c702010a949c5f::t_827be1e8cbc382 1-99
+backend/app/liang/routes.py
+  s_c702010a949c5f::t_24dcda6b6c3b89 91-110
+  s_c702010a949c5f::t_6c871ad626a340 9
+  s_c702010a949c5f::t_c63462d41e53d3 15-18
+web/src/features/liang/types.ts
+  s_c702010a949c5f::t_fd81fc4e268b92 169-182
+web/src/features/liang/api.ts
+  s_c702010a949c5f::t_fd81fc4e268b92 6,40-48
+  s_c702010a949c5f::t_eb2aeba25f8608 49-51
+README.md
+  h_7549b7dc6a6921 1-2
+web/src/features/liang/CompareTab.tsx
+  s_c702010a949c5f::t_fd81fc4e268b92 2,5,123-164,169-171,181,188,190-205,251,254,257,267
+  s_c702010a949c5f::t_244adb37f6780e 68-77,80,82-84,87,89,93-116,167-168,174-180,182,184-187,189,206,230-231,233,244-250,252-253,255,258-263,265-266,268-269
+  s_c702010a949c5f::t_0733c3a1f6ca65 4,7,9-61,165-166,207-224,228-229,232,236-243,256
+  s_c702010a949c5f::t_60bf679d14aa86 62-63
+web/src/data/agents.ts
+  s_3d361b8c4f6a46::t_13c5f0752c6fff 87
+web/src/features/liang/MarketDiscovery.tsx
+  s_3d361b8c4f6a46::t_0f7749aa2a1159 12-15,24-25,29-30
+web/src/features/liang/LiangPage.tsx
+  s_3d361b8c4f6a46::t_f5b13118198b7e 132
+  s_c702010a949c5f::t_0733c3a1f6ca65 119
+  s_3d361b8c4f6a46::t_0f7749aa2a1159 53-55,67,129,145-153
+  s_3d361b8c4f6a46::t_13c5f0752c6fff 66,118
+web/src/features/liang/MarketSummaryBar.tsx
+  s_3d361b8c4f6a46::t_0f7749aa2a1159 22,24-26
+web/src/features/liang/CandidateBasket.tsx
+  s_c702010a949c5f::t_0733c3a1f6ca65 68
+web/src/features/liang/FilterPanel.tsx
+  h_7549b7dc6a6921 49-50
+  s_3d361b8c4f6a46::t_0f7749aa2a1159 51-53,62
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "800483e71fd59c1c2e89b4a2bda3b6cb5a38a4db",
+  "prompts": {},
+  "humans": {
+    "h_7549b7dc6a6921": {
+      "author": "tiger <1360055716@qq.com>"
+    }
+  },
+  "sessions": {
+    "s_3d361b8c4f6a46": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a02db4-d1a4-70a1-a7ba-d5c3f6d07bc1",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    },
+    "s_c702010a949c5f": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a02dc2-baa8-7522-944c-776d831f9ba5",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
