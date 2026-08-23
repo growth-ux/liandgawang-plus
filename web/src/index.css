@@ -56,6 +56,19 @@ body {
   scrollbar-color: rgba(148, 163, 184, 0.15) transparent;
 }
 
+/* ===== 数字输入框：隐藏原生白色上下箭头（统一用公共 NumberInput 的内置步进按钮） ===== */
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
 /* ===== 数字员工动画（协作场首页） ===== */
 
 @keyframes ld-bob {

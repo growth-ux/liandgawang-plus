@@ -23,12 +23,18 @@ export default function AgentSwitcher({ currentId }: { currentId: string }) {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-1.5 rounded-full border border-line bg-panel px-4 py-2 text-sm text-ink transition-colors hover:border-brand hover:text-brand-deep"
+        className="group flex items-center gap-2 rounded-full border border-brand/30 bg-gradient-to-r from-brand-faint/90 to-panel px-4 py-2 text-sm text-ink shadow-[0_0_18px_rgba(238,123,31,0.12)] transition-all hover:border-brand/60 hover:shadow-[0_0_22px_rgba(238,123,31,0.3)] active:scale-[0.97]"
       >
+        <span className="relative flex h-1.5 w-1.5">
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand opacity-60" />
+          <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-brand" />
+        </span>
         切换小二
         <svg
           viewBox="0 0 24 24"
-          className={`h-4 w-4 transition-transform ${open ? "rotate-180" : ""}`}
+          className={`h-4 w-4 text-ink-soft transition-transform duration-300 ${
+            open ? "rotate-180 text-brand" : "group-hover:text-brand"
+          }`}
           fill="none"
           stroke="currentColor"
           strokeWidth="2"

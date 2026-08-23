@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import NumberInput from "../../components/NumberInput";
 import { previewAnalysis, saveAnalysis } from "./api";
 import {
   VARIETIES,
@@ -54,10 +55,12 @@ function Dropdown({
   options,
   value,
   onChange,
+  className = "",
 }: {
   options: { value: string; label: string }[];
   value: string;
   onChange: (v: string) => void;
+  className?: string;
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -73,7 +76,7 @@ function Dropdown({
   }, [open]);
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className={`relative ${className}`}>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
@@ -163,7 +166,7 @@ export default function ProcurementAnalysisTab({
   const [targetRegion, setTargetRegion] = useState("");
   const [budget, setBudget] = useState("");
   const [stockDays, setStockDays] = useState("");
-  const [risk, setRisk] = useState("");
+  const [risk, setRisk] = useState("稳健");
   const [remark, setRemark] = useState("");
 
   const [judgment, setJudgment] = useState<AnalysisJudgment | null>(null);
@@ -182,7 +185,7 @@ export default function ProcurementAnalysisTab({
     setTargetRegion(prefill.target_region ?? "");
     setBudget(prefill.budget_price ?? "");
     setStockDays(prefill.stock_days !== null ? String(prefill.stock_days) : "");
-    setRisk(prefill.risk_preference ?? "");
+    setRisk(prefill.risk_preference ?? "稳健");
     setRemark(prefill.remark ?? "");
     setJudgment(null);
     setSavedId(null);
@@ -285,12 +288,10 @@ export default function ProcurementAnalysisTab({
           </div>
 
           <Field label="采购数量（吨）" required>
-            <input
-              type="number"
+            <NumberInput
               min={1}
-              className={inputCls}
               value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
+              onChange={setQuantity}
               placeholder="如 120"
             />
           </Field>
@@ -321,39 +322,35 @@ export default function ProcurementAnalysisTab({
             />
           </Field>
           <Field label="目标预算（元/吨）">
-            <input
-              type="number"
+            <NumberInput
               min={1}
-              className={inputCls}
               value={budget}
-              onChange={(e) => setBudget(e.target.value)}
+              onChange={setBudget}
               placeholder="可选"
             />
           </Field>
           <Field label="库存可用天数">
-            <input
-              type="number"
+            <NumberInput
               min={0}
-              className={inputCls}
               value={stockDays}
-              onChange={(e) => setStockDays(e.target.value)}
+              onChange={setStockDays}
               placeholder="可选"
             />
           </Field>
         </div>
 
-        <div className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-8">
-          <Field label="风险偏好">
-            <Dropdown
-              value={risk}
-              onChange={setRisk}
-              options={[
-                { value: "", label: "默认（稳健）" },
-                ...RISKS.map((r) => ({ value: r, label: r })),
-              ]}
-            />
-          </Field>
-          <div className="col-span-2 md:col-span-2 lg:col-span-5">
+        <div className="mt-3 flex flex-wrap items-end gap-3">
+          <div className="shrink-0">
+            <Field label="风险偏好">
+              <Dropdown
+                className="w-25"
+                value={risk}
+                onChange={setRisk}
+                options={RISKS.map((r) => ({ value: r, label: r }))}
+              />
+            </Field>
+          </div>
+          <div className="min-w-[220px] flex-1">
             <Field label="其他说明">
               <input
                 className={inputCls}
@@ -363,16 +360,14 @@ export default function ProcurementAnalysisTab({
               />
             </Field>
           </div>
-          <div className="flex items-end justify-end">
-            <button
-              type="button"
-              onClick={onPreview}
-              disabled={loading}
-              className="w-full rounded-xl bg-tech px-6 py-2 text-sm font-semibold text-rice transition-colors hover:bg-tech/85 disabled:opacity-50 lg:w-auto"
-            >
-              {loading ? "瞻小二正在研判…" : "生成采购研判"}
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={onPreview}
+            disabled={loading}
+            className="shrink-0 rounded-xl bg-tech px-6 py-2 text-sm font-semibold text-rice transition-colors hover:bg-tech/85 disabled:opacity-50"
+          >
+            {loading ? "瞻小二正在研判…" : "生成采购研判"}
+          </button>
         </div>
 
         {error && <p className="mt-3 text-xs text-red-400">{error}</p>}
