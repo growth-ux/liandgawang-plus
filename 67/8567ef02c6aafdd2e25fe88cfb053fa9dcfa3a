@@ -1,0 +1,45 @@
+web/src/index.css
+  s_dbf415742228ae::t_20d4bcd72490b3 77-87,166-167
+web/src/features/yun/FindLogisticsTab.tsx
+  s_dbf415742228ae::t_20d4bcd72490b3 2,231-233,235-240,242-244,246-250,252-271
+backend/app/logistics/seed.py
+  s_d16aaf3af4767a::t_cbbc8057a6f780 1,4,10-11,14-47,60-203,205-222,224-246,248-250,252,254-269,273,277-288,290-332
+web/src/components/TechSelect.tsx
+  s_dbf415742228ae::t_abf4cdc171fc94 93
+  s_dbf415742228ae::t_20d4bcd72490b3 1-57,59-72,74-76,78-92,94-134,138-172
+  s_dbf415742228ae::t_21a1600f49732e 58,73,77,135-137
+backend/tests/logistics/test_routes.py
+  s_d16aaf3af4767a::t_4feffd564759b7 6,9-16,21,25-44,64
+web/src/features/liang/FilterPanel.tsx
+  s_dbf415742228ae::t_20d4bcd72490b3 3
+  s_dbf415742228ae::t_c822f599678cee 34,36,38
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "678567ef02c6aafdd2e25fe88cfb053fa9dcfa3a",
+  "prompts": {},
+  "humans": {
+    "h_7549b7dc6a6921": {
+      "author": "tiger <1360055716@qq.com>"
+    }
+  },
+  "sessions": {
+    "s_d16aaf3af4767a": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a02ebc-0a84-7ff1-8673-f05e7fb16493",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    },
+    "s_dbf415742228ae": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a02edc-76c5-75a3-b5cd-94052cba5e45",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
