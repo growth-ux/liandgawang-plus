@@ -1,16 +1,27 @@
 """zhan-v1 固定演示数据集：四品种各自独立的库点与价格（固定种子伪随机，幂等可复现）。"""
 
+import math
 import random
 from datetime import date, datetime, timedelta, timezone
 
 from sqlalchemy.orm import Session
 
-from app.market.models import MarketEvent, MarketSpotPrice
+from app.market.models import MarketEvent, MarketPriceSeries, MarketSpotPrice
 
 MOCK_DATASET_VERSION = "zhan-v1"
 CHINA_TZ = timezone(timedelta(hours=8))
 MOCK_GENERATED_AT = datetime(2026, 8, 22, 10, 0, tzinfo=CHINA_TZ)
 PRICE_DATE = date(2026, 8, 22)
+
+SERIES_DAYS = 730
+
+# 每品种日收益率漂移（仅最近约 120 天逐步显现）：玉米偏强、大豆偏弱、小麦/稻谷震荡
+TREND_DRIFT = {
+    "corn": 0.0006,
+    "wheat": 0.0,
+    "soybean": -0.0006,
+    "rice": 0.0,
+}
 
 QUOTE_BY_TYPE = {"产区": "收购价", "港口": "平仓价", "销区": "到货价"}
 
@@ -328,4 +339,68 @@ def seed_zhan_mock_data(db: Session) -> None:
                 mock_generated_at=MOCK_GENERATED_AT,
             )
         )
+    db.commit()
+    seed_zhan_price_series(db)
+
+
+def _generate_series(
+    end_price: float, change_pct: float, drift: float, rng: random.Random
+) -> list[int]:
+    """回溯生成 2 年整数价格：末点=end_price，倒数第二天使日涨跌≈change_pct。
+
+    早期由长/短周期波段主导（涨跌交替、有回调），最近约 120 天波段衰减、
+    趋势逐步显现，让近期走势与品种方向一致。固定种子保证幂等。
+    """
+    n = SERIES_DAYS
+    prices = [0] * n
+    prices[-1] = round(end_price)
+    prices[-2] = round(end_price / (1 + change_pct / 100))
+    phase1 = rng.uniform(0, 2 * math.pi)
+    phase2 = rng.uniform(0, 2 * math.pi)
+    for i in range(n - 3, -1, -1):
+        t = i / (n - 1)
+        j = n - 1 - i  # 距末尾天数
+        wave = 0.0009 * math.sin(2 * math.pi * 2 * t + phase1) + 0.0005 * math.sin(
+            2 * math.pi * 8 * t + phase2
+        )
+        # 波段：早期全量、接近当前衰减到 0；趋势：仅最近约 120 天逐步显现
+        fade_wave = min(1.0, j / 120.0)
+        fade_drift = max(0.0, 1.0 - j / 120.0)
+        noise = rng.uniform(-0.002, 0.002)
+        daily_ret = drift * fade_drift + wave * fade_wave + noise
+        prices[i] = round(prices[i + 1] / (1 + daily_ret))
+    return prices
+
+
+def seed_zhan_price_series(db: Session) -> None:
+    """重建各库点 2 年历史价格序列：先清空旧序列，再按当前生成逻辑写入。
+
+    末点与库点当前价一致、趋势随品种设定。清空重建确保生成逻辑或天数变更后
+    无旧数据残留（避免新旧序列在接缝处跳变）。固定种子保证可复现。
+    """
+    db.query(MarketPriceSeries).delete(synchronize_session=False)
+    db.expunge_all()
+    rows_to_add = []
+    for spot in db.query(MarketSpotPrice).all():
+        rng = random.Random(f"zhan-v1-series-{spot.spot_code}")
+        drift = TREND_DRIFT[spot.variety_code]
+        prices = _generate_series(
+            float(spot.price), float(spot.change_pct), drift, rng
+        )
+        for i, price in enumerate(prices):
+            observed_date = PRICE_DATE - timedelta(days=SERIES_DAYS - 1 - i)
+            series_code = (
+                f"ZHAN-V1-SERIES-{spot.spot_code}-{observed_date.strftime('%Y%m%d')}"
+            )
+            rows_to_add.append(
+                MarketPriceSeries(
+                    series_code=series_code,
+                    spot_code=spot.spot_code,
+                    variety_code=spot.variety_code,
+                    observed_date=observed_date,
+                    price=price,
+                    mock_generated_at=MOCK_GENERATED_AT,
+                )
+            )
+    db.add_all(rows_to_add)
     db.commit()

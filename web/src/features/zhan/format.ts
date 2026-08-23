@@ -20,3 +20,8 @@ export function shortName(regionName: string): string {
   const idx = regionName.indexOf("·");
   return idx >= 0 ? regionName.slice(idx + 1) : regionName;
 }
+
+/** ISO 日期转短日期（含两位年份）："2026-08-22" -> "26-08" */
+export function fmtDate(iso: string): string {
+  return iso.slice(2, 7);
+}

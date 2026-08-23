@@ -1,4 +1,4 @@
-"""确定性市场判断与价格解读：纯 Python，不访问数据库、不调用模型。"""
+"""市场指标纯函数库：市场研判与价格解读 + 品种行情序列摘要。"""
 
 from decimal import Decimal
 
@@ -238,4 +238,35 @@ def compute_judgment(
         "opposing": opposing,
         "evidence_completeness": completeness,
         "watch_suggestions": watch,
+    }
+
+
+def pct_change(current: Decimal, base: Decimal) -> Decimal:
+    """(current - base) / base * 100，保留 1 位小数。"""
+    return round((current - base) / base * 100, 1)
+
+
+def classify_direction(month_change: Decimal) -> str:
+    if month_change >= Decimal("1.5"):
+        return "偏强"
+    if month_change <= Decimal("-1.5"):
+        return "偏弱"
+    return "震荡"
+
+
+def build_summary(prices: list[Decimal]) -> dict:
+    """基于升序价格序列（至少 31 点）计算摘要。"""
+    latest = prices[-1]
+    day = pct_change(latest, prices[-2])
+    week = pct_change(latest, prices[-8])
+    month = pct_change(latest, prices[-31])
+    window = prices[-30:]
+    return {
+        "latest_price": str(latest),
+        "day_change_pct": str(day),
+        "week_change_pct": str(week),
+        "month_change_pct": str(month),
+        "range_high": str(max(window)),
+        "range_low": str(min(window)),
+        "direction": classify_direction(month),
     }
