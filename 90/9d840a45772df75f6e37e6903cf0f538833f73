@@ -1,0 +1,23 @@
+docs/superpowers/plans/2026-08-23-yun-xiaoer-implementation.md
+  s_35738d9f81cc9c::t_cefe5d60b13f3b 1-154,156-161,195-197,214-411,438-439,442-445,447-490,492-516,534-567,572,574-698,715-941
+  s_35738d9f81cc9c::t_1c24f1443b6877 155,162-194,198-213,412-437,440-441,446,699-705,707,709-714
+  s_35738d9f81cc9c::t_1b42959a1b3a96 491,517-533,568-571,573,706,708
+docs/superpowers/specs/2026-08-23-yun-xiaoer-design.md
+  s_35738d9f81cc9c::t_d2c824e3de2969 1-777
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "909d840a45772df75f6e37e6903cf0f538833f73",
+  "prompts": {},
+  "sessions": {
+    "s_35738d9f81cc9c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a02cdf-68c1-7ef1-a7a8-7684955ba0d5",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
