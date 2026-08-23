@@ -1,0 +1,54 @@
+web/src/features/liang/api.ts
+  s_dd9c907a7c02cc::t_edfcccfc59a61a 77-81
+web/src/features/liang/SourcingTab.tsx
+  s_dd9c907a7c02cc::t_c0a8be46cf03f7 7
+  s_dd9c907a7c02cc::t_b37fdfeb70a26d 328-329
+  s_dd9c907a7c02cc::t_380f6a1fd5c923 174
+  s_dd9c907a7c02cc::t_ef653bc4649d7f 6
+  s_dd9c907a7c02cc::t_324a357bb5143f 2-3
+  s_dd9c907a7c02cc::t_9562bbc50dd264 40-49
+  s_dd9c907a7c02cc::t_cc90c569499a0f 78
+  s_dd9c907a7c02cc::t_3b45f85adfbee8 161
+web/src/features/liang/workflow.ts
+  s_dd9c907a7c02cc::t_d2776079b45d1b 70-74
+backend/app/liang/routes.py
+  s_dd9c907a7c02cc::t_92dbe907d15b7d 144-151
+web/src/features/liang/compare.ts
+  s_dd9c907a7c02cc::t_8c774160abcac1 15-28
+  s_dd9c907a7c02cc::t_61cac92d5b5a10 157-178,181-182,184-185
+  s_dd9c907a7c02cc::t_cb21b76c86fcb1 116-144,149
+web/src/features/liang/types.ts
+  s_dd9c907a7c02cc::t_f0960c33837154 130-136
+  s_dd9c907a7c02cc::t_c1104d43900ceb 81-84
+web/src/data/agents.ts
+  s_dd9c907a7c02cc::t_058afb0a5b5269 87
+backend/app/liang/repository.py
+  s_dd9c907a7c02cc::t_b21cc937316e95 68-76
+web/src/features/liang/format.ts
+  s_dd9c907a7c02cc::t_c6ac4d12c90391 17-22
+web/src/features/liang/HistoryTab.tsx
+  s_dd9c907a7c02cc::t_f2aa905df68f84 221
+  s_dd9c907a7c02cc::t_4c17899e8086fd 30-46
+  s_dd9c907a7c02cc::t_da98e41a360abd 237
+  s_dd9c907a7c02cc::t_cb425eab93c83c 1-3,5-29,50-220,222-236,238-296
+  s_dd9c907a7c02cc::t_5f74a11ada9375 4
+  s_dd9c907a7c02cc::t_44d449b3d6356f 47-49
+web/src/features/liang/CompareTab.tsx
+  s_dd9c907a7c02cc::t_e7ab249ffe1acf 43-48,55-56
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "c6af64464781fa14ca97ed63a75ce40a85f058b3",
+  "prompts": {},
+  "sessions": {
+    "s_dd9c907a7c02cc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e104c1f8-c342-4781-8940-d91bb4f98bf3",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
