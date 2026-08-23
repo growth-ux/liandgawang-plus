@@ -26,9 +26,6 @@ function CompareTable({ listings, onRemove }: { listings: Listing[]; onRemove: (
             <tr key={listing.id} className="border-b border-line/60 last:border-0 transition-colors hover:bg-rice-deep/45">
               <td className="px-4 py-3.5 font-medium text-ink">
                 {listing.variety_name} · {listing.grade}
-                <div className="mt-1 text-[11px] font-normal text-ink-soft">
-                  {listing.listing_code} · {listing.crop_year} 年
-                </div>
               </td>
               <td className="px-4 py-3 text-ink">{listing.origin_province} {listing.origin_city}</td>
               <td className="px-4 py-3 text-ink">{listing.supplier_name}</td>

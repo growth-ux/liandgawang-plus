@@ -84,7 +84,7 @@ export const agents: Agent[] = [
     symbol: "麦穗扫描器、粮食样品仓",
     zone: "农田与粮源区",
     accent: "#c9902a",
-    tabs: ["找粮源", "寻源任务", "候选对比", "历史记录"],
+    tabs: ["找粮源", "寻源任务", "候选对比"],
     image: "/images/agents/liangxiaoer-hologram-pose-transparent.png",
     doing: "对比东北产区 3 家供应方的粮源报价与质检报告",
     pos: { x: 69, y: 31, size: 19 },

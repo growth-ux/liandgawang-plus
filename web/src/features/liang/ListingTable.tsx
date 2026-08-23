@@ -42,7 +42,6 @@ export default function ListingTable({
               <tr key={l.id} className="border-b border-line/60 last:border-0 transition-colors hover:bg-rice-deep/45">
                 <td className="px-4 py-3.5 font-medium text-ink">
                   <div>{l.variety_name}<span className="mx-1 text-ink-soft">·</span>{l.grade}</div>
-                  <div className="mt-1 text-[11px] font-normal text-ink-soft">{l.listing_code} · {l.crop_year}年</div>
                 </td>
                 <td className="px-4 py-3 text-ink">
                   {l.origin_province} {l.origin_city}
