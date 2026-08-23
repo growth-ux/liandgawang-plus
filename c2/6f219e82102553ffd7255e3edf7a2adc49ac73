@@ -1,0 +1,98 @@
+README.md
+  h_7549b7dc6a6921 1-2
+backend/app/liang/llm.py
+  h_7549b7dc6a6921 1-99
+backend/app/liang/metrics.py
+  h_7549b7dc6a6921 1-81
+backend/app/liang/mock_seed.py
+  h_7549b7dc6a6921 1-87
+backend/app/liang/models.py
+  h_7549b7dc6a6921 1-54
+backend/app/liang/repository.py
+  h_7549b7dc6a6921 1-82
+backend/app/liang/routes.py
+  h_7549b7dc6a6921 1-194
+backend/app/main.py
+  h_7549b7dc6a6921 17-19,28,51
+backend/tests/liang/test_metrics.py
+  h_7549b7dc6a6921 1-23
+backend/tests/liang/test_repository.py
+  h_7549b7dc6a6921 1-29
+backend/tests/liang/test_routes.py
+  h_7549b7dc6a6921 1-32
+backend/tests/liang/test_seed.py
+  h_7549b7dc6a6921 1-21
+backend/tests/liang/test_tasks.py
+  h_7549b7dc6a6921 1-93
+docs/superpowers/plans/2026-08-23-liang-xiaoer-compare-tab.md
+  h_7549b7dc6a6921 1-745
+docs/superpowers/plans/2026-08-23-liang-xiaoer-market-tab.md
+  h_7549b7dc6a6921 1-1684
+docs/superpowers/plans/2026-08-23-liang-xiaoer-sourcing-tab.md
+  h_7549b7dc6a6921 1-1247
+docs/superpowers/plans/2026-08-23-suan-xiaoer-implementation.md
+  h_7549b7dc6a6921 1-1142
+docs/superpowers/specs/2026-08-23-liang-xiaoer-compare-tab-design.md
+  h_7549b7dc6a6921 1-151
+docs/superpowers/specs/2026-08-23-liang-xiaoer-market-tab-design.md
+  h_7549b7dc6a6921 1-245
+docs/superpowers/specs/2026-08-23-liang-xiaoer-sourcing-tab-design.md
+  h_7549b7dc6a6921 1-233
+docs/superpowers/specs/2026-08-23-suan-xiaoer-design.md
+  h_7549b7dc6a6921 1-755
+web/src/data/agents.ts
+  h_7549b7dc6a6921 87
+web/src/features/liang/CandidateBasket.tsx
+  h_7549b7dc6a6921 1-88
+web/src/features/liang/CandidateContext.tsx
+  h_7549b7dc6a6921 1-56
+web/src/features/liang/CompareTab.tsx
+  h_7549b7dc6a6921 1-270
+web/src/features/liang/DagCanvas.tsx
+  h_7549b7dc6a6921 1-119
+web/src/features/liang/FilterPanel.tsx
+  h_7549b7dc6a6921 1-96
+web/src/features/liang/HistoryTab.tsx
+  h_7549b7dc6a6921 1-296
+web/src/features/liang/LiangPage.tsx
+  h_7549b7dc6a6921 1-179
+web/src/features/liang/ListingDetailDrawer.tsx
+  h_7549b7dc6a6921 1-59
+web/src/features/liang/ListingTable.tsx
+  h_7549b7dc6a6921 1-92
+web/src/features/liang/MarketDiscovery.tsx
+  h_7549b7dc6a6921 1-37
+web/src/features/liang/MarketSummaryBar.tsx
+  h_7549b7dc6a6921 1-36
+web/src/features/liang/NeedInputBar.tsx
+  h_7549b7dc6a6921 1-35
+web/src/features/liang/Pagination.tsx
+  h_7549b7dc6a6921 1-38
+web/src/features/liang/SourcingTab.tsx
+  h_7549b7dc6a6921 1-332
+web/src/features/liang/api.ts
+  h_7549b7dc6a6921 1-94
+web/src/features/liang/compare.ts
+  h_7549b7dc6a6921 1-253
+web/src/features/liang/format.ts
+  h_7549b7dc6a6921 1-22
+web/src/features/liang/parseNeed.ts
+  h_7549b7dc6a6921 1-31
+web/src/features/liang/types.ts
+  h_7549b7dc6a6921 1-193
+web/src/features/liang/workflow.ts
+  h_7549b7dc6a6921 1-96
+web/src/pages/agents/AgentServicePage.tsx
+  h_7549b7dc6a6921 8,19
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "c26f219e82102553ffd7255e3edf7a2adc49ac73",
+  "prompts": {},
+  "humans": {
+    "h_7549b7dc6a6921": {
+      "author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
