@@ -1,0 +1,44 @@
+.gitignore
+  h_7549b7dc6a6921 1-5
+backend/app/market/metrics.py
+  h_7549b7dc6a6921 1,242-272
+backend/app/market/mock_seed.py
+  h_7549b7dc6a6921 3,9,16-25,343-406
+backend/app/market/models.py
+  h_7549b7dc6a6921 57-76
+backend/app/market/repository.py
+  h_7549b7dc6a6921 4,23-41
+backend/app/market/routes.py
+  h_7549b7dc6a6921 8,75-107
+backend/tests/market/test_metrics.py
+  h_7549b7dc6a6921 1-27
+backend/tests/market/test_price_series.py
+  h_7549b7dc6a6921 1-173
+web/src/data/agents.ts
+  h_7549b7dc6a6921 72
+web/src/features/zhan/PriceTrendChart.tsx
+  h_7549b7dc6a6921 1-144
+web/src/features/zhan/VarietyMarketTab.tsx
+  h_7549b7dc6a6921 1-299
+web/src/features/zhan/ZhanPage.tsx
+  h_7549b7dc6a6921 11,105-110
+web/src/features/zhan/api.ts
+  h_7549b7dc6a6921 1,12-24
+web/src/features/zhan/format.ts
+  h_7549b7dc6a6921 23-27
+web/src/features/zhan/types.ts
+  h_7549b7dc6a6921 57-91
+web/vite.config.ts
+  h_7549b7dc6a6921 5-13,15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "f19fe74256f2607ff7eba92aa9ab43dc9cc66ecf",
+  "prompts": {},
+  "humans": {
+    "h_7549b7dc6a6921": {
+      "author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
