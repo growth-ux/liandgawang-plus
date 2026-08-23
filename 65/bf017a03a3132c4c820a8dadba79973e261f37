@@ -1,0 +1,45 @@
+backend/tests/logistics/test_routes.py
+  s_7d7b0013a900f3::t_ec916b46dd4521 1-17
+  s_7d7b0013a900f3::t_10b954b2a767a9 37
+  s_1150b48169bb20::t_0b5fb9cc6931c7 20
+  s_7d7b0013a900f3::t_b26b2be9638872 38-40
+web/src/features/yun/FindLogisticsTab.tsx
+  s_7d7b0013a900f3::t_89c0f32e1e3253 16-19
+  s_dc79982f943374::t_af48e9c9326f9f 386
+  s_7d7b0013a900f3::t_e4942ea0ed612e 387-397
+  s_7d7b0013a900f3::t_e9abdf3e5c9f2f 13-15
+  s_dc79982f943374::t_5ebe582f52d16c 383-385
+  s_7d7b0013a900f3::t_6267ea4ea4b2ce 398-400
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "65bf017a03a3132c4c820a8dadba79973e261f37",
+  "prompts": {},
+  "sessions": {
+    "s_1150b48169bb20": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7aa7a5bc-69c4-4e60-a32f-5f15843ab387",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    },
+    "s_7d7b0013a900f3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f9b6686d-311e-447c-af4f-bfe439058b0e",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    },
+    "s_dc79982f943374": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c758ef78-2ae0-4a86-9150-811060d3821d",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
