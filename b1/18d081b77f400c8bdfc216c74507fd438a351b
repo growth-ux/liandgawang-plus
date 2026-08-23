@@ -1,0 +1,65 @@
+web/src/features/zhan/ProcurementAnalysisTab.tsx
+  h_7549b7dc6a6921 1-422
+  h_7549b7dc6a6921 423-513
+backend/app/main.py
+  s_b29fb629f0bf8f::t_0d631107809dac 6,36
+backend/tests/conftest.py
+  s_b29fb629f0bf8f::t_8ced594682350e 7
+web/src/data/agents.ts
+  s_b29fb629f0bf8f::t_991bbff0c59b00 72
+backend/pyproject.toml
+  s_feae8a7acff65a::t_5927ce9b40e263 15-16
+backend/uv.lock
+  s_feae8a7acff65a::t_d423e5f30287e7 130-260,332-340,434-446,498-523,542-703,712,716,726,730,735-803,1010-1133,1182-1253,1275-1349,1567-1769
+.gitignore
+  h_7549b7dc6a6921 6
+backend/.env.example
+  h_7549b7dc6a6921 1-7
+backend/app/analysis/llm.py
+  h_7549b7dc6a6921 1-92
+backend/app/analysis/models.py
+  h_7549b7dc6a6921 1-44
+backend/app/analysis/routes.py
+  h_7549b7dc6a6921 1-201
+backend/app/analysis/rules.py
+  h_7549b7dc6a6921 1-190
+backend/tests/analysis/test_analysis.py
+  h_7549b7dc6a6921 1-121
+web/src/features/zhan/AnalysisRecordsTab.tsx
+  h_7549b7dc6a6921 1-260
+web/src/features/zhan/ZhanPage.tsx
+  h_7549b7dc6a6921 5,8,12,23-38,128-136
+web/src/features/zhan/api.ts
+  h_7549b7dc6a6921 1-7,19-54
+web/src/features/zhan/types.ts
+  h_7549b7dc6a6921 92-153
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "b118d081b77f400c8bdfc216c74507fd438a351b",
+  "prompts": {},
+  "humans": {
+    "h_7549b7dc6a6921": {
+      "author": "tiger <1360055716@qq.com>"
+    }
+  },
+  "sessions": {
+    "s_b29fb629f0bf8f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5a500e13-2aa0-4df3-8762-13254cb9581b",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    },
+    "s_feae8a7acff65a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-a245ebe62eab437d6",
+        "model": "unknown"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
