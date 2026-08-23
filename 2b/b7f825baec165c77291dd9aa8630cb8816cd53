@@ -1,0 +1,57 @@
+backend/app/logistics/models.py
+  s_e28106fb557047::t_17fb9f26c72a3a 1-123
+backend/app/logistics/repository.py
+  s_e28106fb557047::t_07bc39b605ec7b 1-124
+backend/app/logistics/rules.py
+  s_e28106fb557047::t_e657a679265558 1-161
+backend/app/logistics/seed.py
+  s_e28106fb557047::t_f35c09ab7e3d53 1-57
+backend/app/main.py
+  s_e28106fb557047::t_a3700d1ce88467 8-10,26,46
+backend/tests/conftest.py
+  s_e28106fb557047::t_51af91120a2078 8
+backend/tests/logistics/conftest.py
+  s_e28106fb557047::t_eb1ddea7353f01 1-8
+backend/tests/logistics/test_llm.py
+  s_e28106fb557047::t_3898b2902d145c 1-40
+backend/tests/logistics/test_rules.py
+  s_e28106fb557047::t_d4d6acffa458c9 1-151
+backend/app/logistics/llm.py
+  s_0b2ecd803242ef::t_cb8ea99a7f5597 1-157
+web/src/data/agents.ts
+  s_0b2ecd803242ef::t_52518a7d57d23a 102
+web/src/features/yun/InquiryTab.tsx
+  s_0b2ecd803242ef::t_8bdb0922208fc4 1-103
+web/src/features/yun/PlansTab.tsx
+  s_0b2ecd803242ef::t_c8eb7ccc457426 1-163
+web/src/features/yun/TasksTab.tsx
+  s_0b2ecd803242ef::t_74e30041aed56b 1-88
+web/src/features/yun/YunPage.tsx
+  s_0b2ecd803242ef::t_a89ea500c15397 1-90
+web/src/pages/agents/AgentServicePage.tsx
+  s_0b2ecd803242ef::t_d91e34e21bcedf 7,17
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "2bb7f825baec165c77291dd9aa8630cb8816cd53",
+  "prompts": {},
+  "sessions": {
+    "s_0b2ecd803242ef": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-af7da5fc09f0457bc",
+        "model": "unknown"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    },
+    "s_e28106fb557047": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "67017bf9-0318-4d52-9d9b-00048c82462c",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
