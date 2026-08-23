@@ -1,0 +1,62 @@
+AGENTS.md
+  h_7549b7dc6a6921 9-11
+  h_7549b7dc6a6921 8
+web/src/features/zhan/ChinaMap.tsx
+  h_7549b7dc6a6921 8-13,37,39,42,69-71,73,128-150
+CLAUDE.md
+  h_7549b7dc6a6921 9-11
+  h_7549b7dc6a6921 8
+backend/app/market/metrics.py
+  s_b03f00c9332fec::t_5db2aef06ce21b 1-241
+backend/app/market/mock_seed.py
+  s_b03f00c9332fec::t_808a3508afc1fa 8,17-90,92,99-100,149,188-189,225-226,308-330
+backend/tests/market/test_market.py
+  s_b03f00c9332fec::t_8492ef3c9c63b9 40
+web/src/features/zhan/PriceIndexTable.tsx
+  s_b03f00c9332fec::t_add933050416c7 4-9,12-82
+web/src/features/zhan/components/MarketStatsBar.tsx
+  s_b03f00c9332fec::t_504a3202c95207 1-82
+web/src/features/zhan/types.ts
+  s_b03f00c9332fec::t_2a9d06bf0af811 14-39,47-48
+web/src/index.css
+  s_b03f00c9332fec::t_08041da1462129 74-83,133
+.idea/liangdawang-plus.iml
+  h_7549b7dc6a6921 5
+backend/app/market/models.py
+  h_7549b7dc6a6921 4,36-56
+backend/app/market/repository.py
+  h_7549b7dc6a6921 4,14-22
+backend/app/market/routes.py
+  h_7549b7dc6a6921 1-2,8,23,26-27,29-48,54,68,72-73
+web/src/features/zhan/ZhanPage.tsx
+  h_7549b7dc6a6921 8-10,14,54-71,105,142,147-151,155-162,165,167,169,173-175,177-179
+web/src/features/zhan/components/MarketEventList.tsx
+  h_7549b7dc6a6921 1-69
+web/src/features/zhan/components/MarketJudgment.tsx
+  h_7549b7dc6a6921 1-129
+web/src/features/zhan/components/ZhanChat.tsx
+  h_7549b7dc6a6921 1-210
+web/src/features/zhan/format.ts
+  h_7549b7dc6a6921 13-17
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "d6d375b3a31c2386eea199d97cb26ea87f457370",
+  "prompts": {},
+  "humans": {
+    "h_7549b7dc6a6921": {
+      "author": "tiger <1360055716@qq.com>"
+    }
+  },
+  "sessions": {
+    "s_b03f00c9332fec": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ee3d658-8fa6-44aa-813b-81aa3248724e",
+        "model": "unknown"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
