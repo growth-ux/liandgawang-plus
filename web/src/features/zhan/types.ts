@@ -151,3 +151,25 @@ export interface AnalysisRecord {
   evidence_completeness: "high" | "medium" | "low";
   dataset_version: string;
 }
+
+export type WatchType = "price_above" | "price_below" | "day_change" | "week_change";
+export type WatchStatus = "monitoring" | "triggered" | "notified" | "paused" | "closed" | "data_pending";
+
+export interface Watch {
+  id: number;
+  watch_code: string;
+  variety_code: string;
+  variety_name: string;
+  spot_code: string;
+  region_name: string;
+  quote_type: string;
+  watch_type: WatchType;
+  watch_type_label: string;
+  threshold: string;
+  status: WatchStatus;
+  current_value: string | null;
+  triggered_reason: string;
+  last_checked_at: string | null;
+  data_kind: "user_input";
+  mock_dataset_version: string;
+}

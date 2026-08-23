@@ -11,6 +11,7 @@ import MarketEventList from "./components/MarketEventList";
 import MarketStatsBar from "./components/MarketStatsBar";
 import ProcurementAnalysisTab from "./ProcurementAnalysisTab";
 import VarietyMarketTab from "./VarietyMarketTab";
+import WatchesTab from "./WatchesTab";
 
 const agent = getAgent("zhan")!;
 
@@ -132,6 +133,8 @@ export default function ZhanPage() {
             prefill={prefill}
             onPrefillConsumed={() => setPrefill(null)}
           />
+        ) : activeTab === 3 ? (
+          <WatchesTab />
         ) : activeTab === 4 ? (
           <AnalysisRecordsTab onReuse={reuseRecord} />
         ) : activeTab !== 0 ? (
