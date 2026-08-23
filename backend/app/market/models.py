@@ -33,3 +33,23 @@ class MarketSpotPrice(Base):
     updated_at: Mapped[datetime] = mapped_column(
         DateTime, server_default=func.now(), onupdate=func.now()
     )
+
+
+class MarketPriceSeries(Base):
+    """库点历史价格序列：某库点逐日的演示价格，用于品种行情走势曲线。"""
+
+    __tablename__ = "market_price_series"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    series_code: Mapped[str] = mapped_column(String(96), unique=True, index=True)
+    spot_code: Mapped[str] = mapped_column(String(64), index=True)
+    variety_code: Mapped[str] = mapped_column(String(32), index=True)
+    observed_date: Mapped[date] = mapped_column(Date)
+    price: Mapped[Decimal] = mapped_column(Numeric(10, 2))
+    data_kind: Mapped[str] = mapped_column(String(16), default="simulated")
+    mock_dataset_version: Mapped[str] = mapped_column(String(32), default="zhan-v1")
+    mock_generated_at: Mapped[datetime] = mapped_column(DateTime)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, server_default=func.now(), onupdate=func.now()
+    )

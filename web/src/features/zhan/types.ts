@@ -26,3 +26,38 @@ export const VARIETIES = [
   { code: "soybean", name: "大豆" },
   { code: "rice", name: "稻谷" },
 ] as const;
+
+export interface PricePoint {
+  observed_date: string;
+  price: string;
+}
+
+export interface SelectedSpot {
+  spot_code: string;
+  region_name: string;
+  region_type: RegionType;
+  quote_type: string;
+  remark: string;
+  unit: string;
+}
+
+export interface PriceSummary {
+  latest_price: string;
+  day_change_pct: string;
+  week_change_pct: string;
+  month_change_pct: string;
+  range_high: string;
+  range_low: string;
+  direction: string;
+}
+
+export interface PriceSeriesResponse {
+  data_kind: "simulated";
+  mock_dataset_version: string;
+  mock_generated_at: string;
+  variety_code: string;
+  variety_name: string;
+  spot: SelectedSpot;
+  points: PricePoint[];
+  summary: PriceSummary;
+}

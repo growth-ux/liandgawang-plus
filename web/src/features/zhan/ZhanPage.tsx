@@ -6,6 +6,7 @@ import { fetchMarketOverview } from "./api";
 import { VARIETIES, type MarketOverview } from "./types";
 import ChinaMap from "./ChinaMap";
 import PriceIndexTable from "./PriceIndexTable";
+import VarietyMarketTab from "./VarietyMarketTab";
 
 const agent = getAgent("zhan")!;
 
@@ -97,7 +98,12 @@ export default function ZhanPage() {
 
       {/* 内容 */}
       <div className="mx-auto w-full max-w-[1280px] flex-1 px-6 py-6">
-        {activeTab !== 0 ? (
+        {activeTab === 1 ? (
+          <VarietyMarketTab
+            varietyCode={varietyCode}
+            onVarietyChange={setVarietyCode}
+          />
+        ) : activeTab !== 0 ? (
           <div className="flex min-h-[420px] flex-col items-center justify-center rounded-3xl border border-dashed border-line bg-panel/60 text-center">
             <img
               src={agent.image}
