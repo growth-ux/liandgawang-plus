@@ -1,9 +1,10 @@
 // web/src/features/liang/SourcingTab.tsx
-import { useCallback, useEffect, useRef, useState } from "react";
-import { createTask, fetchListings, fetchTasks, handoffTask } from "./api";
+import { useRef, useState } from "react";
+import { createTask, fetchListings, handoffTask } from "./api";
 import { compareListings } from "./compare";
 import DagCanvas from "./DagCanvas";
-import { fmtDate, fmtInt } from "./format";
+import HistoryTab from "./HistoryTab";
+import { fmtDate, fmtInt, fmtQuality } from "./format";
 import { parseNeed } from "./parseNeed";
 import { AUTO_BATCHES, buildPlan, initialStatus } from "./workflow";
 import type { DagNodeId, NodeStatus } from "./workflow";
@@ -36,10 +37,16 @@ function PickCard({ pick, label }: { pick: TaskPick; label: string }) {
         <span className="ml-2 text-sm font-normal text-ink-soft">{pick.origin}</span>
       </div>
       <div className="mt-2 text-2xl font-semibold tabular-nums text-tech">
-        {fmtInt(pick.price)}
-        <span className="ml-1 text-xs font-normal text-ink-soft">
-          元/吨 · {pick.price_type}
-        </span>
+        {fmtInt(pick.delivered_price)}
+        <span className="ml-1 text-xs font-normal text-ink-soft">元/吨（到厂价）</span>
+      </div>
+      <div className="mt-1 text-xs text-ink-soft">
+        挂牌 {fmtInt(pick.price)} 元/吨 · {pick.price_type}
+        {Number(pick.quality_penalty) > 0 && ` · 质量折价 ${pick.quality_penalty} 元/吨`}
+      </div>
+      <div className="mt-2 text-sm text-ink">
+        水分 {fmtQuality(pick.moisture_pct)}% · 容重 {fmtQuality(pick.test_weight_g_l)} g/L · 杂质{" "}
+        {fmtQuality(pick.impurity_pct)}%
       </div>
       <div className="mt-3 space-y-1 text-sm text-ink">
         <div>供应方：{pick.supplier_name}</div>
@@ -57,68 +64,6 @@ function PickCard({ pick, label }: { pick: TaskPick; label: string }) {
   );
 }
 
-function HistoryRow({ task }: { task: SourcingTask }) {
-  const [open, setOpen] = useState(false);
-  const plan = task.plan;
-  const primary = plan?.primary ?? null;
-  return (
-    <div className="rounded-2xl border border-line bg-panel">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center justify-between px-5 py-3 text-left"
-      >
-        <span className="text-sm font-medium text-ink">{task.task_code}</span>
-        <span className="flex items-center gap-4 text-xs text-ink-soft">
-          <span>{task.need?.variety ?? "—"}</span>
-          <span>{task.need?.quantity_tons != null ? `${task.need.quantity_tons} 吨` : "—"}</span>
-          <span>{primary ? primary.supplier_name : "—"}</span>
-          <span
-            className={`rounded-full px-2 py-0.5 ${
-              task.status === "handed_off"
-                ? "bg-tech/15 text-tech"
-                : "bg-brand-faint text-brand-deep"
-            }`}
-          >
-            {task.status === "handed_off" ? "已交接" : "已出方案"}
-          </span>
-        </span>
-      </button>
-      {open && (
-        <div className="border-t border-line px-5 py-4 text-sm text-ink">
-          <div className="text-ink-soft">
-            需求：
-            {[
-              task.need?.variety,
-              task.need?.grade,
-              task.need?.quantity_tons != null ? `${task.need.quantity_tons} 吨` : null,
-              task.need?.deadline ? `最晚 ${task.need.deadline} 发运` : null,
-            ]
-              .filter(Boolean)
-              .join(" · ") || "—"}
-          </div>
-          {primary && (
-            <div className="mt-2">
-              主推：{primary.variety_name} · {primary.supplier_name} · {fmtInt(primary.price)} 元/吨
-            </div>
-          )}
-          {plan?.backup && (
-            <div className="mt-1">
-              备选：{plan.backup.variety_name} · {plan.backup.supplier_name} · {fmtInt(plan.backup.price)} 元/吨
-            </div>
-          )}
-          <div className="mt-1">淘汰 {plan?.eliminated.length ?? 0} 笔 · 待核验 {plan?.verifications.length ?? 0} 项</div>
-          {task.handoff && (
-            <div className="mt-2 rounded-xl bg-rice px-4 py-2 text-xs">
-              交接单 {task.handoff.handoff_code} · 目的地 {task.handoff.summary.destination ?? "—"}
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
-
 export default function SourcingTab() {
   const [text, setText] = useState("");
   const [status, setStatus] = useState<Record<DagNodeId, NodeStatus>>(initialStatus);
@@ -126,20 +71,12 @@ export default function SourcingTab() {
   const [listingCount, setListingCount] = useState(0);
   const [compare, setCompare] = useState<CompareResult | null>(null);
   const [running, setRunning] = useState(false);
-  const [tasks, setTasks] = useState<SourcingTask[]>([]);
   const [saved, setSaved] = useState<SourcingTask | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [handoffOpen, setHandoffOpen] = useState(false);
   const [destination, setDestination] = useState("");
+  const [historyKey, setHistoryKey] = useState(0);
   const runId = useRef(0);
-
-  const refreshTasks = useCallback(() => {
-    fetchTasks().then(setTasks).catch(() => {});
-  }, []);
-
-  useEffect(() => {
-    refreshTasks();
-  }, [refreshTasks]);
 
   async function startRun() {
     const raw = text.trim();
@@ -221,7 +158,7 @@ export default function SourcingTab() {
       });
       setSaved(t);
       setStatus((s) => ({ ...s, save: "done" }));
-      refreshTasks();
+      setHistoryKey((k) => k + 1);
     } catch (e) {
       setError(e instanceof Error ? e.message : "保存失败");
     }
@@ -234,7 +171,7 @@ export default function SourcingTab() {
       setSaved(t);
       setHandoffOpen(false);
       setDestination("");
-      refreshTasks();
+      setHistoryKey((k) => k + 1);
     } catch (e) {
       setError(e instanceof Error ? e.message : "交接失败");
     }
@@ -388,15 +325,8 @@ export default function SourcingTab() {
         </div>
       )}
 
-      {/* 历史运行 */}
-      <div className="flex flex-col gap-3">
-        <h2 className="text-sm font-semibold text-ink">历史运行</h2>
-        {tasks.length === 0 ? (
-          <p className="text-sm text-ink-soft">暂无已保存的寻源任务</p>
-        ) : (
-          tasks.map((t) => <HistoryRow key={t.id} task={t} />)
-        )}
-      </div>
+      {/* 历史记录 */}
+      <HistoryTab refreshKey={historyKey} />
     </div>
   );
 }

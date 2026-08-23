@@ -74,3 +74,8 @@ export async function handoffTask(
   if (!resp.ok) throw new Error(`请求失败（${resp.status}）`);
   return resp.json();
 }
+
+export async function deleteTask(id: number): Promise<void> {
+  const resp = await fetch(`/api/liang/tasks/${id}`, { method: "DELETE" });
+  if (!resp.ok) throw new Error(`请求失败（${resp.status}）`);
+}

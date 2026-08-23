@@ -78,6 +78,10 @@ export interface Pick {
   reasons: string[];
   risks: string[];
   verification_count: number;
+  /** 折算到厂价（元/吨）：挂牌价 + 口径运费 + 质量折价 */
+  delivered_price: string;
+  /** 质量折价（元/吨，正=扣款） */
+  quality_penalty: string;
 }
 
 export interface NeedSummary {
@@ -123,6 +127,13 @@ export interface TaskPick {
   latest_ship_at: string | null;
   reasons: string[];
   risks: string[];
+  /** 折算到厂价（元/吨） */
+  delivered_price: string;
+  /** 质量折价（元/吨，正=扣款） */
+  quality_penalty: string;
+  moisture_pct: string | null;
+  test_weight_g_l: string | null;
+  impurity_pct: string | null;
 }
 
 export interface TaskEliminated {

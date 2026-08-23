@@ -65,6 +65,15 @@ def get_task(db: Session, task_id: int) -> SourcingTask | None:
     return db.get(SourcingTask, task_id)
 
 
+def delete_task(db: Session, task_id: int) -> bool:
+    task = db.get(SourcingTask, task_id)
+    if task is None:
+        return False
+    db.delete(task)
+    db.commit()
+    return True
+
+
 def apply_handoff(db: Session, task: SourcingTask, handoff: dict) -> SourcingTask:
     task.handoff = handoff
     task.status = "handed_off"

@@ -12,6 +12,20 @@ const GRADE_ORDER = ["一等", "二等", "三等", "四等"];
 // mock 数据基准日期，与种子 PRICE_DATE（2026-08-23）一致，保证结果可复现
 const BASE_DATE = "2026-08-23";
 
+// 品种质量标准：水分 % / 容重 g/L（二等基准，用于质量折价）
+const VARIETY_STD: Record<string, { moisture: number; testWeight: number }> = {
+  玉米: { moisture: 14.0, testWeight: 685 },
+  小麦: { moisture: 12.5, testWeight: 770 },
+  大豆: { moisture: 13.0, testWeight: 680 },
+};
+
+// 价格口径 → 估算到厂运费（元/吨）：出厂价需全程运费，港口价需港到厂短驳，到库价视为已到厂
+const FREIGHT_ADJUSTMENT: Record<string, number> = {
+  出厂价: 90,
+  港口价: 40,
+  到库价: 0,
+};
+
 const FIXED_VERIFICATIONS = [
   "确认可锁定库存",
   "获取正式质检单",
@@ -99,11 +113,40 @@ function shipPenalty(l: Listing): number {
   return daysFromBase(l.latest_ship_at);
 }
 
+/** 折算到厂价（元/吨）：挂牌价 + 口径运费 */
+function deliveredPrice(l: Listing): number {
+  return Number(l.price) + (FREIGHT_ADJUSTMENT[l.price_type] ?? 0);
+}
+
+/** 质量折价（元/吨，正=扣款）：水分/杂质超标、容重偏低 */
+function qualityPenalty(l: Listing): number {
+  const std = VARIETY_STD[l.variety_name] ?? { moisture: 14.0, testWeight: 685 };
+  let penalty = 0;
+  if (l.moisture_pct != null) {
+    const over = Number(l.moisture_pct) - std.moisture;
+    if (over > 0) penalty += over * 10 * 3; // 每超 0.1% 扣 3 元/吨
+  }
+  if (l.impurity_pct != null) {
+    const over = Number(l.impurity_pct) - 1.0;
+    if (over > 0) penalty += over * 10 * 2; // 每超 0.1% 扣 2 元/吨
+  }
+  if (l.test_weight_g_l != null) {
+    const under = std.testWeight - Number(l.test_weight_g_l);
+    if (under > 0) penalty += under; // 每低 1 g/L 扣 1 元/吨
+  }
+  return Math.round(penalty);
+}
+
+/** 综合到厂成本（元/吨）= 到厂价 + 质量折价，排序以它为准 */
+function totalDeliveredCost(l: Listing): number {
+  return deliveredPrice(l) + qualityPenalty(l);
+}
+
 function sortKey(l: Listing): [number, number, number, number, number] {
   return [
     fieldMissingCount(l),
     -l.crop_year, // 新粮优先（降序）
-    Number(l.price),
+    totalDeliveredCost(l), // 综合到厂成本越低越好
     shipPenalty(l),
     l.id,
   ];
@@ -111,11 +154,35 @@ function sortKey(l: Listing): [number, number, number, number, number] {
 
 function buildPick(l: Listing): Pick {
   const missing = fieldMissingCount(l);
+  const std = VARIETY_STD[l.variety_name];
+  const penalty = qualityPenalty(l);
+
+  const reasons: string[] = [`${l.crop_year} 年新粮，${l.grade}，${l.origin_province}产区`];
+  if (std && l.moisture_pct != null && Number(l.moisture_pct) <= std.moisture) {
+    reasons.push(`水分 ${l.moisture_pct}% 优于标准 ${std.moisture}%`);
+  }
+  if (std && l.test_weight_g_l != null && Number(l.test_weight_g_l) >= std.testWeight) {
+    reasons.push(`容重 ${l.test_weight_g_l} g/L 达标`);
+  }
+  if (penalty > 0) reasons.push(`质量折价 ${penalty} 元/吨已计入`);
+
+  const risks: string[] = [];
+  if (missing > 0) risks.push("部分关键字段待核验");
+  if (std && l.moisture_pct != null && Number(l.moisture_pct) > std.moisture) {
+    risks.push(`水分 ${l.moisture_pct}% 超标（标准 ${std.moisture}%）`);
+  }
+  if (std && l.test_weight_g_l != null && Number(l.test_weight_g_l) < std.testWeight) {
+    risks.push(`容重 ${l.test_weight_g_l} g/L 偏低`);
+  }
+  if (l.test_weight_g_l == null) risks.push("容重未提供");
+
   return {
     listing: l,
-    reasons: [`${l.crop_year} 年新粮，${l.grade}，${l.origin_province}产区`],
-    risks: missing > 0 ? ["部分关键字段待核验"] : [],
+    reasons,
+    risks,
     verification_count: FIXED_VERIFICATIONS.length,
+    delivered_price: totalDeliveredCost(l).toFixed(2),
+    quality_penalty: String(penalty),
   };
 }
 

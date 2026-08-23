@@ -141,6 +141,14 @@ def create_task(body: TaskCreate, db: Session = Depends(get_db)):
     return _serialize_task(task)
 
 
+@router.delete("/tasks/{task_id}")
+def delete_task(task_id: int, db: Session = Depends(get_db)):
+    """删除一条历史寻源任务。"""
+    if not repository.delete_task(db, task_id):
+        raise HTTPException(status_code=404, detail="任务不存在")
+    return {"ok": True}
+
+
 @router.post("/tasks/{task_id}/handoff")
 def handoff_task(task_id: int, body: HandoffCreate, db: Session = Depends(get_db)):
     """交接运小二：生成结构化交接摘要，状态转 handed_off。"""

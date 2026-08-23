@@ -67,6 +67,11 @@ function pickToTaskPick(p: Pick): TaskPick {
     latest_ship_at: l.latest_ship_at,
     reasons: p.reasons,
     risks: p.risks,
+    delivered_price: p.delivered_price,
+    quality_penalty: p.quality_penalty,
+    moisture_pct: l.moisture_pct,
+    test_weight_g_l: l.test_weight_g_l,
+    impurity_pct: l.impurity_pct,
   };
 }
 

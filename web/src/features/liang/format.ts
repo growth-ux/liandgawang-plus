@@ -14,3 +14,9 @@ export function fmtDate(v: string | null | undefined): string {
   if (!v) return "--";
   return v.slice(5);
 }
+
+/** ISO 时间 → YYYY-MM-DD HH:mm */
+export function fmtDateTime(v: string | null | undefined): string {
+  if (!v) return "--";
+  return v.slice(0, 16).replace("T", " ");
+}

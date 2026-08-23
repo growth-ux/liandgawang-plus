@@ -40,15 +40,20 @@ function PickCard({ pick, label }: { pick: Pick; label: string }) {
         </span>
       </div>
       <div className="mt-2 text-2xl font-semibold tabular-nums text-tech">
-        {fmtInt(l.price)}
-        <span className="ml-1 text-xs font-normal text-ink-soft">元/吨 · {l.price_type}</span>
+        {fmtInt(pick.delivered_price)}
+        <span className="ml-1 text-xs font-normal text-ink-soft">元/吨（到厂价）</span>
+      </div>
+      <div className="mt-1 text-xs text-ink-soft">
+        挂牌 {fmtInt(l.price)} 元/吨 · {l.price_type}
+        {Number(pick.quality_penalty) > 0 && ` · 质量折价 ${pick.quality_penalty} 元/吨`}
       </div>
       <div className="mt-3 space-y-1 text-sm text-ink">
         <div>供应方：{l.supplier_name}</div>
         <div>可用量：{fmtInt(l.available_quantity_tons)} 吨 · {l.delivery_type}</div>
         <div>发运：{fmtDate(l.earliest_ship_at)} ~ {fmtDate(l.latest_ship_at)}</div>
         <div>
-          质检：水分 {fmtQuality(l.moisture_pct)}% · 容重 {fmtQuality(l.test_weight_g_l)} g/L
+          质检：水分 {fmtQuality(l.moisture_pct)}% · 容重 {fmtQuality(l.test_weight_g_l)} g/L · 杂质{" "}
+          {fmtQuality(l.impurity_pct)}%
         </div>
       </div>
       <div className="mt-3 rounded-xl bg-rice px-4 py-2.5">
