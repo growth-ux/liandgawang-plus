@@ -1,0 +1,38 @@
+README.md
+  h_7549b7dc6a6921 1-2
+backend/app/liang/llm.py
+  h_7549b7dc6a6921 1-99
+backend/app/liang/routes.py
+  h_7549b7dc6a6921 9,15-18,91-110
+web/src/data/agents.ts
+  h_7549b7dc6a6921 87
+web/src/features/liang/CandidateBasket.tsx
+  h_7549b7dc6a6921 68
+web/src/features/liang/CompareTab.tsx
+  h_7549b7dc6a6921 2,4-5,7,9-63,68-77,80,82-84,87,89,93-116,123-171,174-182,184-224,228-233,236-263,265-269
+web/src/features/liang/FilterPanel.tsx
+  h_7549b7dc6a6921 49-53,62
+web/src/features/liang/LiangPage.tsx
+  h_7549b7dc6a6921 53-55,66-67,118-119,129,132,145-153
+web/src/features/liang/ListingTable.tsx
+  h_7549b7dc6a6921 23-24,26,42-45,51-54,59-61
+web/src/features/liang/MarketDiscovery.tsx
+  h_7549b7dc6a6921 12-15,24-25,29-30
+web/src/features/liang/MarketSummaryBar.tsx
+  h_7549b7dc6a6921 22,24-26
+web/src/features/liang/api.ts
+  h_7549b7dc6a6921 6,40-51
+web/src/features/liang/types.ts
+  h_7549b7dc6a6921 180-193
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "78658d8ebb357c541ebdda32cd43fb5d920e16f7",
+  "prompts": {},
+  "humans": {
+    "h_7549b7dc6a6921": {
+      "author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
