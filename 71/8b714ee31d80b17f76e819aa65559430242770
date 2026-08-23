@@ -1,0 +1,19 @@
+web/src/data/agents.ts
+  s_da832c3b7c0ee3::t_ebb38f1d5bbe3b 87
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "718b714ee31d80b17f76e819aa65559430242770",
+  "prompts": {},
+  "sessions": {
+    "s_da832c3b7c0ee3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7f90311e-9592-4e42-a2f0-500e28b61f7f",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
