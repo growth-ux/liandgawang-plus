@@ -1,0 +1,33 @@
+web/src/features/zhan/ProcurementAnalysisTab.tsx
+  h_7549b7dc6a6921 2,58,63,79,169,188,291,325,333,344-345,348
+  s_35738d9f81cc9c::t_da0e0aa68b9e63 294,328,336,342-343,346-347,349-353,363-370
+web/src/components/AgentSwitcher.tsx
+  s_35738d9f81cc9c::t_e398455ba99660 26,28-31,35-37
+web/src/components/NumberInput.tsx
+  s_35738d9f81cc9c::t_0c734abe3bddd5 1-97
+web/src/index.css
+  s_35738d9f81cc9c::t_d09a90fc74b1cc 59-71
+backend/app/analysis/llm.py
+  h_7549b7dc6a6921 17,19-24,41-56,58,63-64,70-72
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "43b6ebc6ef70556c10d00df59928458d9358872a",
+  "prompts": {},
+  "humans": {
+    "h_7549b7dc6a6921": {
+      "author": "tiger <1360055716@qq.com>"
+    }
+  },
+  "sessions": {
+    "s_35738d9f81cc9c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a02cdf-68c1-7ef1-a7a8-7684955ba0d5",
+        "model": "unknown"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
