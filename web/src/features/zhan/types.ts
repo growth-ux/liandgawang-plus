@@ -89,3 +89,65 @@ export interface PriceSeriesResponse {
   points: PricePoint[];
   summary: PriceSummary;
 }
+
+export interface AnalysisRequest {
+  variety_code: string;
+  quantity_tons: string;
+  deadline_date: string;
+  target_region: string;
+  grade?: string | null;
+  budget_price?: string | null;
+  stock_days?: number | null;
+  risk_preference?: string | null;
+  remark?: string | null;
+}
+
+export type AnalysisAction = "buy_now" | "split" | "wait" | "verify";
+
+export interface AnalysisJudgment {
+  data_kind: "simulated";
+  mock_dataset_version: string;
+  mock_generated_at: string;
+  action: AnalysisAction;
+  action_label: string;
+  ratio_low: number | null;
+  ratio_high: number | null;
+  time_window: string | null;
+  summary: string;
+  interpretation: string | null;
+  ai_source: "qwen" | "rule";
+  supporting: string[];
+  opposing: string[];
+  invalidation: string[];
+  watch_metrics: string[];
+  missing_data: string[];
+  evidence_completeness: "high" | "medium" | "low";
+}
+
+export interface AnalysisRecord {
+  id: number;
+  created_at: string | null;
+  variety_code: string;
+  variety_name: string;
+  quantity_tons: string;
+  deadline_date: string;
+  grade: string | null;
+  target_region: string | null;
+  budget_price: string | null;
+  stock_days: number | null;
+  risk_preference: string | null;
+  remark: string | null;
+  action: AnalysisAction;
+  ratio_low: number | null;
+  ratio_high: number | null;
+  time_window: string | null;
+  summary: string;
+  interpretation: string | null;
+  ai_source: "qwen" | "rule";
+  supporting: string[];
+  opposing: string[];
+  invalidation: string[];
+  watch_metrics: string[];
+  evidence_completeness: "high" | "medium" | "low";
+  dataset_version: string;
+}

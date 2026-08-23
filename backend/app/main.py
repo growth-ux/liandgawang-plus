@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.analysis.routes import router as analysis_router
 from app.database import Base, SessionLocal, engine
 from app.market import models  # noqa: F401  注册表
 from app.market.mock_seed import seed_zhan_mock_data
@@ -32,3 +33,4 @@ app.add_middleware(
 )
 
 app.include_router(market_router)
+app.include_router(analysis_router)

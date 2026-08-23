@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import AgentSwitcher from "../../components/AgentSwitcher";
 import { getAgent } from "../../data/agents";
 import { fetchMarketOverview } from "./api";
-import { VARIETIES, type MarketOverview } from "./types";
+import { VARIETIES, type AnalysisRecord, type AnalysisRequest, type MarketOverview } from "./types";
 import ChinaMap from "./ChinaMap";
 import PriceIndexTable from "./PriceIndexTable";
+import AnalysisRecordsTab from "./AnalysisRecordsTab";
 import MarketJudgment from "./components/MarketJudgment";
 import MarketEventList from "./components/MarketEventList";
 import MarketStatsBar from "./components/MarketStatsBar";
+import ProcurementAnalysisTab from "./ProcurementAnalysisTab";
 import VarietyMarketTab from "./VarietyMarketTab";
 
 const agent = getAgent("zhan")!;
@@ -18,6 +20,22 @@ export default function ZhanPage() {
   const [activeTab, setActiveTab] = useState(0);
   const [data, setData] = useState<MarketOverview | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [prefill, setPrefill] = useState<AnalysisRequest | null>(null);
+
+  const reuseRecord = (r: AnalysisRecord) => {
+    setPrefill({
+      variety_code: r.variety_code,
+      quantity_tons: r.quantity_tons,
+      deadline_date: r.deadline_date,
+      grade: r.grade,
+      target_region: r.target_region ?? "",
+      budget_price: r.budget_price,
+      stock_days: r.stock_days,
+      risk_preference: r.risk_preference,
+      remark: r.remark,
+    });
+    setActiveTab(2);
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -107,6 +125,15 @@ export default function ZhanPage() {
             varietyCode={varietyCode}
             onVarietyChange={setVarietyCode}
           />
+        ) : activeTab === 2 ? (
+          <ProcurementAnalysisTab
+            varietyCode={varietyCode}
+            onVarietyChange={setVarietyCode}
+            prefill={prefill}
+            onPrefillConsumed={() => setPrefill(null)}
+          />
+        ) : activeTab === 4 ? (
+          <AnalysisRecordsTab onReuse={reuseRecord} />
         ) : activeTab !== 0 ? (
           <div className="flex min-h-[420px] flex-col items-center justify-center rounded-3xl border border-line bg-panel/60 text-center">
             <img
