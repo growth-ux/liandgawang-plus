@@ -3,19 +3,45 @@ from app.logistics.seed import seed_logistics_mock_data
 
 def test_seed_loads_segments_and_services(db_session):
     from app.logistics.models import LogisticsService, RouteSegment
+    from app.logistics.seed import SEGMENTS
 
     seed_logistics_mock_data(db_session)
-    assert db_session.query(RouteSegment).count() == 10
-    assert db_session.query(LogisticsService).count() == 200
+    assert len(SEGMENTS) >= 100
+    assert db_session.query(RouteSegment).count() == len(SEGMENTS)
+    assert db_session.query(LogisticsService).count() == 500
+
+    covered_segments = {
+        code for (code,) in db_session.query(LogisticsService.segment_code).distinct()
+    }
+    assert covered_segments == {row[0] for row in SEGMENTS}
 
 
 def test_seed_idempotent(db_session):
     from app.logistics.models import LogisticsService, RouteSegment
+    from app.logistics.seed import SEGMENTS
 
     seed_logistics_mock_data(db_session)
     seed_logistics_mock_data(db_session)
-    assert db_session.query(RouteSegment).count() == 10
-    assert db_session.query(LogisticsService).count() == 200
+    assert db_session.query(RouteSegment).count() == len(SEGMENTS)
+    assert db_session.query(LogisticsService).count() == 500
+
+
+def test_seed_supports_multiple_composable_routes(db_session):
+    from app.logistics.models import RouteSegment
+
+    seed_logistics_mock_data(db_session)
+    segments = db_session.query(RouteSegment).all()
+    feeder_ports = {
+        segment.destination
+        for segment in segments
+        if segment.origin == "白城" and segment.mode == "road"
+    }
+    water_ports = {
+        segment.origin
+        for segment in segments
+        if segment.destination == "深圳港" and segment.mode == "water"
+    }
+    assert len(feeder_ports & water_ports) >= 3
 
 
 # ---------- 测算与市场接口 ----------
@@ -35,7 +61,7 @@ def test_hot_routes(client):
 
 def test_lines(client):
     items = client.get("/api/logistics/lines").json()
-    assert len(items) == 10
+    assert len(items) == 500
     first = items[0]
     for key in ("origin", "destination", "mode_name", "carrier", "tonnage_min",
                 "tonnage_max", "price_low", "price_high", "days_low", "days_high",

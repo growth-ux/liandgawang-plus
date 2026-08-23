@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import TechSelect from "../../components/TechSelect";
 import {
   createEstimate,
   createTask,
@@ -227,50 +228,47 @@ export default function FindLogisticsTab({ prefill, onPrefillConsumed, onTaskCre
             {busy ? "测算中…" : "即时测算"}
           </button>
         </div>
-        <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-5">
-          <select
+        <div className="mt-4 grid grid-cols-2 items-end gap-3 md:grid-cols-5">
+          <TechSelect
+            label="发货地"
             value={form.origin}
-            onChange={(e) => setField("origin", e.target.value)}
-            className="h-10 rounded-xl border border-line bg-rice px-3 text-sm text-ink"
-          >
-            <option value="">发货地</option>
-            {meta?.nodes.map((n) => (
-              <option key={n} value={n}>{n}</option>
-            ))}
-          </select>
-          <select
+            onChange={(value) => setField("origin", value)}
+            placeholder="选择发货地"
+            options={(meta?.nodes ?? []).map((node) => ({ value: node, label: node }))}
+          />
+          <TechSelect
+            label="收货地"
             value={form.destination}
-            onChange={(e) => setField("destination", e.target.value)}
-            className="h-10 rounded-xl border border-line bg-rice px-3 text-sm text-ink"
-          >
-            <option value="">收货地</option>
-            {meta?.nodes.map((n) => (
-              <option key={n} value={n}>{n}</option>
-            ))}
-          </select>
-          <select
+            onChange={(value) => setField("destination", value)}
+            placeholder="选择收货地"
+            options={(meta?.nodes ?? []).map((node) => ({ value: node, label: node }))}
+          />
+          <TechSelect
+            label="货物品种"
             value={form.variety_code}
-            onChange={(e) => setField("variety_code", e.target.value)}
-            className="h-10 rounded-xl border border-line bg-rice px-3 text-sm text-ink"
-          >
-            {meta?.varieties.map((v) => (
-              <option key={v.code} value={v.code}>{v.name}</option>
-            ))}
-          </select>
-          <input
-            type="number"
-            min={1}
-            value={form.quantity_tons}
-            onChange={(e) => setField("quantity_tons", e.target.value)}
-            placeholder="数量（吨）"
-            className="h-10 rounded-xl border border-line bg-rice px-3 text-sm text-ink placeholder:text-ink-soft/70"
+            onChange={(value) => setField("variety_code", value)}
+            options={(meta?.varieties ?? []).map((variety) => ({ value: variety.code, label: variety.name }))}
           />
-          <input
-            type="date"
-            value={form.deadline_date}
-            onChange={(e) => setField("deadline_date", e.target.value)}
-            className="h-10 rounded-xl border border-line bg-rice px-3 text-sm text-ink"
-          />
+          <label className="block">
+            <span className="mb-1.5 block text-[11px] font-medium tracking-[0.04em] text-ink-soft">运输数量</span>
+            <input
+              type="number"
+              min={1}
+              value={form.quantity_tons}
+              onChange={(e) => setField("quantity_tons", e.target.value)}
+              placeholder="输入吨数"
+              className="h-11 w-full rounded-xl border border-line bg-rice/75 px-3.5 text-sm text-ink outline-none transition-all placeholder:text-ink-soft/60 hover:border-tech/30 focus:border-tech/55 focus:bg-rice-deep focus:shadow-[0_0_0_3px_rgba(34,211,238,0.08)]"
+            />
+          </label>
+          <label className="block">
+            <span className="mb-1.5 block text-[11px] font-medium tracking-[0.04em] text-ink-soft">最晚到货</span>
+            <input
+              type="date"
+              value={form.deadline_date}
+              onChange={(e) => setField("deadline_date", e.target.value)}
+              className="h-11 w-full rounded-xl border border-line bg-rice/75 px-3.5 text-sm text-ink outline-none transition-all hover:border-tech/30 focus:border-tech/55 focus:bg-rice-deep focus:shadow-[0_0_0_3px_rgba(34,211,238,0.08)]"
+            />
+          </label>
         </div>
         {assumptions.length > 0 && (
           <ul className="mt-3 space-y-1 text-xs text-ink-soft">

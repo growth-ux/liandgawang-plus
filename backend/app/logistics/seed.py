@@ -1,17 +1,50 @@
-"""yun-v1 固定物流演示数据集：粮贸主干线路段与承运服务（幂等）。"""
+"""yun-v2 固定物流演示数据集：可组合线路网络与 500 条承运服务（幂等）。"""
 
 from datetime import date
+from math import ceil
 
 from sqlalchemy.orm import Session
 
 from app.logistics.models import LogisticsService, RouteSegment
 
-MOCK_DATASET_VERSION = "yun-v1"
-DATA_UPDATED_AT = "2026-08-22"
+MOCK_DATASET_VERSION = "yun-v2"
+DATA_UPDATED_AT = "2026-08-23"
 TODAY = date(2026, 8, 23)
 
-# (code, 起点, 终点, 方式, 里程, 价低, 价高, 时效低, 时效高, 风险备注)
-SEGMENTS = [
+# 产区编码、名称、到东北港口的基准里程、到深圳港的基准里程
+ORIGINS = [
+    ("HRB", "哈尔滨", 850, 3350),
+    ("QQHE", "齐齐哈尔", 920, 3550),
+    ("SUIHUA", "绥化", 760, 3280),
+    ("CC", "长春", 620, 3050),
+    ("BC", "白城", 540, 3100),
+    ("SY", "松原", 680, 3150),
+    ("TL", "通辽", 520, 2800),
+    ("SYANG", "沈阳", 310, 2650),
+    ("CF", "赤峰", 450, 2400),
+    ("JMS", "佳木斯", 1250, 3650),
+]
+
+# 港口编码、名称、相对基准里程调整
+NORTH_PORTS = [
+    ("JZ", "锦州港", 0),
+    ("BYQ", "鲅鱼圈港", 80),
+    ("DL", "大连港", 170),
+    ("QHD", "秦皇岛港", 230),
+]
+
+# 港口编码、名称、相对深圳方向里程调整
+SOUTH_PORTS = [
+    ("SH", "上海港", -700),
+    ("NB", "宁波港", -560),
+    ("QZ", "泉州港", -330),
+    ("GZ", "广州港", -60),
+    ("SZ", "深圳港", 0),
+    ("ZJ", "湛江港", 180),
+]
+
+# 保留核心演示线路的既有口径，确保白城—深圳案例稳定。
+CORE_SEGMENTS = [
     ("YUN-SEG-HRB-JZ-ROAD", "哈尔滨", "锦州港", "road", 880, 320, 360, 2, 3, "冬季需关注路面结冰"),
     ("YUN-SEG-CC-JZ-ROAD", "长春", "锦州港", "road", 620, 240, 280, 1, 2, ""),
     ("YUN-SEG-BC-JZ-ROAD", "白城", "锦州港", "road", 540, 210, 250, 1, 2, ""),
@@ -24,66 +57,277 @@ SEGMENTS = [
     ("YUN-SEG-BYQ-SZ-WATER", "鲅鱼圈港", "深圳港", "water", 1460, 100, 125, 6, 9, "受船期与天气影响"),
 ]
 
-# (code, 承运方, 线路段, 品种, 吨位下限, 吨位上限, 发运窗口, 装卸条件, 履约摘要)
-SERVICES = [
-    ("YUN-SVC-HRB-JZ", "粮达物流东北车队", "YUN-SEG-HRB-JZ-ROAD", "corn,wheat,soybean,rice", 30, 300, "每日发运", "散粮自卸车", "近30天准点率96%"),
-    ("YUN-SVC-CC-JZ", "粮达物流辽西车队", "YUN-SEG-CC-JZ-ROAD", "corn,wheat,soybean,rice", 30, 300, "每日发运", "散粮自卸车", "近30天准点率97%"),
-    ("YUN-SVC-BC-JZ", "辽吉粮食运输合作社", "YUN-SEG-BC-JZ-ROAD", "corn,wheat", 30, 200, "隔日发运", "散粮自卸车", "近30天准点率94%"),
-    ("YUN-SVC-BC-SZ", "粮达物流干线车队", "YUN-SEG-BC-SZ-ROAD", "corn,wheat,soybean,rice", 30, 150, "每周三、五", "散粮/吨包", "近30天准点率98%"),
-    ("YUN-SVC-CC-JZ-R", "东北铁路集装箱运输中心", "YUN-SEG-CC-JZ-RAIL", "corn,wheat,soybean,rice", 60, 2000, "每周二、四装车", "集装箱/散粮装车点", "近30天计划兑现率92%"),
-    ("YUN-SVC-BC-SZ-R", "东北铁路集装箱运输中心", "YUN-SEG-BC-SZ-RAIL", "corn,wheat", 60, 2000, "每周一、四装车", "集装箱/散粮装车点", "近30天计划兑现率90%"),
-    ("YUN-SVC-HRB-SZ-R", "东北铁路集装箱运输中心", "YUN-SEG-HRB-SZ-RAIL", "corn,soybean", 60, 2000, "每周二装车", "集装箱/散粮装车点", "近30天计划兑现率88%"),
-    ("YUN-SVC-JZ-SZ-W", "北洋航运内贸线", "YUN-SEG-JZ-SZ-WATER", "corn,wheat,soybean,rice", 500, 30000, "每周一、五班期", "港口散粮装船", "近30天班期准点率91%"),
-    ("YUN-SVC-JZ-GZ-W", "北洋航运内贸线", "YUN-SEG-JZ-GZ-WATER", "corn,wheat,soybean,rice", 500, 30000, "每周三、六班期", "港口散粮装船", "近30天班期准点率93%"),
-    ("YUN-SVC-BYQ-SZ-W", "北方港航船务", "YUN-SEG-BYQ-SZ-WATER", "corn,wheat", 500, 30000, "每周二、六班期", "港口散粮装船", "近30天班期准点率89%"),
-]
+
+def _append_segment(rows: list[tuple], seen: set[tuple], row: tuple) -> None:
+    key = (row[1], row[2], row[3])
+    if key not in seen:
+        rows.append(row)
+        seen.add(key)
 
 
-def _generated_services() -> list[tuple]:
-    """补齐到 200 条承运服务，覆盖现有主干线路的不同运力与发运安排。"""
-    carriers = ["中北公铁联运", "粮运供应链", "华北仓配物流", "东北陆港运输", "安达货运", "丰收航运", "新程物流", "兴达铁路服务"]
-    variety_options = ["corn,wheat", "corn,soybean", "corn,wheat,soybean", "corn,wheat,soybean,rice"]
-    windows = ["每日发运", "隔日发运", "每周一、四装车", "每周二、五装车", "预约后48小时内发运"]
-    loadings = ["散粮自卸车", "吨包集装箱", "散粮/吨包", "港口散粮装船"]
-    rows = []
-    for number in range(11, 201):
-        index = number - 11
-        segment = SEGMENTS[index % len(SEGMENTS)]
-        carrier = carriers[index % len(carriers)]
-        rows.append((
-            f"YUN-SVC-V1-{number:03d}", f"{carrier}{index // len(carriers) + 1}号运力中心", segment[0],
-            variety_options[index % len(variety_options)], 30 + (index % 5) * 20,
-            300 + (index * 175) % 5000, windows[index % len(windows)], loadings[index % len(loadings)],
-            f"近30天准点率{90 + index % 9}%",
-        ))
+def _build_segments() -> list[tuple]:
+    """构建产区—北方港—南方港网络，并补充公路、铁路直达线路。"""
+    rows = list(CORE_SEGMENTS)
+    seen = {(row[1], row[2], row[3]) for row in rows}
+
+    for origin_index, (origin_code, origin, feeder_km, south_km) in enumerate(ORIGINS):
+        for port_index, (port_code, port, km_adjustment) in enumerate(NORTH_PORTS):
+            km = max(260, feeder_km + km_adjustment + (origin_index % 3) * 15)
+            road_low = round(km * 0.39)
+            road_days = max(1, ceil(km / 520))
+            _append_segment(
+                rows,
+                seen,
+                (
+                    f"YUN-SEG-{origin_code}-{port_code}-ROAD",
+                    origin,
+                    port,
+                    "road",
+                    km,
+                    road_low,
+                    road_low + 35 + port_index * 4,
+                    road_days,
+                    road_days + 1,
+                    "冬季与高峰期需关注道路通行" if origin_index < 3 else "",
+                ),
+            )
+
+            rail_low = round(km * 0.29)
+            rail_days = max(2, ceil(km / 430))
+            _append_segment(
+                rows,
+                seen,
+                (
+                    f"YUN-SEG-{origin_code}-{port_code}-RAIL",
+                    origin,
+                    port,
+                    "rail",
+                    km,
+                    rail_low,
+                    rail_low + 30 + port_index * 5,
+                    rail_days,
+                    rail_days + 1,
+                    "受铁路装车计划影响",
+                ),
+            )
+
+        for destination_index, (dest_code, destination, km_adjustment) in enumerate(SOUTH_PORTS):
+            km = max(1700, south_km + km_adjustment + (origin_index % 2) * 25)
+            road_low = round(km * 0.37)
+            road_days = max(3, ceil(km / 850))
+            _append_segment(
+                rows,
+                seen,
+                (
+                    f"YUN-SEG-{origin_code}-{dest_code}-ROAD",
+                    origin,
+                    destination,
+                    "road",
+                    km,
+                    road_low,
+                    road_low + 85 + destination_index * 8,
+                    road_days,
+                    road_days + 1,
+                    "长途整车直发，需确认司机与车辆排期",
+                ),
+            )
+
+            rail_low = round(km * 0.18)
+            rail_days = max(4, ceil(km / 610))
+            _append_segment(
+                rows,
+                seen,
+                (
+                    f"YUN-SEG-{origin_code}-{dest_code}-RAIL",
+                    origin,
+                    destination,
+                    "rail",
+                    km,
+                    rail_low,
+                    rail_low + 65 + destination_index * 6,
+                    rail_days,
+                    rail_days + 2,
+                    "受班列计划与到站短驳衔接影响",
+                ),
+            )
+
+    for north_index, (north_code, north_port, _) in enumerate(NORTH_PORTS):
+        for south_index, (south_code, south_port, km_adjustment) in enumerate(SOUTH_PORTS):
+            km = 1450 + km_adjustment + north_index * 45
+            price_low = 95 + south_index * 5 + north_index * 3
+            days_low = max(4, 6 + south_index // 2 - (1 if south_index < 2 else 0))
+            _append_segment(
+                rows,
+                seen,
+                (
+                    f"YUN-SEG-{north_code}-{south_code}-WATER",
+                    north_port,
+                    south_port,
+                    "water",
+                    km,
+                    price_low,
+                    price_low + 25,
+                    days_low,
+                    days_low + 3,
+                    "受船期、港口作业与沿海天气影响",
+                ),
+            )
+
     return rows
 
 
-ALL_SERVICES = [*SERVICES, *_generated_services()]
+SEGMENTS = _build_segments()
+
+ROAD_CARRIERS = [
+    "粮达物流东北车队",
+    "辽吉粮食运输合作社",
+    "华粮干线物流",
+    "丰达供应链",
+    "北仓公路运输",
+    "新程粮运",
+    "安达货运",
+    "中谷陆运",
+    "金穗物流",
+    "通达粮食运输",
+    "黑吉辽联运",
+    "北方粮贸物流",
+]
+RAIL_CARRIERS = [
+    "东北铁路集装箱运输中心",
+    "中北公铁联运",
+    "华粮铁路物流",
+    "北方陆港供应链",
+    "中谷班列服务",
+    "丰收铁路运输",
+    "粮达公铁联运",
+    "东北粮运班列",
+]
+WATER_CARRIERS = [
+    "北洋航运内贸线",
+    "北方港航船务",
+    "中谷海运",
+    "华粮沿海运输",
+    "丰海航运",
+    "粮达港航",
+    "渤海粮运船务",
+    "东海内贸航运",
+]
+
+VARIETY_OPTIONS = [
+    "corn,wheat",
+    "corn,soybean",
+    "corn,wheat,soybean",
+    "corn,wheat,soybean,rice",
+]
+
+
+def _service_profile(mode: str, index: int) -> tuple[str, int, int, str, str, str]:
+    if mode == "road":
+        carrier = ROAD_CARRIERS[index % len(ROAD_CARRIERS)]
+        tonnage_min = 20 + (index % 3) * 10
+        tonnage_max = 180 + (index % 7) * 40
+        windows = ["每日发运", "隔日发运", "预约后24小时内发运", "预约后48小时内发运"]
+        loading = "散粮自卸车" if index % 2 == 0 else "散粮/吨包"
+        performance = f"近30天准点率{92 + index % 7}%"
+    elif mode == "rail":
+        carrier = RAIL_CARRIERS[index % len(RAIL_CARRIERS)]
+        tonnage_min = 60 + (index % 3) * 60
+        tonnage_max = 1800 + (index % 8) * 500
+        windows = ["每周一、四装车", "每周二、五装车", "每周三、六装车", "按班列计划发运"]
+        loading = "集装箱/散粮装车点"
+        performance = f"近30天计划兑现率{88 + index % 10}%"
+    else:
+        carrier = WATER_CARRIERS[index % len(WATER_CARRIERS)]
+        tonnage_min = 500 + (index % 4) * 500
+        tonnage_max = 12000 + (index % 8) * 5000
+        windows = ["每周一、五班期", "每周二、六班期", "每周三、日班期", "按船期滚动发运"]
+        loading = "港口散粮装船"
+        performance = f"近30天班期准点率{87 + index % 11}%"
+    return carrier, tonnage_min, tonnage_max, windows[index % len(windows)], loading, performance
+
+
+def _build_services() -> list[tuple]:
+    """稳定生成 500 条服务；所有线路至少有两条可用承运服务。"""
+    rows = []
+    for index in range(500):
+        segment = SEGMENTS[index % len(SEGMENTS)]
+        carrier, tonnage_min, tonnage_max, window, loading, performance = _service_profile(
+            segment[3], index
+        )
+        rows.append(
+            (
+                f"YUN-SVC-V2-{index + 1:04d}",
+                carrier,
+                segment[0],
+                VARIETY_OPTIONS[index % len(VARIETY_OPTIONS)],
+                tonnage_min,
+                tonnage_max,
+                window,
+                loading,
+                performance,
+            )
+        )
+    return rows
+
+
+ALL_SERVICES = _build_services()
 
 
 def seed_logistics_mock_data(db: Session) -> None:
-    expected_service_codes = {row[0] for row in ALL_SERVICES}
-    # 清理早期版本遗留的 YUN-SVC-001 ～ YUN-SVC-050 Mock 服务，确保演示库稳定为 200 条。
-    for service in db.query(LogisticsService).filter(LogisticsService.service_code.like("YUN-SVC-%")).all():
-        if service.service_code not in expected_service_codes:
+    """把受管的 YUN 数据同步为 v2；重复执行不会增加记录。"""
+    expected_segments = {row[0]: row for row in SEGMENTS}
+    expected_services = {row[0]: row for row in ALL_SERVICES}
+
+    managed_services = {
+        service.service_code: service
+        for service in db.query(LogisticsService)
+        .filter(LogisticsService.service_code.like("YUN-SVC-%"))
+        .all()
+    }
+    for code, service in managed_services.items():
+        if code not in expected_services:
             db.delete(service)
-    existing_segments = {code for (code,) in db.query(RouteSegment.segment_code).all()}
-    for code, origin, dest, mode, km, pl, ph, dl, dh, risk in SEGMENTS:
-        if code in existing_segments:
-            continue
-        db.add(RouteSegment(
-            segment_code=code, origin=origin, destination=dest, mode=mode,
-            distance_km=km, price_low=pl, price_high=ph, days_low=dl, days_high=dh,
-            risk_note=risk, data_updated_at=DATA_UPDATED_AT,
-        ))
-    existing_services = {code for (code,) in db.query(LogisticsService.service_code).all()}
-    for code, carrier, seg, varieties, tmin, tmax, window, loading, perf in ALL_SERVICES:
-        if code in existing_services:
-            continue
-        db.add(LogisticsService(
-            service_code=code, carrier=carrier, segment_code=seg, varieties=varieties,
-            tonnage_min=tmin, tonnage_max=tmax, dispatch_window=window,
-            loading_note=loading, performance_note=perf,
-        ))
+
+    managed_segments = {
+        segment.segment_code: segment
+        for segment in db.query(RouteSegment)
+        .filter(RouteSegment.segment_code.like("YUN-SEG-%"))
+        .all()
+    }
+    for code, segment in managed_segments.items():
+        if code not in expected_segments:
+            db.delete(segment)
+
+    db.flush()
+
+    for code, origin, destination, mode, km, price_low, price_high, days_low, days_high, risk in SEGMENTS:
+        segment = managed_segments.get(code)
+        if segment is None:
+            segment = RouteSegment(segment_code=code)
+            db.add(segment)
+        segment.origin = origin
+        segment.destination = destination
+        segment.mode = mode
+        segment.distance_km = km
+        segment.price_low = price_low
+        segment.price_high = price_high
+        segment.days_low = days_low
+        segment.days_high = days_high
+        segment.risk_note = risk
+        segment.data_updated_at = DATA_UPDATED_AT
+
+    for code, carrier, segment_code, varieties, tonnage_min, tonnage_max, window, loading, performance in ALL_SERVICES:
+        service = managed_services.get(code)
+        if service is None:
+            service = LogisticsService(service_code=code)
+            db.add(service)
+        service.carrier = carrier
+        service.segment_code = segment_code
+        service.varieties = varieties
+        service.tonnage_min = tonnage_min
+        service.tonnage_max = tonnage_max
+        service.dispatch_window = window
+        service.loading_note = loading
+        service.performance_note = performance
+
     db.commit()

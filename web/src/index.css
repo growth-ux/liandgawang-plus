@@ -74,6 +74,17 @@ input[type="number"] {
   appearance: textfield;
 }
 
+/* 统一下拉浮层：轻微上浮进入，保持工具型页面的克制科技感 */
+@keyframes ld-select-in {
+  from { opacity: 0; transform: translateY(-5px) scale(0.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.ld-select-menu {
+  transform-origin: top center;
+  animation: ld-select-in 150ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
 /* ===== 数字员工动画（协作场首页） ===== */
 
 @keyframes ld-bob {
@@ -152,4 +163,6 @@ input[type="number"] {
   .ld-holo-breathe, .ld-blink, .ld-dash-flow, .ld-draw, .ld-scan-y, .ld-sweep {
     animation: none;
   }
+
+  .ld-select-menu { animation: none; }
 }
