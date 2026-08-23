@@ -46,9 +46,11 @@ export default function FilterPanel({
 }) {
   const set = (patch: Partial<ListingFilters>) => onChange({ ...filters, ...patch });
   return (
-    <div className="rounded-2xl border border-line bg-panel p-4">
-      <div className="mb-3 flex items-center justify-between">
-        <span className="text-sm font-semibold">筛选</span>
+    <div className="rounded-2xl border border-line bg-panel p-4 lg:mt-3.5 xl:sticky xl:top-5">
+      <div className="mb-4 flex items-center justify-between border-b border-line pb-3">
+        <div>
+          <span className="text-sm font-semibold">条件筛选</span>
+        </div>
         <button
           type="button"
           onClick={onReset}
@@ -57,7 +59,7 @@ export default function FilterPanel({
           清空
         </button>
       </div>
-      <div className="space-y-3">
+      <div className="space-y-3.5">
         <Select label="品种" value={filters.variety_name ?? ""} options={VARIETIES}
           onChange={(v) => set({ variety_name: v || undefined })} />
         <Select label="等级" value={filters.grade ?? ""} options={GRADES}

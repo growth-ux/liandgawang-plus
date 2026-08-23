@@ -3,6 +3,7 @@ import type {
   Listing,
   ListingFilters,
   MarketSummaryResponse,
+  ComparisonInterpretation,
   SourcingTask,
   TaskNeedSummary,
   TaskPlan,
@@ -33,6 +34,18 @@ export async function fetchListing(id: number): Promise<Listing> {
 export async function fetchMarketSummary(): Promise<MarketSummaryResponse> {
   const resp = await fetch("/api/liang/market/summary");
   if (!resp.ok) throw new Error(`请求失败（${resp.status}）`);
+  return resp.json();
+}
+
+export async function interpretCandidateComparison(
+  listingIds: number[],
+): Promise<ComparisonInterpretation> {
+  const resp = await fetch("/api/liang/compare/interpret", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ listing_ids: listingIds }),
+  });
+  if (!resp.ok) throw new Error(`对比解读失败（${resp.status}）`);
   return resp.json();
 }
 

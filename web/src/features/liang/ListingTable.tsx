@@ -14,18 +14,16 @@ function QualityCell({ listing }: { listing: Listing }) {
 export default function ListingTable({
   listings,
   onDetail,
-  onAnalyze,
 }: {
   listings: Listing[];
   onDetail: (l: Listing) => void;
-  onAnalyze: (l: Listing) => void;
 }) {
   const { add, remove, has } = useCandidates();
   return (
-    <div className="overflow-x-auto rounded-2xl border border-line bg-panel">
-      <table className="w-full min-w-[860px] text-sm">
+    <div className="overflow-x-auto rounded-2xl border border-line bg-panel shadow-[0_16px_36px_rgba(0,0,0,0.12)]">
+      <table className="w-full min-w-[900px] text-sm">
         <thead>
-          <tr className="border-b border-line text-left text-xs text-ink-soft">
+          <tr className="border-b border-line bg-rice/40 text-left text-[11px] tracking-wide text-ink-soft">
             <th className="px-4 py-3 font-normal">品种·等级</th>
             <th className="px-4 py-3 font-normal">产地</th>
             <th className="px-4 py-3 font-normal">供应方</th>
@@ -41,24 +39,26 @@ export default function ListingTable({
           {listings.map((l) => {
             const added = has(l.id);
             return (
-              <tr key={l.id} className="border-b border-line/60 last:border-0 hover:bg-rice-deep/40">
-                <td className="px-4 py-3 font-medium text-ink">
-                  {l.variety_name}·{l.grade}
+              <tr key={l.id} className="border-b border-line/60 last:border-0 transition-colors hover:bg-rice-deep/45">
+                <td className="px-4 py-3.5 font-medium text-ink">
+                  <div>{l.variety_name}<span className="mx-1 text-ink-soft">·</span>{l.grade}</div>
+                  <div className="mt-1 text-[11px] font-normal text-ink-soft">{l.listing_code} · {l.crop_year}年</div>
                 </td>
                 <td className="px-4 py-3 text-ink">
                   {l.origin_province} {l.origin_city}
                 </td>
                 <td className="px-4 py-3 text-ink">{l.supplier_name}</td>
-                <td className="px-4 py-3 tabular-nums text-ink">
-                  {fmtInt(l.price)}
-                  <span className="ml-1 text-xs text-ink-soft">{l.price_type}</span>
+                <td className="px-4 py-3.5 tabular-nums text-brand-deep">
+                  <span className="text-base font-semibold">{fmtInt(l.price)}</span>
+                  <span className="ml-1 text-[11px] text-ink-soft">元/吨</span>
+                  <div className="mt-1 text-[11px] text-ink-soft">{l.price_type}</div>
                 </td>
                 <td className="px-4 py-3 tabular-nums text-ink">
                   {fmtInt(l.available_quantity_tons)}吨
                 </td>
-                <td className="px-4 py-3 text-ink">{l.delivery_type}</td>
-                <td className="px-4 py-3 text-ink">{fmtDate(l.latest_ship_at)}</td>
-                <td className="px-4 py-3">
+                <td className="px-4 py-3.5 text-ink">{l.delivery_type}</td>
+                <td className="px-4 py-3.5 text-ink">{fmtDate(l.latest_ship_at)}</td>
+                <td className="px-4 py-3.5">
                   <QualityCell listing={l} />
                 </td>
                 <td className="px-4 py-3">
@@ -73,16 +73,6 @@ export default function ListingTable({
                       }`}
                     >
                       {added ? "已加入" : "+ 候选"}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        add(l);
-                        onAnalyze(l);
-                      }}
-                      className="rounded-full border border-line px-2.5 py-1 text-xs text-ink-soft hover:border-tech hover:text-ink"
-                    >
-                      分析
                     </button>
                     <button
                       type="button"

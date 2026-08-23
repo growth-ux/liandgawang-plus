@@ -16,7 +16,6 @@ import type {
   Listing,
   ListingFilters,
   MarketSummary,
-  NeedInput,
 } from "./types";
 
 const agent = getAgent("liang")!;
@@ -29,7 +28,6 @@ export default function LiangPage() {
   const [listings, setListings] = useState<Listing[]>([]);
   const [summary, setSummary] = useState<MarketSummary | null>(null);
   const [detail, setDetail] = useState<Listing | null>(null);
-  const [need, setNeed] = useState<NeedInput | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
 
@@ -52,7 +50,9 @@ export default function LiangPage() {
     let cancelled = false;
     fetchMarketSummary()
       .then((d) => {
-        if (!cancelled) setSummary(d.summary);
+        if (!cancelled) {
+          setSummary(d.summary);
+        }
       })
       .catch(() => {});
     return () => {
@@ -63,7 +63,8 @@ export default function LiangPage() {
   const totalPages = Math.max(1, Math.ceil(listings.length / PAGE_SIZE));
   const pageListings = listings.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-  const goCompare = () => setActiveTab(1);
+  const goCompare = () => setActiveTab(2);
+  const activeFilterCount = Object.values(filters).filter((value) => value !== undefined && value !== null && value !== "").length;
 
   return (
     <CandidateProvider>
@@ -113,9 +114,9 @@ export default function LiangPage() {
         {/* 内容 */}
         <div className="mx-auto w-full max-w-[1280px] flex-1 px-6 py-6">
           {activeTab === 1 ? (
-            <CompareTab need={need} onNeedChange={(n) => setNeed(n)} />
-          ) : activeTab === 2 ? (
             <SourcingTab />
+          ) : activeTab === 2 ? (
+            <CompareTab onGoFind={() => setActiveTab(0)} />
           ) : activeTab !== 0 ? (
             <div className="flex min-h-[420px] flex-col items-center justify-center rounded-3xl border border-dashed border-line bg-panel/60 text-center">
               <img src={agent.image} alt={agent.name} className="h-20 w-auto drop-shadow-[0_0_16px_rgba(201,144,42,0.4)]" />
@@ -125,12 +126,10 @@ export default function LiangPage() {
               </p>
             </div>
           ) : (
-            <div className="flex flex-col gap-4">
-              {/* 概览条 */}
+            <div className="flex flex-col gap-5">
               {summary && <MarketSummaryBar summary={summary} />}
 
-              {/* 两栏：筛选 | 列表 */}
-              <div className="grid grid-cols-1 gap-4 lg:grid-cols-[220px_1fr]">
+              <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[220px_minmax(0,1fr)]">
                 <FilterPanel
                   filters={filters}
                   onChange={setFilters}
@@ -143,10 +142,18 @@ export default function LiangPage() {
                   </div>
                 ) : (
                   <div className="flex flex-col gap-3">
+                    <div className="flex items-center justify-between px-1">
+                      <div>
+                      </div>
+                      {activeFilterCount > 0 && (
+                        <button type="button" onClick={() => setFilters({})} className="text-xs text-tech hover:text-white">
+                          清除筛选
+                        </button>
+                      )}
+                    </div>
                     <ListingTable
                       listings={pageListings}
                       onDetail={setDetail}
-                      onAnalyze={() => setActiveTab(1)}
                     />
                     <Pagination
                       page={page}

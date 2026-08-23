@@ -65,7 +65,7 @@ export default function CandidateBasket({ onGoCompare }: { onGoCompare: () => vo
                 disabled={candidates.length === 0}
                 className="h-11 flex-1 rounded-full bg-brand text-sm font-medium text-white disabled:opacity-40"
               >
-                去对比生成方案
+                去候选对比
               </button>
             </div>
           </div>
