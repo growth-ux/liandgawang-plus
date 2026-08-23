@@ -7,6 +7,9 @@ from app.database import Base, SessionLocal, engine
 from app.market import models  # noqa: F401  注册表
 from app.market.mock_seed import seed_zhan_mock_data
 from app.market.routes import router as market_router
+from app.workflow import models as workflow_models  # noqa: F401  注册表
+from app.workflow.routes import router as workflow_router
+from app.workflow.seed import seed_demo_watches
 
 
 @asynccontextmanager
@@ -15,6 +18,7 @@ async def lifespan(app: FastAPI):
     try:
         with SessionLocal() as db:
             seed_zhan_mock_data(db)
+            seed_demo_watches(db)
     except Exception:
         # 初始化失败不阻止启动（无 MySQL 的测试环境跳过），页面自行提示数据未就绪。
         pass
@@ -32,3 +36,4 @@ app.add_middleware(
 )
 
 app.include_router(market_router)
+app.include_router(workflow_router)

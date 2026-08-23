@@ -9,6 +9,7 @@ import MarketJudgment from "./components/MarketJudgment";
 import MarketEventList from "./components/MarketEventList";
 import MarketStatsBar from "./components/MarketStatsBar";
 import VarietyMarketTab from "./VarietyMarketTab";
+import WatchesTab from "./WatchesTab";
 
 const agent = getAgent("zhan")!;
 
@@ -107,6 +108,8 @@ export default function ZhanPage() {
             varietyCode={varietyCode}
             onVarietyChange={setVarietyCode}
           />
+        ) : activeTab === 4 ? (
+          <WatchesTab />
         ) : activeTab !== 0 ? (
           <div className="flex min-h-[420px] flex-col items-center justify-center rounded-3xl border border-line bg-panel/60 text-center">
             <img
