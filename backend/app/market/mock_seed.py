@@ -378,6 +378,11 @@ def seed_zhan_price_series(db: Session) -> None:
     末点与库点当前价一致、趋势随品种设定。清空重建确保生成逻辑或天数变更后
     无旧数据残留（避免新旧序列在接缝处跳变）。固定种子保证可复现。
     """
+    spot_count = db.query(MarketSpotPrice).count()
+    expected_rows = spot_count * SERIES_DAYS
+    if expected_rows > 0 and db.query(MarketPriceSeries).count() >= expected_rows:
+        return
+
     db.query(MarketPriceSeries).delete(synchronize_session=False)
     db.expunge_all()
     rows_to_add = []
