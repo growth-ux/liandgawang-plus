@@ -14,14 +14,14 @@ from pydantic import BaseModel, Field
 
 logger = logging.getLogger("zhan.analysis.llm")
 
-# 加载 backend/.env 占位配置（QWEN_API_KEY 由使用者填写）
-load_dotenv(Path(__file__).resolve().parents[2] / ".env")
+_ENV_PATH = Path(__file__).resolve().parents[2] / ".env"
 
-QWEN_API_KEY = os.getenv("QWEN_API_KEY", "").strip()
-QWEN_MODEL = os.getenv("QWEN_MODEL", "qwen-plus")
-QWEN_BASE_URL = os.getenv(
-    "QWEN_BASE_URL", "https://dashscope.aliyuncs.com/compatible-mode/v1"
-)
+# 为 None 时每次调用重读 .env，填入 key 无需重启进程即可生效；
+# 测试可通过 monkeypatch 该值模拟已/未配置。
+QWEN_API_KEY: str | None = None
+
+DEFAULT_MODEL = "qwen-plus"
+DEFAULT_BASE_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1"
 
 SYSTEM_PROMPT = (
     "你是粮达网 Plus 的行情研判助手「瞻小二」。"
@@ -38,21 +38,38 @@ class Interpretation(BaseModel):
     interpretation: str = Field(description="对研判结论的综合解读段落")
 
 
+def _config() -> tuple[str, str, str]:
+    """返回 (api_key, model, base_url)；未打桩时重读 .env。"""
+    if QWEN_API_KEY is not None:
+        return (
+            QWEN_API_KEY,
+            os.getenv("QWEN_MODEL", DEFAULT_MODEL),
+            os.getenv("QWEN_BASE_URL", DEFAULT_BASE_URL),
+        )
+    load_dotenv(_ENV_PATH, override=True)
+    return (
+        os.getenv("QWEN_API_KEY", "").strip(),
+        os.getenv("QWEN_MODEL", DEFAULT_MODEL),
+        os.getenv("QWEN_BASE_URL", DEFAULT_BASE_URL),
+    )
+
+
 def qwen_available() -> bool:
-    return bool(QWEN_API_KEY)
+    return bool(_config()[0])
 
 
 def interpret_judgment(skeleton: dict, conditions: dict) -> str | None:
     """调用 Qwen 生成研判解读；未配置 key 或调用失败时返回 None。"""
-    if not qwen_available():
+    api_key, model, base_url = _config()
+    if not api_key:
         return None
     try:
         from langchain_openai import ChatOpenAI
 
         llm = ChatOpenAI(
-            model=QWEN_MODEL,
-            api_key=QWEN_API_KEY,
-            base_url=QWEN_BASE_URL,
+            model=model,
+            api_key=api_key,
+            base_url=base_url,
             temperature=0.3,
             timeout=180,
             max_retries=1,
