@@ -1,0 +1,106 @@
+web/src/features/zhan/ZhanPage.tsx
+  s_882e3a617f9c02::t_8edfabc412d9bf 130-131
+backend/tests/liang/test_candidate_basket.py
+  s_882e3a617f9c02::t_37b5e2a055631b 1-32
+backend/app/liang/mock_seed.py
+  s_882e3a617f9c02::t_164dad0149f778 97,103
+  s_882e3a617f9c02::t_442e45cd4216e0 2,55-94,98
+web/src/features/liang/CandidateContext.tsx
+  s_882e3a617f9c02::t_0b550ffb7b2cb8 6,11-16,21-22,24,32-38,41-43,51-54
+backend/tests/liang/test_sourcing_graph.py
+  s_882e3a617f9c02::t_87264a051847c0 26,41-42
+  s_882e3a617f9c02::t_c00353d7fdbed3 27,37
+  s_882e3a617f9c02::t_ee8d92782f645c 28,34,38
+  s_882e3a617f9c02::t_051b0ff76627e3 1-25,29-33,35-36,39-40,43-47
+web/src/index.css
+  s_882e3a617f9c02::t_a1cd188dea31d0 26-30
+backend/tests/liang/test_metrics.py
+  s_882e3a617f9c02::t_442e45cd4216e0 9-10,13-14
+web/src/features/liang/DagCanvas.tsx
+  s_882e3a617f9c02::t_7252c24c3406b8 14-16,25-26,38,74,77-78
+backend/tests/liang/test_seed.py
+  s_882e3a617f9c02::t_442e45cd4216e0 9
+backend/app/liang/llm.py
+  s_882e3a617f9c02::t_2601f02734f580 29-39,94-117
+  s_882e3a617f9c02::t_8a2d4ce455748a 40-45,118-145
+  s_dc79982f943374::t_793894547b7d39 146-147
+web/src/features/liang/CandidateBasket.tsx
+  s_882e3a617f9c02::t_ec0bf71dbb27c3 74-87
+backend/tests/logistics/test_routes.py
+  s_882e3a617f9c02::t_442e45cd4216e0 9,13,18
+web/src/features/liang/api.ts
+  s_882e3a617f9c02::t_0b550ffb7b2cb8 13-23,72-108
+  s_882e3a617f9c02::t_4af4459a80fa76 8,64-70
+  s_882e3a617f9c02::t_ce7c656262c3c3 71
+  s_882e3a617f9c02::t_7e94127917bcef 109
+web/vite.config.ts
+  h_7549b7dc6a6921 7
+web/src/components/TopNav.tsx
+  s_882e3a617f9c02::t_bd4d794e71cb66 11
+backend/app/liang/models.py
+  s_882e3a617f9c02::t_0b550ffb7b2cb8 4,55-66
+backend/app/liang/routes.py
+  s_882e3a617f9c02::t_64dbfd4aea0957 11,24-27,166-173
+  s_882e3a617f9c02::t_0b550ffb7b2cb8 3,20-23,28-34,107-143
+  s_882e3a617f9c02::t_fb5490f6711a89 144-145
+  s_882e3a617f9c02::t_0fa5a750e6cb88 174-175
+backend/app/liang/repository.py
+  s_882e3a617f9c02::t_0b550ffb7b2cb8 6,40-82
+  s_882e3a617f9c02::t_9fe38943af19a9 83-84
+web/src/features/liang/SourcingTab.tsx
+  s_882e3a617f9c02::t_4af4459a80fa76 2-3,7,9,11,14,21,68,71,84,91-93,95-100,103,109,112-113,181,194,198-199,201,213,238,247
+  s_882e3a617f9c02::t_2601f02734f580 70,94,176
+  s_882e3a617f9c02::t_8a2d4ce455748a 221-234
+backend/pyproject.toml
+  s_882e3a617f9c02::t_11d1a3cbfb4a3b 16
+web/src/data/agents.ts
+  s_882e3a617f9c02::t_8edfabc412d9bf 72
+web/src/features/liang/workflow.ts
+  s_882e3a617f9c02::t_8a2d4ce455748a 17,36-37
+backend/app/liang/sourcing_graph.py
+  s_882e3a617f9c02::t_11d1a3cbfb4a3b 1-8,10,12-28,30-42,44-153,158-194,206-227,229-236,239-248
+  s_882e3a617f9c02::t_8a2d4ce455748a 9,29,195-205,228,237-238
+  s_882e3a617f9c02::t_2601f02734f580 11,43,154-157,249
+backend/app/logistics/seed.py
+  s_882e3a617f9c02::t_8d9d457922d92d 66-70
+  s_882e3a617f9c02::t_442e45cd4216e0 42-64,71,73-74,80-83
+web/src/features/liang/types.ts
+  s_882e3a617f9c02::t_8a2d4ce455748a 154-159,188
+  s_882e3a617f9c02::t_2601f02734f580 198
+  s_882e3a617f9c02::t_4af4459a80fa76 187,189-197,199-200
+backend/tests/liang/test_routes.py
+  s_882e3a617f9c02::t_442e45cd4216e0 8,31
+backend/tests/liang/test_repository.py
+  s_882e3a617f9c02::t_93c11442b36d08 8,14
+backend/uv.lock
+  s_882e3a617f9c02::t_ef059044790bc7 679-737,772,787,865-903
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "f7582c4eacc2e85f756e91e8d9b0d351cb7ca5bf",
+  "prompts": {},
+  "humans": {
+    "h_7549b7dc6a6921": {
+      "author": "tiger <1360055716@qq.com>"
+    }
+  },
+  "sessions": {
+    "s_882e3a617f9c02": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a02e7c-fa03-7632-811c-0da4afb1736c",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    },
+    "s_dc79982f943374": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c758ef78-2ae0-4a86-9150-811060d3821d",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
