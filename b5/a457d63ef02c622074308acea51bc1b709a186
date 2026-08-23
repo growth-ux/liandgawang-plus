@@ -1,0 +1,67 @@
+backend/app/workflow/rules.py
+  s_b29fb629f0bf8f::t_6c581006fdf99b 1-52
+backend/tests/workflow/test_routes.py
+  s_b29fb629f0bf8f::t_8ca9246f0921a7 118-129
+  s_b29fb629f0bf8f::t_312c95aa7a7e31 1-21
+  s_b29fb629f0bf8f::t_a328fecb006c0f 22-117
+docs/superpowers/specs/2026-08-23-zhan-watch-tab-design.md
+  s_b29fb629f0bf8f::t_c92474b0d4f766 1-179
+backend/app/workflow/models.py
+  s_b29fb629f0bf8f::t_7defddc31800cd 1-33
+backend/tests/workflow/test_rules.py
+  s_b29fb629f0bf8f::t_f2f066becdcc8a 1-47
+docs/superpowers/plans/2026-08-23-zhan-watch-tab.md
+  s_b29fb629f0bf8f::t_6e48906e7a3c8a 1-1397
+backend/app/workflow/repository.py
+  s_b29fb629f0bf8f::t_89360c77595a42 1-37,39-52
+  s_b29fb629f0bf8f::t_43876f3249b751 38
+backend/app/workflow/routes.py
+  s_b29fb629f0bf8f::t_3b2fd24df2f591 1-93,95-113
+  s_b29fb629f0bf8f::t_e5d61fad66c5a4 94
+backend/tests/conftest.py
+  s_b29fb629f0bf8f::t_35e259d9fd78a4 8
+web/src/features/zhan/WatchesTab.tsx
+  s_b29fb629f0bf8f::t_e34defa5495644 45-60
+  s_b29fb629f0bf8f::t_46eaba6f76cc18 361,364,367,370-374,376-381,383,385-387,389-393,395,397-401,403,405-413,415-420,422,424-426
+  s_b29fb629f0bf8f::t_a9e4d9415e84d6 2-20,22-44,146-259,261,264,266,268,279,281,284-287,290-359,362-363,366,368-369,388,427-437
+  s_b29fb629f0bf8f::t_cb5bca164345a3 360,365,375,382,384,394,396,402,404,414,421,423
+  s_b29fb629f0bf8f::t_b5a34b6b742c2c 21
+  s_b29fb629f0bf8f::t_6a459ad85c5e09 288-289
+  s_b29fb629f0bf8f::t_69849dc3dd46aa 260,262-263
+  s_b29fb629f0bf8f::t_ea6a8d42966e99 61-145
+  s_b29fb629f0bf8f::t_363670f7707d69 1
+  s_b29fb629f0bf8f::t_b5ed9fd12d203e 265,267,269-278,280,282-283
+backend/app/workflow/seed.py
+  s_b29fb629f0bf8f::t_0e2f70f261af3e 1-53
+web/src/features/zhan/types.ts
+  s_b29fb629f0bf8f::t_16374a90924287 94
+  s_b29fb629f0bf8f::t_f1a2e7a5e983cf 92-93,95-113
+backend/app/main.py
+  s_b29fb629f0bf8f::t_1a54f9e78b7d7a 10-12,21,39
+web/src/features/zhan/ZhanPage.tsx
+  s_b29fb629f0bf8f::t_39f64e35ddcd6e 111-112
+  s_b29fb629f0bf8f::t_5a4dc9218142a6 12
+web/src/features/zhan/api.ts
+  s_b29fb629f0bf8f::t_949e0e1006bbbd 25-64
+  s_b29fb629f0bf8f::t_4fcbb43d3d3929 1
+backend/tests/workflow/test_repository.py
+  s_b29fb629f0bf8f::t_81351e2c6dffcb 4-5
+  s_b29fb629f0bf8f::t_82576de8b3f762 1-3,6-27
+  s_b29fb629f0bf8f::t_e83ae3b1679053 28-99
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "b5a457d63ef02c622074308acea51bc1b709a186",
+  "prompts": {},
+  "sessions": {
+    "s_b29fb629f0bf8f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5a500e13-2aa0-4df3-8762-13254cb9581b",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
