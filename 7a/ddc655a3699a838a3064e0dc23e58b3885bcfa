@@ -1,0 +1,25 @@
+README.md
+  s_75a01c6c0921a8::t_00b76d9f97d1a5 3,5-92,102-117,121,125,127-151,153,155,157-162,164-227,234,236-239,241,246-257
+  s_75a01c6c0921a8::t_e4f264434978c5 96
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "7addc655a3699a838a3064e0dc23e58b3885bcfa",
+  "prompts": {},
+  "humans": {
+    "h_7549b7dc6a6921": {
+      "author": "tiger <1360055716@qq.com>"
+    }
+  },
+  "sessions": {
+    "s_75a01c6c0921a8": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a03434-24da-7733-9d98-495d333a45ee",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
