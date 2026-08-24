@@ -56,6 +56,7 @@ export default function TransportPlanComposer({
   const [error, setError] = useState<string | null>(null);
   const [meta, setMeta] = useState<LogisticsMeta | null>(null);
   const [metaFailed, setMetaFailed] = useState(false);
+  const [handoffMode, setHandoffMode] = useState(false);
 
   useEffect(() => {
     fetchLogisticsMeta()
@@ -76,6 +77,7 @@ export default function TransportPlanComposer({
       deadline_date: prefill.deadline_date ?? current.deadline_date,
     }));
     setConfirming(true);
+    setHandoffMode(true);
     onPrefillConsumed();
   }, [prefill, onPrefillConsumed]);
 
@@ -104,6 +106,10 @@ export default function TransportPlanComposer({
     }
   };
 
+  const fillDemo = () => {
+    setText("120 吨二等玉米，绥化发往潍坊，8 月 30 日前到货，均衡决策");
+  };
+
   const confirm = async () => {
     if (metaFailed) return;
     setBusy(true);
@@ -117,7 +123,7 @@ export default function TransportPlanComposer({
         deadline_date: draft.deadline_date || null,
         decision_preference: preference,
       });
-      await matchTask(task.id, preference);
+      await matchTask(task.id, { decision_preference: preference, use_memory: true });
       onTaskCreated(task.id);
     } catch (e) {
       setError(e instanceof Error ? e.message : "匹配失败");
@@ -132,7 +138,18 @@ export default function TransportPlanComposer({
 
   return (
     <section className="rounded-3xl border border-line bg-panel p-6">
-      <h2 className="text-base font-semibold">这批粮，怎么运最合适？</h2>
+      <div className="flex items-center gap-3">
+        <h2 className="text-base font-semibold">这批粮，怎么运最合适？</h2>
+        {!confirming && (
+          <button
+            type="button"
+            onClick={fillDemo}
+            className="shrink-0 text-xs text-brand-deep transition-colors hover:text-brand hover:underline underline-offset-4"
+          >
+            填入示例需求 →
+          </button>
+        )}
+      </div>
 
       {metaFailed && (
         <p className="mt-3 rounded-xl border border-amber-400/70 bg-brand-faint px-4 py-2 text-sm text-amber-300">
@@ -179,16 +196,19 @@ export default function TransportPlanComposer({
         </div>
       ) : (
         <div className="mt-4 flex flex-col gap-3">
-          <RequirementConfirmCard
-            draft={draft}
-            nodes={meta?.nodes ?? []}
-            varieties={meta?.varieties ?? []}
-            missing={missing}
-            onChange={setDraft}
-            onConfirm={confirm}
-            busy={busy}
-            disabled={metaFailed}
-          />
+          {handoffMode ? (
+            <div className="rounded-2xl border border-tech/25 bg-tech/[0.05] p-4">
+              <p className="text-xs tracking-[0.16em] text-tech">已由粮小二带入运输条件</p>
+              <div className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
+                <p><span className="text-ink-soft">发货地：</span>{draft.origin || "缺失"}</p>
+                <p><span className="text-ink-soft">目的地：</span>{draft.destination || "缺失"}</p>
+                <p><span className="text-ink-soft">品种：</span>{meta?.varieties.find((item) => item.code === draft.variety_code)?.name ?? draft.variety_code}</p>
+                <p><span className="text-ink-soft">吨位：</span>{draft.quantity_tons || "缺失"} 吨</p>
+                <p><span className="text-ink-soft">最晚发运：</span>{draft.deadline_date || "待确认"}</p>
+              </div>
+              {missing.length > 0 ? <p className="mt-3 text-xs text-red-300">交接数据缺少：{missing.join("、")}；请返回粮小二补全。</p> : <div className="mt-4 flex gap-2"><button type="button" disabled={busy || metaFailed} onClick={confirm} className="rounded-full bg-brand px-5 py-2 text-xs font-medium text-white disabled:opacity-50">确认运输需求</button><button type="button" onClick={() => setHandoffMode(false)} className="rounded-full border border-line px-5 py-2 text-xs text-ink-soft">修改条件</button></div>}
+            </div>
+          ) : <RequirementConfirmCard draft={draft} nodes={meta?.nodes ?? []} varieties={meta?.varieties ?? []} missing={missing} onChange={setDraft} onConfirm={confirm} busy={busy} disabled={metaFailed} />}
           {assumptions.length > 0 && (
             <ul className="space-y-1 text-xs text-ink-soft">
               {assumptions.map((a) => (
@@ -196,13 +216,13 @@ export default function TransportPlanComposer({
               ))}
             </ul>
           )}
-          <button
+          {!handoffMode && <button
             type="button"
             onClick={() => setConfirming(false)}
             className="self-start rounded-full border border-line px-5 py-2 text-xs text-ink-soft hover:border-tech hover:text-ink"
           >
             返回修改
-          </button>
+          </button>}
         </div>
       )}
 

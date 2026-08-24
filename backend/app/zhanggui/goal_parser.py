@@ -206,13 +206,22 @@ def _build_fields(goal: MissionGoal, memory_priority: bool) -> list[GoalField]:
     return fields
 
 
-def parse_goal(text: str, *, today: date, memories: list[str]) -> GoalPreview:
+def parse_goal(text: str, *, today: date, memories: list) -> GoalPreview:
     """规则提取目标字段，模型只补缺失项；记忆只作为引用，不覆盖用户输入。"""
     goal = _rule_goal(text, today)
     llm_available = _llm_patch(text, goal, today)
 
-    memory_priority = any("保供" in m for m in memories) and not re.search(r"成本优先|成本最低", text)
-    memory_references = [MemoryReference(content=m) for m in memories]
+    memory_references = []
+    for item in memories:
+        if isinstance(item, str):
+            memory_references.append(MemoryReference(content=item))
+        elif isinstance(item, MemoryReference):
+            memory_references.append(item)
+        elif hasattr(item, "model_dump"):
+            memory_references.append(MemoryReference.model_validate(item.model_dump()))
+        elif isinstance(item, dict):
+            memory_references.append(MemoryReference.model_validate(item))
+    memory_priority = any("保供" in item.content for item in memory_references) and not re.search(r"成本优先|成本最低", text)
 
     questions = []
     for key in _HIGH_IMPACT_KEYS:

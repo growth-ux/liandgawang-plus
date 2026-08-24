@@ -70,6 +70,8 @@ function describeEvent(event: MissionEvent): ActivityItem | null {
       return { time: nowText(), text: "已到达决策闸门，等待你的确认", tone: "info" };
     case "mission_failed":
       return { time: nowText(), text: "无法形成可用方案，任务终止", tone: "warn" };
+    case "mission_terminated":
+      return { time: nowText(), text: "用户已终止办事，已保留当前记录", tone: "warn" };
     default:
       return null;
   }

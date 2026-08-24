@@ -30,10 +30,13 @@ export const extractRequirements = (text: string) =>
   post<ExtractResponse>("/api/logistics/extract", { text });
 export const createTask = (body: TaskRequest) =>
   post<TransportTask>("/api/logistics/tasks", body);
-export const matchTask = (taskId: number, decisionPreference?: DecisionPreference) =>
+export const matchTask = (
+  taskId: number,
+  options?: { decision_preference?: DecisionPreference; use_memory?: boolean },
+) =>
   post<{ matched: number; primary: boolean }>(
     `/api/logistics/tasks/${taskId}/match`,
-    decisionPreference ? { decision_preference: decisionPreference } : undefined
+    options,
   );
 export const listTasks = () => http<TransportTask[]>("/api/logistics/tasks");
 export const fetchTaskDetail = (taskId: number) =>

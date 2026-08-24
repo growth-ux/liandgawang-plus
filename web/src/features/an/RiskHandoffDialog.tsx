@@ -1,13 +1,18 @@
 import { useNavigate } from "react-router-dom";
 import type { RiskHandoffDraft } from "./handoff";
-import { saveRiskHandoff } from "./handoff";
+import { createHandoff } from "../handoff/api";
 
 export default function RiskHandoffDialog({ draft, onClose }: { draft: RiskHandoffDraft; onClose: () => void }) {
   const navigate = useNavigate();
 
-  const confirm = () => {
-    saveRiskHandoff(draft);
-    navigate("/agent/an?from=handoff");
+  const confirm = async () => {
+    const handoff = await createHandoff({
+      source_agent: draft.sourceAgent === "粮小二" ? "liang" : draft.sourceAgent === "运小二" ? "yun" : "qian",
+      target_agent: "an", source_ref: draft.sourceTask, title: `请核验${draft.partnerName}的合作风险`,
+      summary: `已带入 ${draft.findings.length} 项待核验信息与 ${draft.positiveEvidence.length} 项业务证据。`,
+      payload: { type: "risk_review", draft },
+    });
+    navigate(`/agent/an?handoff=${handoff.id}`);
   };
 
   return (

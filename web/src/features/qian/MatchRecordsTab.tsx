@@ -4,6 +4,7 @@ import { fetchFinanceMatches, fetchFinanceMatch, handoffFinanceMatchToSuan } fro
 import type { FinanceHandoff, FinanceProduct, FinanceRequirement, MatchRecord } from "./types";
 import RiskHandoffDialog from "../an/RiskHandoffDialog";
 import type { RiskHandoffDraft } from "../an/handoff";
+import { createHandoff } from "../handoff/api";
 
 interface Props {
   refreshKey: number;
@@ -185,7 +186,7 @@ export default function MatchRecordsTab({ refreshKey, onReuse, onOpenProduct: _o
                       </button>
                     ) : (
                       <button
-                        onClick={() => {
+                        onClick={async () => {
                           const h = {
                             source_agent: "qian" as const,
                             target_agent: "suan" as const,
@@ -198,8 +199,8 @@ export default function MatchRecordsTab({ refreshKey, onReuse, onOpenProduct: _o
                             }],
                             pending_items: handoff.pending_conditions,
                           };
-                          sessionStorage.setItem("suan_pending_handoff", JSON.stringify(h));
-                          navigate("/agent/suan");
+                          const created = await createHandoff({ source_agent: "qian", target_agent: "suan", source_ref: detail.match_code, title: "请测算资金方案对综合成本的影响", summary: `已带入${handoff.product_name}的参考资金成本与待确认条件。`, payload: { type: "costing_input", ...h } });
+                          navigate(`/agent/suan?handoff=${created.id}`);
                         }}
                         className="rounded-full bg-tech/80 px-4 py-1.5 text-xs font-medium text-white hover:bg-tech"
                       >

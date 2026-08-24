@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { deleteTask, fetchTasks } from "./api";
 import { fmtDate, fmtDateTime, fmtInt, fmtQuality } from "./format";
 import type { SourcingTask, TaskPick } from "./types";
+import { createHandoff } from "../handoff/api";
 
 type Filter = "all" | "completed" | "handed_off";
 
@@ -75,7 +76,7 @@ function HistoryRow({
 }: {
   task: SourcingTask;
   onDelete: (id: number) => void;
-  onHandoffToSuan: (task: SourcingTask) => void;
+  onHandoffToSuan: (task: SourcingTask) => void | Promise<void>;
 }) {
   const [open, setOpen] = useState(false);
   const [eliminatedOpen, setEliminatedOpen] = useState(false);
@@ -315,7 +316,7 @@ export default function HistoryTab({ refreshKey = 0 }: { refreshKey?: number }) 
         <div className="flex flex-col gap-3">
           {filtered.map((t) => (
             <HistoryRow key={t.id} task={t} onDelete={onDelete}
-              onHandoffToSuan={(task) => {
+              onHandoffToSuan={async (task) => {
                 const primary = task.plan?.primary;
                 if (!primary) return;
                 const handoff = {
@@ -341,8 +342,8 @@ export default function HistoryTab({ refreshKey = 0 }: { refreshKey?: number }) 
                   }],
                   pending_items: ["运费待运小二确认", "损耗率待确认", "含税口径待确认"],
                 };
-                sessionStorage.setItem("suan_pending_handoff", JSON.stringify(handoff));
-                navigate("/agent/suan");
+                const created = await createHandoff({ source_agent: "liang", target_agent: "suan", source_ref: task.task_code, title: "请测算主推粮源的综合到厂成本", summary: "已带入粮源报价与待确认成本项。", payload: { type: "costing_input", ...handoff } });
+                navigate(`/agent/suan?handoff=${created.id}`);
               }}
             />
           ))}

@@ -64,6 +64,12 @@ export const runMission = (missionId: number) =>
 export const submitDecision = (missionId: number, decisionId: number, action: string, note = "") =>
   post<MissionSnapshot>(`/api/zhanggui/missions/${missionId}/decisions/${decisionId}`, { action, note });
 
+export const terminateMission = (missionId: number, reason = "") =>
+  post<MissionSnapshot>(`/api/zhanggui/missions/${missionId}/terminate`, { reason });
+
+export const cancelActionTask = (missionId: number, actionTaskId: number) =>
+  post<MissionSnapshot>(`/api/zhanggui/missions/${missionId}/action-tasks/${actionTaskId}/cancel`);
+
 /** 消费 NDJSON 进度流；组件卸载时通过 signal 中断。 */
 export async function streamMissionEvents(
   missionId: number,

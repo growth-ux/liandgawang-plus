@@ -9,7 +9,6 @@ import type {
   ProfitScenario,
   SaveRecordRequest,
   SchemeInput,
-  SharedExperience,
 } from "./types";
 
 async function http<T>(url: string, init?: RequestInit): Promise<T> {
@@ -58,20 +57,3 @@ export const cloneCostingRecord = (id: number) =>
 
 export const askSuan = (body: AskRequest) =>
   post<{ answer: string }>("/api/costing/ask", body);
-
-// ─── 企业经验 API ───────────────────────────────────────────────────────────
-
-export const fetchExperiences = (includeIgnored = false) =>
-  http<{ items: SharedExperience[] }>(
-    `/api/knowledge/experiences${includeIgnored ? "?include_ignored=true" : ""}`
-  );
-
-export const updateExperience = (id: number, content: string) =>
-  http<SharedExperience>(`/api/knowledge/experiences/${id}`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ content }),
-  });
-
-export const ignoreExperience = (id: number) =>
-  post<SharedExperience>(`/api/knowledge/experiences/${id}/ignore`);

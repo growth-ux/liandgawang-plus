@@ -2,6 +2,7 @@ from datetime import date
 
 from app.zhanggui.goal_parser import parse_goal
 from app.zhanggui.team_rules import recommend_team
+from app.knowledge.schemas import KnowledgeReference
 
 
 def test_demo_goal_extracts_fields_and_cites_memory():
@@ -51,3 +52,27 @@ def test_budget_and_hard_constraints_extracted():
     assert any("二等" in item for item in preview.goal.hard_constraints)
     assert preview.goal.priority == "supply"
     assert not any("预算" in q for q in preview.questions)
+
+
+def test_demo_goal_cites_structured_memory(client, monkeypatch):
+    monkeypatch.setattr("app.zhanggui.goal_parser._llm_patch", lambda *args: False)
+    monkeypatch.setattr(
+        "app.knowledge.service.search_for_task",
+        lambda *args, **kwargs: [
+            KnowledgeReference(
+                knowledge_id=3,
+                title="安全库存不足优先保供",
+                content="库存不足七天时优先保供",
+                source_agent="suan",
+                source_title="玉米成本复盘",
+                applicable_reason="本次库存仅 5 天",
+                reliability_label="已确认 · 多次验证",
+            )
+        ],
+    )
+    preview = client.post(
+        "/api/zhanggui/missions/preview",
+        json={"text": "库存只够5天，采购200吨玉米到潍坊"},
+    ).json()
+    assert preview["memory_references"][0]["knowledge_id"] == 3
+    assert preview["memory_references"][0]["applicable_reason"] == "本次库存仅 5 天"

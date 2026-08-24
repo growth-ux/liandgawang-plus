@@ -25,8 +25,11 @@ from app.costing import models as costing_models  # noqa: F401
 from app.costing.routes import router as costing_router
 from app.knowledge import models as knowledge_models  # noqa: F401
 from app.knowledge.routes import router as knowledge_router
+from app.knowledge.seed import seed_enterprise_knowledge
 from app.zhanggui import models as zhanggui_models  # noqa: F401
 from app.zhanggui.routes import router as zhanggui_router
+from app.handoff import models as handoff_models  # noqa: F401
+from app.handoff.routes import router as handoff_router
 
 # 粮掌柜编排链路日志：让终端能看到任务走到了哪一步
 _zg_logger = logging.getLogger("zhanggui")
@@ -43,6 +46,7 @@ async def lifespan(app: FastAPI):
     from app.database import SessionLocal
     with SessionLocal() as db:
         seed_finance_products(db)
+        seed_enterprise_knowledge(db)
     yield
 
 
@@ -65,3 +69,4 @@ app.include_router(finance_router)
 app.include_router(costing_router)
 app.include_router(knowledge_router)
 app.include_router(zhanggui_router)
+app.include_router(handoff_router)

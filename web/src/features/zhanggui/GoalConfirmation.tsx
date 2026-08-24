@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { confirmGoal } from "./api";
 import type { MissionSnapshot } from "./types";
+import KnowledgeReferencePanel from "../knowledge/KnowledgeReferencePanel";
 
 interface GoalConfirmationProps {
   mission: MissionSnapshot;
@@ -101,16 +102,12 @@ export default function GoalConfirmation({ mission, onConfirmed }: GoalConfirmat
         </div>
       )}
 
-      {mission.memory_references.length > 0 && (
-        <div className="mt-4 rounded-2xl border border-tech/20 bg-rice-deep px-4 py-3">
-          <p className="text-sm font-medium text-tech">企业过往经验（仅作参考，不覆盖本次输入）</p>
-          <ul className="mt-2 space-y-1 text-sm text-ink-soft">
-            {mission.memory_references.map((memory) => (
-              <li key={memory.content}>· {memory.content}</li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <div className="mt-4">
+        <KnowledgeReferencePanel
+          references={mission.memory_references}
+          effect="用于补充默认采购优先级；用户本次明确输入始终优先。"
+        />
+      </div>
 
       <div className="mt-6 flex items-center gap-3">
         <button

@@ -1,3 +1,5 @@
+import type { KnowledgeReference } from "../knowledge/types";
+
 export interface RouteLeg {
   origin: string;
   destination: string;
@@ -61,6 +63,9 @@ export interface TransportTask {
   blocked_note: string;
   created_at: string;
   decision_preference: DecisionPreference;
+  memory_references: KnowledgeReference[];
+  memory_effect: string;
+  memory_accepted: boolean;
 }
 
 export interface TransportPlan {

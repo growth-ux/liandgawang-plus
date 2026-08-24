@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import type { ReviewRecord, Verdict } from "./types";
+import { learnRiskReview } from "./api";
 
 const verdicts: Record<Verdict, { label: string; className: string }> = {
   proceed: { label: "建议继续接洽", className: "bg-emerald-400/10 text-emerald-300 border-emerald-400/20" },
@@ -9,7 +10,9 @@ const verdicts: Record<Verdict, { label: string; className: string }> = {
 
 export default function ReviewRecordsTab({ records, onRecheck }: { records: ReviewRecord[]; onRecheck: (partnerId: string) => void }) {
   const [selectedId, setSelectedId] = useState(records[0].id);
-  const [sharedIds, setSharedIds] = useState<Set<string>>(new Set([records[1].id]));
+  const [sharedIds, setSharedIds] = useState<Set<string>>(new Set());
+  const [sharingId, setSharingId] = useState<string | null>(null);
+  const [shareErrors, setShareErrors] = useState<Record<string, string>>({});
   const [query, setQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
   const selected = records.find((record) => record.id === selectedId) ?? records[0];
@@ -19,7 +22,21 @@ export default function ReviewRecordsTab({ records, onRecheck }: { records: Revi
     && record.partnerName.includes(query.trim())
   )), [query, records, typeFilter]);
 
-  const share = () => setSharedIds((ids) => new Set([...ids, selected.id]));
+  const share = async () => {
+    setSharingId(selected.id);
+    setShareErrors((errors) => ({ ...errors, [selected.id]: "" }));
+    try {
+      await learnRiskReview(selected);
+      setSharedIds((ids) => new Set([...ids, selected.id]));
+    } catch (error) {
+      setShareErrors((errors) => ({
+        ...errors,
+        [selected.id]: error instanceof Error ? error.message : "沉淀失败，请稍后重试",
+      }));
+    } finally {
+      setSharingId(null);
+    }
+  };
 
   return (
     <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px]">
@@ -85,10 +102,13 @@ export default function ReviewRecordsTab({ records, onRecheck }: { records: Revi
         </div>
         <div className="mt-5 grid grid-cols-2 gap-2">
           <button type="button" onClick={() => onRecheck(selected.partnerId)} className="rounded-xl border border-line px-3 py-2.5 text-xs text-ink-soft hover:border-emerald-400/25 hover:text-emerald-300">重新体检</button>
-          <button type="button" disabled={shared} onClick={share} className="rounded-xl bg-emerald-500 px-3 py-2.5 text-xs font-medium text-slate-950 disabled:bg-emerald-400/10 disabled:text-emerald-300">
-            {shared ? "已沉淀经验" : "沉淀企业经验"}
+          <button type="button" disabled={shared || sharingId === selected.id} onClick={share} className="rounded-xl bg-emerald-500 px-3 py-2.5 text-xs font-medium text-slate-950 transition hover:bg-emerald-400 disabled:bg-emerald-400/10 disabled:text-emerald-300">
+            {shared ? "已沉淀经验" : sharingId === selected.id ? "正在沉淀…" : shareErrors[selected.id] ? "重新沉淀" : "沉淀企业经验"}
           </button>
         </div>
+        {shareErrors[selected.id] && !shared && (
+          <p className="mt-2 text-right text-[10px] text-red-300">{shareErrors[selected.id]}</p>
+        )}
       </aside>
     </div>
   );

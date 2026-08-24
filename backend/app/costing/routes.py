@@ -16,29 +16,33 @@ from app.costing.schemas import (
 )
 from app.costing import repository
 from app.database import get_db
-from app.knowledge import memory as knowledge_memory
-from app.knowledge import repository as knowledge_repo
+from app.knowledge import service as knowledge_service
 
 router = APIRouter(prefix="/api/costing", tags=["costing"])
 
 
 def _maybe_create_experience(db: Session, record_dict: dict):
     """记录进入 completed 状态时沉淀企业经验（source_record_id 去重）。"""
-    if record_dict.get("status") != "completed":
-        return
     try:
-        content = llm.summarize_experience(record_dict)
-        exp = knowledge_repo.create_experience(
-            db,
-            source_record_id=record_dict["id"],
-            content=content,
-            tags=["costing"],
+        schemes = record_dict.get("schemes") or record_dict.get("schemes_snapshot") or []
+        variety = next(
+            (scheme.get("variety_name") for scheme in schemes if scheme.get("variety_name")),
+            "粮食",
         )
-        if exp:
-            from app.knowledge.models import SharedExperience
-            row = db.query(SharedExperience).filter(SharedExperience.id == exp["id"]).first()
-            if row:
-                knowledge_memory.sync_experience(row)
+        knowledge_service.learn_from_task(
+            db,
+            source_agent="suan",
+            source_type="costing",
+            source_id=record_dict["id"],
+            source_title=record_dict["title"],
+            confirmed=record_dict.get("status") == "completed",
+            payload={
+                "variety_name": variety,
+                "selected_scheme_id": record_dict.get("selected_scheme_id"),
+                "calculation": record_dict.get("calculation"),
+                "profit": record_dict.get("profit"),
+            },
+        )
     except Exception:
         import logging
         logging.getLogger("suan.costing").exception("经验沉淀失败，不影响主流程")

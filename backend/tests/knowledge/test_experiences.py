@@ -11,7 +11,8 @@ SCHEME = {
 
 def _save_completed_record(client, monkeypatch):
     monkeypatch.setattr("app.costing.llm.explain_comparison", lambda v: "ok")
-    monkeypatch.setattr("app.knowledge.memory.sync_experience", lambda item: None)
+    monkeypatch.setattr("app.knowledge.extractor._extract_with_llm", lambda *args: [])
+    monkeypatch.setattr("app.knowledge.memory.sync_item", lambda item: None)
     preview = client.post("/api/costing/calculate", json={"schemes": [SCHEME]})
     saved = client.post("/api/costing/records", json={
         "title": "300 吨玉米到厂成本",
@@ -28,6 +29,10 @@ def test_completed_costing_creates_editable_experience(client, monkeypatch):
     items = client.get("/api/knowledge/experiences").json()["items"]
     assert len(items) == 1
     assert items[0]["source_record_id"] == record["id"]
+    assert items[0]["knowledge_type"] == "decision"
+    assert items[0]["source_agent"] == "suan"
+    assert items[0]["title"]
+    assert items[0]["applicable_context"]
 
     edited = client.patch(
         f"/api/knowledge/experiences/{items[0]['id']}",
@@ -56,7 +61,8 @@ def test_ignore_experience_removes_from_default_list(client, monkeypatch):
 def test_profit_save_also_creates_experience(client, monkeypatch):
     """保存盈亏后也应产生经验（同一条记录只产生一条）"""
     monkeypatch.setattr("app.costing.llm.explain_comparison", lambda v: "ok")
-    monkeypatch.setattr("app.knowledge.memory.sync_experience", lambda item: None)
+    monkeypatch.setattr("app.knowledge.extractor._extract_with_llm", lambda *args: [])
+    monkeypatch.setattr("app.knowledge.memory.sync_item", lambda item: None)
 
     # 先保存一条 calculated 记录（无意向，不会创建经验）
     preview = client.post("/api/costing/calculate", json={"schemes": [SCHEME]})

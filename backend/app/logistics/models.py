@@ -1,7 +1,7 @@
 from datetime import date, datetime
 from decimal import Decimal
 
-from sqlalchemy import Date, DateTime, Integer, Numeric, String, Text, func
+from sqlalchemy import JSON, Date, DateTime, Integer, Numeric, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database import Base
@@ -62,6 +62,9 @@ class TransportTask(Base):
     source_ref: Mapped[str] = mapped_column(String(64), default="")
     extra_note: Mapped[str] = mapped_column(Text, default="")
     decision_preference: Mapped[str] = mapped_column(String(16), default="balanced")
+    memory_snapshot: Mapped[list] = mapped_column(JSON, default=list)
+    memory_effect: Mapped[str] = mapped_column(Text, default="")
+    memory_accepted: Mapped[int] = mapped_column(Integer, default=1)
     status: Mapped[str] = mapped_column(String(24), default="working")
     blocked_note: Mapped[str] = mapped_column(String(256), default="")
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())

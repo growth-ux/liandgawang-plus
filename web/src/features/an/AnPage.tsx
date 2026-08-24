@@ -1,4 +1,5 @@
-import { useMemo, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
+import { useSearchParams } from "react-router-dom";
 import AgentSwitcher from "../../components/AgentSwitcher";
 import AgentPortrait from "../../components/AgentPortrait";
 import { getAgent } from "../../data/agents";
@@ -9,15 +10,34 @@ import VerificationTab from "./VerificationTab";
 import NewRiskReviewDialog from "./NewRiskReviewDialog";
 import { partnerFromHandoff, readRiskHandoff } from "./handoff";
 import type { Partner, RiskItem, VerificationItem, VerificationStatus } from "./types";
+import type { RiskHandoffDraft } from "./handoff";
+import { acceptHandoff, fetchHandoff, ignoreHandoff, type AgentHandoff } from "../handoff/api";
 
 const agent = getAgent("an")!;
 const TABS = ["合作方体检", "待办核验", "风控记录"] as const;
 
 /** 安小二：三类合作方统一风控，形成体检、核验、经验沉淀闭环。 */
 export default function AnPage() {
-  const [handoffDraft] = useState(() => (
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [handoffDraft, setHandoffDraft] = useState<RiskHandoffDraft | null>(() => (
     new URLSearchParams(window.location.search).get("from") === "handoff" ? readRiskHandoff() : null
   ));
+  const [incoming, setIncoming] = useState<AgentHandoff | null>(null);
+  useEffect(() => {
+    const id = Number(searchParams.get("handoff"));
+    if (!id) return;
+    fetchHandoff(id).then((handoff) => {
+      if (handoff.target_agent === "an" && handoff.status === "pending") setIncoming(handoff);
+    }).catch(() => {});
+  }, [searchParams]);
+  const acceptIncoming = async () => {
+    if (!incoming) return;
+    const accepted = await acceptHandoff(incoming.id);
+    const payload = accepted.payload.draft as RiskHandoffDraft | undefined;
+    if (payload) setHandoffDraft(payload);
+    setIncoming(null);
+    setSearchParams({}, { replace: true });
+  };
   const [independentPartner, setIndependentPartner] = useState<Partner | null>(null);
   const partnerList = useMemo(() => {
     const result = [...partners];
@@ -109,6 +129,7 @@ export default function AnPage() {
       </header>
 
       <main className="mx-auto w-full max-w-[1280px] flex-1 px-6 py-6">
+        {incoming && <section className="mb-4 rounded-2xl border border-emerald-400/30 bg-emerald-400/[0.06] px-5 py-4"><p className="text-xs tracking-[0.18em] text-emerald-300">INCOMING HANDOFF · {incoming.handoff_code}</p><h2 className="mt-1 text-sm font-semibold">{incoming.title}</h2><p className="mt-1 text-xs text-ink-soft">{incoming.summary}</p><div className="mt-3 flex gap-2"><button type="button" onClick={acceptIncoming} className="rounded-full bg-emerald-500 px-4 py-1.5 text-xs font-medium text-slate-950">确认接收并开始核验</button><button type="button" onClick={async () => { await ignoreHandoff(incoming.id); setIncoming(null); setSearchParams({}, { replace: true }); }} className="rounded-full border border-line px-4 py-1.5 text-xs text-ink-soft">忽略</button></div></section>}
         {handoffDraft && activeTab === 0 && selectedPartnerId === `H-${handoffDraft.id}` && (
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-tech/20 bg-tech/[0.06] px-4 py-3 text-xs">
             <div><span className="font-medium text-tech">已接收{handoffDraft.sourceAgent}交接</span><span className="ml-2 text-ink-soft">当前页面数据来自“{handoffDraft.sourceTask}”的业务结果快照。</span></div>
