@@ -1,0 +1,41 @@
+backend/app/costing/models.py
+  s_0c59fd6b23a23a::t_64f0d04dbfdda5 1-23
+backend/app/costing/repository.py
+  s_0c59fd6b23a23a::t_663df74fea1f60 1-110
+backend/tests/costing/test_llm.py
+  s_0c59fd6b23a23a::t_2444d5264b09c8 1-30
+backend/tests/costing/test_routes.py
+  s_0c59fd6b23a23a::t_4cb87285e00bf6 1-62
+web/src/data/agents.ts
+  s_0c59fd6b23a23a::t_a62612d05869f2 118
+web/src/features/suan/CostComparisonView.tsx
+  s_0c59fd6b23a23a::t_59dd9ea6c5ebd3 1-164
+web/src/features/suan/HandoffAction.tsx
+  s_0c59fd6b23a23a::t_e804a6c095f37a 1-88
+web/src/features/suan/QuoteInput.tsx
+  s_0c59fd6b23a23a::t_ede9842c1c480a 1-101
+web/src/features/suan/format.ts
+  s_0c59fd6b23a23a::t_5ecd6a7d713988 1-34
+web/src/features/suan/types.ts
+  s_0c59fd6b23a23a::t_692474aa49a9b1 1-156
+web/src/pages/agents/AgentServicePage.tsx
+  s_0c59fd6b23a23a::t_96bb25fb174d32 10,23
+backend/app/costing/routes.py
+  s_0c59fd6b23a23a::t_39939cf517c7ca 1-242
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "165e1f0b7e3242c2a1983b92a5d2d56796330639",
+  "prompts": {},
+  "sessions": {
+    "s_0c59fd6b23a23a": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a03184-983f-76f2-920e-551647f76555",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
