@@ -6,6 +6,7 @@ import AgentSwitcher from "../../components/AgentSwitcher";
 import ZhanPage from "../../features/zhan/ZhanPage";
 import YunPage from "../../features/yun/YunPage";
 import LiangPage from "../../features/liang/LiangPage";
+import QianPage from "../../features/qian/QianPage";
 
 /** 七位小二共用的专业服务页模板（轻占位） */
 export default function AgentServicePage() {
@@ -17,6 +18,7 @@ export default function AgentServicePage() {
   if (agent.id === "zhan") return <ZhanPage />;
   if (agent.id === "yun") return <YunPage />;
   if (agent.id === "liang") return <LiangPage />;
+  if (agent.id === "qian") return <QianPage />;
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)] flex-col">

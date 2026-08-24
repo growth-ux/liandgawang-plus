@@ -8,6 +8,7 @@ import app.analysis.models  # noqa: F401  注册表到 Base.metadata
 import app.logistics.models  # noqa: F401  注册表到 Base.metadata
 import app.market.models  # noqa: F401  注册表到 Base.metadata
 import app.workflow.models  # noqa: F401  注册表到 Base.metadata
+import app.finance.models  # noqa: F401  注册表到 Base.metadata
 from app.database import Base, get_db
 
 

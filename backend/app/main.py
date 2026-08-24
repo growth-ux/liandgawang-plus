@@ -13,11 +13,17 @@ from app.workflow import models as workflow_models  # noqa: F401  注册表
 from app.workflow.routes import router as workflow_router
 from app.liang import models as liang_models  # noqa: F401  注册表
 from app.liang.routes import router as liang_router
+from app.finance import models as finance_models  # noqa: F401
+from app.finance.routes import router as finance_router
+from app.finance.seed import seed_finance_products
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     Base.metadata.create_all(bind=engine)
+    from app.database import SessionLocal
+    with SessionLocal() as db:
+        seed_finance_products(db)
     yield
 
 
@@ -36,3 +42,4 @@ app.include_router(analysis_router)
 app.include_router(workflow_router)
 app.include_router(logistics_router)
 app.include_router(liang_router)
+app.include_router(finance_router)

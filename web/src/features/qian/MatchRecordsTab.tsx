@@ -1,0 +1,200 @@
+import { useEffect, useState } from "react";
+import { fetchFinanceMatches, fetchFinanceMatch, handoffFinanceMatchToSuan } from "./api";
+import type { FinanceHandoff, FinanceProduct, FinanceRequirement, MatchRecord } from "./types";
+
+interface Props {
+  refreshKey: number;
+  onReuse: (req: Partial<FinanceRequirement>) => void;
+  onOpenProduct: (product: FinanceProduct) => void;
+}
+
+const PURPOSE_LABELS: Record<string, string> = {
+  grain_purchase: "粮食采购",
+  inventory_turnover: "库存周转",
+  receivable_turnover: "应收周转",
+};
+
+function formatWan(value: string): string {
+  return `${(Number(value) / 10000).toLocaleString("zh-CN", { maximumFractionDigits: 1 })}万`;
+}
+
+export default function MatchRecordsTab({ refreshKey, onReuse, onOpenProduct: _onOpenProduct }: Props) {
+  const [records, setRecords] = useState<MatchRecord[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [detail, setDetail] = useState<MatchRecord | null>(null);
+  const [handoff, setHandoff] = useState<FinanceHandoff | null>(null);
+  const [handoffLoading, setHandoffLoading] = useState(false);
+
+  const load = () => {
+    setLoading(true);
+    setError(null);
+    fetchFinanceMatches()
+      .then((r) => setRecords(r.items))
+      .catch((e) => setError(e instanceof Error ? e.message : "加载失败"))
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => { load(); }, [refreshKey]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleViewDetail = async (id: number) => {
+    try {
+      const r = await fetchFinanceMatch(id);
+      setDetail(r);
+      setExpandedId(id);
+    } catch {
+      // 静默
+    }
+  };
+
+  const handleHandoff = async (id: number) => {
+    setHandoffLoading(true);
+    try {
+      const h = await handoffFinanceMatchToSuan(id);
+      setHandoff(h);
+    } catch {
+      // 静默
+    } finally {
+      setHandoffLoading(false);
+    }
+  };
+
+  if (error) {
+    return (
+      <div className="flex min-h-[360px] flex-col items-center justify-center rounded-3xl border border-dashed border-line bg-panel/60 text-center">
+        <p className="text-sm text-red-400">匹配记录加载失败：{error}</p>
+        <button onClick={load} className="mt-3 rounded-full border border-line px-4 py-1.5 text-xs text-ink-soft hover:text-ink">
+          重新加载
+        </button>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="flex min-h-[240px] items-center justify-center text-sm text-ink-soft">加载中…</div>
+    );
+  }
+
+  if (records.length === 0) {
+    return (
+      <div className="flex min-h-[420px] flex-col items-center justify-center rounded-3xl border border-dashed border-line bg-panel/60 text-center">
+        <p className="text-sm font-medium">还没有保存的匹配结果</p>
+        <p className="mt-1 text-xs text-ink-soft">前往「智能匹配」完成首次匹配</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-4">
+      <h3 className="text-sm font-semibold">历史匹配记录</h3>
+      {records.map((r) => {
+        const req = r.requirement;
+        const primary = r.result.primary;
+        const isExpanded = expandedId === r.id;
+
+        return (
+          <div key={r.id} className="rounded-2xl border border-line bg-panel/70 p-4">
+            <div className="flex items-start justify-between">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-mono text-ink-soft">{r.match_code}</span>
+                  <span className="text-[10px] text-ink-soft/60">
+                    {r.created_at ? new Date(r.created_at).toLocaleString("zh-CN") : ""}
+                  </span>
+                </div>
+                <p className="mt-1 text-sm">
+                  <span className="font-medium">{formatWan(req.amount_yuan)}</span>
+                  <span className="mx-1.5 text-ink-soft">·</span>
+                  <span>{req.duration_days}天</span>
+                  <span className="mx-1.5 text-ink-soft">·</span>
+                  <span>{PURPOSE_LABELS[req.purpose] ?? req.purpose}</span>
+                </p>
+                {primary ? (
+                  <p className="mt-0.5 text-xs text-brand-deep">
+                    主推：{primary.product.name}
+                    {primary.estimated_cost_yuan && (
+                      <span className="ml-2 text-ink-soft">参考成本 {primary.estimated_cost_yuan}元</span>
+                    )}
+                  </p>
+                ) : (
+                  <p className="mt-0.5 text-xs text-ink-soft">未找到完全符合产品</p>
+                )}
+                {primary && primary.pending_conditions.length > 0 && (
+                  <p className="mt-0.5 text-[10px] text-amber-300">
+                    待确认条件 {primary.pending_conditions.length} 项
+                  </p>
+                )}
+              </div>
+              <div className="flex gap-2">
+                <button onClick={() => handleViewDetail(r.id)}
+                  className="rounded-full border border-line px-3 py-1 text-xs text-ink-soft hover:text-ink">
+                  查看结果
+                </button>
+                <button onClick={() => onReuse(req)}
+                  className="rounded-full bg-brand/15 px-3 py-1 text-xs font-medium text-brand-deep hover:bg-brand/25">
+                  重新匹配
+                </button>
+              </div>
+            </div>
+
+            {/* 展开详情 */}
+            {isExpanded && detail && detail.id === r.id && (
+              <div className="mt-4 border-t border-line pt-4">
+                <h4 className="mb-2 text-xs font-semibold text-ink-soft">匹配结果快照</h4>
+                {detail.result.explanation && (
+                  <p className="mb-3 rounded-xl bg-brand-faint/40 px-4 py-2 text-xs text-brand-deep">
+                    {detail.result.explanation}
+                  </p>
+                )}
+                {detail.result.primary && (
+                  <div className="rounded-xl bg-rice-deep p-3">
+                    <p className="text-sm font-medium">{detail.result.primary.product.name}</p>
+                    <p className="text-xs text-ink-soft">{detail.result.primary.product.institution_name}</p>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {detail.result.primary.matched_reasons.map((reason, i) => (
+                        <span key={i} className="rounded-full bg-emerald-400/10 px-2 py-0.5 text-[10px] text-emerald-300">{reason}</span>
+                      ))}
+                    </div>
+                    {detail.result.primary.pending_conditions.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {detail.result.primary.pending_conditions.map((c, i) => (
+                          <span key={i} className="rounded-full bg-amber-400/10 px-2 py-0.5 text-[10px] text-amber-300">⚠ {c}</span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* 算小二交接 */}
+                {detail.result.primary && (
+                  <div className="mt-4 flex items-center gap-3">
+                    {!handoff ? (
+                      <button
+                        onClick={() => handleHandoff(detail.id)}
+                        disabled={handoffLoading}
+                        className="rounded-full border border-tech/40 px-4 py-1.5 text-xs font-medium text-tech hover:bg-tech/10 disabled:opacity-40"
+                      >
+                        {handoffLoading ? "交接中…" : "交给算小二测成本"}
+                      </button>
+                    ) : (
+                      <div className="rounded-xl border border-tech/30 bg-tech/5 px-4 py-2 text-xs text-tech">
+                        ✓ 已生成算小二交接数据
+                        <span className="ml-2 text-ink-soft">
+                          参考成本 {handoff.reference_cost_yuan}元 · {handoff.product_name}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                <p className="mt-3 text-[10px] text-ink-soft/60">参考匹配，不代表授信或放款承诺</p>
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
