@@ -9,6 +9,7 @@ import LiangPage from "../../features/liang/LiangPage";
 import QianPage from "../../features/qian/QianPage";
 import SuanPage from "../../features/suan/SuanPage";
 import AnPage from "../../features/an/AnPage";
+import ZhangguiPage from "../../features/zhanggui/ZhangguiPage";
 
 /** 七位小二共用的专业服务页模板（轻占位） */
 export default function AgentServicePage() {
@@ -23,6 +24,7 @@ export default function AgentServicePage() {
   if (agent.id === "qian") return <QianPage />;
   if (agent.id === "suan") return <SuanPage />;
   if (agent.id === "an") return <AnPage />;
+  if (agent.id === "da") return <ZhangguiPage />;
 
   return (
     <div className="agent-theme-page flex min-h-[calc(100vh-4rem)] flex-col" style={{ "--agent-accent": agent.accent } as CSSProperties}>

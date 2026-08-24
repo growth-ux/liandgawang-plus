@@ -128,6 +128,15 @@ export default function Knowledge() {
                     <>
                       <p className="text-sm">{exp.content}</p>
                       <div className="mt-2 flex items-center gap-3 text-xs text-ink-soft">
+                        <span
+                          className={`rounded-full px-2 py-0.5 text-[10px] ${
+                            exp.source_type === "zhanggui"
+                              ? "bg-brand-soft text-brand-deep"
+                              : "bg-tech/10 text-tech"
+                          }`}
+                        >
+                          {exp.source_type === "zhanggui" ? "粮掌柜办事经验" : "成本测算经验"}
+                        </span>
                         <span>来源记录 #{exp.source_record_id}</span>
                         <span>{exp.created_at?.slice(0, 10)}</span>
                         {exp.tags.map((t) => (

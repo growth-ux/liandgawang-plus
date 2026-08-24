@@ -147,6 +147,7 @@ export interface SuanHandoff {
 
 export interface SharedExperience {
   id: number;
+  source_type: "costing" | "zhanggui";
   source_record_id: number;
   content: string;
   tags: string[];

@@ -6,6 +6,7 @@ from app.knowledge.models import SharedExperience
 def _to_dict(row: SharedExperience) -> dict:
     return {
         "id": row.id,
+        "source_type": row.source_type,
         "source_record_id": row.source_record_id,
         "content": row.content,
         "tags": row.tags or [],
@@ -21,16 +22,21 @@ def create_experience(
     source_record_id: int,
     content: str,
     tags: list[str] | None = None,
+    source_type: str = "costing",
 ) -> dict | None:
-    """创建经验，source_record_id 唯一约束去重。"""
+    """创建经验，来源类型 + source_record_id 组合唯一约束去重。"""
     existing = (
         db.query(SharedExperience)
-        .filter(SharedExperience.source_record_id == source_record_id)
+        .filter(
+            SharedExperience.source_type == source_type,
+            SharedExperience.source_record_id == source_record_id,
+        )
         .first()
     )
     if existing:
         return _to_dict(existing)
     row = SharedExperience(
+        source_type=source_type,
         source_record_id=source_record_id,
         content=content,
         tags=tags or [],

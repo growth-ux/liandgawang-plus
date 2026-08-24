@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import DateTime, Integer, JSON, String, Text, func
+from sqlalchemy import DateTime, Integer, JSON, String, Text, UniqueConstraint, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database import Base
@@ -8,9 +8,11 @@ from app.database import Base
 
 class SharedExperience(Base):
     __tablename__ = "shared_experiences"
+    __table_args__ = (UniqueConstraint("source_type", "source_record_id", name="uq_experience_source"),)
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    source_record_id: Mapped[int] = mapped_column(Integer, unique=True, index=True)
+    source_type: Mapped[str] = mapped_column(String(32), default="costing", index=True)  # costing/zhanggui
+    source_record_id: Mapped[int] = mapped_column(Integer, index=True)
     content: Mapped[str] = mapped_column(Text)
     tags: Mapped[list] = mapped_column(JSON, default=list)
     status: Mapped[str] = mapped_column(String(16), index=True, default="active")  # active/ignored
