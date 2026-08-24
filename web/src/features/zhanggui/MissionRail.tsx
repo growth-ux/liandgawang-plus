@@ -8,7 +8,7 @@ interface MissionRailProps {
   mission: MissionSnapshot;
 }
 
-/** 左侧任务推进轨：只定位进度，不要求用户逐页操作。 */
+/** 顶部任务推进轨：释放横向空间，只定位进度，不要求用户逐页操作。 */
 export default function MissionRail({ phase, status, mission }: MissionRailProps) {
   const hasConflicts = mission.conflicts.length > 0;
   const doneCount = (() => {
@@ -27,20 +27,21 @@ export default function MissionRail({ phase, status, mission }: MissionRailProps
   })();
 
   return (
-    <aside className="zg-rail">
-      <p className="text-xs tracking-[0.25em] text-tech">MISSION RAIL</p>
-      <div className="mt-4">
+    <aside className="zg-rail" aria-label="任务推进阶段">
+      <p className="zg-rail-title">任务进程</p>
+      <div className="zg-rail-track">
         {STAGES.map((stage, index) => {
           const state = index < doneCount ? "done" : index === activeIndex && status !== "completed" ? "active" : index < 6 && status === "completed" ? "done" : "pending";
           return (
             <div key={stage} className="zg-rail-item" data-state={state}>
               <span className="zg-rail-dot" />
-              <div>
-                <p className={`text-sm ${state === "active" ? "font-medium text-tech" : state === "done" ? "text-ink" : "text-ink-soft"}`}>
-                  {index + 1}. {stage}
+              <div className="min-w-0">
+                <p className={`zg-rail-label ${state === "active" ? "font-medium text-tech" : state === "done" ? "text-ink" : "text-ink-soft"}`}>
+                  <span className="zg-rail-index">{String(index + 1).padStart(2, "0")}</span>
+                  {stage}
                 </p>
                 {stage === "冲突会商" && hasConflicts && (
-                  <p className="mt-0.5 text-[11px] text-brand-deep">发现 {mission.conflicts.length} 项专业冲突</p>
+                  <p className="zg-rail-note">{mission.conflicts.length} 项冲突</p>
                 )}
               </div>
             </div>

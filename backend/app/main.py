@@ -1,12 +1,12 @@
 import logging
 from contextlib import asynccontextmanager
-import logging
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import Response
 
-# uvicorn 默认为应用日志器不配 Handler，业务 INFO 日志会被丢弃，这里统一开到终端可见
-logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
+import sys as _sys
+import time as _time
 
 from app.analysis.routes import router as analysis_router
 from app.database import Base, engine
@@ -28,13 +28,14 @@ from app.knowledge.routes import router as knowledge_router
 from app.zhanggui import models as zhanggui_models  # noqa: F401
 from app.zhanggui.routes import router as zhanggui_router
 
-# 粮掌柜编排链路日志：让终端能看到任务走到了哪一步
-_zg_logger = logging.getLogger("zhanggui")
-if not _zg_logger.handlers:
-    _handler = logging.StreamHandler()
-    _handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s [%(name)s] %(message)s"))
-    _zg_logger.addHandler(_handler)
-_zg_logger.setLevel(logging.INFO)
+# 粮掌柜编排链路日志：确保 logger 级别为 INFO
+logging.getLogger("zhanggui").setLevel(logging.INFO)
+
+
+def _log_access(method: str, path: str, status: int, ms: float):
+    """直接写 stderr + flush，确保 --reload 子进程也能即时输出。"""
+    ts = _time.strftime("%H:%M:%S")
+    print(f"[{ts}] {method} {path} → {status} ({ms:.1f}ms)", file=_sys.stderr, flush=True)
 
 
 @asynccontextmanager
@@ -47,6 +48,21 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="粮达网 Plus", lifespan=lifespan)
+
+
+@app.middleware("http")
+async def log_all_requests(request: Request, call_next):
+    """中间件：记录所有 API 请求日志"""
+    start = _time.time()
+    response: Response = await call_next(request)
+    duration = (_time.time() - start) * 1000
+    path = request.url.path
+    # 跳过 Swagger 文档等噪音
+    if path in ("/docs", "/openapi.json", "/redoc", "/favicon.ico"):
+        return response
+    _log_access(request.method, path, response.status_code, duration)
+    return response
+
 
 app.add_middleware(
     CORSMiddleware,

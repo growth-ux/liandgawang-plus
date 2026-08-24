@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import type { AgentRun } from "./types";
 import { getAgent } from "../../data/agents";
+import AgentFactList from "./AgentFactList";
 
 export interface AgentResultDrawerProps {
   run: AgentRun | null;
@@ -13,7 +14,9 @@ export default function AgentResultDrawer({ run, onClose }: AgentResultDrawerPro
   const agent = getAgent(run.agent_id);
   const accent = agent?.accent ?? "#22d3ee";
   const output = run.output_snapshot;
-  const failed = run.status === "failed" || !output;
+  const pending = run.status === "pending";
+  const running = run.status === "running";
+  const failed = run.status === "failed" || (!output && !pending && !running);
 
   return (
     <>
@@ -29,27 +32,33 @@ export default function AgentResultDrawer({ run, onClose }: AgentResultDrawerPro
         </div>
 
         <Section title="接收的子任务">
-          <p>{run.participation_reason || "—"}</p>
+          <p>{run.participation_reason || "暂无说明"}</p>
           {Object.keys(run.input_snapshot ?? {}).length > 0 && (
-            <ul className="mt-2 space-y-1">
-              {Object.entries(run.input_snapshot).map(([key, value]) => (
-                <li key={key} className="flex justify-between gap-3">
-                  <span className="text-ink-soft">{key}</span>
-                  <span>{String(value)}</span>
-                </li>
-              ))}
-            </ul>
+            <div className="mt-2 rounded-xl border border-line bg-rice-deep/50 px-3 py-2.5">
+              <AgentFactList facts={run.input_snapshot} />
+            </div>
           )}
         </Section>
 
-        {failed ? (
+        {pending ? (
+          <Section title="待启动">
+            <p className="text-ink-soft">该小二尚未启动办理，请耐心等待。</p>
+          </Section>
+        ) : running ? (
+          <Section title="办理中">
+            <p className="text-tech">
+              <span className="zg-pod-status-dot inline-block mr-2 align-middle" style={{ background: "var(--color-tech)", animation: "zg-pulse 1.4s ease-in-out infinite" }} />
+              {agent?.name ?? run.agent_id} 正在办理中，完成后即可查看专业结果。
+            </p>
+          </Section>
+        ) : failed ? (
           <Section title="结果缺失">
             <p className="text-red-300">{run.error_message || output?.summary || "该专业结果暂时不可用"}</p>
             <p className="mt-2 text-ink-soft">
               可返回指挥舱重新运行任务进行重试；综合方案会标注该专业结果缺失。
             </p>
           </Section>
-        ) : (
+        ) : output ? (
           <>
             <Section title="核心结论">
               <p>{output.summary}</p>
@@ -57,14 +66,7 @@ export default function AgentResultDrawer({ run, onClose }: AgentResultDrawerPro
 
             {Object.keys(output.facts ?? {}).length > 0 && (
               <Section title="关键事实">
-                <ul className="space-y-1">
-                  {Object.entries(output.facts).slice(0, 10).map(([key, value]) => (
-                    <li key={key} className="flex justify-between gap-3">
-                      <span className="text-ink-soft">{key}</span>
-                      <span className="max-w-[60%] truncate text-right">{typeof value === "object" ? JSON.stringify(value) : String(value)}</span>
-                    </li>
-                  ))}
-                </ul>
+                <AgentFactList facts={output.facts} />
               </Section>
             )}
 
@@ -117,14 +119,14 @@ export default function AgentResultDrawer({ run, onClose }: AgentResultDrawerPro
             )}
 
             <Section title="对综合方案的影响">
-              <p>{output.impact_on_mission || "—"}</p>
+              <p>{output.impact_on_mission || "暂无说明"}</p>
             </Section>
 
             <p className="mt-4 text-xs text-ink-soft">
-              更新时间：{run.finished_at?.replace("T", " ").slice(0, 19) ?? "—"}
+              更新时间：{run.finished_at?.replace("T", " ").slice(0, 19) ?? "未记录"}
             </p>
           </>
-        )}
+        ) : null}
       </div>
     </>
   );

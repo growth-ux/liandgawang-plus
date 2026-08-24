@@ -1,6 +1,6 @@
 """粮掌柜领域唯一持久化入口：任务、办理记录、决策与行动任务。"""
 
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 from sqlalchemy.orm import Session
 
@@ -92,6 +92,9 @@ def list_missions(db: Session) -> list[dict]:
 
 def set_mission_state(db: Session, mission: ProcurementMission, *, phase: str | None = None, status: str | None = None, **snapshots) -> ProcurementMission:
     """更新阶段、状态和各类快照；快照关键字见 _SNAPSHOT_FIELDS。"""
+    # 流式响应或后台线程可能传入已脱离原 Session 的实例；merge 后再更新，
+    # 确保 commit/refresh 操作的始终是当前 Session 中的持久化对象。
+    mission = db.merge(mission)
     if phase is not None:
         mission.phase = phase
     if status is not None:
@@ -186,8 +189,23 @@ def set_action_task_status(db: Session, task: MissionActionTask, status: str) ->
     return task
 
 
+CHINA_TZ = timezone(timedelta(hours=8))
+
+
 def _iso(value) -> str | None:
-    return value.isoformat() if value else None
+    """应用层写入的 naive datetime 按北京时间输出，并携带明确时区。"""
+    if value is None:
+        return None
+    aware = value if value.tzinfo is not None else value.replace(tzinfo=CHINA_TZ)
+    return aware.astimezone(CHINA_TZ).isoformat()
+
+
+def _server_iso(value) -> str | None:
+    """MySQL func.now() 产生的 UTC naive datetime 转为北京时间。"""
+    if value is None:
+        return None
+    aware = value if value.tzinfo is not None else value.replace(tzinfo=timezone.utc)
+    return aware.astimezone(CHINA_TZ).isoformat()
 
 
 def _run_dict(run: MissionAgentRun) -> dict:
@@ -214,6 +232,7 @@ def _decision_dict(decision: MissionDecision) -> dict:
         "note": decision.note,
         "status": decision.status,
         "decided_at": _iso(decision.decided_at),
+        "created_at": _server_iso(decision.created_at),
     }
 
 
@@ -227,6 +246,8 @@ def _action_dict(task: MissionActionTask) -> dict:
         "status": task.status,
         "scheme_id": task.scheme_id,
         "prerequisite_action_id": task.prerequisite_action_id,
+        "created_at": _server_iso(task.created_at),
+        "updated_at": _server_iso(task.updated_at),
     }
 
 
@@ -265,8 +286,8 @@ def get_mission_snapshot(db: Session, mission_id: int) -> dict | None:
         "recommendation": mission.recommendation_snapshot,
         "phase": mission.phase,
         "status": mission.status,
-        "created_at": _iso(mission.created_at),
-        "updated_at": _iso(mission.updated_at),
+        "created_at": _server_iso(mission.created_at),
+        "updated_at": _server_iso(mission.updated_at),
         "agent_runs": [_run_dict(run) for run in runs],
         "decisions": [_decision_dict(d) for d in decisions],
         "action_tasks": [_action_dict(t) for t in tasks],

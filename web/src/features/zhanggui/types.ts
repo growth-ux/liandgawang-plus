@@ -107,6 +107,7 @@ export interface MissionConflict {
   severity: "high" | "medium" | "low";
   requires_human: boolean;
   supplement_requested: boolean;
+  occurred_at?: string | null;
 }
 
 export interface ActionDraft {
@@ -127,6 +128,7 @@ export interface MissionRecommendation {
   condition?: string | null;
   fallback_trigger?: string | null;
   next_actions: ActionDraft[];
+  generated_at?: string | null;
 }
 
 export interface DecisionOption {
@@ -145,6 +147,7 @@ export interface MissionDecision {
   note: string;
   status: "pending" | "confirmed";
   decided_at?: string | null;
+  created_at?: string | null;
 }
 
 export type ActionTaskStatus = "ready" | "waiting_prerequisite" | "completed" | "cancelled";
@@ -158,6 +161,8 @@ export interface ActionTask {
   status: ActionTaskStatus;
   scheme_id?: string | null;
   prerequisite_action_id?: number | null;
+  created_at?: string | null;
+  updated_at?: string | null;
 }
 
 export interface MissionSnapshot {

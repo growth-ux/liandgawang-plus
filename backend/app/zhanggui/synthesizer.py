@@ -1,5 +1,7 @@
 """综合建议生成：主推、备选、取舍与条件化行动草稿。"""
 
+from datetime import datetime, timedelta, timezone
+
 from app.zhanggui.schemas import (
     ActionDraft,
     AgentResult,
@@ -9,6 +11,7 @@ from app.zhanggui.schemas import (
 )
 
 FALLBACK_TRIGGER = "今日无法完成核验或核验不通过"
+CHINA_TZ = timezone(timedelta(hours=8))
 
 
 def _supplier_names(results: dict[str, AgentResult]) -> dict[str, tuple[str, str]]:
@@ -130,4 +133,5 @@ def build_recommendation(
         condition=condition,
         fallback_trigger=FALLBACK_TRIGGER if gated else None,
         next_actions=_action_drafts(primary, backup, names, gated),
+        generated_at=datetime.now(CHINA_TZ).isoformat(),
     )

@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session, sessionmaker
 
 from app.knowledge import memory as knowledge_memory
 from app.knowledge import repository as knowledge_repo
-from app.zhanggui import repository
+from app.zhanggui import repository, zlog
 from app.zhanggui.goal_parser import parse_goal
 from app.zhanggui.graph import run_professional_graph
 from app.zhanggui.schemas import GoalPreview, MissionGoal, TeamMember
@@ -159,7 +159,11 @@ def _emit(emit: Callable[[dict], None], event_type: str, mission_id: int, payloa
 
 def run_until_gate(db: Session, mission_id: int, emit: Callable[[dict], None]) -> dict:
     """运行或恢复任务，直到下一个人工闸门。"""
+    zlog(f"[run_until_gate] 任务 {mission_id} 进入")
+    logger.info("[任务 %s] run_until_gate 进入", mission_id)
     mission = _get_mission_or_error(db, mission_id)
+    logger.info("[任务 %s] 当前状态：%s", mission_id, mission.status)
+    zlog(f"[run_until_gate] 任务 {mission_id} 当前状态: {mission.status}")
     if mission.status == "awaiting_goal_confirmation":
         raise MissionStateError("请先确认采购目标")
     if mission.status == "awaiting_team_confirmation":
@@ -170,35 +174,55 @@ def run_until_gate(db: Session, mission_id: int, emit: Callable[[dict], None]) -
         raise MissionStateError("任务已结束，无法继续运行")
 
     snapshot = repository.get_mission_snapshot(db, mission_id)
+    logger.info("[任务 %s] 快照中 team=%d 人, agent_runs=%d 条", mission_id,
+                len(snapshot.get("team", [])), len(snapshot.get("agent_runs", [])))
     if mission.status in ("awaiting_decision", "partially_completed"):
         # 已在人工闸门：只回放当前状态，不重复运行小二
+        zlog(f"[run_until_gate] 任务 {mission_id} 已在闸门 {mission.status}，回放状态")
+        logger.info("[任务 %s] 已在闸门 %s，回放状态", mission_id, mission.status)
         _emit(emit, "decision_required", mission_id, {"recommendation": snapshot.get("recommendation")})
         return snapshot
 
+    logger.info("[任务 %s] 准备获取运行锁，当前运行中任务：%s", mission_id, _RUNNING_MISSIONS)
     with _RUN_LOCK:
         if mission_id in _RUNNING_MISSIONS:
+            zlog(f"[run_until_gate] 任务 {mission_id} 已有运行实例，仅回放快照")
             logger.info("[任务 %s] 已有运行实例，仅回放当前快照", mission_id)
             _emit(emit, "snapshot", mission_id, {"snapshot": snapshot})
             return snapshot
         _RUNNING_MISSIONS.add(mission_id)
+        zlog(f"[run_until_gate] 任务 {mission_id} 已获取运行锁，准备执行")
+        logger.info("[任务 %s] 已获取运行锁", mission_id)
 
     try:
         return _execute_until_gate(db, mission, mission_id, emit, snapshot)
     finally:
         with _RUN_LOCK:
             _RUNNING_MISSIONS.discard(mission_id)
+            logger.info("[任务 %s] 已释放运行锁", mission_id)
 
 
 def _execute_until_gate(db: Session, mission, mission_id: int, emit: Callable[[dict], None], snapshot: dict) -> dict:
+    logger.info("[任务 %s] _execute_until_gate 开始，准备 commit 请求会话", mission_id)
     # 先结束请求会话的读事务，避免悬挂事务与图内并发写入互相干扰
-    db.commit()
-    db.expire_all()
+    try:
+        db.commit()
+        db.expire_all()
+        logger.info("[任务 %s] 请求会话 commit 完成", mission_id)
+    except Exception as exc:
+        logger.error("[任务 %s] 请求会话 commit 失败：%s", mission_id, exc, exc_info=True)
+        raise
     _emit(emit, "mission_started", mission_id, {"title": mission.title})
+    zlog(f"[execute] 任务 {mission_id} 开始调用 run_professional_graph")
+    logger.info("[任务 %s] 开始调用 run_professional_graph", mission_id)
     final_state = run_professional_graph(_session_factory(db), snapshot, emit)
+    zlog(f"[execute] 任务 {mission_id} graph 完成，keys={list(final_state.keys())}")
+    logger.info("[任务 %s] run_professional_graph 完成，结果 keys=%s", mission_id, list(final_state.keys()))
 
     recommendation = final_state.get("recommendation") or {}
     conflicts = final_state.get("conflicts") or []
     if recommendation.get("primary_scheme_id"):
+        zlog(f"[execute] 任务 {mission_id} 到达决策闸门，主推方案: {recommendation.get('primary_scheme_id')}")
         _transition(db, mission, "awaiting_decision")
         repository.set_mission_state(
             db, mission,
@@ -220,6 +244,7 @@ def _execute_until_gate(db: Session, mission, mission_id: int, emit: Callable[[d
         logger.info("[任务 %s] 办理到达决策闸门：主推方案 %s，等待用户确认", mission_id, recommendation.get("primary_scheme_id"))
         _emit(emit, "decision_required", mission_id, {"recommendation": recommendation})
     else:
+        zlog(f"[execute] 任务 {mission_id} 办理结束：无法形成可用方案")
         _transition(db, mission, "failed")
         repository.set_mission_state(
             db, mission, phase="parallel_execution", status="failed", conflicts=conflicts, recommendation=None,

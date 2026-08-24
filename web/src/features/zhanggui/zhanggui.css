@@ -19,34 +19,54 @@
 
 .zg-cockpit-grid {
   display: grid;
-  grid-template-columns: 220px minmax(0, 1fr) 340px;
+  grid-template-columns: minmax(0, 1fr) 320px;
   gap: 1rem;
   align-items: stretch;
 }
 
-/* ---- 左侧任务推进轨 ---- */
+/* ---- 顶部任务推进轨 ---- */
 
 .zg-rail {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
   border: 1px solid var(--color-line);
   border-radius: 1.25rem;
-  background: var(--color-panel);
-  padding: 1rem;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--color-tech) 5%, var(--color-panel)), var(--color-panel));
+  padding: 0.75rem 1rem;
+  overflow-x: auto;
+}
+
+.zg-rail-title {
+  flex: none;
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  color: var(--color-tech);
+}
+
+.zg-rail-track {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(104px, 1fr));
+  min-width: 710px;
+  flex: 1;
 }
 
 .zg-rail-item {
   position: relative;
   display: flex;
-  gap: 0.7rem;
-  padding: 0.55rem 0 0.55rem 0.1rem;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 0;
+  padding: 0.25rem 0.55rem 0.25rem 0;
 }
 
 .zg-rail-item::before {
   content: "";
   position: absolute;
-  left: 0.62rem;
-  top: 1.9rem;
-  bottom: -0.55rem;
-  width: 1px;
+  left: 1.05rem;
+  right: 0.35rem;
+  top: 50%;
+  height: 1px;
   background: var(--color-line);
 }
 
@@ -55,13 +75,42 @@
 }
 
 .zg-rail-dot {
-  width: 1.15rem;
-  height: 1.15rem;
+  position: relative;
+  z-index: 1;
+  width: 0.72rem;
+  height: 0.72rem;
   border-radius: 999px;
   border: 1px solid var(--color-line);
   background: var(--color-rice-deep);
   flex: none;
-  margin-top: 0.12rem;
+}
+
+.zg-rail-label {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  max-width: 100%;
+  padding-right: 0.35rem;
+  background: var(--color-panel);
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+.zg-rail-index {
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  color: color-mix(in srgb, var(--color-ink-soft) 58%, transparent);
+}
+
+.zg-rail-note {
+  position: absolute;
+  top: 1.7rem;
+  left: 1.3rem;
+  font-size: 0.62rem;
+  white-space: nowrap;
+  color: var(--color-brand-deep);
 }
 
 .zg-rail-item[data-state="active"] .zg-rail-dot {
@@ -85,7 +134,7 @@
 
 .zg-spatial-stage {
   position: relative;
-  min-height: 560px;
+  min-height: 600px;
   border: 1px solid var(--color-line);
   border-radius: 1.5rem;
   background:
@@ -94,6 +143,65 @@
   perspective: 1200px;
   transform-style: preserve-3d;
   overflow: hidden;
+}
+
+.zg-stage-meta {
+  position: absolute;
+  z-index: 6;
+  top: 1rem;
+  left: 1.15rem;
+  right: 1.15rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  pointer-events: none;
+}
+
+.zg-stage-title {
+  flex: none;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--color-tech);
+}
+
+.zg-stage-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 0.8rem;
+  min-width: 0;
+}
+
+.zg-stage-subtitle {
+  font-size: 0.68rem;
+  color: color-mix(in srgb, var(--color-ink-soft) 70%, transparent);
+}
+
+.zg-stage-stats {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.zg-stage-stats span {
+  border: 1px solid color-mix(in srgb, var(--color-line) 80%, transparent);
+  border-radius: 0.55rem;
+  background: color-mix(in srgb, var(--color-panel) 82%, transparent);
+  padding: 0.35rem 0.5rem;
+  font-size: 0.62rem;
+  color: var(--color-ink-soft);
+  backdrop-filter: blur(6px);
+}
+
+.zg-stage-stats strong {
+  color: var(--color-ink);
+  font-size: 0.72rem;
+}
+
+.zg-stage-stats span[data-alert] {
+  border-color: color-mix(in srgb, var(--color-brand) 46%, transparent);
+  color: var(--color-brand-deep);
 }
 
 .zg-floor {
@@ -122,6 +230,13 @@
 .zg-flow-line {
   fill: none;
   stroke-width: 1.6;
+}
+
+.zg-orbit-track {
+  fill: none;
+  stroke: color-mix(in srgb, var(--color-tech) 14%, transparent);
+  stroke-width: 1;
+  stroke-dasharray: 2 11;
 }
 
 .zg-flow-line[data-kind="normal"] {
@@ -156,7 +271,7 @@
 .zg-hub {
   position: absolute;
   left: var(--hub-x, 50%);
-  top: var(--hub-y, 46%);
+  top: var(--hub-y, 50%);
   transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
@@ -167,8 +282,8 @@
 
 .zg-hub-core {
   position: relative;
-  width: 88px;
-  height: 88px;
+  width: 76px;
+  height: 76px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -176,7 +291,7 @@
   background: radial-gradient(circle at 32% 28%, color-mix(in srgb, var(--color-brand) 68%, white), var(--color-brand) 58%, #9a4a12);
   box-shadow: 0 0 26px color-mix(in srgb, var(--color-brand) 52%, transparent);
   color: white;
-  font-size: 1.7rem;
+  font-size: 1.5rem;
   font-weight: 700;
 }
 
@@ -208,8 +323,74 @@
   pointer-events: none;
 }
 
+/* 办理中：hub 发出脉冲光环 */
+.zg-hub-pulse-ring {
+  position: absolute;
+  inset: -10px;
+  border-radius: 999px;
+  border: 2px solid color-mix(in srgb, var(--color-brand) 60%, transparent);
+  animation: zg-hub-pulse 2s ease-out infinite;
+  pointer-events: none;
+}
+
+.zg-hub[data-processing] .zg-hub-core {
+  animation: zg-hub-glow 1.6s ease-in-out infinite alternate;
+}
+
+@keyframes zg-hub-pulse {
+  0% { transform: scale(1); opacity: 0.7; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+@keyframes zg-hub-glow {
+  0% { box-shadow: 0 0 26px color-mix(in srgb, var(--color-brand) 52%, transparent); }
+  100% { box-shadow: 0 0 42px color-mix(in srgb, var(--color-brand) 70%, transparent), 0 0 60px color-mix(in srgb, var(--color-brand) 28%, transparent); }
+}
+
 @keyframes zg-spin {
   to { transform: rotate(360deg); }
+}
+
+/* 节点办理中：边框发光 + 轻微缩放呼吸 */
+.zg-agent-pod[data-status="running"] {
+  border-color: color-mix(in srgb, var(--color-tech) 55%, transparent);
+  box-shadow: 0 0 20px color-mix(in srgb, var(--color-tech) 25%, transparent);
+  background: color-mix(in srgb, var(--color-panel) 88%, var(--color-tech) 4%);
+  animation: zg-pod-breathe 2s ease-in-out infinite;
+}
+
+/* 节点完成：明显绿色卡片，整张卡片绿显 */
+.zg-agent-pod[data-status="completed"] {
+  border-color: color-mix(in srgb, #10b981 85%, transparent);
+  box-shadow: 0 0 22px color-mix(in srgb, #10b981 38%, transparent), inset 0 0 0 1px color-mix(in srgb, #10b981 24%, transparent);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, #10b981 12%, transparent), color-mix(in srgb, #34d399 6%, transparent)),
+    color-mix(in srgb, var(--color-panel) 92%, transparent);
+}
+
+/* 节点完成但提出异议：橙色高亮以区分 */
+.zg-agent-pod[data-status="completed_with_objection"] {
+  border-color: color-mix(in srgb, #f59e0b 75%, transparent);
+  box-shadow: 0 0 22px color-mix(in srgb, #f59e0b 32%, transparent), inset 0 0 0 1px color-mix(in srgb, #f59e0b 22%, transparent);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, #f59e0b 12%, transparent), color-mix(in srgb, #fbbf24 6%, transparent)),
+    color-mix(in srgb, var(--color-panel) 92%, transparent);
+}
+
+/* 节点失败：红色边框 */
+.zg-agent-pod[data-status="failed"] {
+  border-color: color-mix(in srgb, #f87171 50%, transparent);
+  box-shadow: 0 0 12px color-mix(in srgb, #f87171 18%, transparent);
+}
+
+@keyframes zg-pod-breathe {
+  0%, 100% { box-shadow: 0 0 14px color-mix(in srgb, var(--color-tech) 20%, transparent); }
+  50% { box-shadow: 0 0 26px color-mix(in srgb, var(--color-tech) 40%, transparent); }
+}
+
+@keyframes zg-pop-in {
+  0% { transform: scale(0); }
+  100% { transform: scale(1); }
 }
 
 /* 小二节点 */
@@ -218,32 +399,36 @@
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 172px;
-  margin-left: -86px;
-  margin-top: -44px;
+  width: 218px;
+  min-height: 116px;
+  margin-left: -109px;
+  margin-top: -58px;
   z-index: 2;
   border: 1px solid var(--color-line);
   border-radius: 1rem;
   background: color-mix(in srgb, var(--color-panel) 88%, transparent);
   backdrop-filter: blur(4px);
-  padding: 0.65rem 0.75rem;
+  padding: 0.72rem 0.78rem 0.65rem;
+  color: var(--color-ink);
+  text-align: left;
+  font: inherit;
   cursor: pointer;
-  transition: transform 0.7s cubic-bezier(0.22, 0.9, 0.3, 1), opacity 0.6s ease, border-color 0.3s ease;
+  transition: transform 0.7s cubic-bezier(0.22, 0.9, 0.3, 1), opacity 0.6s ease, border-color 0.4s ease, box-shadow 0.4s ease, background 0.4s ease;
   transform: translate3d(var(--x), var(--y), 0);
 }
 
 .zg-agent-pod[data-depth="back"] {
-  transform: translate3d(var(--x), var(--y), -100px) scale(0.82);
-  opacity: 0.55;
+  transform: translate3d(var(--x), var(--y), 0);
+  opacity: 1;
 }
 
 .zg-agent-pod[data-depth="middle"] {
-  transform: translate3d(var(--x), var(--y), 10px);
+  transform: translate3d(var(--x), var(--y), 0);
   opacity: 1;
 }
 
 .zg-agent-pod[data-depth="front"] {
-  transform: translate3d(var(--x), var(--y), 70px) scale(1.06);
+  transform: translate3d(var(--x), var(--y), 0);
   opacity: 1;
   z-index: 4;
 }
@@ -251,6 +436,106 @@
 .zg-agent-pod[data-active="true"] {
   border-color: color-mix(in srgb, var(--color-tech) 60%, transparent);
   box-shadow: 0 0 18px color-mix(in srgb, var(--color-tech) 30%, transparent);
+}
+
+.zg-agent-pod:not([data-participating]) {
+  opacity: 0.62;
+  filter: saturate(0.55);
+}
+
+.zg-agent-pod:hover,
+.zg-agent-pod:focus-visible {
+  border-color: color-mix(in srgb, var(--color-tech) 58%, transparent);
+  outline: none;
+  box-shadow: 0 0 22px color-mix(in srgb, var(--color-tech) 24%, transparent);
+}
+
+.zg-pod-head {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.zg-pod-avatar {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--agent-accent) 72%, transparent);
+  border-radius: 0.65rem;
+  background: color-mix(in srgb, var(--agent-accent) 18%, var(--color-panel));
+  box-shadow: inset 0 1px 0 color-mix(in srgb, white 10%, transparent);
+  color: color-mix(in srgb, var(--agent-accent) 74%, white);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.zg-pod-identity {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.zg-pod-identity strong {
+  font-size: 0.82rem;
+  line-height: 1.1rem;
+}
+
+.zg-pod-identity small {
+  overflow: hidden;
+  color: var(--color-ink-soft);
+  font-size: 0.61rem;
+  line-height: 0.95rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.zg-pod-summary {
+  display: -webkit-box;
+  min-height: 2.15rem;
+  margin-top: 0.55rem;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  color: var(--color-ink-soft);
+  font-size: 0.67rem;
+  line-height: 1.05rem;
+}
+
+.zg-pod-foot {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0.48rem;
+  color: color-mix(in srgb, var(--color-ink-soft) 76%, transparent);
+  font-size: 0.59rem;
+  white-space: nowrap;
+}
+
+.zg-pod-foot > span:not(.zg-pod-open) + span:not(.zg-pod-open)::before {
+  content: "·";
+  margin-right: 0.45rem;
+}
+
+.zg-pod-foot > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.zg-pod-open {
+  margin-left: auto;
+  color: var(--color-tech);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.zg-agent-pod:hover .zg-pod-open,
+.zg-agent-pod:focus-visible .zg-pod-open,
+.zg-agent-pod[data-active="true"] .zg-pod-open {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .zg-agent-pod[data-conflict="true"] {
@@ -262,7 +547,8 @@
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  font-size: 0.68rem;
+  font-size: 0.61rem;
+  white-space: nowrap;
   color: var(--color-ink-soft);
 }
 
@@ -278,9 +564,20 @@
   animation: zg-pulse 1.4s ease-in-out infinite;
 }
 
+.zg-pod-status[data-status="completed"] {
+  color: #10b981;
+  font-weight: 600;
+}
+
 .zg-pod-status[data-status="completed"] .zg-pod-status-dot,
 .zg-pod-status[data-status="completed_with_objection"] .zg-pod-status-dot {
   background: #34d399;
+  animation: zg-pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.zg-pod-status[data-status="completed_with_objection"] {
+  color: #f59e0b;
+  font-weight: 600;
 }
 
 .zg-pod-status[data-status="failed"] .zg-pod-status-dot {
@@ -292,35 +589,106 @@
 .zg-decision-gate {
   border: 1px solid color-mix(in srgb, var(--color-brand) 44%, transparent);
   border-radius: 1.25rem;
-  background: linear-gradient(160deg, color-mix(in srgb, var(--color-brand) 10%, var(--color-panel)), var(--color-panel) 58%);
-  padding: 1.1rem;
+  background:
+    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--color-brand) 12%, transparent), transparent 38%),
+    var(--color-panel);
+  padding: 1.15rem;
 }
 
 .zg-gate-kicker {
   font-size: 0.68rem;
-  letter-spacing: 0.28em;
+  letter-spacing: 0.16em;
   color: var(--color-brand-deep);
+}
+
+.zg-gate-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.zg-gate-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--color-brand-deep);
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+
+.zg-gate-state > span {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: var(--color-brand);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--color-brand) 62%, transparent);
+  animation: zg-pulse 1.8s ease-in-out infinite;
+}
+
+.zg-gate-stage {
+  border: 1px solid color-mix(in srgb, var(--color-brand) 30%, transparent);
+  border-radius: 0.45rem;
+  padding: 0.22rem 0.42rem;
+  color: var(--color-ink-soft);
+  font-size: 0.6rem;
+}
+
+.zg-gate-title {
+  margin-top: 0.85rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.zg-gate-insight {
+  margin-top: 0.75rem;
+  border-left: 2px solid var(--color-brand);
+  background: color-mix(in srgb, var(--color-brand) 6%, transparent);
+  padding: 0.65rem 0.7rem;
+}
+
+.zg-gate-insight > span {
+  color: var(--color-brand-deep);
+  font-size: 0.62rem;
+  font-weight: 600;
+}
+
+.zg-gate-insight p {
+  margin-top: 0.25rem;
+  color: var(--color-ink-soft);
+  font-size: 0.75rem;
+  line-height: 1.35rem;
 }
 
 .zg-gate-actions {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  margin-top: 0.9rem;
+  gap: 0.65rem;
+  margin-top: 0.8rem;
 }
 
 .zg-gate-actions button {
-  border: 1px solid color-mix(in srgb, var(--color-brand) 50%, transparent);
-  border-radius: 999px;
-  padding: 0.55rem 1rem;
-  font-size: 0.85rem;
+  position: relative;
+  border: 1px solid var(--color-line);
+  border-radius: 0.9rem;
+  padding: 0.72rem 0.8rem 0.65rem;
   text-align: left;
-  background: var(--color-panel);
-  transition: background 0.2s ease;
+  background: var(--color-rice-deep);
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.zg-gate-actions button[data-recommended] {
+  border-color: color-mix(in srgb, var(--color-brand) 50%, transparent);
+  background: color-mix(in srgb, var(--color-brand) 6%, var(--color-rice-deep));
 }
 
 .zg-gate-actions button:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--color-brand) 16%, var(--color-panel));
+  border-color: color-mix(in srgb, var(--color-brand) 66%, transparent);
+  background: color-mix(in srgb, var(--color-brand) 10%, var(--color-rice-deep));
+  transform: translateY(-1px);
+}
+
+.zg-gate-actions button:active:not(:disabled) {
+  transform: scale(0.99);
 }
 
 .zg-gate-actions button:disabled {
@@ -328,36 +696,247 @@
   cursor: not-allowed;
 }
 
-.zg-gate-note {
-  margin-top: 0.8rem;
-  font-size: 0.75rem;
+.zg-gate-action-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.7rem;
+}
+
+.zg-gate-action-head strong {
+  color: var(--color-ink);
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.15rem;
+}
+
+.zg-gate-action-head small {
+  flex: none;
+  border-radius: 0.4rem;
+  background: color-mix(in srgb, var(--color-brand) 12%, transparent);
+  padding: 0.12rem 0.35rem;
+  color: var(--color-brand-deep);
+  font-size: 0.56rem;
+}
+
+.zg-gate-action-desc {
+  display: block;
+  margin-top: 0.3rem;
   color: var(--color-ink-soft);
-  border-top: 1px dashed var(--color-line);
-  padding-top: 0.7rem;
+  font-size: 0.66rem;
+  line-height: 1.05rem;
 }
 
-/* ---- 实时动态日志面板 ---- */
+.zg-gate-action-cta {
+  display: block;
+  margin-top: 0.45rem;
+  color: var(--color-tech);
+  font-size: 0.61rem;
+  font-weight: 600;
+}
 
-.zg-activity {
-  border: 1px solid var(--color-line);
+.zg-gate-note {
+  margin-top: 0.85rem;
+  font-size: 0.66rem;
+  line-height: 1.1rem;
+  color: var(--color-ink-soft);
+  border-top: 1px solid color-mix(in srgb, var(--color-line) 70%, transparent);
+  padding-top: 0.75rem;
+}
+
+/* ---- 任务结束后的最终结果 ---- */
+
+.zg-result-panel {
+  align-self: stretch;
+  border: 1px solid color-mix(in srgb, #34d399 38%, transparent);
   border-radius: 1.25rem;
-  background: var(--color-panel);
-  padding: 0.9rem 1.1rem;
-  max-height: 12.5rem;
-  overflow-y: auto;
+  background:
+    radial-gradient(circle at 100% 0%, color-mix(in srgb, #34d399 11%, transparent), transparent 42%),
+    var(--color-panel);
+  padding: 1.1rem;
 }
 
-.zg-activity-pulse {
-  animation: zg-pulse-text 1.6s ease-in-out infinite;
+.zg-result-panel[data-state="partial"] {
+  border-color: color-mix(in srgb, var(--color-brand) 45%, transparent);
 }
 
-@keyframes zg-pulse-text {
-  0%, 100% { opacity: 0.45; }
-  50% { opacity: 1; }
+.zg-result-panel[data-state="failed"] {
+  border-color: color-mix(in srgb, #f87171 44%, transparent);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .zg-activity-pulse { animation: none; }
+.zg-result-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: #6ee7b7;
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+
+.zg-result-status-dot {
+  width: 0.48rem;
+  height: 0.48rem;
+  border-radius: 999px;
+  background: #34d399;
+  box-shadow: 0 0 10px color-mix(in srgb, #34d399 58%, transparent);
+}
+
+.zg-result-panel[data-state="partial"] .zg-result-status {
+  color: var(--color-brand-deep);
+}
+
+.zg-result-panel[data-state="partial"] .zg-result-status-dot {
+  background: var(--color-brand);
+}
+
+.zg-result-panel[data-state="failed"] .zg-result-status {
+  color: #fca5a5;
+}
+
+.zg-result-panel[data-state="failed"] .zg-result-status-dot {
+  background: #f87171;
+}
+
+.zg-result-title {
+  margin-top: 0.7rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.zg-result-schemes {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.55rem;
+  margin-top: 0.85rem;
+}
+
+.zg-result-scheme {
+  border: 1px solid var(--color-line);
+  border-radius: 0.8rem;
+  background: var(--color-rice-deep);
+  padding: 0.72rem 0.8rem;
+}
+
+.zg-result-scheme[data-primary] {
+  border-color: color-mix(in srgb, var(--color-brand) 52%, transparent);
+  background: color-mix(in srgb, var(--color-brand) 8%, var(--color-rice-deep));
+}
+
+.zg-result-scheme-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.zg-result-scheme-head span {
+  color: var(--color-ink-soft);
+  font-size: 0.65rem;
+}
+
+.zg-result-scheme-head strong {
+  color: var(--color-ink);
+  font-size: 1.15rem;
+}
+
+.zg-result-scheme[data-primary] .zg-result-scheme-head strong {
+  color: var(--color-brand-deep);
+}
+
+.zg-result-supplier {
+  margin-top: 0.3rem;
+  color: var(--color-ink);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.zg-result-listing {
+  margin-top: 0.05rem;
+  color: var(--color-tech);
+  font-size: 0.64rem;
+}
+
+.zg-result-scheme-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.65rem;
+  margin-top: 0.45rem;
+  color: var(--color-ink-soft);
+  font-size: 0.62rem;
+}
+
+.zg-result-scheme-meta span + span {
+  position: relative;
+}
+
+.zg-result-scheme-meta span + span::before {
+  content: "·";
+  position: absolute;
+  left: -0.43rem;
+}
+
+.zg-result-summary {
+  margin-top: 0.85rem;
+  color: var(--color-ink-soft);
+  font-size: 0.78rem;
+  line-height: 1.4rem;
+}
+
+.zg-result-summary strong {
+  display: block;
+  margin-bottom: 0.18rem;
+  color: var(--color-ink);
+  font-size: 0.66rem;
+}
+
+.zg-result-conditions {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 0.85rem;
+}
+
+.zg-result-conditions div {
+  border-left: 2px solid color-mix(in srgb, var(--color-brand) 58%, transparent);
+  padding-left: 0.65rem;
+}
+
+.zg-result-conditions dt {
+  color: var(--color-brand-deep);
+  font-size: 0.63rem;
+  font-weight: 600;
+}
+
+.zg-result-conditions dd {
+  margin-top: 0.15rem;
+  color: var(--color-ink-soft);
+  font-size: 0.7rem;
+  line-height: 1.15rem;
+}
+
+.zg-result-actions-summary {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: baseline;
+  gap: 0 0.45rem;
+  margin-top: 0.9rem;
+  border-top: 1px dashed var(--color-line);
+  padding-top: 0.75rem;
+}
+
+.zg-result-actions-summary strong {
+  color: var(--color-tech);
+  font-size: 1.15rem;
+}
+
+.zg-result-actions-summary span {
+  color: var(--color-ink);
+  font-size: 0.72rem;
+}
+
+.zg-result-actions-summary small {
+  grid-column: 1 / -1;
+  margin-top: 0.2rem;
+  color: var(--color-ink-soft);
+  font-size: 0.64rem;
 }
 
 /* ---- 专业结果抽屉 ---- */
@@ -390,9 +969,19 @@
 
 /* ---- 降级与无障碍 ---- */
 
-@media (max-width: 1024px) {
+@media (max-width: 1180px) {
   .zg-cockpit-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 1024px) {
+  .zg-rail {
+    align-items: flex-start;
+  }
+
+  .zg-rail-title {
+    padding-top: 0.32rem;
   }
 
   .zg-spatial-stage {
@@ -412,20 +1001,65 @@
   .zg-agent-pod[data-depth="front"] {
     position: static;
     width: auto;
-    margin: 0.4rem 1rem;
+    min-height: 116px;
+    margin: 0;
     transform: none !important;
     opacity: 1;
   }
 
   .zg-spatial-stage {
-    display: block;
-    padding: 0.6rem 0 1rem;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  .zg-stage-meta {
+    position: static;
+    grid-column: 1 / -1;
+    padding-bottom: 0.25rem;
   }
 
   .zg-hub {
     position: static;
+    grid-column: 1 / -1;
     transform: none;
-    padding: 1rem 0 0.4rem;
+    padding: 0.5rem 0 0.8rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .zg-cockpit {
+    padding-inline: 1rem;
+  }
+
+  .zg-mission-header,
+  .zg-stage-meta {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .zg-stage-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .zg-rail-title {
+    display: none;
+  }
+
+  .zg-spatial-stage {
+    grid-template-columns: 1fr;
+  }
+
+  .zg-stage-meta,
+  .zg-hub {
+    grid-column: 1;
+  }
+
+  .zg-stage-stats {
+    flex-wrap: wrap;
   }
 }
 
@@ -433,8 +1067,677 @@
   .zg-hub-ring,
   .zg-rail-item[data-state="active"] .zg-rail-dot,
   .zg-flow-line,
-  .zg-pod-status-dot {
+  .zg-pod-status-dot,
+  .zg-agent-pod[data-status="running"],
+  .zg-hub[data-processing] .zg-hub-core,
+  .zg-hub-pulse-ring,
+  .zg-gate-state > span {
     animation: none !important;
+  }
+}
+
+/* ===== 粮掌柜入口页：AI对话式工作台 ===== */
+
+.zg-start-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 56px 32px 48px;
+  position: relative;
+}
+
+/* 页面背景光晕 */
+.zg-start-page::before {
+  content: "";
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 680px;
+  height: 480px;
+  background: radial-gradient(
+    ellipse at 50% 30%,
+    rgba(34, 211, 238, 0.04) 0%,
+    rgba(34, 211, 238, 0.015) 35%,
+    transparent 65%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.zg-start-page > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- 品牌欢迎区 ---- */
+
+.zg-start-hero {
+  text-align: center;
+  margin-bottom: 44px;
+}
+
+.zg-start-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.06) 0%, rgba(34, 211, 238, 0.02) 100%);
+  border: 1px solid rgba(34, 211, 238, 0.15);
+  border-radius: 100px;
+  padding: 6px 18px;
+  margin-bottom: 24px;
+}
+
+.zg-start-hero-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-tech);
+  box-shadow: 0 0 8px var(--color-tech), 0 0 16px rgba(34, 211, 238, 0.3);
+  animation: zg-pulse 2.4s ease-in-out infinite;
+}
+
+.zg-start-hero-badge-text {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--color-tech);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.zg-start-hero-title {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 14px;
+  letter-spacing: -0.025em;
+  background: linear-gradient(135deg, #edf1f9 20%, #8b9bb8 80%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.zg-start-hero-desc {
+  font-size: 14.5px;
+  color: var(--color-ink-soft);
+  line-height: 1.8;
+  max-width: 500px;
+  margin: 0 auto;
+  letter-spacing: 0.01em;
+}
+
+/* ---- 目标输入区 ---- */
+
+.zg-start-input {
+  background: linear-gradient(180deg, rgba(20, 28, 48, 0.95) 0%, rgba(15, 21, 37, 0.98) 100%);
+  border: 1px solid rgba(34, 211, 238, 0.15);
+  border-radius: 20px;
+  padding: 28px;
+  margin-bottom: 16px;
+  box-shadow:
+    0 0 60px rgba(34, 211, 238, 0.03),
+    0 8px 32px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(34, 211, 238, 0.06);
+  position: relative;
+  backdrop-filter: blur(12px);
+}
+
+.zg-start-input::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 21px;
+  background: linear-gradient(
+    180deg,
+    rgba(34, 211, 238, 0.12) 0%,
+    rgba(34, 211, 238, 0.03) 30%,
+    transparent 60%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.zg-start-input::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 20%;
+  right: 20%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.2), transparent);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.zg-start-input > * {
+  position: relative;
+  z-index: 1;
+}
+
+.zg-start-input-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.zg-start-input-label-left {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-ink-soft);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.zg-start-input-hint {
+  font-size: 11px;
+  color: rgba(148, 163, 184, 0.5);
+}
+
+.zg-start-input-textarea {
+  width: 100%;
+  resize: none;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  color: var(--color-ink);
+  line-height: 1.7;
+  min-height: 72px;
+  padding: 0;
+  font-family: inherit;
+  letter-spacing: 0.01em;
+}
+
+.zg-start-input-textarea::placeholder {
+  color: rgba(148, 163, 184, 0.35);
+}
+
+.zg-start-input-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(148, 163, 184, 0.06);
+}
+
+.zg-start-input-attach {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(148, 163, 184, 0.45);
+  font-size: 12px;
+  padding: 8px 16px;
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: rgba(148, 163, 184, 0.02);
+  font-family: inherit;
+}
+
+.zg-start-input-attach:hover {
+  color: var(--color-ink-soft);
+  border-color: rgba(148, 163, 184, 0.18);
+  background: rgba(148, 163, 184, 0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.zg-start-input-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.zg-start-input-example-link {
+  font-size: 12px;
+  color: var(--color-tech);
+  opacity: 0.6;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  background: none;
+  border: none;
+  font-family: inherit;
+}
+
+.zg-start-input-example-link:hover {
+  opacity: 1;
+}
+
+.zg-start-submit-btn {
+  background: linear-gradient(135deg, #ee7b1f 0%, #d4691a 100%);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 11px 30px;
+  border-radius: 12px;
+  cursor: pointer;
+  border: none;
+  box-shadow:
+    0 4px 20px rgba(238, 123, 31, 0.35),
+    0 1px 3px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transition: all 0.2s ease;
+  letter-spacing: 0.02em;
+  font-family: inherit;
+}
+
+.zg-start-submit-btn:hover:not(:disabled) {
+  box-shadow:
+    0 8px 32px rgba(238, 123, 31, 0.45),
+    0 2px 6px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+}
+
+.zg-start-submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.zg-start-input-error {
+  margin-top: 12px;
+  font-size: 13px;
+  color: #f87171;
+}
+
+/* ---- AI能力展示条 ---- */
+
+.zg-start-caps {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 52px;
+  flex-wrap: wrap;
+}
+
+.zg-start-cap {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: rgba(148, 163, 184, 0.7);
+  padding: 8px 28px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(20, 28, 48, 0.6) 0%, rgba(17, 27, 48, 0.4) 100%);
+  border: 1px solid rgba(148, 163, 184, 0.06);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  transition: all 0.2s;
+}
+
+.zg-start-cap:hover {
+  border-color: rgba(34, 211, 238, 0.12);
+  color: var(--color-ink-soft);
+  background: linear-gradient(135deg, rgba(20, 28, 48, 0.8) 0%, rgba(17, 27, 48, 0.6) 100%);
+}
+
+.zg-start-cap-icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.1) 0%, rgba(34, 211, 238, 0.04) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-tech);
+}
+
+/* ---- 通用 section header ---- */
+
+.zg-start-section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.zg-start-section-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(148, 163, 184, 0.5);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.zg-start-section-line {
+  flex: 1;
+  height: 1px;
+  background: rgba(148, 163, 184, 0.08);
+}
+
+/* ---- 工作流程图 ---- */
+
+.zg-start-workflow {
+  margin-bottom: 48px;
+}
+
+.zg-start-workflow-steps {
+  display: flex;
+  align-items: stretch;
+}
+
+.zg-start-workflow-item-wrap {
+  display: flex;
+  align-items: stretch;
+  flex: 1;
+}
+
+.zg-start-workflow-step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.zg-start-step-num {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--color-panel);
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-tech);
+  margin-bottom: 10px;
+}
+
+.zg-start-step-num--highlight {
+  border-color: rgba(238, 123, 31, 0.3);
+  color: var(--color-brand);
+  background: rgba(238, 123, 31, 0.06);
+}
+
+.zg-start-step-title {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--color-ink);
+  margin-bottom: 3px;
+}
+
+.zg-start-workflow-step--highlight .zg-start-step-title {
+  color: var(--color-brand-deep);
+}
+
+.zg-start-step-desc {
+  font-size: 11px;
+  color: rgba(148, 163, 184, 0.5);
+}
+
+.zg-start-workflow-connector {
+  flex: 0 0 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 30px;
+}
+
+.zg-start-connector-line {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(148, 163, 184, 0.12), rgba(34, 211, 238, 0.25));
+}
+
+/* ---- 示例目标卡片 ---- */
+
+.zg-start-examples {
+  margin-bottom: 48px;
+}
+
+.zg-start-example-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.zg-start-example-card {
+  background: var(--color-panel);
+  border: 1px solid rgba(148, 163, 184, 0.08);
+  border-radius: 12px;
+  padding: 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  font-family: inherit;
+  color: inherit;
+}
+
+.zg-start-example-card:hover {
+  border-color: rgba(148, 163, 184, 0.16);
+  background: var(--color-rice-deep);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.zg-start-example-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-ink);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.zg-start-example-tag {
+  font-size: 9px;
+  font-weight: 500;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(34, 211, 238, 0.08);
+  color: var(--color-tech);
+  letter-spacing: 0.03em;
+}
+
+.zg-start-example-desc {
+  font-size: 12px;
+  color: rgba(148, 163, 184, 0.5);
+  line-height: 1.6;
+}
+
+/* ---- 分割线 ---- */
+
+.zg-start-divider {
+  height: 1px;
+  background: rgba(148, 163, 184, 0.08);
+  margin-bottom: 32px;
+}
+
+/* ---- 最近任务 ---- */
+
+.zg-start-recent {
+  margin-bottom: 36px;
+}
+
+.zg-start-recent-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.zg-start-recent-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-ink-soft);
+}
+
+.zg-start-recent-link {
+  font-size: 12px;
+  color: rgba(148, 163, 184, 0.5);
+  cursor: pointer;
+  transition: color 0.15s;
+  background: none;
+  border: none;
+  font-family: inherit;
+}
+
+.zg-start-recent-link:hover {
+  color: var(--color-tech);
+}
+
+.zg-start-task-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.zg-start-task-card {
+  background: var(--color-panel);
+  border: 1px solid rgba(148, 163, 184, 0.08);
+  border-radius: 12px;
+  padding: 16px 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  font-family: inherit;
+  color: inherit;
+  width: 100%;
+}
+
+.zg-start-task-card:hover {
+  border-color: rgba(148, 163, 184, 0.16);
+  background: var(--color-rice-deep);
+}
+
+.zg-start-task-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.zg-start-task-name {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--color-ink);
+  line-height: 1.4;
+}
+
+.zg-start-task-status {
+  flex: none;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 6px;
+  letter-spacing: 0.02em;
+}
+
+.zg-start-task-status--done {
+  background: rgba(52, 211, 153, 0.08);
+  color: #34d399;
+}
+
+.zg-start-task-status--running {
+  background: rgba(34, 211, 238, 0.08);
+  color: var(--color-tech);
+}
+
+.zg-start-task-status--default {
+  background: rgba(245, 158, 11, 0.08);
+  color: var(--color-brand-deep);
+}
+
+.zg-start-task-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  font-size: 11px;
+  color: rgba(148, 163, 184, 0.4);
+}
+
+/* ---- 效率数据条 ---- */
+
+.zg-start-stats {
+  background: var(--color-rice-deep);
+  border: 1px solid rgba(148, 163, 184, 0.08);
+  border-radius: 12px;
+  padding: 18px 24px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.zg-start-stat-item {
+  text-align: center;
+}
+
+.zg-start-stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.zg-start-stat-value--cyan { color: var(--color-tech); }
+.zg-start-stat-value--brand { color: var(--color-brand); }
+.zg-start-stat-value--green { color: #34d399; }
+.zg-start-stat-value--white { color: var(--color-ink); }
+
+.zg-start-stat-unit {
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(148, 163, 184, 0.5);
+  margin-left: 2px;
+}
+
+.zg-start-stat-label {
+  font-size: 11px;
+  color: rgba(148, 163, 184, 0.4);
+  margin-top: 2px;
+  font-weight: 450;
+}
+
+.zg-start-stat-divider {
+  width: 1px;
+  height: 32px;
+  background: rgba(148, 163, 184, 0.08);
+}
+
+/* 响应式降级 */
+
+@media (max-width: 640px) {
+  .zg-start-page {
+    padding: 32px 16px 40px;
+  }
+
+  .zg-start-hero-title {
+    font-size: 22px;
+  }
+
+  .zg-start-workflow-steps {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .zg-start-workflow-item-wrap {
+    flex-direction: column;
+  }
+
+  .zg-start-workflow-connector {
+    display: none;
+  }
+
+  .zg-start-example-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .zg-start-task-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .zg-start-stats {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .zg-start-stat-divider {
+    display: none;
   }
 }
 
@@ -443,6 +1746,8 @@
 .zg-spatial-stage[data-paused="true"] .zg-hub-ring,
 .zg-spatial-stage[data-paused="true"] .zg-flow-line,
 .zg-spatial-stage[data-paused="true"] .zg-pod-status-dot,
-.zg-spatial-stage[data-paused="true"] .zg-rail-item .zg-rail-dot {
+.zg-spatial-stage[data-paused="true"] .zg-rail-item .zg-rail-dot,
+.zg-spatial-stage[data-paused="true"] .zg-hub-pulse-ring,
+.zg-spatial-stage[data-paused="true"] .zg-agent-pod[data-status="running"] {
   animation-play-state: paused;
 }

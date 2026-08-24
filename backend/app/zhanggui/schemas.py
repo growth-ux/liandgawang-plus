@@ -86,6 +86,7 @@ class MissionConflict(BaseModel):
     severity: Literal["high", "medium", "low"] = "high"
     requires_human: bool = True
     supplement_requested: bool = False
+    occurred_at: str | None = None
 
 
 class ActionDraft(BaseModel):
@@ -108,6 +109,7 @@ class MissionRecommendation(BaseModel):
     condition: str | None = None
     fallback_trigger: str | None = None
     next_actions: list[ActionDraft] = Field(default_factory=list)
+    generated_at: str | None = None
 
 
 class DecisionOption(BaseModel):

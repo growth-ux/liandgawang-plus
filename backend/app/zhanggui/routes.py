@@ -1,17 +1,20 @@
 """粮掌柜 HTTP 与 NDJSON 接口。"""
 
 import json
+import logging
 import queue
 import threading
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, sessionmaker
 
 from app.database import get_db
-from app.zhanggui import repository, service
+from app.zhanggui import repository, service, zlog
 from app.zhanggui.service import MissionStateError
+
+logger = logging.getLogger("zhanggui.routes")
 
 router = APIRouter(prefix="/api/zhanggui", tags=["zhanggui"])
 
@@ -85,6 +88,7 @@ def confirm_goal(mission_id: int, req: GoalConfirmRequest, db: Session = Depends
 
 @router.post("/missions/{mission_id}/confirm-team")
 def confirm_team(mission_id: int, req: TeamConfirmRequest, db: Session = Depends(get_db)):
+    logger.info("[POST /confirm-team] 收到请求，mission_id=%s, team=%d人", mission_id, len(req.team))
     _get_or_404(db, mission_id)
     return _run_service(db, service.confirm_team, mission_id, req.team)
 
@@ -92,6 +96,8 @@ def confirm_team(mission_id: int, req: TeamConfirmRequest, db: Session = Depends
 @router.post("/missions/{mission_id}/run")
 def run_mission(mission_id: int, db: Session = Depends(get_db)):
     """同步降级入口：运行到下一人工闸门，不返回进度流。"""
+    zlog(f"[POST /run] mission_id={mission_id} 收到同步运行请求")
+    logger.info("[POST /run] 收到请求，mission_id=%s", mission_id)
     _get_or_404(db, mission_id)
     return _run_service(db, service.run_until_gate, mission_id, lambda event: None)
 
@@ -109,13 +115,27 @@ def _ndjson_line(event: dict) -> str:
 @router.get("/missions/{mission_id}/events")
 def mission_events(mission_id: int, db: Session = Depends(get_db)):
     """NDJSON 进度流：办理中任务实时推送事件；已到闸门只回放快照。"""
+    logger.info("[GET /events] 收到请求，mission_id=%s", mission_id)
     mission = _get_or_404(db, mission_id)
+    mission_status = mission.status
+    # StreamingResponse 返回后，请求依赖 Session 可能已关闭；流生成器和 worker
+    # 必须各自持有独立 Session，且不能跨线程共享 SQLAlchemy Session。
+    stream_session_factory = sessionmaker(
+        bind=db.get_bind(), autoflush=False, autocommit=False,
+    )
+    logger.info("[GET /events] mission_id=%s, status=%s", mission_id, mission.status)
+    zlog(f"[GET /events] mission_id={mission_id}, status={mission.status}")
 
     def generate():
-        if mission.status != "running":
-            snapshot = repository.get_mission_snapshot(db, mission_id)
+        logger.info("[事件流 %s] 开始处理，当前任务状态：%s", mission_id, mission_status)
+        zlog(f"[事件流] mission_id={mission_id} 开始处理，状态={mission_status}")
+        if mission_status != "running":
+            logger.info("[事件流 %s] 非 running 状态，回放快照", mission_id)
+            zlog(f"[事件流] mission_id={mission_id} 非 running，回放快照")
+            with stream_session_factory() as stream_db:
+                snapshot = repository.get_mission_snapshot(stream_db, mission_id)
             yield _ndjson_line({"type": "snapshot", "mission_id": mission_id, "agent_id": None, "payload": snapshot})
-            if mission.status in ("awaiting_decision", "partially_completed"):
+            if mission_status in ("awaiting_decision", "partially_completed"):
                 yield _ndjson_line({
                     "type": "decision_required", "mission_id": mission_id, "agent_id": None,
                     "payload": {"recommendation": snapshot.get("recommendation")},
@@ -125,19 +145,38 @@ def mission_events(mission_id: int, db: Session = Depends(get_db)):
         events: queue.Queue = queue.Queue()
 
         def worker():
+            zlog(f"[事件流] mission_id={mission_id} worker 线程启动，开始 run_until_gate")
+            logger.info("[事件流 %s] worker 线程启动，准备调用 run_until_gate", mission_id)
+            worker_db = stream_session_factory()
             try:
-                service.run_until_gate(db, mission_id, events.put)
+                service.run_until_gate(worker_db, mission_id, events.put)
+                logger.info("[事件流 %s] run_until_gate 正常完成", mission_id)
             except MissionStateError as exc:
+                worker_db.rollback()
+                logger.warning("[事件流 %s] run_until_gate 状态错误：%s", mission_id, exc)
+                events.put({"type": "error", "mission_id": mission_id, "agent_id": None, "payload": {"message": str(exc)}})
+            except Exception as exc:
+                worker_db.rollback()
+                logger.exception("[事件流 %s] run_until_gate 异常：%s", mission_id, exc)
+                zlog(f"[事件流] mission_id={mission_id} run_until_gate 异常: {exc}")
                 events.put({"type": "error", "mission_id": mission_id, "agent_id": None, "payload": {"message": str(exc)}})
             finally:
+                worker_db.close()
+                logger.info("[事件流 %s] worker 线程结束，发送终止信号", mission_id)
                 events.put(None)
 
+        logger.info("[事件流 %s] 启动 worker 线程", mission_id)
+        zlog(f"[事件流] mission_id={mission_id} 启动 worker 线程")
         thread = threading.Thread(target=worker, daemon=True)
         thread.start()
+        event_count = 0
         while True:
             event = events.get()
             if event is None:
+                logger.info("[事件流 %s] 收到终止信号，共推送 %d 个事件", mission_id, event_count)
                 break
+            event_count += 1
+            logger.debug("[事件流 %s] 推送事件 #%d: type=%s agent=%s", mission_id, event_count, event.get("type"), event.get("agent_id"))
             yield _ndjson_line(event)
         thread.join(timeout=1)
 

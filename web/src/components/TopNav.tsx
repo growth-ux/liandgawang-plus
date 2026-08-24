@@ -9,7 +9,7 @@ const navItems = [
 export default function TopNav() {
   return (
     <header className="sticky top-0 z-40 h-16 border-b border-line bg-panel">
-      <div className="mx-auto flex h-full max-w-[1440px] items-center justify-between px-6">
+      <div className="relative mx-auto flex h-full max-w-[1440px] items-center justify-between px-6">
         {/* 品牌标识，点击返回首页 */}
         <NavLink to="/" className="flex items-center gap-2.5">
           <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-brand to-brand-deep text-lg font-semibold text-white shadow-[0_0_14px_rgba(238,123,31,0.45)]">
@@ -21,8 +21,8 @@ export default function TopNav() {
           </span>
         </NavLink>
 
-        {/* 一级入口 */}
-        <nav className="flex items-center gap-1.5">
+        {/* 一级入口：绝对定位严格居中 */}
+        <nav className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-1.5">
           {navItems.map((item) => (
             <NavLink
               key={item.to}
