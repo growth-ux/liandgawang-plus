@@ -1,0 +1,448 @@
+/* ===== 粮掌柜 2.5D 多 Agent 协作指挥舱 ===== */
+
+.zg-cockpit {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.zg-mission-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--color-line);
+  border-radius: 1.25rem;
+  background: linear-gradient(120deg, color-mix(in srgb, var(--color-tech) 7%, var(--color-panel)), var(--color-panel) 55%);
+}
+
+.zg-cockpit-grid {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr) 340px;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+/* ---- 左侧任务推进轨 ---- */
+
+.zg-rail {
+  border: 1px solid var(--color-line);
+  border-radius: 1.25rem;
+  background: var(--color-panel);
+  padding: 1rem;
+}
+
+.zg-rail-item {
+  position: relative;
+  display: flex;
+  gap: 0.7rem;
+  padding: 0.55rem 0 0.55rem 0.1rem;
+}
+
+.zg-rail-item::before {
+  content: "";
+  position: absolute;
+  left: 0.62rem;
+  top: 1.9rem;
+  bottom: -0.55rem;
+  width: 1px;
+  background: var(--color-line);
+}
+
+.zg-rail-item:last-child::before {
+  display: none;
+}
+
+.zg-rail-dot {
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-line);
+  background: var(--color-rice-deep);
+  flex: none;
+  margin-top: 0.12rem;
+}
+
+.zg-rail-item[data-state="active"] .zg-rail-dot {
+  border-color: var(--color-tech);
+  background: color-mix(in srgb, var(--color-tech) 24%, transparent);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--color-tech) 55%, transparent);
+  animation: zg-pulse 1.8s ease-in-out infinite;
+}
+
+.zg-rail-item[data-state="done"] .zg-rail-dot {
+  border-color: color-mix(in srgb, var(--color-brand) 70%, transparent);
+  background: color-mix(in srgb, var(--color-brand) 32%, transparent);
+}
+
+@keyframes zg-pulse {
+  0%, 100% { box-shadow: 0 0 6px color-mix(in srgb, var(--color-tech) 40%, transparent); }
+  50% { box-shadow: 0 0 14px color-mix(in srgb, var(--color-tech) 70%, transparent); }
+}
+
+/* ---- 中央 2.5D 舞台 ---- */
+
+.zg-spatial-stage {
+  position: relative;
+  min-height: 560px;
+  border: 1px solid var(--color-line);
+  border-radius: 1.5rem;
+  background:
+    radial-gradient(ellipse at 50% 38%, color-mix(in srgb, var(--color-tech) 9%, transparent), transparent 62%),
+    var(--color-rice-deep);
+  perspective: 1200px;
+  transform-style: preserve-3d;
+  overflow: hidden;
+}
+
+.zg-floor {
+  position: absolute;
+  left: 50%;
+  top: 56%;
+  width: 150%;
+  height: 150%;
+  transform: translate(-50%, -50%) rotateX(66deg) translateZ(-70px);
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--color-tech) 14%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--color-tech) 14%, transparent) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: radial-gradient(ellipse at center, black 32%, transparent 72%);
+  pointer-events: none;
+}
+
+.zg-flow-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.zg-flow-line {
+  fill: none;
+  stroke-width: 1.6;
+}
+
+.zg-flow-line[data-kind="normal"] {
+  stroke: color-mix(in srgb, var(--color-tech) 78%, transparent);
+  stroke-dasharray: 7 9;
+  animation: zg-dash 2.6s linear infinite;
+}
+
+.zg-flow-line[data-kind="conflict"] {
+  stroke: color-mix(in srgb, var(--color-brand) 88%, transparent);
+  stroke-width: 2;
+  stroke-dasharray: 5 7;
+  animation: zg-dash 1.1s linear infinite;
+}
+
+.zg-flow-line[data-kind="standby"] {
+  stroke: rgba(148, 163, 184, 0.34);
+  stroke-dasharray: 3 8;
+}
+
+.zg-flow-line[data-kind="failed"] {
+  stroke: rgba(248, 113, 113, 0.6);
+  stroke-dasharray: 2 10;
+}
+
+@keyframes zg-dash {
+  to { stroke-dashoffset: -64px; }
+}
+
+/* 中央粮掌柜核心 */
+
+.zg-hub {
+  position: absolute;
+  left: var(--hub-x, 50%);
+  top: var(--hub-y, 46%);
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  z-index: 3;
+}
+
+.zg-hub-core {
+  position: relative;
+  width: 88px;
+  height: 88px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: radial-gradient(circle at 32% 28%, color-mix(in srgb, var(--color-brand) 68%, white), var(--color-brand) 58%, #9a4a12);
+  box-shadow: 0 0 26px color-mix(in srgb, var(--color-brand) 52%, transparent);
+  color: white;
+  font-size: 1.7rem;
+  font-weight: 700;
+}
+
+.zg-hub-ring {
+  position: absolute;
+  inset: -14px;
+  border-radius: 999px;
+  border: 1px dashed color-mix(in srgb, var(--color-brand) 55%, transparent);
+  animation: zg-spin 14s linear infinite;
+}
+
+.zg-hub-ring--outer {
+  inset: -26px;
+  border-color: color-mix(in srgb, var(--color-tech) 40%, transparent);
+  animation-duration: 22s;
+  animation-direction: reverse;
+}
+
+.zg-hub-beam {
+  position: absolute;
+  left: 50%;
+  bottom: -46px;
+  width: 66px;
+  height: 92px;
+  transform: translateX(-50%);
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--color-brand) 34%, transparent), transparent);
+  clip-path: polygon(36% 0, 64% 0, 100% 100%, 0 100%);
+  filter: blur(2px);
+  pointer-events: none;
+}
+
+@keyframes zg-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* 小二节点 */
+
+.zg-agent-pod {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 172px;
+  margin-left: -86px;
+  margin-top: -44px;
+  z-index: 2;
+  border: 1px solid var(--color-line);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--color-panel) 88%, transparent);
+  backdrop-filter: blur(4px);
+  padding: 0.65rem 0.75rem;
+  cursor: pointer;
+  transition: transform 0.7s cubic-bezier(0.22, 0.9, 0.3, 1), opacity 0.6s ease, border-color 0.3s ease;
+  transform: translate3d(var(--x), var(--y), 0);
+}
+
+.zg-agent-pod[data-depth="back"] {
+  transform: translate3d(var(--x), var(--y), -100px) scale(0.82);
+  opacity: 0.55;
+}
+
+.zg-agent-pod[data-depth="middle"] {
+  transform: translate3d(var(--x), var(--y), 10px);
+  opacity: 1;
+}
+
+.zg-agent-pod[data-depth="front"] {
+  transform: translate3d(var(--x), var(--y), 70px) scale(1.06);
+  opacity: 1;
+  z-index: 4;
+}
+
+.zg-agent-pod[data-active="true"] {
+  border-color: color-mix(in srgb, var(--color-tech) 60%, transparent);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--color-tech) 30%, transparent);
+}
+
+.zg-agent-pod[data-conflict="true"] {
+  border-color: color-mix(in srgb, var(--color-brand) 66%, transparent);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--color-brand) 34%, transparent);
+}
+
+.zg-pod-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.68rem;
+  color: var(--color-ink-soft);
+}
+
+.zg-pod-status-dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.5);
+}
+
+.zg-pod-status[data-status="running"] .zg-pod-status-dot {
+  background: var(--color-tech);
+  animation: zg-pulse 1.4s ease-in-out infinite;
+}
+
+.zg-pod-status[data-status="completed"] .zg-pod-status-dot,
+.zg-pod-status[data-status="completed_with_objection"] .zg-pod-status-dot {
+  background: #34d399;
+}
+
+.zg-pod-status[data-status="failed"] .zg-pod-status-dot {
+  background: #f87171;
+}
+
+/* ---- 右侧决策面板 ---- */
+
+.zg-decision-gate {
+  border: 1px solid color-mix(in srgb, var(--color-brand) 44%, transparent);
+  border-radius: 1.25rem;
+  background: linear-gradient(160deg, color-mix(in srgb, var(--color-brand) 10%, var(--color-panel)), var(--color-panel) 58%);
+  padding: 1.1rem;
+}
+
+.zg-gate-kicker {
+  font-size: 0.68rem;
+  letter-spacing: 0.28em;
+  color: var(--color-brand-deep);
+}
+
+.zg-gate-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.9rem;
+}
+
+.zg-gate-actions button {
+  border: 1px solid color-mix(in srgb, var(--color-brand) 50%, transparent);
+  border-radius: 999px;
+  padding: 0.55rem 1rem;
+  font-size: 0.85rem;
+  text-align: left;
+  background: var(--color-panel);
+  transition: background 0.2s ease;
+}
+
+.zg-gate-actions button:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-brand) 16%, var(--color-panel));
+}
+
+.zg-gate-actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.zg-gate-note {
+  margin-top: 0.8rem;
+  font-size: 0.75rem;
+  color: var(--color-ink-soft);
+  border-top: 1px dashed var(--color-line);
+  padding-top: 0.7rem;
+}
+
+/* ---- 实时动态日志面板 ---- */
+
+.zg-activity {
+  border: 1px solid var(--color-line);
+  border-radius: 1.25rem;
+  background: var(--color-panel);
+  padding: 0.9rem 1.1rem;
+  max-height: 12.5rem;
+  overflow-y: auto;
+}
+
+.zg-activity-pulse {
+  animation: zg-pulse-text 1.6s ease-in-out infinite;
+}
+
+@keyframes zg-pulse-text {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zg-activity-pulse { animation: none; }
+}
+
+/* ---- 专业结果抽屉 ---- */
+
+.zg-drawer-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 8, 16, 0.55);
+  z-index: 40;
+}
+
+.zg-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(480px, 94vw);
+  z-index: 41;
+  background: var(--color-panel);
+  border-left: 1px solid var(--color-line);
+  padding: 1.4rem;
+  overflow-y: auto;
+  animation: zg-drawer-in 0.25s ease-out;
+}
+
+@keyframes zg-drawer-in {
+  from { transform: translateX(40px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* ---- 降级与无障碍 ---- */
+
+@media (max-width: 1024px) {
+  .zg-cockpit-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .zg-spatial-stage {
+    perspective: none;
+    min-height: 0;
+  }
+
+  .zg-spatial-stage .zg-floor,
+  .zg-spatial-stage .zg-flow-svg,
+  .zg-spatial-stage .zg-hub-beam {
+    display: none;
+  }
+
+  .zg-agent-pod,
+  .zg-agent-pod[data-depth="back"],
+  .zg-agent-pod[data-depth="middle"],
+  .zg-agent-pod[data-depth="front"] {
+    position: static;
+    width: auto;
+    margin: 0.4rem 1rem;
+    transform: none !important;
+    opacity: 1;
+  }
+
+  .zg-spatial-stage {
+    display: block;
+    padding: 0.6rem 0 1rem;
+  }
+
+  .zg-hub {
+    position: static;
+    transform: none;
+    padding: 1rem 0 0.4rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zg-hub-ring,
+  .zg-rail-item[data-state="active"] .zg-rail-dot,
+  .zg-flow-line,
+  .zg-pod-status-dot {
+    animation: none !important;
+  }
+}
+
+/* 标签页不可见时暂停非必要动画（由组件写入 data-paused） */
+
+.zg-spatial-stage[data-paused="true"] .zg-hub-ring,
+.zg-spatial-stage[data-paused="true"] .zg-flow-line,
+.zg-spatial-stage[data-paused="true"] .zg-pod-status-dot,
+.zg-spatial-stage[data-paused="true"] .zg-rail-item .zg-rail-dot {
+  animation-play-state: paused;
+}

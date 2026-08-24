@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+import logging
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -20,6 +21,16 @@ from app.costing import models as costing_models  # noqa: F401
 from app.costing.routes import router as costing_router
 from app.knowledge import models as knowledge_models  # noqa: F401
 from app.knowledge.routes import router as knowledge_router
+from app.zhanggui import models as zhanggui_models  # noqa: F401
+from app.zhanggui.routes import router as zhanggui_router
+
+# 粮掌柜编排链路日志：让终端能看到任务走到了哪一步
+_zg_logger = logging.getLogger("zhanggui")
+if not _zg_logger.handlers:
+    _handler = logging.StreamHandler()
+    _handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s [%(name)s] %(message)s"))
+    _zg_logger.addHandler(_handler)
+_zg_logger.setLevel(logging.INFO)
 
 
 @asynccontextmanager
@@ -49,3 +60,4 @@ app.include_router(liang_router)
 app.include_router(finance_router)
 app.include_router(costing_router)
 app.include_router(knowledge_router)
+app.include_router(zhanggui_router)

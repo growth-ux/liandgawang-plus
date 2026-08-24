@@ -54,7 +54,7 @@ export const agents: Agent[] = [
     symbol: "指挥屏、耳麦、罗盘",
     zone: "中央业务台",
     accent: "#e35d2b",
-    tabs: ["目标受理", "任务方案", "参与小二", "综合结论", "行动清单", "历史任务"],
+    tabs: ["开始新任务", "历史任务"],
     image: "/images/agents/liangdawang-plus-collaboration-duo-v1.png",
     doing: "正在拆解 200 吨玉米采购目标，组织六位小二分工",
     pos: { x: 50, y: 57, size: 30 },

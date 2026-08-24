@@ -194,7 +194,7 @@ def _generated_listings() -> list[tuple]:
     grades = ["一等", "二等", "二等", "三等"]
     price_types = ["出厂价", "出厂价", "到库价", "港口价"]
     rows = []
-    for number in range(13, 201):
+    for number in range(51, 201):
         index = number - 13
         vcode, vname, province, city, base_price, moisture_std, weight_std = sources[index % len(sources)]
         grade = grades[index % len(grades)]

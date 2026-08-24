@@ -11,6 +11,7 @@ import app.workflow.models  # noqa: F401  注册表到 Base.metadata
 import app.finance.models  # noqa: F401  注册表到 Base.metadata
 import app.costing.models  # noqa: F401  注册表到 Base.metadata
 import app.knowledge.models  # noqa: F401  注册表到 Base.metadata
+import app.zhanggui.models  # noqa: F401  注册表到 Base.metadata
 from app.database import Base, get_db
 
 
