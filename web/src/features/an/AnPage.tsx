@@ -1,5 +1,6 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type CSSProperties } from "react";
 import AgentSwitcher from "../../components/AgentSwitcher";
+import AgentPortrait from "../../components/AgentPortrait";
 import { getAgent } from "../../data/agents";
 import { initialVerifications, partners, reviewRecords } from "./data";
 import RiskCheckTab from "./RiskCheckTab";
@@ -58,18 +59,15 @@ export default function AnPage() {
   };
 
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] flex-col bg-[radial-gradient(circle_at_12%_4%,rgba(75,143,140,0.13),transparent_28%)]">
-      <header className="relative z-30 border-b border-line bg-panel/95 backdrop-blur">
+    <div className="agent-theme-page flex min-h-[calc(100vh-4rem)] flex-col" style={{ "--agent-accent": agent.accent } as CSSProperties}>
+      <header className="agent-theme-header relative z-30 border-b border-line bg-panel/95 backdrop-blur">
         <div className="mx-auto flex max-w-[1280px] items-center justify-between px-6 py-4">
           <div className="flex items-center gap-3.5">
-            <div className="relative">
-              <span className="absolute inset-0 rounded-full bg-emerald-400/25 blur-lg" />
-              <img src={agent.image} alt={agent.name} className="relative h-12 w-auto drop-shadow-[0_0_12px_rgba(75,143,140,0.45)]" />
-            </div>
+            <AgentPortrait agent={agent} />
             <div>
               <h1 className="text-lg font-semibold tracking-wide">
                 {agent.name}｜{agent.action}
-                <span className="ml-2.5 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-2.5 py-0.5 text-xs font-normal text-emerald-300">
+                <span className="agent-theme-tag ml-2.5 rounded-full px-2.5 py-0.5 text-xs font-normal">
                   合作方风控
                 </span>
               </h1>
@@ -77,7 +75,7 @@ export default function AnPage() {
             </div>
           </div>
           <div className="flex items-center gap-2.5">
-            <button type="button" onClick={() => setNewReviewOpen(true)} className="rounded-full border border-emerald-400/25 bg-emerald-400/[0.07] px-4 py-2 text-xs text-emerald-300 hover:bg-emerald-400/10">＋ 新建体检</button>
+            <button type="button" onClick={() => setNewReviewOpen(true)} className="agent-theme-action rounded-full border px-4 py-2 text-xs">＋ 新建体检</button>
             <AgentSwitcher currentId={agent.id} />
           </div>
         </div>
@@ -90,7 +88,7 @@ export default function AnPage() {
                 type="button"
                 onClick={() => setActiveTab(index)}
                 className={`relative pb-3 pt-1 text-sm transition-colors ${
-                  index === activeTab ? "font-semibold text-emerald-300" : "text-ink-soft hover:text-ink"
+                  index === activeTab ? "agent-theme-tab-active font-semibold" : "text-ink-soft hover:text-ink"
                 }`}
               >
                 {tab}
@@ -99,7 +97,7 @@ export default function AnPage() {
                     {verifications.filter((item) => item.status === "pending").length}
                   </span>
                 )}
-                {index === activeTab && <span className="absolute inset-x-1 -bottom-px h-0.5 bg-emerald-400" />}
+                {index === activeTab && <span className="agent-theme-tab-line absolute inset-x-1 -bottom-px h-0.5" />}
               </button>
             ))}
           </nav>

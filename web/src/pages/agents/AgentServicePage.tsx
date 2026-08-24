@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { Navigate, useParams } from "react-router-dom";
 import { getAgent, taskStatuses } from "../../data/agents";
 import AgentAvatar from "../../components/AgentAvatar";
@@ -25,16 +25,16 @@ export default function AgentServicePage() {
   if (agent.id === "an") return <AnPage />;
 
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] flex-col">
+    <div className="agent-theme-page flex min-h-[calc(100vh-4rem)] flex-col" style={{ "--agent-accent": agent.accent } as CSSProperties}>
       {/* 页面头部：当前小二身份与服务范围 + 切换小二 */}
-      <div className="border-b border-line bg-panel">
+      <div className="agent-theme-header border-b border-line bg-panel">
         <div className="mx-auto flex max-w-[1280px] items-center justify-between px-6 py-4">
           <div className="flex items-center gap-3.5">
             <AgentAvatar agent={agent} size={48} />
             <div>
               <h1 className="text-lg font-semibold">
                 {agent.name}｜{agent.action}
-                <span className="ml-2.5 rounded-full bg-brand-faint px-2.5 py-0.5 text-xs font-normal text-brand-deep">
+                <span className="agent-theme-tag ml-2.5 rounded-full px-2.5 py-0.5 text-xs font-normal">
                   {agent.role}
                 </span>
               </h1>
@@ -65,12 +65,12 @@ export default function AgentServicePage() {
                 type="button"
                 onClick={() => setActiveTab(i)}
                 className={`relative pb-3 pt-1 text-sm transition-colors ${
-                  i === activeTab ? "font-semibold text-brand-deep" : "text-ink-soft hover:text-ink"
+                  i === activeTab ? "agent-theme-tab-active font-semibold" : "text-ink-soft hover:text-ink"
                 }`}
               >
                 {tab}
                 {i === activeTab && (
-                  <span className="absolute inset-x-2 -bottom-px h-0.5 rounded-full bg-brand" />
+                  <span className="agent-theme-tab-line absolute inset-x-2 -bottom-px h-0.5 rounded-full" />
                 )}
               </button>
             ))}

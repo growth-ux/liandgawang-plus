@@ -35,6 +35,111 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* ===== 小二角色主题：品牌框架统一，身份层使用各自 accent ===== */
+
+.agent-theme-page {
+  --agent-accent-text: color-mix(in srgb, var(--agent-accent) 68%, white);
+  --agent-accent-soft: color-mix(in srgb, var(--agent-accent) 14%, transparent);
+  --agent-accent-line: color-mix(in srgb, var(--agent-accent) 34%, transparent);
+  background-image: radial-gradient(
+    circle at 14% -8%,
+    color-mix(in srgb, var(--agent-accent) 11%, transparent),
+    transparent 30rem
+  );
+}
+
+.agent-theme-header {
+  background-image: linear-gradient(
+    105deg,
+    color-mix(in srgb, var(--agent-accent) 8%, var(--color-panel)),
+    var(--color-panel) 46%
+  );
+}
+
+.agent-theme-tag {
+  border: 1px solid var(--agent-accent-line);
+  background: var(--agent-accent-soft);
+  color: var(--agent-accent-text);
+}
+
+.agent-theme-tab-active {
+  color: var(--agent-accent-text);
+}
+
+.agent-theme-tab-line {
+  background: var(--agent-accent);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--agent-accent) 62%, transparent);
+}
+
+.agent-theme-glow {
+  filter: drop-shadow(0 0 10px color-mix(in srgb, var(--agent-accent) 48%, transparent));
+}
+
+@keyframes agent-avatar-breathe {
+  0%, 100% { opacity: 0.42; transform: scale(0.94); }
+  50% { opacity: 0.68; transform: scale(1.04); }
+}
+
+.agent-theme-avatar-shell {
+  position: relative;
+  display: inline-flex;
+  width: 3.5rem;
+  height: 3.25rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  isolation: isolate;
+}
+
+.agent-theme-avatar-aura {
+  position: absolute;
+  z-index: -2;
+  inset: -0.55rem -0.7rem;
+  border-radius: 999px;
+  background: radial-gradient(
+    ellipse at center,
+    color-mix(in srgb, var(--agent-accent) 38%, transparent) 0%,
+    color-mix(in srgb, var(--agent-accent) 16%, transparent) 42%,
+    transparent 72%
+  );
+  filter: blur(5px);
+  animation: agent-avatar-breathe 3.8s ease-in-out infinite;
+}
+
+.agent-theme-avatar-floor {
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  bottom: -0.1rem;
+  width: 2.5rem;
+  height: 0.42rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--agent-accent) 46%, transparent);
+  filter: blur(5px);
+  transform: translateX(-50%);
+  opacity: 0.58;
+}
+
+.agent-theme-avatar-image {
+  position: relative;
+  z-index: 1;
+  width: auto;
+  height: 3rem;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.34))
+    drop-shadow(0 0 7px color-mix(in srgb, var(--agent-accent) 42%, transparent));
+}
+
+.agent-theme-action {
+  border-color: var(--agent-accent-line);
+  background: var(--agent-accent-soft);
+  color: var(--agent-accent-text);
+}
+
+.agent-theme-action:hover {
+  background: color-mix(in srgb, var(--agent-accent) 20%, transparent);
+}
+
 /* ===== 深色科技风滚动条 ===== */
 
 ::-webkit-scrollbar {
@@ -161,7 +266,7 @@ input[type="number"] {
 @media (prefers-reduced-motion: reduce) {
   .ld-bob, .ld-sway, .ld-dot,
   .ld-holo-breathe, .ld-blink, .ld-dash-flow, .ld-draw, .ld-scan-y, .ld-sweep,
-  .route-reveal, .an-scan-line {
+  .route-reveal, .an-scan-line, .agent-theme-avatar-aura {
     animation: none;
   }
 
