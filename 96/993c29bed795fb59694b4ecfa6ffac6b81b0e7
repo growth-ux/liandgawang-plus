@@ -1,0 +1,76 @@
+backend/app/analysis/llm.py
+  h_7549b7dc6a6921 10-11,112-202
+backend/app/analysis/routes.py
+  h_7549b7dc6a6921 10,35-44
+backend/app/liang/llm.py
+  h_7549b7dc6a6921 40-44,107,125-142,145,149-153,155-164,166-167,180
+backend/app/liang/routes.py
+  h_7549b7dc6a6921 1,5,13,178-196
+backend/app/liang/sourcing_graph.py
+  h_7549b7dc6a6921 3,5,11-13,45,126-140,159,174-180,186,191,204,210,215,221-232,236-246,279-281,291-292,294,296-318
+backend/app/main.py
+  h_7549b7dc6a6921 1,7-9
+backend/tests/analysis/test_analysis.py
+  h_7549b7dc6a6921 1,63-96
+backend/tests/liang/test_sourcing_graph.py
+  h_7549b7dc6a6921 28-29,35-37
+web/src/components/TechSelect.tsx
+  h_7549b7dc6a6921 102
+web/src/components/field/HoloProp.tsx
+  h_7549b7dc6a6921 57
+web/src/data/agents.ts
+  h_7549b7dc6a6921 87,102
+web/src/features/liang/CompareTab.tsx
+  h_7549b7dc6a6921 210,217
+web/src/features/liang/DagCanvas.tsx
+  h_7549b7dc6a6921 13-14,24-26,37
+web/src/features/liang/HistoryTab.tsx
+  h_7549b7dc6a6921 81,168-172,174-192
+web/src/features/liang/SourcingTab.tsx
+  h_7549b7dc6a6921 3,13-15,79,92,94,97-108,154-160,162-187,219-241,260-261
+web/src/features/liang/api.ts
+  h_7549b7dc6a6921 74-112
+web/src/features/liang/workflow.ts
+  h_7549b7dc6a6921 35-37,47
+web/src/features/qian/FinanceMarketTab.tsx
+  h_7549b7dc6a6921 2,123-134,145-150
+web/src/features/qian/SmartMatchTab.tsx
+  h_7549b7dc6a6921 2,165-170
+web/src/features/suan/AgentImportPanel.tsx
+  h_7549b7dc6a6921 65-91,244-247,250-265,267-284,286-317,391
+web/src/features/suan/CostComparisonView.tsx
+  h_7549b7dc6a6921 20-31,35,39-54,57-86,96-97,102,104,106-107,110-120,123,126-129,134-152,154-163,169-170,184,186-191,199,201,214-236
+web/src/features/suan/CostingTab.tsx
+  h_7549b7dc6a6921 1,21-66,86-106,218-221,293,298,318,321-323
+web/src/features/suan/HandoffAction.tsx
+  h_7549b7dc6a6921 67-72,74,77,81,83,88
+web/src/features/suan/ProfitTab.tsx
+  h_7549b7dc6a6921 130-131,134,136-148,150-180,197-227,229,314,316-318
+web/src/features/suan/QuoteInput.tsx
+  h_7549b7dc6a6921 13-14,62-79,82-113
+web/src/features/suan/RecordsTab.tsx
+  h_7549b7dc6a6921 24-32,64,77,82-84,91,116-124,126,129,131,136-153,155-180,182-183,185,187
+web/src/features/suan/SchemeEditor.tsx
+  h_7549b7dc6a6921 12-26,38,44-83,100-103,138-139,154-166,169-172,178,181-192,195-246,255,257,262,266,271
+web/src/features/suan/SuanPage.tsx
+  h_7549b7dc6a6921 62,68,73-74,86,90-93
+web/src/features/yun/YunPage.tsx
+  h_7549b7dc6a6921 12
+web/src/features/zhan/ProcurementAnalysisTab.tsx
+  h_7549b7dc6a6921 3,14-18,36,88,177-182,201-202,210-237,298-345,347-372,378-384,387-413,415,417,434-441,452-461,467,470,475-482,487-505,510,512,518,525
+web/src/features/zhan/api.ts
+  h_7549b7dc6a6921 2,35-48
+web/src/features/zhan/types.ts
+  h_7549b7dc6a6921 105-123
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "96993c29bed795fb59694b4ecfa6ffac6b81b0e7",
+  "prompts": {},
+  "humans": {
+    "h_7549b7dc6a6921": {
+      "author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
