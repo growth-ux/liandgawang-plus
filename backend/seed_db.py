@@ -10,6 +10,7 @@ from app.database import Base, SessionLocal, engine
 
 # 确保所有 model 已注册到 metadata
 from app.logistics import models as _logistics  # noqa: F401
+from app.knowledge import models as _knowledge  # noqa: F401
 from app.market import models as _market  # noqa: F401
 from app.workflow import models as _workflow  # noqa: F401
 from app.liang import models as _liang  # noqa: F401
@@ -18,6 +19,7 @@ from app.market.mock_seed import seed_zhan_mock_data
 from app.liang.mock_seed import seed_liang_mock_data
 from app.workflow.seed import seed_demo_watches
 from app.logistics.seed import seed_logistics_mock_data
+from app.knowledge.seed import seed_enterprise_knowledge
 
 
 def main() -> None:
@@ -31,6 +33,8 @@ def main() -> None:
         seed_demo_watches(db)
         print("⏳ 写入物流数据 (logistics) ...")
         seed_logistics_mock_data(db)
+        print("⏳ 写入企业知识数据 (knowledge) ...")
+        seed_enterprise_knowledge(db)
     print("✅ 全部种子数据写入完成")
 
 

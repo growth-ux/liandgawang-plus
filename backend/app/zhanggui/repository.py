@@ -161,6 +161,25 @@ def confirm_decision(db: Session, decision: MissionDecision, selected_action: st
     return decision
 
 
+def cancel_pending_decisions(db: Session, mission_id: int, reason: str) -> None:
+    """任务被终止时关闭仍待处理的人工闸门，避免历史记录显示为待确认。"""
+    decisions = (
+        db.query(MissionDecision)
+        .filter(MissionDecision.mission_id == mission_id, MissionDecision.status == "pending")
+        .all()
+    )
+    for decision in decisions:
+        decision.selected_action = "terminate"
+        decision.note = reason
+        decision.status = "cancelled"
+        decision.decided_at = datetime.now()
+    db.commit()
+
+
+def get_action_task(db: Session, task_id: int) -> MissionActionTask | None:
+    return db.get(MissionActionTask, task_id)
+
+
 def create_action_tasks(db: Session, mission_id: int, actions: list[dict]) -> list[MissionActionTask]:
     tasks = []
     for item in actions:

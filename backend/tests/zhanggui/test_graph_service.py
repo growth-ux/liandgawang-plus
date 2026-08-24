@@ -24,6 +24,12 @@ DEMO_GOAL = {
 }
 
 
+@pytest.fixture(autouse=True)
+def stub_knowledge_dependencies(monkeypatch):
+    monkeypatch.setattr("app.knowledge.extractor._extract_with_llm", lambda *args: [])
+    monkeypatch.setattr("app.knowledge.memory.sync_item", lambda item: None)
+
+
 @pytest.fixture()
 def created_mission(db_session):
     snapshot = create_mission_from_preview(db_session, DEMO_REQUEST, DEMO_GOAL, [])
@@ -108,8 +114,10 @@ def test_confirmed_mission_creates_source_scoped_experience(db_session, decision
     items = knowledge_repo.list_experiences(db_session)
     experience = next(item for item in items if item["source_type"] == "zhanggui")
     assert experience["source_record_id"] == decision_mission.id
-    assert "优先保供" in experience["content"]
-    assert "履约担保" in experience["content"]
+    assert experience["knowledge_type"] == "decision"
+    assert experience["source_agent"] == "zhanggui"
+    assert experience["title"]
+    assert "玉米采购" in experience["applicable_context"]
     # 同一任务只沉淀一条（来源类型 + 任务 ID 去重）
     zhanggui_items = [item for item in items if item["source_type"] == "zhanggui"]
     assert len(zhanggui_items) == 1

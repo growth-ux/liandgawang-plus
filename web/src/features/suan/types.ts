@@ -144,14 +144,3 @@ export interface SuanHandoff {
   schemes: Partial<SchemeDraft>[];
   pending_items: string[];
 }
-
-export interface SharedExperience {
-  id: number;
-  source_type: "costing" | "zhanggui";
-  source_record_id: number;
-  content: string;
-  tags: string[];
-  status: "active" | "ignored";
-  created_at: string;
-  updated_at: string;
-}

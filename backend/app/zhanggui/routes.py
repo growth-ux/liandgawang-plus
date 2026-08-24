@@ -42,6 +42,10 @@ class DecisionSubmitRequest(BaseModel):
     note: str = ""
 
 
+class MissionTerminateRequest(BaseModel):
+    reason: str = Field(default="", max_length=500)
+
+
 def _get_or_404(db: Session, mission_id: int):
     mission = repository.get_mission(db, mission_id)
     if mission is None:
@@ -106,6 +110,18 @@ def run_mission(mission_id: int, db: Session = Depends(get_db)):
 def submit_decision(mission_id: int, decision_id: int, req: DecisionSubmitRequest, db: Session = Depends(get_db)):
     _get_or_404(db, mission_id)
     return _run_service(db, service.submit_decision, mission_id, decision_id, req.action, req.note)
+
+
+@router.post("/missions/{mission_id}/terminate")
+def terminate_mission(mission_id: int, req: MissionTerminateRequest, db: Session = Depends(get_db)):
+    _get_or_404(db, mission_id)
+    return _run_service(db, service.terminate_mission, mission_id, req.reason)
+
+
+@router.post("/missions/{mission_id}/action-tasks/{action_task_id}/cancel")
+def cancel_action_task(mission_id: int, action_task_id: int, db: Session = Depends(get_db)):
+    _get_or_404(db, mission_id)
+    return _run_service(db, service.cancel_action_task, mission_id, action_task_id)
 
 
 def _ndjson_line(event: dict) -> str:

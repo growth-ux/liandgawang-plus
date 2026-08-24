@@ -7,8 +7,6 @@ from typing import Callable
 
 from sqlalchemy.orm import Session, sessionmaker
 
-from app.knowledge import memory as knowledge_memory
-from app.knowledge import repository as knowledge_repo
 from app.zhanggui import repository, zlog
 from app.zhanggui.goal_parser import parse_goal
 from app.zhanggui.graph import run_professional_graph
@@ -27,11 +25,11 @@ class MissionStateError(Exception):
 
 
 ALLOWED_TRANSITIONS = {
-    "awaiting_goal_confirmation": {"awaiting_team_confirmation"},
-    "awaiting_team_confirmation": {"running"},
-    "running": {"awaiting_decision", "partially_completed", "failed"},
-    "awaiting_decision": {"completed"},
-    "partially_completed": {"completed"},
+    "awaiting_goal_confirmation": {"awaiting_team_confirmation", "terminated"},
+    "awaiting_team_confirmation": {"running", "terminated"},
+    "running": {"awaiting_decision", "partially_completed", "failed", "terminated"},
+    "awaiting_decision": {"completed", "terminated"},
+    "partially_completed": {"completed", "terminated"},
 }
 
 PLAN_DECISION_OPTIONS = [
@@ -65,16 +63,48 @@ def _transition(db: Session, mission, new_status: str) -> None:
         raise MissionStateError(f"当前状态 {mission.status} 不允许进入 {new_status}")
 
 
+def terminate_mission(db: Session, mission_id: int, reason: str = "") -> dict:
+    """终止尚未完成的办事，保留任务、决策和已有办理记录供后续追溯。"""
+    mission = _get_mission_or_error(db, mission_id)
+    if mission.status in ("completed", "failed", "terminated"):
+        raise MissionStateError("当前任务已结束，无法终止")
+    _transition(db, mission, "terminated")
+    repository.cancel_pending_decisions(db, mission_id, reason or "用户终止办事")
+    repository.set_mission_state(db, mission, phase="terminated", status="terminated")
+    logger.info("[任务 %s] 用户终止办事：%s", mission_id, reason or "未填写原因")
+    return repository.get_mission_snapshot(db, mission_id)
+
+
+def cancel_action_task(db: Session, mission_id: int, action_task_id: int) -> dict:
+    """终止尚未办理的后续行动，不影响同一办事中的其他行动。"""
+    task = repository.get_action_task(db, action_task_id)
+    if task is None or task.mission_id != mission_id:
+        raise MissionStateError("行动任务不存在")
+    if task.status not in ("ready", "waiting_prerequisite"):
+        raise MissionStateError("当前行动任务无法终止")
+    repository.set_action_task_status(db, task, "cancelled")
+    logger.info("[任务 %s] 用户终止行动任务 %s", mission_id, action_task_id)
+    return repository.get_mission_snapshot(db, mission_id)
+
+
 def preview_mission(db: Session, text: str) -> GoalPreview:
     """解析自然语言目标；优先 mem0 记忆，失败回退企业经验表。"""
-    memories = knowledge_memory.search_memories(text, limit=3)
-    if not memories:
-        try:
-            memories = [item["content"] for item in knowledge_repo.list_experiences(db)[:3]]
-        except Exception:
-            logger.exception("企业经验查询失败，跳过历史经验引用")
-            memories = []
-    return parse_goal(text, today=date.today(), memories=memories)
+    from app.knowledge import service as knowledge_service
+
+    tags = [
+        value
+        for value in ("玉米", "小麦", "大豆", "稻谷", "保供", "成本")
+        if value in text
+    ]
+    references = knowledge_service.search_for_task(
+        db,
+        agent_key="zhanggui",
+        task_type="mission_preview",
+        task_id=0,
+        query=text,
+        context={"tags": tags},
+    )
+    return parse_goal(text, today=date.today(), memories=references)
 
 
 def create_mission_from_preview(db: Session, raw_request: str, goal: dict, memories: list) -> dict:
@@ -82,9 +112,12 @@ def create_mission_from_preview(db: Session, raw_request: str, goal: dict, memor
     memory_items = []
     for item in memories or []:
         if isinstance(item, str):
-            memory_items.append({"content": item, "source": "企业过往经验"})
+            memory_items.append({"content": item, "source_title": "企业过往经验"})
         elif isinstance(item, dict) and item.get("content"):
-            memory_items.append({"content": item["content"], "source": item.get("source", "企业过往经验")})
+            normalized = dict(item)
+            if "source" in normalized and "source_title" not in normalized:
+                normalized["source_title"] = normalized.pop("source")
+            memory_items.append(normalized)
     mission = repository.create_mission(
         db, raw_request=raw_request, goal=goal_obj.model_dump(), memory_references=memory_items,
     )
@@ -219,6 +252,13 @@ def _execute_until_gate(db: Session, mission, mission_id: int, emit: Callable[[d
     zlog(f"[execute] 任务 {mission_id} graph 完成，keys={list(final_state.keys())}")
     logger.info("[任务 %s] run_professional_graph 完成，结果 keys=%s", mission_id, list(final_state.keys()))
 
+    # 办理期间可能被用户终止；此时保留已完成的记录，但绝不能重新写回待确认状态。
+    db.expire_all()
+    current = _get_mission_or_error(db, mission_id)
+    if current.status == "terminated":
+        _emit(emit, "mission_terminated", mission_id, {"reason": "用户终止办事"})
+        return repository.get_mission_snapshot(db, mission_id)
+
     recommendation = final_state.get("recommendation") or {}
     conflicts = final_state.get("conflicts") or []
     if recommendation.get("primary_scheme_id"):
@@ -326,23 +366,41 @@ def _sink_experience(db: Session, mission_id: int) -> None:
     """沉淀企业经验并同步记忆；失败不影响任务完成。"""
     try:
         snapshot = repository.get_mission_snapshot(db, mission_id) or {}
-        content = build_mission_experience(snapshot)
-        if not content:
+        plan_decision = next(
+            (
+                decision
+                for decision in snapshot.get("decisions", [])
+                if decision.get("gate_type") == "plan"
+                and decision.get("status") == "confirmed"
+            ),
+            None,
+        )
+        if plan_decision is None:
             return
         goal = snapshot.get("goal") or {}
-        tags = ["粮掌柜", goal.get("variety_name") or "粮食"]
-        exp = knowledge_repo.create_experience(
+        recommendation = snapshot.get("recommendation") or {}
+        from app.knowledge import service as knowledge_service
+
+        items = knowledge_service.learn_from_task(
             db,
-            source_record_id=mission_id,
-            content=content,
-            tags=[t for t in tags if t],
+            source_agent="zhanggui",
             source_type="zhanggui",
+            source_id=mission_id,
+            source_title=snapshot.get("title") or f"粮掌柜任务 #{mission_id}",
+            confirmed=True,
+            payload={
+                "variety_name": goal.get("variety_name") or "粮食",
+                "priority": goal.get("priority") or "supply",
+                "condition": recommendation.get("condition") or "库存紧张",
+                "primary_scheme_id": recommendation.get("primary_scheme_id"),
+                "confirmed_strategy": {
+                    "verify_a": "先核验主推供应方的履约担保，未通过则启用备选方案",
+                    "choose_b": "直接采用备选方案，并安排询价和运输",
+                }.get(plan_decision.get("selected_action"), "已确认采购方案"),
+            },
         )
-        if exp:
-            row = knowledge_repo.get_experience(db, exp["id"])
-            if row is not None:
-                knowledge_memory.sync_experience(row)
-            logger.info("[任务 %s] 企业经验已沉淀：%s", mission_id, content)
+        if items:
+            logger.info("[任务 %s] 已沉淀 %d 条企业知识", mission_id, len(items))
     except Exception:
         logger.exception("企业经验沉淀失败，不影响任务完成")
 

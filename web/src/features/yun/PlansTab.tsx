@@ -17,6 +17,8 @@ import TransportPlanComposer from "./TransportPlanComposer";
 import PlanDecisionCard from "./PlanDecisionCard";
 import PlanReferenceCards from "./PlanReferenceCards";
 import { selectPlanReferences } from "./planReferences";
+import KnowledgeReferencePanel from "../knowledge/KnowledgeReferencePanel";
+import { createHandoff } from "../handoff/api";
 
 interface Props {
   taskId: number | null;
@@ -55,7 +57,7 @@ export default function PlansTab({
 
   const navigate = useNavigate();
 
-  const handleHandoffToSuan = () => {
+  const handleHandoffToSuan = async () => {
     if (!detail || !primary) return;
     const midPrice = String(Math.round((primary.price_low + primary.price_high) / 2));
     const handoff = {
@@ -72,8 +74,13 @@ export default function PlansTab({
       }],
       pending_items: ["报价待询运确认"],
     };
-    sessionStorage.setItem("suan_pending_handoff", JSON.stringify(handoff));
-    navigate("/agent/suan");
+    const created = await createHandoff({
+      source_agent: "yun", target_agent: "suan", source_ref: handoff.source_ref,
+      title: "请测算运输方案的综合到厂成本",
+      summary: `${primary.title}，已带入参考运费，仍需确认询运报价。`,
+      payload: { type: "costing_input", ...handoff },
+    });
+    navigate(`/agent/suan?handoff=${created.id}`);
   };
 
   const loadDetail = useCallback(async (id: number) => {
@@ -131,11 +138,27 @@ export default function PlansTab({
     if (detail == null) return;
     setBusy(true);
     try {
-      await matchTask(detail.task.id, next);
+      await matchTask(detail.task.id, { decision_preference: next, use_memory: true });
       const refreshed = await fetchTaskDetail(detail.task.id);
       setDetail(refreshed);
     } catch (e) {
       setError("重新排序失败，请重试");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const rejectMemory = async () => {
+    if (detail == null) return;
+    setBusy(true);
+    try {
+      await matchTask(detail.task.id, {
+        decision_preference: detail.task.decision_preference,
+        use_memory: false,
+      });
+      setDetail(await fetchTaskDetail(detail.task.id));
+    } catch {
+      setError("取消本次知识引用失败，请重试");
     } finally {
       setBusy(false);
     }
@@ -230,6 +253,13 @@ export default function PlansTab({
                   ))}
                 </div>
               </section>
+
+              <KnowledgeReferencePanel
+                references={detail.task.memory_references}
+                effect={detail.task.memory_effect}
+                onReject={detail.task.memory_accepted ? rejectMemory : undefined}
+                rejecting={busy}
+              />
 
               {/* 主推方案 */}
               <PlanDecisionCard

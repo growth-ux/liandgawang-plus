@@ -1,5 +1,7 @@
 /** 粮掌柜：与后端 JSON 一致的 API 与 UI 状态类型 */
 
+import type { KnowledgeReference } from "../knowledge/types";
+
 export type MissionStatus =
   | "awaiting_goal_confirmation"
   | "awaiting_team_confirmation"
@@ -7,7 +9,8 @@ export type MissionStatus =
   | "awaiting_decision"
   | "partially_completed"
   | "completed"
-  | "failed";
+  | "failed"
+  | "terminated";
 
 export interface MissionGoal {
   variety_code: string;
@@ -31,10 +34,7 @@ export interface GoalField {
   note?: string;
 }
 
-export interface MemoryReference {
-  content: string;
-  source: string;
-}
+export type MemoryReference = KnowledgeReference;
 
 export interface GoalPreview {
   goal: MissionGoal;
@@ -145,7 +145,7 @@ export interface MissionDecision {
   ai_recommendation: string;
   selected_action?: string | null;
   note: string;
-  status: "pending" | "confirmed";
+  status: "pending" | "confirmed" | "cancelled";
   decided_at?: string | null;
   created_at?: string | null;
 }
@@ -206,9 +206,10 @@ export interface MissionEvent {
     | "agent_failed"
     | "conflict_found"
     | "recommendation_ready"
-    | "decision_required"
-    | "mission_failed"
-    | "error";
+  | "decision_required"
+  | "mission_failed"
+  | "mission_terminated"
+  | "error";
   mission_id: number;
   agent_id: string | null;
   payload: Record<string, unknown>;
@@ -222,6 +223,7 @@ export const STATUS_LABELS: Record<MissionStatus, string> = {
   partially_completed: "部分完成",
   completed: "已完成",
   failed: "无法形成方案",
+  terminated: "已终止",
 };
 
 export const PHASE_LABELS: Record<string, string> = {
@@ -230,4 +232,5 @@ export const PHASE_LABELS: Record<string, string> = {
   parallel_execution: "并行办理",
   decision: "方案确认",
   execution: "执行分派",
+  terminated: "已终止",
 };

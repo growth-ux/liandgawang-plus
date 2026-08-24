@@ -1,5 +1,6 @@
 // web/src/features/liang/SourcingTab.tsx
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { createTask, handoffTask, runSourcingWorkflowStream } from "./api";
 import DagCanvas from "./DagCanvas";
 import HistoryTab from "./HistoryTab";
@@ -9,6 +10,7 @@ import type { DagNodeId, NodeStatus } from "./workflow";
 import type { SourcingTask, TaskNeedSummary, TaskPick, TaskPlan } from "./types";
 import RiskHandoffDialog from "../an/RiskHandoffDialog";
 import type { RiskHandoffDraft } from "../an/handoff";
+import { createHandoff } from "../handoff/api";
 
 const EXAMPLE_NEED = "需要120吨二等玉米，7天内可发，预算2400元/吨";
 // DAG 执行顺序：节点完成事件到达后，点亮下一个节点为执行中
@@ -66,6 +68,7 @@ function PickCard({ pick, label }: { pick: TaskPick; label: string }) {
 }
 
 export default function SourcingTab() {
+  const navigate = useNavigate();
   const [text, setText] = useState("");
   const [status, setStatus] = useState<Record<DagNodeId, NodeStatus>>(initialStatus);
   const [need, setNeed] = useState<TaskNeedSummary | null>(null);
@@ -134,12 +137,35 @@ export default function SourcingTab() {
 
   async function onHandoff() {
     if (!saved || !destination.trim()) return;
+    const origin = primary?.origin?.trim();
+    const quantity = Number(need?.quantity_tons ?? 0);
+    if (!origin || !quantity) {
+      setError("主推粮源缺少发货地或运输吨位，暂不能交接运小二。");
+      return;
+    }
     try {
       const t = await handoffTask(saved.id, destination.trim());
       setSaved(t);
       setHandoffOpen(false);
       setDestination("");
       setHistoryKey((k) => k + 1);
+      const summary = t.handoff?.summary;
+      const handoff = await createHandoff({
+        source_agent: "liang",
+        target_agent: "yun",
+        source_ref: t.task_code,
+        title: "请安排主推粮源的运输方案",
+        summary: `${summary?.origin ?? primary?.origin ?? "产地"} → ${summary?.destination ?? "目的地"}，请确认运输条件后生成方案。`,
+        payload: {
+          type: "transport_requirement",
+          origin: summary?.origin ?? origin,
+          destination: summary?.destination ?? "",
+          variety_code: primary?.variety_name.includes("玉米") ? "corn" : "",
+          quantity_tons: Number(summary?.quantity_tons ?? quantity),
+          deadline_date: summary?.latest_ship_at ?? null,
+        },
+      });
+      navigate(`/agent/yun?handoff=${handoff.id}`);
     } catch (e) {
       setError(e instanceof Error ? e.message : "交接失败");
     }

@@ -30,6 +30,8 @@ export default function DecisionGate({ mission, onResolved }: DecisionGateProps)
             ? "任务已完成，行动任务已分派给对应小二，可在“我的办事”中跟进。"
             : mission.status === "failed"
               ? "本轮办理未能形成可用方案，可返回重新调整目标或团队。"
+              : mission.status === "terminated"
+                ? "这项办事已由用户终止，历史分析与确认记录仍可在任务中查看。"
               : "粮掌柜正在组织专业小二办理，到达关键节点时会在这里请你确认。"}
         </p>
         {mission.recommendation && (

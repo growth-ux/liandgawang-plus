@@ -10,6 +10,7 @@ from app.database import get_db
 from app.logistics import llm, repository
 from app.logistics.rules import MODE_NAMES, match_plans
 from app.logistics.seed import DATA_UPDATED_AT, TODAY
+from app.knowledge import service as knowledge_service
 
 router = APIRouter(prefix="/api/logistics", tags=["logistics"])
 
@@ -57,6 +58,7 @@ class TaskBody(BaseModel):
 
 class MatchBody(BaseModel):
     decision_preference: DecisionPreference | None = None
+    use_memory: bool = True
 
 
 class InquiryBody(BaseModel):
@@ -143,6 +145,9 @@ def _task_dict(t):
         "deadline_date": t.deadline_date.isoformat() if t.deadline_date else None,
         "source_type": t.source_type,
         "decision_preference": t.decision_preference,
+        "memory_references": t.memory_snapshot or [],
+        "memory_effect": t.memory_effect or "",
+        "memory_accepted": bool(t.memory_accepted),
         "status": t.status,
         "status_label": STATUS_LABELS.get(t.status, t.status),
         "blocked_note": t.blocked_note,
@@ -227,6 +232,71 @@ def post_match(task_id: int, body: MatchBody | None = None, db: Session = Depend
     if body is not None and body.decision_preference is not None:
         task.decision_preference = body.decision_preference
         db.commit()
+    use_memory = body.use_memory if body is not None else True
+    previous_references = task.memory_snapshot or []
+    references = []
+    memory_effect = ""
+    effective_preference = task.decision_preference
+    if use_memory:
+        references = knowledge_service.search_for_task(
+            db,
+            agent_key="yun",
+            task_type="logistics",
+            task_id=task.id,
+            query=(
+                f"{task.origin}到{task.destination} {task.variety_name}运输 "
+                f"{task.extra_note or ''}"
+            ),
+            context={
+                "tags": [task.variety_name, task.origin, task.destination, "物流"],
+            },
+        )
+        knowledge_text = " ".join(
+            f"{reference.title} {reference.content}" for reference in references
+        )
+        if task.decision_preference == "balanced" and any(
+            keyword in knowledge_text for keyword in ("保供", "稳定到货", "锁定车源", "稳定车源")
+        ):
+            effective_preference = "on_time"
+            memory_effect = (
+                "引用企业经验，在均衡决策中将到货稳定性设为决胜项；"
+                "实时运价和时效仍按本次线路数据计算"
+            )
+        elif references:
+            memory_effect = "企业经验作为本次风险提醒；用户明确偏好与实时线路数据保持优先"
+        repository.set_task_memory(
+            db,
+            task,
+            references=[reference.model_dump() for reference in references],
+            effect=memory_effect,
+            accepted=True,
+        )
+        for reference in references:
+            knowledge_service.record_citation(
+                db,
+                knowledge_id=reference.knowledge_id,
+                agent_key="yun",
+                task_type="logistics",
+                task_id=task.id,
+                effect=memory_effect,
+                accepted=True,
+            )
+    else:
+        for reference in previous_references:
+            knowledge_id = reference.get("knowledge_id")
+            if knowledge_id is not None:
+                knowledge_service.record_citation(
+                    db,
+                    knowledge_id=knowledge_id,
+                    agent_key="yun",
+                    task_type="logistics",
+                    task_id=task.id,
+                    effect="用户选择本次不采用",
+                    accepted=False,
+                )
+        repository.set_task_memory(
+            db, task, references=[], effect="", accepted=False
+        )
     out = match_plans(
         repository.list_segments(db),
         repository.list_services(db),
@@ -237,7 +307,7 @@ def post_match(task_id: int, body: MatchBody | None = None, db: Session = Depend
             "quantity_tons": task.quantity_tons,
             "deadline_date": task.deadline_date,
             "allow_split": bool(task.allow_split),
-            "decision_preference": task.decision_preference,
+            "decision_preference": effective_preference,
             "today": TODAY,
         },
     )

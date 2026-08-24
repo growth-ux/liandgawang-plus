@@ -1,182 +1,68 @@
-import { useEffect, useState } from "react";
-import type { SharedExperience } from "../features/suan/types";
-import { fetchExperiences, updateExperience, ignoreExperience } from "../features/suan/api";
+import { useCallback, useEffect, useState } from "react";
+import { createKnowledgeItem, fetchKnowledgeItems, fetchKnowledgeOverview } from "../features/knowledge/api";
+import KnowledgeCard, { TYPE_META } from "../features/knowledge/KnowledgeCard";
+import KnowledgeDetailDrawer from "../features/knowledge/KnowledgeDetailDrawer";
+import KnowledgeFilters from "../features/knowledge/KnowledgeFilters";
+import KnowledgeOverview from "../features/knowledge/KnowledgeOverview";
+import type { KnowledgeItem, KnowledgeOverviewData, KnowledgeStatus, KnowledgeType } from "../features/knowledge/types";
 
-const tabs = [
-  "企业业务资料",
-  "采购偏好",
-  "质量标准",
-  "合作供应方",
-  "常用运输路线",
-  "历史业务方案",
-  "采购复盘",
-];
+type View = "overview" | KnowledgeType;
+const TYPES: KnowledgeType[] = ["fact", "preference", "decision", "risk"];
+const EMPTY_COPY: Record<KnowledgeType, string> = {
+  fact: "添加企业长期有效的业务资料后，小二会在办事时主动带入。",
+  preference: "多次确认的采购取舍会在这里形成可复用偏好。",
+  decision: "完成一次成本测算或综合采购决策后，AI 会在这里沉淀选择逻辑。",
+  risk: "完成合作方风控复盘后，AI 会在这里沉淀风险规则。",
+};
 
-/** 企业知识库：沉淀可被各位小二复用的企业业务信息 */
+function splitValues(value: string) { return value.split(/[，,]/).map((part) => part.trim()).filter(Boolean); }
+
 export default function Knowledge() {
-  const [active, setActive] = useState(0);
-  const [experiences, setExperiences] = useState<SharedExperience[]>([]);
-  const [loadingExp, setLoadingExp] = useState(false);
-  const [expError, setExpError] = useState<string | null>(null);
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const [editContent, setEditContent] = useState("");
+  const [view, setView] = useState<View>("overview");
+  const [overview, setOverview] = useState<KnowledgeOverviewData | null>(null);
+  const [items, setItems] = useState<KnowledgeItem[]>([]);
+  const [query, setQuery] = useState("");
+  const [sourceAgent, setSourceAgent] = useState("");
+  const [status, setStatus] = useState<KnowledgeStatus>("active");
+  const [selected, setSelected] = useState<KnowledgeItem | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [creating, setCreating] = useState(false);
+  const [createError, setCreateError] = useState("");
 
-  const loadExperiences = async () => {
-    setLoadingExp(true);
-    setExpError(null);
-    try {
-      const res = await fetchExperiences();
-      setExperiences(res.items);
-    } catch (e) {
-      setExpError(e instanceof Error ? e.message : "加载经验失败");
-    } finally {
-      setLoadingExp(false);
-    }
-  };
+  const loadOverview = useCallback(async () => {
+    try { setOverview(await fetchKnowledgeOverview()); setError(""); }
+    catch (reason) { setError(reason instanceof Error ? reason.message : "知识总览加载失败"); }
+  }, []);
+  const loadItems = useCallback(async () => {
+    if (view === "overview") return;
+    setLoading(true);
+    try { const result = await fetchKnowledgeItems({ knowledge_type: view, query, source_agent: sourceAgent, status }); setItems(result.items); setError(""); }
+    catch (reason) { setError(reason instanceof Error ? reason.message : "知识列表加载失败"); }
+    finally { setLoading(false); }
+  }, [query, sourceAgent, status, view]);
+  useEffect(() => { setLoading(true); loadOverview().finally(() => setLoading(false)); }, [loadOverview]);
+  useEffect(() => { loadItems(); }, [loadItems]);
 
-  useEffect(() => {
-    if (active === 5) loadExperiences();
-  }, [active]);
-
-  const handleEdit = async (id: number) => {
-    if (!editContent.trim()) return;
-    try {
-      await updateExperience(id, editContent);
-      setEditingId(null);
-      loadExperiences();
-    } catch (e) {
-      setExpError(e instanceof Error ? e.message : "保存失败");
-    }
-  };
-
-  const handleIgnore = async (id: number) => {
-    try {
-      await ignoreExperience(id);
-      loadExperiences();
-    } catch (e) {
-      setExpError(e instanceof Error ? e.message : "操作失败");
-    }
-  };
+  const refresh = async () => { setSelected(null); await Promise.all([loadOverview(), loadItems()]); };
+  const openLatest = () => { if (overview?.latest_item) setSelected(overview.latest_item); };
 
   return (
-    <div className="mx-auto w-full max-w-[1280px] px-6 py-8">
-      <h1 className="text-xl font-semibold">企业知识库</h1>
-      <p className="mt-1 text-sm text-ink-soft">
-        管理企业资料、采购偏好和业务经验，让小二更懂你的业务
-      </p>
-
-      <div className="mt-5 flex flex-wrap gap-2">
-        {tabs.map((tab, i) => (
-          <button
-            key={tab}
-            type="button"
-            onClick={() => setActive(i)}
-            className={`rounded-full px-4 py-1.5 text-sm transition-colors ${
-              i === active
-                ? "bg-brand font-medium text-white"
-                : "border border-line bg-panel text-ink-soft hover:text-ink"
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
-
-      {/* 历史业务方案 Tab */}
-      {active === 5 ? (
-        <div className="mt-6">
-          {expError && (
-            <div className="mb-4 flex items-center gap-2">
-              <p className="rounded-xl bg-red-900/20 px-4 py-2 text-sm text-red-400">{expError}</p>
-              <button onClick={loadExperiences} className="text-xs text-tech hover:text-tech/80">重试</button>
-            </div>
-          )}
-
-          {loadingExp ? (
-            <p className="mt-8 text-center text-sm text-ink-soft">加载中…</p>
-          ) : experiences.length === 0 ? (
-            <div className="mt-6 flex min-h-[320px] flex-col items-center justify-center rounded-3xl border border-dashed border-line bg-panel/60 text-center">
-              <p className="text-sm text-ink-soft">
-                还没有业务经验。完成一笔成本测算后，系统会自动沉淀可复用经验。
-              </p>
-            </div>
-          ) : (
-            <div className="flex flex-col gap-3">
-              {experiences.map((exp) => (
-                <div key={exp.id} className="rounded-2xl border border-line bg-panel/70 p-4">
-                  {editingId === exp.id ? (
-                    <div className="flex gap-2">
-                      <input
-                        value={editContent}
-                        onChange={(e) => setEditContent(e.target.value)}
-                        className="flex-1 rounded-lg border border-line bg-rice-deep px-3 py-1.5 text-sm text-ink outline-none focus:border-brand"
-                      />
-                      <button
-                        onClick={() => handleEdit(exp.id)}
-                        className="rounded-full bg-brand px-4 py-1.5 text-xs text-white"
-                      >
-                        保存
-                      </button>
-                      <button
-                        onClick={() => setEditingId(null)}
-                        className="rounded-full border border-line px-3 py-1.5 text-xs text-ink-soft"
-                      >
-                        取消
-                      </button>
-                    </div>
-                  ) : (
-                    <>
-                      <p className="text-sm">{exp.content}</p>
-                      <div className="mt-2 flex items-center gap-3 text-xs text-ink-soft">
-                        <span
-                          className={`rounded-full px-2 py-0.5 text-[10px] ${
-                            exp.source_type === "zhanggui"
-                              ? "bg-brand-soft text-brand-deep"
-                              : "bg-tech/10 text-tech"
-                          }`}
-                        >
-                          {exp.source_type === "zhanggui" ? "粮掌柜办事经验" : "成本测算经验"}
-                        </span>
-                        <span>来源记录 #{exp.source_record_id}</span>
-                        <span>{exp.created_at?.slice(0, 10)}</span>
-                        {exp.tags.map((t) => (
-                          <span key={t} className="rounded-full bg-violet-400/10 px-2 py-0.5 text-[10px] text-violet-300">
-                            {t}
-                          </span>
-                        ))}
-                      </div>
-                      <div className="mt-2 flex gap-2">
-                        <button
-                          onClick={() => { setEditingId(exp.id); setEditContent(exp.content); }}
-                          className="text-xs text-tech hover:text-tech/80"
-                        >
-                          编辑
-                        </button>
-                        <button
-                          onClick={() => handleIgnore(exp.id)}
-                          className="text-xs text-ink-soft hover:text-red-400"
-                        >
-                          忽略
-                        </button>
-                      </div>
-                    </>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      ) : (
-        <div className="mt-6 flex min-h-[420px] flex-col items-center justify-center rounded-3xl border border-dashed border-line bg-panel/60 text-center">
-          <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-faint text-2xl">
-            📚
-          </span>
-          <h2 className="mt-4 text-base font-semibold">「{tabs[active]}」还没有内容</h2>
-          <p className="mt-2 max-w-md text-sm leading-6 text-ink-soft">
-            沉淀的企业信息可被各位小二在服务过程中参考，你也可以随时查看、修正或停用
-          </p>
-        </div>
-      )}
+    <div className="relative mx-auto w-full max-w-[1320px] px-5 py-7 lg:px-8">
+      <div className="pointer-events-none absolute left-8 right-8 top-0 h-px bg-gradient-to-r from-transparent via-tech/30 to-transparent" />
+      <header className="mb-6 flex flex-wrap items-end justify-between gap-4"><div><div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.28em] text-tech/70"><span className="h-1.5 w-1.5 rounded-full bg-tech shadow-[0_0_8px_rgba(34,211,238,0.9)]" />Enterprise intelligence</div><h1 className="mt-2 text-2xl font-semibold">企业知识大脑</h1><p className="mt-1 text-sm text-ink-soft">从办事记录中自动学习，让每个小二共享企业经验</p></div><button type="button" onClick={() => setCreating(true)} className="rounded-full border border-tech/30 bg-tech/[0.08] px-5 py-2.5 text-xs font-medium text-tech transition hover:bg-tech/15">＋ 添加企业知识</button></header>
+      <nav className="mb-5 flex flex-wrap gap-2"><button type="button" onClick={() => setView("overview")} className={`rounded-full px-4 py-2 text-xs ${view === "overview" ? "bg-tech text-slate-950" : "border border-line text-ink-soft"}`}>知识总览</button>{TYPES.map((type) => <button key={type} type="button" onClick={() => setView(type)} className={`rounded-full px-4 py-2 text-xs transition ${view === type ? "bg-white/10 text-ink ring-1 ring-white/15" : "border border-line text-ink-soft hover:text-ink"}`}>{TYPE_META[type].label}</button>)}</nav>
+      {error && <div className="mb-4 flex items-center justify-between rounded-xl border border-red-400/15 bg-red-400/[0.06] px-4 py-3 text-xs text-red-300"><span>{error}</span><button type="button" onClick={() => view === "overview" ? loadOverview() : loadItems()}>重试</button></div>}
+      {view === "overview" ? <KnowledgeOverview data={overview} loading={loading} onSelectType={setView} onOpenLatest={openLatest} /> : <div className="space-y-4"><div className="flex items-end justify-between"><div><p className="text-[10px] uppercase tracking-[0.2em] text-ink-soft">Knowledge domain</p><h2 className="mt-1 text-lg font-semibold">{TYPE_META[view].label}</h2></div><span className="font-mono text-xs text-ink-soft">{items.length} 条</span></div><KnowledgeFilters query={query} sourceAgent={sourceAgent} status={status} onQueryChange={setQuery} onSourceChange={setSourceAgent} onStatusChange={setStatus} />{loading ? <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">{[1,2,3].map((key) => <div key={key} className="h-56 animate-pulse rounded-2xl border border-line bg-white/[0.025]" />)}</div> : items.length ? <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">{items.map((item) => <KnowledgeCard key={item.id} item={item} onOpen={() => setSelected(item)} />)}</div> : <div className="flex min-h-64 flex-col items-center justify-center rounded-2xl border border-dashed border-line bg-panel/40 text-center"><span className="font-mono text-3xl text-tech">{TYPE_META[view].mark}</span><h3 className="mt-4 text-sm font-semibold">暂时没有{TYPE_META[view].label}</h3><p className="mt-2 max-w-md text-xs leading-6 text-ink-soft">{EMPTY_COPY[view]}</p></div>}</div>}
+      <KnowledgeDetailDrawer item={selected} onClose={() => setSelected(null)} onChanged={refresh} />
+      {creating && <CreatePanel defaultType={view === "overview" ? "fact" : view} onClose={() => { setCreating(false); setCreateError(""); }} error={createError} onSubmit={async (body) => { try { setCreateError(""); await createKnowledgeItem(body); setCreating(false); setView(body.knowledge_type); await refresh(); } catch (reason) { setCreateError(reason instanceof Error ? reason.message : "添加失败"); } }} />}
     </div>
   );
+}
+
+function CreatePanel({ defaultType, onClose, onSubmit, error }: { defaultType: KnowledgeType; onClose: () => void; onSubmit: (body: { knowledge_type: KnowledgeType; title: string; content: string; applicable_context: string[]; tags: string[] }) => Promise<void>; error: string }) {
+  const [type, setType] = useState(defaultType); const [title, setTitle] = useState(""); const [content, setContent] = useState(""); const [contexts, setContexts] = useState(""); const [tags, setTags] = useState(""); const [busy, setBusy] = useState(false);
+  const submit = async () => { if (!title.trim() || !content.trim()) return; setBusy(true); await onSubmit({ knowledge_type: type, title: title.trim(), content: content.trim(), applicable_context: splitValues(contexts), tags: splitValues(tags) }); setBusy(false); };
+  const field = "w-full rounded-xl border border-line bg-panel px-4 py-3 text-sm outline-none focus:border-tech/40";
+  return <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-sm" onMouseDown={onClose}><div className="w-full max-w-xl rounded-3xl border border-line bg-rice p-6 shadow-2xl" onMouseDown={(event) => event.stopPropagation()}><div className="flex items-center justify-between"><div><p className="text-[10px] uppercase tracking-[0.2em] text-tech/70">Manual knowledge</p><h2 className="mt-1 text-lg font-semibold">添加企业知识</h2></div><button onClick={onClose} className="text-xl text-ink-soft">×</button></div><div className="mt-5 space-y-3"><select className={field} value={type} onChange={(e) => setType(e.target.value as KnowledgeType)}>{TYPES.map((value) => <option key={value} value={value}>{TYPE_META[value].label}</option>)}</select><input className={field} value={title} onChange={(e) => setTitle(e.target.value)} placeholder="知识标题" /><textarea className={field} value={content} onChange={(e) => setContent(e.target.value)} rows={5} placeholder="描述可复用的事实、偏好、决策逻辑或风险规则" /><input className={field} value={contexts} onChange={(e) => setContexts(e.target.value)} placeholder="适用场景，用中文逗号分隔" /><input className={field} value={tags} onChange={(e) => setTags(e.target.value)} placeholder="标签，用中文逗号分隔" /></div>{error && <p className="mt-3 text-xs text-red-300">{error}</p>}<div className="mt-5 flex justify-end gap-2"><button onClick={onClose} className="rounded-full border border-line px-4 py-2 text-xs text-ink-soft">取消</button><button disabled={busy || !title.trim() || !content.trim()} onClick={submit} className="rounded-full bg-tech px-5 py-2 text-xs font-medium text-slate-950 disabled:opacity-40">{busy ? "正在保存…" : "保存并启用"}</button></div></div></div>;
 }

@@ -1,5 +1,7 @@
 .DS_Store
 .superpowers/
+.mem0/
+backend/.mem0/
 __pycache__/
 *.pyc
 .venv/

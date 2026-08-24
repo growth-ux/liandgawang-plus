@@ -1,4 +1,5 @@
 import { useEffect, useState, type CSSProperties } from "react";
+import { useSearchParams } from "react-router-dom";
 import AgentSwitcher from "../../components/AgentSwitcher";
 import AgentPortrait from "../../components/AgentPortrait";
 import { getAgent } from "../../data/agents";
@@ -6,14 +7,17 @@ import type { CostingRecord, SuanHandoff } from "./types";
 import CostingTab from "./CostingTab";
 import ProfitTab from "./ProfitTab";
 import RecordsTab from "./RecordsTab";
+import { acceptHandoff, fetchHandoff, ignoreHandoff, type AgentHandoff } from "../handoff/api";
 
 const agent = getAgent("suan")!;
 const TABS = ["成本测算", "盈亏推演", "测算记录"] as const;
 
 export default function SuanPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState(0);
   const [currentRecord, setCurrentRecord] = useState<CostingRecord | null>(null);
   const [pendingHandoff, setPendingHandoff] = useState<SuanHandoff | null>(null);
+  const [incoming, setIncoming] = useState<AgentHandoff | null>(null);
 
   useEffect(() => {
     const raw = sessionStorage.getItem("suan_pending_handoff");
@@ -24,6 +28,24 @@ export default function SuanPage() {
       } catch { /* ignore */ }
     }
   }, []);
+
+  useEffect(() => {
+    const id = Number(searchParams.get("handoff"));
+    if (!id) return;
+    fetchHandoff(id).then((handoff) => {
+      if (handoff.target_agent === "suan" && handoff.status === "pending") setIncoming(handoff);
+    }).catch(() => {});
+  }, [searchParams]);
+
+  const acceptIncoming = async () => {
+    if (!incoming) return;
+    const accepted = await acceptHandoff(incoming.id);
+    const payload = accepted.payload as unknown as SuanHandoff;
+    setPendingHandoff(payload);
+    setIncoming(null);
+    setActiveTab(0);
+    setSearchParams({}, { replace: true });
+  };
 
   const onRecordSaved = (record: CostingRecord) => {
     setCurrentRecord(record);
@@ -97,6 +119,7 @@ export default function SuanPage() {
 
       {/* 内容区 */}
       <div className="mx-auto w-full max-w-[1280px] flex-1 px-6 py-6">
+        {incoming && <section className="mb-4 rounded-2xl border border-violet-400/30 bg-violet-400/[0.06] px-5 py-4"><p className="text-xs tracking-[0.18em] text-violet-300">INCOMING HANDOFF · {incoming.handoff_code}</p><h2 className="mt-1 text-sm font-semibold">{incoming.title}</h2><p className="mt-1 text-xs text-ink-soft">{incoming.summary}</p><div className="mt-3 flex gap-2"><button type="button" onClick={acceptIncoming} className="rounded-full bg-violet-500 px-4 py-1.5 text-xs font-medium text-white">确认接收</button><button type="button" onClick={async () => { await ignoreHandoff(incoming.id); setIncoming(null); setSearchParams({}, { replace: true }); }} className="rounded-full border border-line px-4 py-1.5 text-xs text-ink-soft">忽略</button></div></section>}
         {activeTab === 0 && (
           <CostingTab
             pendingHandoff={pendingHandoff}

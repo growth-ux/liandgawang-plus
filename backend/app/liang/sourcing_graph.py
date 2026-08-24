@@ -89,8 +89,10 @@ def _hard_fail(listing: dict, need: dict) -> tuple[str, str] | None:
         return "GRADE_BELOW_REQUIREMENT", f"等级为{listing['grade']}，低于需求的{need['grade']}"
     if need.get("crop_year") is not None and listing["crop_year"] != need["crop_year"]:
         return "CROP_YEAR_MISMATCH", f"年份为{listing['crop_year']}，与需求的{need['crop_year']}不符"
-    if need.get("budget_price") is not None and float(listing["price"]) > need["budget_price"]:
-        return "PRICE_OVER_BUDGET", f"报价 {listing['price']} 元/吨，超过预算 {need['budget_price']} 元/吨"
+    if need.get("budget_price") is not None:
+        delivered = float(listing["price"]) + FREIGHT_ADJUSTMENT.get(listing["price_type"], 0) + _quality_penalty(listing)
+        if delivered > need["budget_price"]:
+            return "PRICE_OVER_BUDGET", f"综合到厂价 {delivered:.0f} 元/吨，超过预算 {need['budget_price']} 元/吨"
     if need.get("deadline_days") is not None:
         latest = listing.get("latest_ship_at")
         if not latest:

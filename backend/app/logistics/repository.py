@@ -42,6 +42,20 @@ def get_task(db: Session, task_id: int) -> TransportTask | None:
     return db.get(TransportTask, task_id)
 
 
+def set_task_memory(
+    db: Session,
+    task: TransportTask,
+    *,
+    references: list[dict],
+    effect: str,
+    accepted: bool,
+) -> None:
+    task.memory_snapshot = references
+    task.memory_effect = effect
+    task.memory_accepted = 1 if accepted else 0
+    db.commit()
+
+
 def replace_plans(db: Session, task_id: int, plans: list[dict]) -> None:
     db.query(TransportPlan).filter_by(task_id=task_id).delete()
     for p in plans:

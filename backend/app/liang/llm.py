@@ -2,6 +2,7 @@
 
 import logging
 import os
+import re
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -149,7 +150,7 @@ def decide_sourcing_picks(need: dict | None, candidates: list[dict]) -> dict:
         llm = ChatOpenAI(model=model, api_key=api_key, base_url=base_url, temperature=0.2, timeout=60, max_retries=1)
         logger.info("LLM 寻源比选决策请求开始: model=%s 候选=%s", model, codes)
         result = llm.with_structured_output(SourcingPickDecision).invoke([
-            ("system", "你是粮食采购决策专家。请从候选粮源中选出主推与备选（候选不足两条时备选可为 null），综合权衡到厂成本、质量指标、发运窗口与信息完整度。只能使用给定字段，不得编造运费、库存、信用或行情；决策理由必须来自给定数据。"),
+            ("system", "你是粮食采购决策专家。请从候选粮源中选出主推与备选（候选不足两条时备选可为 null），综合权衡到厂成本、质量指标、发运窗口与信息完整度。只能使用给定字段，不得编造运费、库存、信用或行情；决策理由必须来自给定数据。所有 summary、decision_basis、procurement_advice 必须使用简体中文，禁止输出英文句子。预算为综合到厂价上限，严禁把高于预算的候选表述为满足预算。"),
             ("human", f"采购需求：{need or {}}\n候选粮源（已按规则预排序，仅供参考）：{candidates}\n请返回主推与备选的 listing_code 及决策说明。"),
         ])
         if not result:
@@ -161,6 +162,12 @@ def decide_sourcing_picks(need: dict | None, candidates: list[dict]) -> dict:
             return fallback()
         if decision.get("backup_code") not in codes or decision["backup_code"] == decision["primary_code"]:
             decision["backup_code"] = next((c for c in codes if c != decision["primary_code"]), None)
+        # listing_code 可以保留英文编号；面向用户的解释不得出现英文句子。
+        prose = " ".join([decision.get("summary", ""), *decision.get("decision_basis", []), decision.get("procurement_advice", "")])
+        prose_without_codes = re.sub(r"\b[A-Z]+-[A-Z0-9-]+\b", "", prose)
+        if re.search(r"[A-Za-z]{3,}", prose_without_codes):
+            logger.warning("LLM 比选说明包含英文内容，回退规则决策")
+            return fallback()
         return {**decision, "source": "llm"}
     except Exception:
         logger.exception("寻源比选 LLM 决策失败，回退规则前二")

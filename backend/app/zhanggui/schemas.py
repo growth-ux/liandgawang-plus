@@ -41,8 +41,18 @@ class GoalField(BaseModel):
 
 
 class MemoryReference(BaseModel):
+    knowledge_id: int | None = None
+    title: str = "企业经验"
     content: str
-    source: str = "企业过往经验"
+    source_agent: str = "system"
+    source_title: str = "企业过往经验"
+    applicable_reason: str = "与当前任务语义相关"
+    reliability_label: str = "已确认 · 单次经验"
+
+    @property
+    def source(self) -> str:
+        """兼容旧前端和测试读取。"""
+        return self.source_title
 
 
 class GoalPreview(BaseModel):
