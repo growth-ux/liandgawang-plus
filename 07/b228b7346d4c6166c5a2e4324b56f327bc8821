@@ -1,0 +1,155 @@
+web/src/pages/MyTasks.tsx
+  s_b832df15bd83a7::t_883c34441f8b28 54
+  s_b832df15bd83a7::t_ec144a6a928100 124-140
+  s_b832df15bd83a7::t_9281281059b287 51-53
+  s_b832df15bd83a7::t_4ead8853cb60f8 55-57
+  s_b832df15bd83a7::t_e86874ca78275a 121-123
+  s_b832df15bd83a7::t_2cc7ad19a37201 141
+  h_7549b7dc6a6921 1-4,8-20,23-50,58,84-120
+docs/superpowers/specs/2026-08-24-liang-zhanggui-design.md
+  s_b832df15bd83a7::t_15c91d4a546e94 516,519-520,554,559,566
+  s_b832df15bd83a7::t_b38cf96fa8ab53 1-3,5-515,517-518,521-553,555-558,560-565,567-686
+  s_b832df15bd83a7::t_40d2fa1a9a739d 4
+backend/app/knowledge/repository.py
+  s_b832df15bd83a7::t_920b6008453514 30,33
+  s_b832df15bd83a7::t_2c122d1d23b164 31-32
+  h_7549b7dc6a6921 9,25,27,39
+AGENTS.md
+  h_7549b7dc6a6921 12-14
+docs/superpowers/plans/2026-08-24-liang-zhanggui-implementation.md
+  s_b832df15bd83a7::t_4d11dd5fc42196 613
+  s_b832df15bd83a7::t_fb66bb955df3c1 174,209,534,599,741,781,836-851,853-854,878,883,892,902-905,913-914,982,1066,1069-1071,1074,1081,1083,1085,1091,1095,1103,1107
+  s_b832df15bd83a7::t_40d2fa1a9a739d 1-173,175-208,210-533,535-598,600,603-612,614-617,620-713,716-740,742-780,782-824,826-835,852,855-877,879-882,884-891,893-897,899-901,906-912,915-944,947-981,983-1065,1067-1068,1072-1073,1075-1080,1082,1084,1086-1090,1092-1094,1096-1102,1104-1106,1108-1113
+  s_b832df15bd83a7::t_1301bb5dc5d1c5 601-602,618-619,714-715,825,898,945-946
+CLAUDE.md
+  h_7549b7dc6a6921 12-14
+backend/app/knowledge/models.py
+  h_7549b7dc6a6921 3,11,14-15
+backend/app/liang/mock_seed.py
+  h_7549b7dc6a6921 197
+backend/app/main.py
+  h_7549b7dc6a6921 2,24-33,63
+backend/app/zhanggui/__init__.py
+  h_7549b7dc6a6921 1
+backend/app/zhanggui/adapters/__init__.py
+  h_7549b7dc6a6921 1
+backend/app/zhanggui/adapters/an.py
+  h_7549b7dc6a6921 1-79
+backend/app/zhanggui/adapters/base.py
+  h_7549b7dc6a6921 1-70
+backend/app/zhanggui/adapters/liang.py
+  h_7549b7dc6a6921 1-90
+backend/app/zhanggui/adapters/qian.py
+  h_7549b7dc6a6921 1-86
+backend/app/zhanggui/adapters/suan.py
+  h_7549b7dc6a6921 1-112
+backend/app/zhanggui/adapters/yun.py
+  h_7549b7dc6a6921 1-144
+backend/app/zhanggui/adapters/zhan.py
+  h_7549b7dc6a6921 1-64
+backend/app/zhanggui/conflict_rules.py
+  h_7549b7dc6a6921 1-165
+backend/app/zhanggui/demo_data.py
+  h_7549b7dc6a6921 1-144
+backend/app/zhanggui/goal_parser.py
+  h_7549b7dc6a6921 1-230
+backend/app/zhanggui/graph.py
+  h_7549b7dc6a6921 1-257
+backend/app/zhanggui/models.py
+  h_7549b7dc6a6921 1-80
+backend/app/zhanggui/repository.py
+  h_7549b7dc6a6921 1-273
+backend/app/zhanggui/routes.py
+  h_7549b7dc6a6921 1-144
+backend/app/zhanggui/schemas.py
+  h_7549b7dc6a6921 1-116
+backend/app/zhanggui/service.py
+  h_7549b7dc6a6921 1-360
+backend/app/zhanggui/synthesizer.py
+  h_7549b7dc6a6921 1-133
+backend/app/zhanggui/team_rules.py
+  h_7549b7dc6a6921 1-69
+backend/migrations/20260824_add_zhanggui_tables.sql
+  h_7549b7dc6a6921 1-87
+backend/tests/conftest.py
+  h_7549b7dc6a6921 14
+backend/tests/zhanggui/conftest.py
+  h_7549b7dc6a6921 1-52
+backend/tests/zhanggui/test_adapters.py
+  h_7549b7dc6a6921 1-45
+backend/tests/zhanggui/test_conflicts_synthesis.py
+  h_7549b7dc6a6921 1-95
+backend/tests/zhanggui/test_goal_team.py
+  h_7549b7dc6a6921 1-53
+backend/tests/zhanggui/test_graph_service.py
+  h_7549b7dc6a6921 1-115
+backend/tests/zhanggui/test_models_repository.py
+  h_7549b7dc6a6921 1-56
+backend/tests/zhanggui/test_routes.py
+  h_7549b7dc6a6921 1-104
+web/src/data/agents.ts
+  h_7549b7dc6a6921 57
+web/src/features/suan/types.ts
+  h_7549b7dc6a6921 150
+web/src/features/zhanggui/ActionTaskList.tsx
+  h_7549b7dc6a6921 1-59
+web/src/features/zhanggui/AgentFlowSvg.tsx
+  h_7549b7dc6a6921 1-57
+web/src/features/zhanggui/AgentPod.tsx
+  h_7549b7dc6a6921 1-53
+web/src/features/zhanggui/AgentResultDrawer.tsx
+  h_7549b7dc6a6921 1-140
+web/src/features/zhanggui/DecisionGate.tsx
+  h_7549b7dc6a6921 1-85
+web/src/features/zhanggui/DecisionTrace.tsx
+  h_7549b7dc6a6921 1-79
+web/src/features/zhanggui/GoalConfirmation.tsx
+  h_7549b7dc6a6921 1-169
+web/src/features/zhanggui/HistoryView.tsx
+  h_7549b7dc6a6921 1-81
+web/src/features/zhanggui/MissionCockpit.tsx
+  h_7549b7dc6a6921 1-231
+web/src/features/zhanggui/MissionRail.tsx
+  h_7549b7dc6a6921 1-52
+web/src/features/zhanggui/MissionStart.tsx
+  h_7549b7dc6a6921 1-149
+web/src/features/zhanggui/PlanComparison.tsx
+  h_7549b7dc6a6921 1-95
+web/src/features/zhanggui/SpatialAgentStage.tsx
+  h_7549b7dc6a6921 1-87
+web/src/features/zhanggui/TeamConfirmation.tsx
+  h_7549b7dc6a6921 1-77
+web/src/features/zhanggui/ZhangguiPage.tsx
+  h_7549b7dc6a6921 1-88
+web/src/features/zhanggui/api.ts
+  h_7549b7dc6a6921 1-92
+web/src/features/zhanggui/types.ts
+  h_7549b7dc6a6921 1-228
+web/src/features/zhanggui/zhanggui.css
+  h_7549b7dc6a6921 1-448
+web/src/pages/Knowledge.tsx
+  h_7549b7dc6a6921 131-139
+web/src/pages/agents/AgentServicePage.tsx
+  h_7549b7dc6a6921 12,27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "07b228b7346d4c6166c5a2e4324b56f327bc8821",
+  "prompts": {},
+  "humans": {
+    "h_7549b7dc6a6921": {
+      "author": "tiger <1360055716@qq.com>"
+    }
+  },
+  "sessions": {
+    "s_b832df15bd83a7": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a031d9-7d8b-7111-91e0-537b103af3d1",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
