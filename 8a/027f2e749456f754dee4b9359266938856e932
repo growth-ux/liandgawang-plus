@@ -1,0 +1,14 @@
+web/src/features/zhanggui/AgentFlowSvg.tsx
+  h_7549b7dc6a6921 23-24
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "8a027f2e749456f754dee4b9359266938856e932",
+  "prompts": {},
+  "humans": {
+    "h_7549b7dc6a6921": {
+      "author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
