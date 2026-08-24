@@ -1,0 +1,44 @@
+README.md
+  h_7549b7dc6a6921 5-13
+web/src/data/agents.ts
+  h_7549b7dc6a6921 149,151
+web/src/features/an/AnPage.tsx
+  h_7549b7dc6a6921 1-167
+web/src/features/an/NewRiskReviewDialog.tsx
+  h_7549b7dc6a6921 1-94
+web/src/features/an/ReviewRecordsTab.tsx
+  h_7549b7dc6a6921 1-95
+web/src/features/an/RiskCheckTab.tsx
+  h_7549b7dc6a6921 1-246
+web/src/features/an/RiskHandoffDialog.tsx
+  h_7549b7dc6a6921 1-61
+web/src/features/an/VerificationTab.tsx
+  h_7549b7dc6a6921 1-161
+web/src/features/an/data.ts
+  h_7549b7dc6a6921 1-214
+web/src/features/an/handoff.ts
+  h_7549b7dc6a6921 1-91
+web/src/features/an/types.ts
+  h_7549b7dc6a6921 1-55
+web/src/features/liang/SourcingTab.tsx
+  h_7549b7dc6a6921 10-11,80,252-281,332
+web/src/features/qian/MatchRecordsTab.tsx
+  h_7549b7dc6a6921 5-6,33,177,209-235,245
+web/src/features/yun/FindLogisticsTab.tsx
+  h_7549b7dc6a6921 9-10,21,136-168,194
+web/src/index.css
+  h_7549b7dc6a6921 164,171-183
+web/src/pages/agents/AgentServicePage.tsx
+  h_7549b7dc6a6921 11,25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "a8b7e46646a4d635a37dac74e1902b924bd556b1",
+  "prompts": {},
+  "humans": {
+    "h_7549b7dc6a6921": {
+      "author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
