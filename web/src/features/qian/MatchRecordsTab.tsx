@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { fetchFinanceMatches, fetchFinanceMatch, handoffFinanceMatchToSuan } from "./api";
 import type { FinanceHandoff, FinanceProduct, FinanceRequirement, MatchRecord } from "./types";
 
@@ -19,6 +20,7 @@ function formatWan(value: string): string {
 }
 
 export default function MatchRecordsTab({ refreshKey, onReuse, onOpenProduct: _onOpenProduct }: Props) {
+  const navigate = useNavigate();
   const [records, setRecords] = useState<MatchRecord[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -179,12 +181,27 @@ export default function MatchRecordsTab({ refreshKey, onReuse, onOpenProduct: _o
                         {handoffLoading ? "交接中…" : "交给算小二测成本"}
                       </button>
                     ) : (
-                      <div className="rounded-xl border border-tech/30 bg-tech/5 px-4 py-2 text-xs text-tech">
-                        ✓ 已生成算小二交接数据
-                        <span className="ml-2 text-ink-soft">
-                          参考成本 {handoff.reference_cost_yuan}元 · {handoff.product_name}
-                        </span>
-                      </div>
+                      <button
+                        onClick={() => {
+                          const h = {
+                            source_agent: "qian" as const,
+                            target_agent: "suan" as const,
+                            source_ref: `FIN-M${detail.id}`,
+                            schemes: [{
+                              scheme_id: "A",
+                              name: `${handoff.product_name} 资金方案`,
+                              financing_cost_yuan: handoff.reference_cost_yuan ?? null,
+                              pending_items: handoff.pending_conditions,
+                            }],
+                            pending_items: handoff.pending_conditions,
+                          };
+                          sessionStorage.setItem("suan_pending_handoff", JSON.stringify(h));
+                          navigate("/agent/suan");
+                        }}
+                        className="rounded-full bg-tech/80 px-4 py-1.5 text-xs font-medium text-white hover:bg-tech"
+                      >
+                        前往算小二
+                      </button>
                     )}
                   </div>
                 )}

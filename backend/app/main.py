@@ -16,6 +16,10 @@ from app.liang.routes import router as liang_router
 from app.finance import models as finance_models  # noqa: F401
 from app.finance.routes import router as finance_router
 from app.finance.seed import seed_finance_products
+from app.costing import models as costing_models  # noqa: F401
+from app.costing.routes import router as costing_router
+from app.knowledge import models as knowledge_models  # noqa: F401
+from app.knowledge.routes import router as knowledge_router
 
 
 @asynccontextmanager
@@ -43,3 +47,5 @@ app.include_router(workflow_router)
 app.include_router(logistics_router)
 app.include_router(liang_router)
 app.include_router(finance_router)
+app.include_router(costing_router)
+app.include_router(knowledge_router)

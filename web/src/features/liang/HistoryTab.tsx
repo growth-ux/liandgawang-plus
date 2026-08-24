@@ -1,5 +1,6 @@
 // web/src/features/liang/HistoryTab.tsx
 import { useCallback, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { deleteTask, fetchTasks } from "./api";
 import { fmtDate, fmtDateTime, fmtInt, fmtQuality } from "./format";
 import type { SourcingTask, TaskPick } from "./types";
@@ -70,9 +71,11 @@ function PickCard({ pick, label }: { pick: TaskPick; label: string }) {
 function HistoryRow({
   task,
   onDelete,
+  onHandoffToSuan,
 }: {
   task: SourcingTask;
   onDelete: (id: number) => void;
+  onHandoffToSuan: (task: SourcingTask) => void;
 }) {
   const [open, setOpen] = useState(false);
   const [confirming, setConfirming] = useState(false);
@@ -197,6 +200,19 @@ function HistoryRow({
             </div>
           )}
 
+          {/* 交接算小二 */}
+          {primary && (
+            <div className="mt-3 flex gap-2">
+              <button
+                type="button"
+                onClick={() => onHandoffToSuan(task)}
+                className="rounded-full border border-violet-400/40 px-4 py-1.5 text-xs font-medium text-violet-300 hover:bg-violet-400/10"
+              >
+                交给算小二算总账
+              </button>
+            </div>
+          )}
+
           {/* 交接信息 */}
           {task.handoff && (
             <div className="mt-3 rounded-xl bg-rice px-4 py-2.5 text-xs text-ink">
@@ -219,6 +235,7 @@ function HistoryRow({
 }
 
 export default function HistoryTab({ refreshKey = 0 }: { refreshKey?: number }) {
+  const navigate = useNavigate();
   const [tasks, setTasks] = useState<SourcingTask[]>([]);
   const [filter, setFilter] = useState<Filter>("all");
   const [loading, setLoading] = useState(true);
@@ -287,7 +304,37 @@ export default function HistoryTab({ refreshKey = 0 }: { refreshKey?: number }) 
       ) : (
         <div className="flex flex-col gap-3">
           {filtered.map((t) => (
-            <HistoryRow key={t.id} task={t} onDelete={onDelete} />
+            <HistoryRow key={t.id} task={t} onDelete={onDelete}
+              onHandoffToSuan={(task) => {
+                const primary = task.plan?.primary;
+                if (!primary) return;
+                const handoff = {
+                  source_agent: "liang" as const,
+                  target_agent: "suan" as const,
+                  source_ref: task.task_code,
+                  schemes: [{
+                    scheme_id: "A",
+                    name: `${primary.variety_name} ${primary.origin}`,
+                    variety_name: primary.variety_name,
+                    quantity_tons: String(task.need?.quantity_tons ?? primary.available_quantity_tons),
+                    purchase_price_yuan_per_ton: primary.price,
+                    quality_discount_yuan_per_ton: primary.quality_penalty || null,
+                    tax_included: null,
+                    freight_yuan_per_ton: null,
+                    loading_yuan_per_ton: null,
+                    loss_rate_pct: null,
+                    financing_cost_yuan: null,
+                    other_cost_yuan: null,
+                    constraints_met: true,
+                    pending_items: ["运费待运小二确认", "损耗率待确认", "含税口径待确认"],
+                    field_meta: {},
+                  }],
+                  pending_items: ["运费待运小二确认", "损耗率待确认", "含税口径待确认"],
+                };
+                sessionStorage.setItem("suan_pending_handoff", JSON.stringify(handoff));
+                navigate("/agent/suan");
+              }}
+            />
           ))}
         </div>
       )}

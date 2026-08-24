@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   createInquiry,
   explainPlans,
@@ -51,6 +52,29 @@ export default function PlansTab({
   const [meta, setMeta] = useState<LogisticsMeta | null>(null);
   // 记录「本组件已加载的任务」，避免 onTaskCreated 触发外部 taskId 变化后重复 fetch
   const loadedRef = useRef<number | null>(null);
+
+  const navigate = useNavigate();
+
+  const handleHandoffToSuan = () => {
+    if (!detail || !primary) return;
+    const midPrice = String(Math.round((primary.price_low + primary.price_high) / 2));
+    const handoff = {
+      source_agent: "yun" as const,
+      target_agent: "suan" as const,
+      source_ref: `LOG-T${detail.task.id}`,
+      schemes: [{
+        scheme_id: "A",
+        name: primary.title,
+        variety_name: detail.task.variety_name,
+        quantity_tons: String(detail.task.quantity_tons),
+        freight_yuan_per_ton: midPrice,
+        pending_items: ["报价待询运确认"],
+      }],
+      pending_items: ["报价待询运确认"],
+    };
+    sessionStorage.setItem("suan_pending_handoff", JSON.stringify(handoff));
+    navigate("/agent/suan");
+  };
 
   const loadDetail = useCallback(async (id: number) => {
     setError(null);
@@ -217,6 +241,25 @@ export default function PlansTab({
 
               {/* 参照方案 */}
               <PlanReferenceCards faster={refs.faster} cheaper={refs.cheaper} primary={primary} />
+
+              {/* 交给算小二 */}
+              <section className="rounded-3xl border border-line bg-panel/60 p-5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium">需要算总成本？</p>
+                    <p className="mt-0.5 text-xs text-ink-soft">
+                      将主推运输方案带入算小二，与粮源、资金合并测算综合成本
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleHandoffToSuan}
+                    className="shrink-0 rounded-full border border-violet-400/40 px-5 py-2 text-xs font-medium text-violet-300 hover:bg-violet-400/10"
+                  >
+                    带运输方案算总账
+                  </button>
+                </div>
+              </section>
 
               {/* 未入选折叠区 */}
               {rejected.length > 0 && (

@@ -115,7 +115,7 @@ export const agents: Agent[] = [
     symbol: "成本仪表盘、计算矩阵",
     zone: "方案测算台",
     accent: "#7a6bc0",
-    tabs: ["新建测算", "成本明细", "方案对比", "敏感因素", "测算记录"],
+    tabs: ["成本测算", "盈亏推演", "测算记录"],
     image: "/images/agents/suan-xiaoer-thinking-operation-transparent.png",
     doing: "测算方案 A 的到厂成本，比对运费与水分扣量影响",
     pos: { x: 70, y: 90, size: 21 },
