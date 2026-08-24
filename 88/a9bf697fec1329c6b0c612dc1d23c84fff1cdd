@@ -1,0 +1,249 @@
+backend/tests/knowledge/test_milvus_smoke.py
+  s_30fac990f8bc2e::t_c0abe90d0aede9 5,22-23,25-26,32,40
+  s_30fac990f8bc2e::t_7477c6c80e56b6 1,4,6-7,9-11,14,17-21,24,27-31
+  s_30fac990f8bc2e::t_ebb2c1ec89ba76 2,33-39,41-47
+  s_30fac990f8bc2e::t_6a6df59bcaa0ae 3,8,12-13,15-16
+web/src/features/yun/types.ts
+  s_30fac990f8bc2e::t_4bdff60a682458 1-2,66-68
+web/src/features/zhanggui/DecisionGate.tsx
+  s_2f0876533e3bef::t_a8df60c2d50d30 28-29
+backend/tests/knowledge/test_extractor.py
+  s_30fac990f8bc2e::t_3fae073b51a04a 1-36
+  s_2f0876533e3bef::t_8a201fdabc5804 37-54
+web/src/features/handoff/api.ts
+  s_2f0876533e3bef::t_9a5eccbee90cc5 1-36
+backend/tests/knowledge/test_routes.py
+  s_30fac990f8bc2e::t_8c80f7bb007b83 1-77
+web/src/features/an/ReviewRecordsTab.tsx
+  s_30fac990f8bc2e::t_f3f6fe77e0d713 3,13-15,25-39,105-106,109-111
+backend/seed_db.py
+  s_30fac990f8bc2e::t_9e28f0e329ece4 13,22,36-37
+backend/app/handoff/routes.py
+  s_2f0876533e3bef::t_9a5eccbee90cc5 1-76
+web/src/features/knowledge/KnowledgeReferencePanel.tsx
+  s_30fac990f8bc2e::t_7b06645444795b 1-28
+web/src/features/zhanggui/MissionCockpit.tsx
+  s_2f0876533e3bef::t_aba171f7250a68 73-74
+backend/app/zhanggui/schemas.py
+  s_30fac990f8bc2e::t_e6cfc35c75741c 44-45,47-55
+backend/tests/liang/test_budget_constraint.py
+  s_2f0876533e3bef::t_9200ff0fa71cec 1-15
+backend/app/main.py
+  s_2f0876533e3bef::t_9a5eccbee90cc5 31-32,72
+  s_30fac990f8bc2e::t_9e28f0e329ece4 28,49
+docs/superpowers/plans/2026-08-24-enterprise-knowledge-brain.md
+  s_30fac990f8bc2e::t_b113395c9f0e42 1-76,78-193,195-262,266-286,338-399,403-425,427,429-539,541-630,632-674,702-705,707-793,795-829,831-931,938-949,971-1009,1011,1013-1071,1073-1077,1107-1121,1123-1177,1179-1207,1209-1240,1243-1298,1300-1303,1337-1393,1395,1397-1422
+  s_30fac990f8bc2e::t_5e1f6988e450aa 77,287-337
+  s_30fac990f8bc2e::t_f9cfb377e814c9 400-402,426,428,706
+  s_30fac990f8bc2e::t_1a930bc8d5da64 1208,1241-1242
+  s_30fac990f8bc2e::t_0852c1582cad2a 1394,1396
+  s_30fac990f8bc2e::t_b80cfd46ed4a3d 194,263-265
+  s_30fac990f8bc2e::t_34f2cba4a9fe39 540,631,675-701
+  s_30fac990f8bc2e::t_6dee07888c2129 932-937,950-970
+  s_30fac990f8bc2e::t_876045d189b02e 1304-1336
+  s_30fac990f8bc2e::t_71faf858a276b3 794,830,1012,1178
+  s_30fac990f8bc2e::t_cca93f7a7c1f57 1010,1072
+  s_30fac990f8bc2e::t_4b76a5df65bd03 1299
+  s_30fac990f8bc2e::t_39071e33f2dd31 1078-1106,1122
+web/src/features/yun/PlansTab.tsx
+  s_30fac990f8bc2e::t_9ba5d5f6f4bac1 20,141,151-166,257-262
+  s_2f0876533e3bef::t_fb47f1601959b9 21,60,77-83
+  s_30fac990f8bc2e::t_a8b68f7edf445f 263
+backend/tests/handoff/test_routes.py
+  s_2f0876533e3bef::t_c6dd72e7226c2f 1-19
+README.md
+  s_30fac990f8bc2e::t_3d6d8efaabc230 1-7,9-11,13-23,25,27-40,42,44-51,53,55-59
+backend/app/liang/sourcing_graph.py
+  s_2f0876533e3bef::t_9200ff0fa71cec 92-95
+backend/tests/knowledge/test_seed.py
+  s_30fac990f8bc2e::t_9e28f0e329ece4 1-13
+backend/app/costing/routes.py
+  s_30fac990f8bc2e::t_d1b1e0c9045de8 19,27-32,34-44
+backend/app/knowledge/schemas.py
+  s_30fac990f8bc2e::t_e79160a7474637 39-40,42
+  s_30fac990f8bc2e::t_2519435adecf87 47-75
+  s_30fac990f8bc2e::t_e10682c625ef7e 1-38,41,43-46
+backend/tests/logistics/test_knowledge_references.py
+  s_30fac990f8bc2e::t_765ac0f05820fd 1-66
+web/src/features/suan/SuanPage.tsx
+  s_2f0876533e3bef::t_fb47f1601959b9 2,10,16,20,32-49,122
+web/src/features/liang/HistoryTab.tsx
+  s_2f0876533e3bef::t_f11ba4954b5df9 7,79,319,345-346
+backend/tests/zhanggui/test_graph_service.py
+  s_30fac990f8bc2e::t_85e3a5b784d557 27-32,117-120
+web/src/features/an/api.ts
+  s_30fac990f8bc2e::t_f3f6fe77e0d713 1-24
+backend/app/knowledge/memory.py
+  s_30fac990f8bc2e::t_1fff8560a4e510 4,9,66,74,78,82-96,100-105,107-111,113-114,116-117,120-122,126-138,144-157,159-173,175
+  s_30fac990f8bc2e::t_78faf7577c98a1 72
+  s_30fac990f8bc2e::t_0c0036963b0d8b 30-33,75
+  s_30fac990f8bc2e::t_6a6df59bcaa0ae 5,7,10-14,17-29,34-37,39-65,68-69,76
+  s_30fac990f8bc2e::t_002c672e66f7f5 38
+  s_30fac990f8bc2e::t_73994d17ee84dc 139-143
+  s_30fac990f8bc2e::t_8634c7f019d452 67
+web/src/features/qian/MatchRecordsTab.tsx
+  s_2f0876533e3bef::t_f11ba4954b5df9 7,189,202-203
+backend/app/zhanggui/goal_parser.py
+  s_30fac990f8bc2e::t_e6cfc35c75741c 209,214-224
+web/src/features/knowledge/KnowledgeCard.tsx
+  s_30fac990f8bc2e::t_7b06645444795b 1-51
+backend/migrations/20260824_expand_enterprise_knowledge.sql
+  s_30fac990f8bc2e::t_e79160a7474637 23-27
+  s_30fac990f8bc2e::t_53f58c0bc8067a 1-22,28-42
+  s_30fac990f8bc2e::t_e6cfc35c75741c 43-51
+backend/app/zhanggui/service.py
+  s_2f0876533e3bef::t_aba171f7250a68 233
+  s_2f0876533e3bef::t_7c277f9c44758e 28-32,66-77,232,234-237
+  s_2f0876533e3bef::t_6bad23c108fcfa 78-89
+  s_30fac990f8bc2e::t_e6cfc35c75741c 92-107,115,117-120
+  s_30fac990f8bc2e::t_8ec9ac93b34049 344-353,356-359,361,363,365-370,375,377-378
+  s_30fac990f8bc2e::t_ab8411409e76de 364
+  s_2f0876533e3bef::t_8a201fdabc5804 371-374
+  s_2f0876533e3bef::t_2a3a2cb7af5201 238
+web/src/features/knowledge/KnowledgeDetailDrawer.tsx
+  s_30fac990f8bc2e::t_7b06645444795b 1-43
+web/src/features/yun/YunPage.tsx
+  s_2f0876533e3bef::t_c57dd2436014d5 2,10-11,17,23-25,45-72,112-119,124-125
+.gitignore
+  s_30fac990f8bc2e::t_0c0036963b0d8b 3-4
+docs/superpowers/specs/2026-08-24-enterprise-knowledge-brain-design.md
+  s_30fac990f8bc2e::t_1e8366651d995e 211-212,239
+  s_30fac990f8bc2e::t_5fdba44c46c182 1-210,213-238,240-490
+backend/app/logistics/repository.py
+  s_30fac990f8bc2e::t_e6cfc35c75741c 45-58
+backend/.env.example
+  s_30fac990f8bc2e::t_002c672e66f7f5 7
+  s_30fac990f8bc2e::t_78faf7577c98a1 12
+  s_30fac990f8bc2e::t_0c0036963b0d8b 11
+  s_30fac990f8bc2e::t_1fff8560a4e510 4,15
+  s_30fac990f8bc2e::t_6a6df59bcaa0ae 5-6,8-10,13-14
+backend/app/zhanggui/repository.py
+  s_2f0876533e3bef::t_7c277f9c44758e 161-179
+web/src/features/an/RiskHandoffDialog.tsx
+  s_2f0876533e3bef::t_85a82a51a9b966 3,8-15
+web/src/features/knowledge/api.ts
+  s_30fac990f8bc2e::t_7b06645444795b 1-51
+backend/app/knowledge/models.py
+  s_30fac990f8bc2e::t_e10682c625ef7e 3,19-21,23,25-31,35-56
+  s_30fac990f8bc2e::t_e79160a7474637 11-15
+backend/tests/knowledge/test_service.py
+  s_30fac990f8bc2e::t_3fae073b51a04a 1-100
+backend/tests/knowledge/test_memory.py
+  s_30fac990f8bc2e::t_7477c6c80e56b6 1-57
+  s_30fac990f8bc2e::t_fc93f36165942f 58-71
+backend/pyproject.toml
+  s_30fac990f8bc2e::t_2fd3cab4e20c17 18-19
+backend/app/knowledge/service.py
+  s_30fac990f8bc2e::t_e79160a7474637 1-35,38-141
+  s_2f0876533e3bef::t_8a201fdabc5804 36-37
+backend/tests/knowledge/test_experiences.py
+  s_30fac990f8bc2e::t_85e3a5b784d557 14-15,32-35,64-65
+backend/app/logistics/routes.py
+  s_30fac990f8bc2e::t_e6cfc35c75741c 13,61,148-150,235-299,310
+backend/app/knowledge/seed.py
+  s_30fac990f8bc2e::t_9e28f0e329ece4 1-65
+backend/tests/knowledge/test_end_to_end.py
+  s_30fac990f8bc2e::t_3d6d8efaabc230 1-65
+web/src/features/zhanggui/api.ts
+  s_2f0876533e3bef::t_7c277f9c44758e 67-69
+  s_2f0876533e3bef::t_6bad23c108fcfa 70-72
+backend/app/knowledge/routes.py
+  s_2f0876533e3bef::t_8a201fdabc5804 25,37,55
+  s_30fac990f8bc2e::t_2519435adecf87 1-3,8-14,19-24,26-36,38-54,56-121,132-138,143-146
+backend/app/logistics/models.py
+  s_30fac990f8bc2e::t_e6cfc35c75741c 4,65-67
+backend/tests/knowledge/test_models_repository.py
+  s_30fac990f8bc2e::t_cf497bb1fc61c6 1-101
+web/src/features/knowledge/types.ts
+  s_30fac990f8bc2e::t_7b06645444795b 1-76
+backend/tests/zhanggui/test_termination.py
+  s_2f0876533e3bef::t_88fbf6fab6585a 1-47
+web/src/features/liang/SourcingTab.tsx
+  s_2f0876533e3bef::t_c57dd2436014d5 3,13,71,152-160,162-163,165-168
+  s_2f0876533e3bef::t_2f1bee7d457ecf 140-145,161,164
+web/src/features/zhanggui/GoalConfirmation.tsx
+  s_30fac990f8bc2e::t_9ba5d5f6f4bac1 4,105-110
+backend/migrations/apply_enterprise_knowledge.py
+  s_30fac990f8bc2e::t_6c2619fe62d04a 1-2,8-92
+  s_30fac990f8bc2e::t_7c7981c45f8f2a 3-7
+web/src/features/yun/TransportPlanComposer.tsx
+  s_2f0876533e3bef::t_2f1bee7d457ecf 59,80,199-211,219,225
+  s_2f0876533e3bef::t_980b11f609aa0b 109-110
+  s_30fac990f8bc2e::t_4bdff60a682458 126
+  s_2f0876533e3bef::t_67ec1ecd067ff7 141
+  s_2f0876533e3bef::t_676beb0257a000 142-152
+  s_2f0876533e3bef::t_21c11c1c95dfd6 111-112
+backend/app/knowledge/repository.py
+  s_30fac990f8bc2e::t_2519435adecf87 99,349-357,365-371,377,380-393
+  s_2f0876533e3bef::t_8a201fdabc5804 10-35
+  s_30fac990f8bc2e::t_53f58c0bc8067a 1-3,6-9,37-38,40-49,54-55,57,59-67,74-79,82-90,92-93,100-110,112-128,130,133-135,141-168,172-179,181-199,203,206-210,212-217,221-232,234-348,358-364,372-376,378-379,394
+  s_30fac990f8bc2e::t_e79160a7474637 91,94,96-98
+backend/app/knowledge/extractor.py
+  s_2f0876533e3bef::t_8a201fdabc5804 6,22-23,26,28,62-64
+  s_2f0876533e3bef::t_d11f24def3b3ad 110-111
+  s_30fac990f8bc2e::t_e79160a7474637 1-5,7-21,24-25,27,29-61,65-109
+web/src/features/knowledge/KnowledgeOverview.tsx
+  s_30fac990f8bc2e::t_04d7542454a86a 1-33
+web/src/pages/Knowledge.tsx
+  s_30fac990f8bc2e::t_3ea53fe410e3c3 56
+  s_30fac990f8bc2e::t_04d7542454a86a 1-7,9-16,18,20-31,33-45,47-48,51-55,57-58,62-67
+  s_30fac990f8bc2e::t_54f60cf9b2e50f 68
+web/src/features/zhanggui/types.ts
+  s_30fac990f8bc2e::t_4bdff60a682458 3-4,37
+  s_2f0876533e3bef::t_aba171f7250a68 204-207
+  s_2f0876533e3bef::t_7c277f9c44758e 12-13,146,221,230
+web/src/pages/MyTasks.tsx
+  s_2f0876533e3bef::t_450c77c870d102 3-9,15-17,19,26-41,45,47-50,53-56,61-65,75-86,94-136,140-143,150,155-176,178-184,186-190,192-199,206-210,221-234
+  s_2f0876533e3bef::t_984ed2ce162346 13,44,60,87-91,144,154,211-220
+  s_2f0876533e3bef::t_5adf50e3d79e17 191
+  s_2f0876533e3bef::t_e431f9b6703a2a 151
+backend/app/handoff/__init__.py
+  s_2f0876533e3bef::t_9a5eccbee90cc5 1
+web/src/features/yun/api.ts
+  s_30fac990f8bc2e::t_4bdff60a682458 33-36,39
+web/src/features/knowledge/KnowledgeFilters.tsx
+  s_30fac990f8bc2e::t_7b06645444795b 1-26
+backend/app/handoff/models.py
+  s_2f0876533e3bef::t_9a5eccbee90cc5 1-22
+backend/tests/zhanggui/test_goal_team.py
+  s_30fac990f8bc2e::t_765ac0f05820fd 5,55-78
+web/src/features/an/AnPage.tsx
+  s_2f0876533e3bef::t_85a82a51a9b966 1-2,13-14,21-22,25-40,132
+backend/app/zhanggui/routes.py
+  s_2f0876533e3bef::t_6bad23c108fcfa 115-120
+  s_2f0876533e3bef::t_7c277f9c44758e 42-45,109-112
+  s_2f0876533e3bef::t_2e3b09c67b10b9 113-114
+backend/app/liang/llm.py
+  s_2f0876533e3bef::t_9200ff0fa71cec 5,153,165-170
+backend/uv.lock
+  s_30fac990f8bc2e::t_ad8af386187e1b 4-14,47-64,441-481,491-512,531-532,590-594,621-629,879,881,896,898,906-997,1115-1160,1170-1211,1320-1337,1363-1374,1384-1411,1458-1475,1591-1599,1750-1758
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "88a9bf697fec1329c6b0c612dc1d23c84fff1cdd",
+  "prompts": {},
+  "humans": {
+    "h_7549b7dc6a6921": {
+      "author": "tiger <1360055716@qq.com>"
+    }
+  },
+  "sessions": {
+    "s_2f0876533e3bef": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a033da-aa40-7242-ab10-d71bbfd190ed",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    },
+    "s_30fac990f8bc2e": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a03369-5b48-7d20-9398-0930dc701838",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
