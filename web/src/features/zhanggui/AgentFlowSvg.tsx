@@ -20,7 +20,8 @@ export function resolveLinkKind(mission: MissionSnapshot, agentId: string): Link
   if (!member?.selected) return "standby";
   const run = mission.agent_runs.find((item) => item.agent_id === agentId);
   if (run?.status === "failed") return "failed";
-  if (mission.conflicts.some((conflict) => conflict.agent_ids.includes(agentId))) return "conflict";
+  // 只有该小二自己提出异议时才用橙色连线；仅被其他小二引用为冲突关联方不算异议
+  if (run?.status === "completed_with_objection") return "conflict";
   return "normal";
 }
 
