@@ -1,0 +1,58 @@
+backend/app/finance/llm.py
+  h_7549b7dc6a6921 1-202
+backend/app/finance/models.py
+  h_7549b7dc6a6921 1-46
+backend/app/finance/repository.py
+  h_7549b7dc6a6921 1-68
+backend/app/finance/routes.py
+  h_7549b7dc6a6921 1-149
+backend/app/finance/rules.py
+  h_7549b7dc6a6921 1-105
+backend/app/finance/schemas.py
+  h_7549b7dc6a6921 1-57
+backend/app/finance/seed.py
+  h_7549b7dc6a6921 1-251
+backend/app/main.py
+  h_7549b7dc6a6921 16-18,24-26,45
+backend/tests/conftest.py
+  h_7549b7dc6a6921 11
+backend/tests/finance/test_llm.py
+  h_7549b7dc6a6921 1-30
+backend/tests/finance/test_market_routes.py
+  h_7549b7dc6a6921 1-41
+backend/tests/finance/test_match_routes.py
+  h_7549b7dc6a6921 1-63
+backend/tests/finance/test_rules.py
+  h_7549b7dc6a6921 1-64
+backend/tests/finance/test_seed.py
+  h_7549b7dc6a6921 1-30
+docs/粮达网Plus产品设计文档-V2.md
+  h_7549b7dc6a6921 510-512,515-517,521-528
+web/src/data/agents.ts
+  h_7549b7dc6a6921 134,136
+web/src/features/qian/FinanceMarketTab.tsx
+  h_7549b7dc6a6921 1-277
+web/src/features/qian/MatchRecordsTab.tsx
+  h_7549b7dc6a6921 1-200
+web/src/features/qian/QianPage.tsx
+  h_7549b7dc6a6921 1-264
+web/src/features/qian/SmartMatchTab.tsx
+  h_7549b7dc6a6921 1-380
+web/src/features/qian/api.ts
+  h_7549b7dc6a6921 1-62
+web/src/features/qian/types.ts
+  h_7549b7dc6a6921 1-101
+web/src/pages/agents/AgentServicePage.tsx
+  h_7549b7dc6a6921 9,21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "011e9884398815058655f5672547233e35e08530",
+  "prompts": {},
+  "humans": {
+    "h_7549b7dc6a6921": {
+      "author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
