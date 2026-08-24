@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { fetchFinanceMatches, fetchFinanceMatch, handoffFinanceMatchToSuan } from "./api";
 import type { FinanceHandoff, FinanceProduct, FinanceRequirement, MatchRecord } from "./types";
+import RiskHandoffDialog from "../an/RiskHandoffDialog";
+import type { RiskHandoffDraft } from "../an/handoff";
 
 interface Props {
   refreshKey: number;
@@ -26,6 +28,7 @@ export default function MatchRecordsTab({ refreshKey, onReuse, onOpenProduct: _o
   const [detail, setDetail] = useState<MatchRecord | null>(null);
   const [handoff, setHandoff] = useState<FinanceHandoff | null>(null);
   const [handoffLoading, setHandoffLoading] = useState(false);
+  const [riskDraft, setRiskDraft] = useState<RiskHandoffDraft | null>(null);
 
   const load = () => {
     setLoading(true);
@@ -169,7 +172,7 @@ export default function MatchRecordsTab({ refreshKey, onReuse, onOpenProduct: _o
 
                 {/* 算小二交接 */}
                 {detail.result.primary && (
-                  <div className="mt-4 flex items-center gap-3">
+                  <div className="mt-4 flex flex-wrap items-center gap-3">
                     {!handoff ? (
                       <button
                         onClick={() => handleHandoff(detail.id)}
@@ -186,6 +189,33 @@ export default function MatchRecordsTab({ refreshKey, onReuse, onOpenProduct: _o
                         </span>
                       </div>
                     )}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const primary = detail.result.primary!;
+                        setRiskDraft({
+                          id: `qian-${detail.id}-${Date.now()}`,
+                          partnerType: "finance",
+                          partnerName: primary.product.institution_name,
+                          region: "粮达网资金服务",
+                          business: primary.product.scenario,
+                          sourceAgent: "钱小二",
+                          sourceTask: `${detail.match_code} · ${primary.product.name}`,
+                          profile: [
+                            { label: "资金产品", value: primary.product.name },
+                            { label: "匹配金额", value: `${formatWan(detail.requirement.amount_yuan)}` },
+                            { label: "使用期限", value: `${detail.requirement.duration_days} 天` },
+                            { label: "费用口径", value: primary.product.annual_rate_pct ? `参考年化 ${primary.product.annual_rate_pct}%` : primary.product.fee_note },
+                          ],
+                          findings: primary.pending_conditions,
+                          positiveEvidence: primary.matched_reasons,
+                          createdAt: new Date().toISOString(),
+                        });
+                      }}
+                      className="rounded-full border border-emerald-400/30 bg-emerald-400/[0.07] px-4 py-1.5 text-xs font-medium text-emerald-300 hover:bg-emerald-400/10"
+                    >
+                      查资金服务方风险
+                    </button>
                   </div>
                 )}
 
@@ -195,6 +225,7 @@ export default function MatchRecordsTab({ refreshKey, onReuse, onOpenProduct: _o
           </div>
         );
       })}
+      {riskDraft && <RiskHandoffDialog draft={riskDraft} onClose={() => setRiskDraft(null)} />}
     </div>
   );
 }

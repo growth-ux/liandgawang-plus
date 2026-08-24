@@ -6,6 +6,8 @@ import LogisticsSummaryBar from "./LogisticsSummaryBar";
 import LogisticsFilterPanel, { type LogisticsFilters } from "./LogisticsFilterPanel";
 import LineDetailDrawer from "./LineDetailDrawer";
 import Pagination from "./Pagination";
+import RiskHandoffDialog from "../an/RiskHandoffDialog";
+import type { RiskHandoffDraft } from "../an/handoff";
 
 const PAGE_SIZE = 10;
 
@@ -16,6 +18,7 @@ export default function FindLogisticsTab() {
   const [detail, setDetail] = useState<LogisticsLine | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
+  const [riskDraft, setRiskDraft] = useState<RiskHandoffDraft | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -130,13 +133,39 @@ export default function FindLogisticsTab() {
                       <td className="px-4 py-3.5 text-ink">{l.days_low}~{l.days_high} 天</td>
                       <td className="px-4 py-3 text-xs text-ink-soft">{l.dispatch_window}</td>
                       <td className="px-4 py-3">
-                        <button
-                          type="button"
-                          onClick={() => setDetail(l)}
-                          className="rounded-full border border-line px-2.5 py-1 text-xs text-ink-soft hover:border-tech hover:text-ink"
-                        >
-                          详情
-                        </button>
+                        <div className="flex gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => setDetail(l)}
+                            className="rounded-full border border-line px-2.5 py-1 text-xs text-ink-soft hover:border-tech hover:text-ink"
+                          >
+                            详情
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setRiskDraft({
+                              id: `yun-${l.carrier}-${l.origin}-${l.destination}-${Date.now()}`,
+                              partnerType: "logistics",
+                              partnerName: l.carrier,
+                              region: `${l.origin} → ${l.destination}`,
+                              business: `${l.mode_name}粮食运输服务`,
+                              sourceAgent: "运小二",
+                              sourceTask: `${l.origin}—${l.destination} · ${l.mode_name}线路`,
+                              profile: [
+                                { label: "线路", value: `${l.origin} → ${l.destination}` },
+                                { label: "参考运价", value: `${fmtInt(l.price_low)}~${fmtInt(l.price_high)} 元/吨` },
+                                { label: "承运能力", value: `${fmtInt(l.tonnage_min)}~${fmtInt(l.tonnage_max)} 吨` },
+                                { label: "预计时效", value: `${l.days_low}~${l.days_high} 天` },
+                              ],
+                              findings: l.risk_note ? [l.risk_note] : [],
+                              positiveEvidence: [l.performance_note, `发运窗口：${l.dispatch_window}`].filter(Boolean),
+                              createdAt: new Date().toISOString(),
+                            })}
+                            className="rounded-full border border-emerald-400/25 px-2.5 py-1 text-xs text-emerald-300 hover:bg-emerald-400/10"
+                          >
+                            查风险
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -162,6 +191,7 @@ export default function FindLogisticsTab() {
       </div>
 
       {detail && <LineDetailDrawer line={detail} onClose={() => setDetail(null)} />}
+      {riskDraft && <RiskHandoffDialog draft={riskDraft} onClose={() => setRiskDraft(null)} />}
     </div>
   );
 }

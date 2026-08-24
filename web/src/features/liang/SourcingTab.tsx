@@ -7,6 +7,8 @@ import { fmtDate, fmtInt, fmtQuality } from "./format";
 import { initialStatus } from "./workflow";
 import type { DagNodeId, NodeStatus } from "./workflow";
 import type { SourcingTask, TaskNeedSummary, TaskPick, TaskPlan } from "./types";
+import RiskHandoffDialog from "../an/RiskHandoffDialog";
+import type { RiskHandoffDraft } from "../an/handoff";
 
 const STEP_MS = 260;
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -75,6 +77,7 @@ export default function SourcingTab() {
   const [handoffOpen, setHandoffOpen] = useState(false);
   const [destination, setDestination] = useState("");
   const [historyKey, setHistoryKey] = useState(0);
+  const [riskDraft, setRiskDraft] = useState<RiskHandoffDraft | null>(null);
   async function startRun() {
     const raw = text.trim();
     if (!raw || running) return;
@@ -246,6 +249,36 @@ export default function SourcingTab() {
       {/* 结论区：保存 / 交接 */}
       {plan && primary && (
         <div className="flex flex-col gap-3 rounded-2xl border border-line bg-panel p-5">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line pb-3">
+            <div>
+              <div className="text-sm font-semibold">下一步办理</div>
+              <div className="mt-0.5 text-xs text-ink-soft">保存寻源结果，或让安小二独立检查主推供应方。</div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setRiskDraft({
+                id: `liang-${saved?.id ?? primary.listing_code}-${Date.now()}`,
+                partnerType: "grain",
+                partnerName: primary.supplier_name,
+                region: primary.origin,
+                business: `${primary.variety_name}供应`,
+                sourceAgent: "粮小二",
+                sourceTask: saved?.task_code ?? `寻源结果 · ${primary.listing_code}`,
+                profile: [
+                  { label: "粮源", value: `${primary.variety_name} · ${primary.grade}` },
+                  { label: "报价", value: `${fmtInt(primary.price)} 元/吨` },
+                  { label: "可供应量", value: `${fmtInt(primary.available_quantity_tons)} 吨` },
+                  { label: "质量", value: `水分 ${fmtQuality(primary.moisture_pct)}% · 容重 ${fmtQuality(primary.test_weight_g_l)} g/L` },
+                ],
+                findings: [...new Set([...primary.risks, ...(plan.verifications ?? [])])],
+                positiveEvidence: primary.reasons,
+                createdAt: new Date().toISOString(),
+              })}
+              className="rounded-full border border-emerald-400/30 bg-emerald-400/[0.07] px-4 py-2 text-xs font-medium text-emerald-300 hover:bg-emerald-400/10"
+            >
+              查供应方风险
+            </button>
+          </div>
           {!saved ? (
             <button
               type="button"
@@ -296,6 +329,7 @@ export default function SourcingTab() {
 
       {/* 历史记录 */}
       <HistoryTab refreshKey={historyKey} />
+      {riskDraft && <RiskHandoffDialog draft={riskDraft} onClose={() => setRiskDraft(null)} />}
     </div>
   );
 }
