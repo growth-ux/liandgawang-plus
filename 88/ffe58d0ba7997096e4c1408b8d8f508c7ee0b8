@@ -1,0 +1,23 @@
+docs/superpowers/specs/2026-08-24-suan-xiaoer-redesign.md
+  s_ea37515bcd6c12::t_8f385e7c46a067 1-315
+docs/superpowers/plans/2026-08-24-suan-xiaoer-redesign-implementation.md
+  s_ea37515bcd6c12::t_b5b0a39aa312bb 1-69,71-94,96-150,152-274,299-351,353-474,476-480,483-496,498,502,510-544,547-549,551-647,649-703,705-735,737-745,747-764,769-774,777-795,799-830,832-861,863-922
+  s_ea37515bcd6c12::t_83fc1ff7fc8896 70,95,151,352,475,503-509,545-546,550,648,736,765-768,775-776,796-798,831,862
+  s_ea37515bcd6c12::t_378cdce5293df2 275-298,481-482,497,499-501,704,746
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "88ffe58d0ba7997096e4c1408b8d8f508c7ee0b8",
+  "prompts": {},
+  "sessions": {
+    "s_ea37515bcd6c12": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0314c-54bd-7601-8335-256f60e35558",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
