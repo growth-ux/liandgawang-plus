@@ -1,0 +1,64 @@
+web/src/data/agents.ts
+  s_0c59fd6b23a23a::t_c3b252db836489 151
+  s_0c59fd6b23a23a::t_1bed1138ecf0d5 149
+web/src/features/an/types.ts
+  s_0c59fd6b23a23a::t_88c541d66bd830 1-55
+web/src/features/an/AnPage.tsx
+  s_0c59fd6b23a23a::t_6b23d0737cc7c8 17-19
+  s_0c59fd6b23a23a::t_e1b96d8dda4099 1,8-9,21,28,30,37,79-82,122,128,144-148,160-164
+  s_0c59fd6b23a23a::t_578215ee9f22db 2-7,11-16,27,29,31-36,38-61,63-78,83-113,120-121,123-127,129-143,165-167
+  s_0c59fd6b23a23a::t_5388477169552a 62
+  s_0c59fd6b23a23a::t_b754c81c18a24e 10,20,22-26,114-119,149-159
+web/src/features/an/VerificationTab.tsx
+  s_0c59fd6b23a23a::t_1bed1138ecf0d5 1-161
+web/src/features/an/ReviewRecordsTab.tsx
+  s_0c59fd6b23a23a::t_1bed1138ecf0d5 2-12,15-16,21-32,40-42,44-59,61-95
+  s_0c59fd6b23a23a::t_c3b252db836489 1,13-14,17-20,33-39,43,60
+web/src/features/an/RiskHandoffDialog.tsx
+  s_0c59fd6b23a23a::t_4aff44af2ddb4f 1-61
+web/src/pages/agents/AgentServicePage.tsx
+  s_0c59fd6b23a23a::t_1bed1138ecf0d5 10,23
+web/src/features/an/NewRiskReviewDialog.tsx
+  s_0c59fd6b23a23a::t_814a4a5e41e220 1-94
+web/src/features/liang/SourcingTab.tsx
+  s_0c59fd6b23a23a::t_dc0b99ed19c6e5 10-11,80,252-281,332
+web/src/features/yun/FindLogisticsTab.tsx
+  s_0c59fd6b23a23a::t_dc0b99ed19c6e5 9-10,21,136-168,194
+web/src/index.css
+  s_0c59fd6b23a23a::t_1bed1138ecf0d5 164,171-182
+  s_0c59fd6b23a23a::t_3d4f9a1c654707 183
+web/src/features/an/handoff.ts
+  s_0c59fd6b23a23a::t_4aff44af2ddb4f 1-91
+web/src/features/qian/MatchRecordsTab.tsx
+  s_0c59fd6b23a23a::t_dc0b99ed19c6e5 4-5,31,175,192-218,228
+README.md
+  h_7549b7dc6a6921 5-6,8-13
+  h_7549b7dc6a6921 7
+web/src/features/an/data.ts
+  s_0c59fd6b23a23a::t_88c541d66bd830 1-214
+web/src/features/an/RiskCheckTab.tsx
+  s_0c59fd6b23a23a::t_168ab4bf8002ce 2,24,30,34,40,123,125-126
+  s_0c59fd6b23a23a::t_578215ee9f22db 1,3-23,25-29,31-33,35-39,41-80,86-122,124,127-246
+  s_0c59fd6b23a23a::t_c3b252db836489 81-85
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "7561738badcff0dcdf03fb6e02f977da2a6a19e9",
+  "prompts": {},
+  "humans": {
+    "h_7549b7dc6a6921": {
+      "author": "tiger <1360055716@qq.com>"
+    }
+  },
+  "sessions": {
+    "s_0c59fd6b23a23a": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a03184-983f-76f2-920e-551647f76555",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
