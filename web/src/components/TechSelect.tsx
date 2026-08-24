@@ -99,13 +99,7 @@ export default function TechSelect({
             : "border-line bg-rice/75 hover:border-tech/30 hover:bg-rice-deep/80 focus-visible:border-tech/55 focus-visible:shadow-[0_0_0_3px_rgba(34,211,238,0.08)]"
         }`}
       >
-        <span className="flex min-w-0 items-center gap-2.5">
-          <span
-            aria-hidden="true"
-            className={`h-1.5 w-1.5 shrink-0 rounded-full transition-all ${
-              value ? "bg-brand shadow-[0_0_8px_rgba(238,123,31,0.75)]" : "bg-ink-soft/45"
-            }`}
-          />
+        <span className="flex min-w-0 items-center">
           <span className={`truncate ${selectedOption ? "text-ink" : "text-ink-soft/70"}`}>
             {selectedOption?.label ?? placeholder}
           </span>

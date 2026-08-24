@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import TechSelect from "../../components/TechSelect";
 import { fetchFinanceMeta, fetchFinanceProducts } from "./api";
 import type { FinanceCategory, FinanceMeta, FinanceProduct, FinancePurpose, FinanceRequirement } from "./types";
 
@@ -119,22 +120,18 @@ export default function FinanceMarketTab({ onStartMatch, onViewProduct }: Props)
         <div className="rounded-2xl border border-line bg-panel/60 p-4">
           <h3 className="mb-3 text-xs font-semibold text-ink-soft">筛选条件</h3>
           <div className="flex flex-col gap-3 text-sm">
-            <label className="block">
-              <span className="mb-1 block text-xs text-ink-soft">产品类别</span>
-              <select value={filters.category} onChange={(e) => setFilters({ ...filters, category: e.target.value as FinanceCategory | "" })}
-                className="w-full rounded-lg border border-line bg-rice-deep px-3 py-2 text-xs text-ink outline-none focus:border-brand">
-                <option value="">全部</option>
-                {Object.entries(CATEGORY_NAMES).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
-              </select>
-            </label>
-            <label className="block">
-              <span className="mb-1 block text-xs text-ink-soft">资金用途</span>
-              <select value={filters.purpose} onChange={(e) => setFilters({ ...filters, purpose: e.target.value as FinancePurpose | "" })}
-                className="w-full rounded-lg border border-line bg-rice-deep px-3 py-2 text-xs text-ink outline-none focus:border-brand">
-                <option value="">全部</option>
-                {Object.entries(PURPOSE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
-              </select>
-            </label>
+            <TechSelect
+              label="产品类别"
+              value={filters.category}
+              options={[{ value: "", label: "全部" }, ...Object.entries(CATEGORY_NAMES).map(([value, label]) => ({ value, label }))]}
+              onChange={(v) => setFilters({ ...filters, category: v as FinanceCategory | "" })}
+            />
+            <TechSelect
+              label="资金用途"
+              value={filters.purpose}
+              options={[{ value: "", label: "全部" }, ...Object.entries(PURPOSE_LABELS).map(([value, label]) => ({ value, label }))]}
+              onChange={(v) => setFilters({ ...filters, purpose: v as FinancePurpose | "" })}
+            />
             <label className="block">
               <span className="mb-1 block text-xs text-ink-soft">需求金额（元）</span>
               <input type="number" value={filters.amount_yuan} onChange={(e) => setFilters({ ...filters, amount_yuan: e.target.value })}
@@ -145,14 +142,12 @@ export default function FinanceMarketTab({ onStartMatch, onViewProduct }: Props)
               <input type="number" value={filters.duration_days} onChange={(e) => setFilters({ ...filters, duration_days: e.target.value })}
                 placeholder="45" className="w-full rounded-lg border border-line bg-rice-deep px-3 py-2 text-xs text-ink outline-none focus:border-brand" />
             </label>
-            <label className="block">
-              <span className="mb-1 block text-xs text-ink-soft">增信方式</span>
-              <select value={filters.guarantee_mode} onChange={(e) => setFilters({ ...filters, guarantee_mode: e.target.value })}
-                className="w-full rounded-lg border border-line bg-rice-deep px-3 py-2 text-xs text-ink outline-none focus:border-brand">
-                <option value="">全部</option>
-                {Object.entries(GUARANTEE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
-              </select>
-            </label>
+            <TechSelect
+              label="增信方式"
+              value={filters.guarantee_mode}
+              options={[{ value: "", label: "全部" }, ...Object.entries(GUARANTEE_LABELS).map(([value, label]) => ({ value, label }))]}
+              onChange={(v) => setFilters({ ...filters, guarantee_mode: v })}
+            />
             <div className="mt-1 flex gap-2">
               <button onClick={() => setAppliedFilters(filters)}
                 className="flex-1 rounded-lg bg-brand py-2 text-xs font-medium text-white hover:bg-brand/90">

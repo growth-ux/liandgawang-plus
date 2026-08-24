@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import date, timedelta
 
 import pytest
 
@@ -58,6 +58,40 @@ def test_qwen_interpretation_used_when_available(client, db_session, monkeypatch
     saved = client.post("/api/analysis", json=CORN_15D).json()
     assert saved["ai_source"] == "qwen"
     assert saved["interpretation"] == "模拟大模型解读"
+
+
+def test_extract_conditions_full_sentence(client):
+    """一句话描述 → 结构化条件：各字段命中，备注不误抓“N 天内”期限。"""
+    text = (
+        "玉米采购120吨，10天内要到货，目标东北产区，二等，"
+        "预算不超过2400元/吨，库存还能撑8天，风格稳健，水分要求14%以内。"
+    )
+    resp = client.post("/api/analysis/extract", json={"text": text})
+    assert resp.status_code == 200
+    fields = resp.json()["fields"]
+    assert fields["variety_code"] == "corn"
+    assert fields["quantity_tons"] == "120"
+    assert fields["deadline_date"] == (date.today() + timedelta(days=10)).isoformat()
+    assert fields["grade"] == "二等"
+    assert fields["target_region"] == "东北"
+    assert fields["budget_price"] == "2400"
+    assert fields["stock_days"] == 8
+    assert fields["risk_preference"] == "稳健"
+    assert fields["remark"] == "水分要求14%以内"
+    # 核心条件全部提取到，缺失项只剩可选字段（目标预算等已命中则不在列）
+    for required in ("品种", "采购数量", "最晚采购时间", "目标地区"):
+        assert required not in resp.json()["missing"]
+
+
+def test_extract_conditions_partial_and_absolute_date(client):
+    """部分信息描述：绝对日期命中，缺失项如实返回供前端提醒补全。"""
+    resp = client.post("/api/analysis/extract", json={"text": "帮我看看小麦，10月20日前要采购"})
+    fields = resp.json()["fields"]
+    assert fields["variety_code"] == "wheat"
+    d = date.fromisoformat(fields["deadline_date"])
+    assert (d.month, d.day) == (10, 20)
+    missing = resp.json()["missing"]
+    assert "采购数量" in missing and "目标地区" in missing
 
 
 def test_preview_tight_deadline_buy_now(client, db_session):

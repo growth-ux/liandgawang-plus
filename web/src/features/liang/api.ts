@@ -71,6 +71,45 @@ export async function runSourcingWorkflow(text: string): Promise<SourcingRunResu
   return resp.json();
 }
 
+export interface SourcingTraceEvent {
+  node: string;
+  status: "done" | "skipped";
+  detail: string;
+}
+
+/** 流式执行寻源：每完成一个节点回调 onTrace，全部完成后返回最终结果。 */
+export async function runSourcingWorkflowStream(
+  text: string,
+  onTrace: (event: SourcingTraceEvent) => void,
+): Promise<SourcingRunResult> {
+  const resp = await fetch("/api/liang/sourcing-runs/stream", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text }),
+  });
+  if (!resp.ok || !resp.body) throw new Error(`寻源执行失败（${resp.status}）`);
+  const reader = resp.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  let result: SourcingRunResult | null = null;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const frames = buffer.split("\n\n");
+    buffer = frames.pop() ?? "";
+    for (const frame of frames) {
+      const line = frame.trim();
+      if (!line.startsWith("data:")) continue;
+      const payload = JSON.parse(line.slice(5).trim());
+      if (payload.type === "trace") onTrace(payload.event as SourcingTraceEvent);
+      else if (payload.type === "done") result = payload.result as SourcingRunResult;
+    }
+  }
+  if (!result) throw new Error("寻源执行失败");
+  return result;
+}
+
 export async function fetchCandidateBasket(): Promise<Listing[]> {
   const resp = await fetch("/api/liang/candidate-basket", { headers: candidateBasketHeaders() });
   if (!resp.ok) throw new Error(`候选篮加载失败（${resp.status}）`);

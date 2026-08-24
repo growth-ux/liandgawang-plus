@@ -54,7 +54,7 @@ function ChartScreen({ className }: { className?: string }) {
   );
 }
 
-/** 粮小二：等距稻田全息，4×4 麦株阵列 + 优选地块质检扫描（呼应官方资产 wheat.14a88246.png 与「找粮源」职责） */
+/** 粮小二：等距稻田全息，4×4 麦株阵列 + 优选地块质检扫描（呼应官方资产 wheat.14a88246.png 与粮源市场职责） */
 function GrainScreen({ className }: { className?: string }) {
   // 等距映射 P(u,v) = (70+(u-v)*15, 40+(u+v)*7.5)，麦株落在格心；hot 为优选地块
   const stalks: { x: number; y: number; s: number; hot?: boolean }[] = [];

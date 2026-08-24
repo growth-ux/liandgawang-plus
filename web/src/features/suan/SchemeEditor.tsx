@@ -9,16 +9,21 @@ interface Props {
   loading: boolean;
 }
 
-const FIELD_DEFS: { key: keyof SchemeDraft; label: string; unit: string; required: boolean }[] = [
-  { key: "variety_name", label: "品种", unit: "", required: false },
-  { key: "quantity_tons", label: "数量", unit: "吨", required: true },
-  { key: "purchase_price_yuan_per_ton", label: "含税货价", unit: "元/吨", required: true },
-  { key: "quality_discount_yuan_per_ton", label: "质量扣价", unit: "元/吨", required: false },
-  { key: "freight_yuan_per_ton", label: "运费", unit: "元/吨", required: false },
-  { key: "loading_yuan_per_ton", label: "装卸", unit: "元/吨", required: false },
-  { key: "loss_rate_pct", label: "损耗率", unit: "%", required: false },
-  { key: "financing_cost_yuan", label: "资金成本", unit: "元", required: false },
-  { key: "other_cost_yuan", label: "其他费用", unit: "元", required: false },
+/** 必填关键参数 */
+const PRIMARY_FIELDS: { key: keyof SchemeDraft; label: string; unit: string }[] = [
+  { key: "variety_name", label: "品种", unit: "" },
+  { key: "quantity_tons", label: "数量", unit: "吨" },
+  { key: "purchase_price_yuan_per_ton", label: "含税货价", unit: "元/吨" },
+];
+
+/** 可选费用项 */
+const OPTIONAL_FIELDS: { key: keyof SchemeDraft; label: string; unit: string }[] = [
+  { key: "quality_discount_yuan_per_ton", label: "质量扣价", unit: "元/吨" },
+  { key: "freight_yuan_per_ton", label: "运费", unit: "元/吨" },
+  { key: "loading_yuan_per_ton", label: "装卸", unit: "元/吨" },
+  { key: "loss_rate_pct", label: "损耗率", unit: "%" },
+  { key: "financing_cost_yuan", label: "资金成本", unit: "元" },
+  { key: "other_cost_yuan", label: "其他费用", unit: "元" },
 ];
 
 function StatusBadge({ status }: { status: "confirmed" | "pending" | "estimated" | null }) {
@@ -30,9 +35,49 @@ function StatusBadge({ status }: { status: "confirmed" | "pending" | "estimated"
   };
   const labels = { confirmed: "已确认", pending: "待确认", estimated: "暂按估算" };
   return (
-    <span className={`rounded-full px-2 py-0.5 text-[10px] ${styles[status]}`}>
+    <span className={`rounded-full px-2 py-0.5 text-xs ${styles[status]}`}>
       {labels[status]}
     </span>
+  );
+}
+
+function FieldInput({
+  label,
+  unit,
+  required,
+  type,
+  value,
+  status,
+  onValue,
+}: {
+  label: string;
+  unit: string;
+  required: boolean;
+  type: "text" | "number";
+  value: string;
+  status: "confirmed" | "pending" | "estimated" | null;
+  onValue: (v: string) => void;
+}) {
+  return (
+    <label className="block">
+      <div className="mb-1 flex items-center gap-1.5">
+        <span className="text-xs text-ink-soft">
+          {label}
+          {required && <span className="ml-0.5 text-violet-300">*</span>}
+        </span>
+        <StatusBadge status={status} />
+      </div>
+      <div className="flex items-center gap-1.5">
+        <input
+          type={type}
+          value={value}
+          onChange={(e) => onValue(e.target.value)}
+          placeholder={required ? "必填" : "选填"}
+          className="w-full rounded-lg border border-line bg-rice-deep px-3 py-2 text-sm text-ink outline-none transition-colors placeholder:text-ink-soft/40 focus:border-violet-400"
+        />
+        {unit && <span className="flex-none text-xs text-ink-soft/70">{unit}</span>}
+      </div>
+    </label>
   );
 }
 
@@ -51,6 +96,10 @@ export default function SchemeEditor({ schemes, questions, onChange, onCalculate
     const hasTax = s.tax_included !== null;
     return hasVariety && hasQuantity && hasPrice && hasTax;
   }) && schemes.length > 0;
+
+  const filledCount = (s: SchemeDraft) =>
+    [...PRIMARY_FIELDS, ...OPTIONAL_FIELDS].filter((f) => s[f.key] != null && s[f.key] !== "").length +
+    (s.tax_included !== null ? 1 : 0);
 
   const addScheme = () => {
     if (schemes.length >= 3) return;
@@ -86,6 +135,8 @@ export default function SchemeEditor({ schemes, questions, onChange, onCalculate
     }
   };
 
+  const totalFields = PRIMARY_FIELDS.length + OPTIONAL_FIELDS.length + 1;
+
   return (
     <div className="flex flex-col gap-5">
       {/* 补问提示 */}
@@ -100,70 +151,99 @@ export default function SchemeEditor({ schemes, questions, onChange, onCalculate
         </div>
       )}
 
+      {/* 核对说明 */}
+      <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-line bg-panel/50 px-5 py-3">
+        <p className="text-xs text-ink-soft">
+          核对各方案成本参数，带 <span className="text-violet-300">*</span> 为测算必填项；留空的费用项按 0 计。
+        </p>
+        <button
+          onClick={onBack}
+          className="text-xs text-ink-soft transition-colors hover:text-ink"
+        >
+          ← 返回重新录入
+        </button>
+      </div>
+
       {/* 方案卡列表 */}
       {schemes.map((scheme, idx) => (
-        <div key={scheme.scheme_id} className="rounded-2xl border border-line bg-panel/70 p-5">
-          <div className="mb-4 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="rounded-full bg-violet-400/15 px-2.5 py-0.5 text-xs font-medium text-violet-300">
+        <div key={scheme.scheme_id} className="overflow-hidden rounded-2xl border border-line bg-panel/70">
+          <div className="flex items-center justify-between border-b border-line/70 bg-violet-400/[0.04] px-5 py-3">
+            <div className="flex items-center gap-3">
+              <span className="flex h-8 w-8 flex-none items-center justify-center rounded-lg bg-gradient-to-br from-violet-500/80 to-violet-400/30 text-sm font-bold text-white shadow-[0_0_10px_rgba(139,92,246,0.3)]">
                 {scheme.scheme_id}
               </span>
               <input
                 value={scheme.name}
                 onChange={(e) => updateField(idx, "name", e.target.value)}
-                className="bg-transparent text-sm font-medium text-ink outline-none"
+                className="w-40 bg-transparent text-sm font-semibold text-ink outline-none sm:w-56"
               />
             </div>
-            <button
-              type="button"
-              onClick={(e) => { e.stopPropagation(); removeScheme(idx); }}
-              className="rounded-full border border-line px-3 py-1 text-xs text-ink-soft transition-colors hover:border-red-400/40 hover:text-red-400"
-            >
-              {schemes.length <= 1 ? "清空重来" : "移除"}
-            </button>
+            <div className="flex items-center gap-3">
+              <span className="hidden text-xs tabular-nums text-ink-soft sm:inline">
+                已填 {filledCount(scheme)}/{totalFields} 项
+              </span>
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); removeScheme(idx); }}
+                className="rounded-full border border-line px-3 py-1 text-xs text-ink-soft transition-colors hover:border-red-400/40 hover:text-red-400"
+              >
+                {schemes.length <= 1 ? "清空重来" : "移除"}
+              </button>
+            </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-3">
-            {FIELD_DEFS.map((fd) => {
-              const val = scheme[fd.key];
-              const meta = scheme.field_meta?.[fd.key as string];
-              return (
-                <label key={fd.key} className="block">
-                  <div className="mb-1 flex items-center gap-1.5">
-                    <span className="text-[11px] text-ink-soft">
-                      {fd.label}{fd.required && " *"}
-                    </span>
-                    <StatusBadge status={meta?.status ?? (val != null && val !== "" ? "confirmed" : null)} />
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <input
-                      type={fd.key === "variety_name" ? "text" : "number"}
-                      value={(val as string) ?? ""}
-                      onChange={(e) => updateField(idx, fd.key, e.target.value || null)}
-                      placeholder={fd.required ? "必填" : "可选"}
-                      className="w-full rounded-lg border border-line bg-rice-deep px-3 py-1.5 text-sm text-ink outline-none focus:border-violet-400"
-                    />
-                    {fd.unit && <span className="flex-shrink-0 text-[10px] text-ink-soft">{fd.unit}</span>}
-                  </div>
-                </label>
-              );
-            })}
+          <div className="p-5">
+            {/* 关键参数 */}
+            <div className="grid grid-cols-2 gap-x-4 gap-y-3 lg:grid-cols-4">
+              {PRIMARY_FIELDS.map((fd) => (
+                <FieldInput
+                  key={fd.key}
+                  label={fd.label}
+                  unit={fd.unit}
+                  required
+                  type={fd.key === "variety_name" ? "text" : "number"}
+                  value={(scheme[fd.key] as string) ?? ""}
+                  status={scheme.field_meta?.[fd.key as string]?.status ?? (scheme[fd.key] != null && scheme[fd.key] !== "" ? "confirmed" : null)}
+                  onValue={(v) => updateField(idx, fd.key, v || null)}
+                />
+              ))}
+              {/* 含税口径 */}
+              <label className="block">
+                <span className="mb-1 block text-xs text-ink-soft">
+                  含税口径<span className="ml-0.5 text-violet-300">*</span>
+                </span>
+                <select
+                  value={scheme.tax_included === null ? "" : String(scheme.tax_included)}
+                  onChange={(e) =>
+                    updateField(idx, "tax_included", e.target.value === "" ? null : e.target.value === "true")
+                  }
+                  className="w-full rounded-lg border border-line bg-rice-deep px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-violet-400"
+                >
+                  <option value="">请选择</option>
+                  <option value="true">含税</option>
+                  <option value="false">不含税</option>
+                </select>
+              </label>
+            </div>
 
-            {/* 含税选择 */}
-            <label className="block">
-              <span className="mb-1 block text-[11px] text-ink-soft">含税口径 *</span>
-              <select
-                value={scheme.tax_included === null ? "" : String(scheme.tax_included)}
-                onChange={(e) =>
-                  updateField(idx, "tax_included", e.target.value === "" ? null : e.target.value === "true")
-                }
-                className="w-full rounded-lg border border-line bg-rice-deep px-3 py-1.5 text-sm text-ink outline-none focus:border-violet-400"
-              >
-                <option value="">请选择</option>
-                <option value="true">含税</option>
-                <option value="false">不含税</option>
-              </select>
-            </label>
+            {/* 费用明细 */}
+            <div className="mt-4 border-t border-dashed border-line/70 pt-4">
+              <p className="mb-2.5 text-xs font-medium text-ink-soft/80">费用明细（选填，留空按 0 计）</p>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-3 lg:grid-cols-6">
+                {OPTIONAL_FIELDS.map((fd) => (
+                  <FieldInput
+                    key={fd.key}
+                    label={fd.label}
+                    unit={fd.unit}
+                    required={false}
+                    type="number"
+                    value={(scheme[fd.key] as string) ?? ""}
+                    status={scheme.field_meta?.[fd.key as string]?.status ?? (scheme[fd.key] != null && scheme[fd.key] !== "" ? "confirmed" : null)}
+                    onValue={(v) => updateField(idx, fd.key, v || null)}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       ))}
@@ -172,29 +252,23 @@ export default function SchemeEditor({ schemes, questions, onChange, onCalculate
       {schemes.length < 3 && (
         <button
           onClick={addScheme}
-          className="rounded-2xl border border-dashed border-line py-3 text-sm text-ink-soft hover:text-ink"
+          className="rounded-2xl border border-dashed border-line py-3 text-sm text-ink-soft transition-colors hover:border-violet-400/40 hover:text-violet-300"
         >
-          + 添加方案（最多 3 个）
+          ＋ 添加对比方案（最多 3 个）
         </button>
       )}
 
       {/* 动作区 */}
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         <button
           onClick={() => onCalculate(schemes)}
           disabled={!canCalculate || loading}
-          className="rounded-full bg-violet-500 px-6 py-2.5 text-sm font-medium text-white disabled:opacity-40"
+          className="rounded-full bg-violet-500 px-7 py-2.5 text-sm font-medium text-white shadow-[0_0_16px_rgba(139,92,246,0.35)] disabled:opacity-40"
         >
           {loading ? "测算中…" : "开始测算"}
         </button>
-        <button
-          onClick={onBack}
-          className="rounded-full border border-line px-4 py-2.5 text-sm text-ink-soft hover:text-ink"
-        >
-          返回输入
-        </button>
         {!canCalculate && (
-          <span className="text-xs text-amber-300">请填写品种、数量、含税货价后开始测算</span>
+          <span className="text-xs text-amber-300">请填写品种、数量、含税货价与含税口径后开始测算</span>
         )}
       </div>
     </div>

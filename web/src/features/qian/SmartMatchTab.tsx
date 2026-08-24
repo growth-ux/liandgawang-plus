@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import TechSelect from "../../components/TechSelect";
 import { extractFinanceRequirement, previewFinanceMatch, saveFinanceMatch } from "./api";
 import type { FinanceProduct, FinanceRequirement, MatchPreview } from "./types";
 
@@ -161,14 +162,12 @@ export default function SmartMatchTab({ prefill, onSaved, onViewProduct }: Props
             )}
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <label className="block">
-              <span className="mb-1 block text-xs text-ink-soft">资金用途 *</span>
-              <select value={requirement.purpose}
-                onChange={(e) => setRequirement({ ...requirement, purpose: e.target.value as FinanceRequirement["purpose"] })}
-                className="w-full rounded-lg border border-line bg-rice-deep px-3 py-2 text-sm text-ink outline-none focus:border-brand">
-                {PURPOSE_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-              </select>
-            </label>
+            <TechSelect
+              label="资金用途 *"
+              value={requirement.purpose}
+              options={PURPOSE_OPTIONS.map((o) => ({ value: o.value, label: o.label }))}
+              onChange={(v) => setRequirement({ ...requirement, purpose: v as FinanceRequirement["purpose"] })}
+            />
             <label className="block">
               <span className="mb-1 block text-xs text-ink-soft">资金缺口（元）*</span>
               <div className="flex items-center gap-2">

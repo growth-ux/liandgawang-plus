@@ -1,6 +1,6 @@
 // web/src/features/liang/SourcingTab.tsx
 import { useState } from "react";
-import { createTask, handoffTask, runSourcingWorkflow } from "./api";
+import { createTask, handoffTask, runSourcingWorkflowStream } from "./api";
 import DagCanvas from "./DagCanvas";
 import HistoryTab from "./HistoryTab";
 import { fmtDate, fmtInt, fmtQuality } from "./format";
@@ -10,8 +10,9 @@ import type { SourcingTask, TaskNeedSummary, TaskPick, TaskPlan } from "./types"
 import RiskHandoffDialog from "../an/RiskHandoffDialog";
 import type { RiskHandoffDraft } from "../an/handoff";
 
-const STEP_MS = 260;
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+const EXAMPLE_NEED = "需要120吨二等玉米，7天内可发，预算2400元/吨";
+// DAG 执行顺序：节点完成事件到达后，点亮下一个节点为执行中
+const NODE_ORDER: DagNodeId[] = ["parse", "load", "filter", "sort", "eliminate", "review", "pick", "verify"];
 
 function needText(need: TaskNeedSummary | null): string {
   if (!need) return "未指定条件";
@@ -75,6 +76,7 @@ export default function SourcingTab() {
   const [saved, setSaved] = useState<SourcingTask | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [handoffOpen, setHandoffOpen] = useState(false);
+  const [eliminatedOpen, setEliminatedOpen] = useState(false);
   const [destination, setDestination] = useState("");
   const [historyKey, setHistoryKey] = useState(0);
   const [riskDraft, setRiskDraft] = useState<RiskHandoffDraft | null>(null);
@@ -87,20 +89,27 @@ export default function SourcingTab() {
     setPlan(null);
     setListingCount(0);
     setHandoffOpen(false);
+    setEliminatedOpen(false);
     setDestination("");
-    setStatus(initialStatus());
+    setStatus({ ...initialStatus(), parse: "running" });
 
     try {
-      const result = await runSourcingWorkflow(raw);
+      const result = await runSourcingWorkflowStream(raw, (event) => {
+        const node = event.node as DagNodeId;
+        setStatus((previous) => {
+          const next: Record<DagNodeId, NodeStatus> = { ...previous, [node]: event.status };
+          // 节点完成后点亮执行链上的下一个节点为执行中
+          if (event.status === "done") {
+            const upcoming = NODE_ORDER[NODE_ORDER.indexOf(node) + 1];
+            if (upcoming && next[upcoming] === "pending") next[upcoming] = "running";
+          }
+          return next;
+        });
+      });
       setNeed(result.need);
       setListingCount(result.listing_count);
       setParserSource(result.parser_source);
       setPlan(result.plan);
-      for (const event of result.trace) {
-        setStatus((previous) => ({ ...previous, [event.node]: "running" }));
-        await sleep(STEP_MS);
-        setStatus((previous) => ({ ...previous, [event.node]: event.status }));
-      }
     } catch (e) {
       setError(e instanceof Error ? e.message : "粮源加载失败");
     } finally {
@@ -142,29 +151,40 @@ export default function SourcingTab() {
   return (
     <div className="flex flex-col gap-5">
       {/* 输入 */}
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          startRun();
-        }}
-        className="flex items-center gap-3"
-      >
-        <span className="shrink-0 text-sm font-medium text-ink">描述寻源需求</span>
-        <input
-          type="text"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="如：120吨二等玉米，7天内可发，预算2400"
-          className="h-11 flex-1 rounded-full border border-line bg-rice px-5 text-sm text-ink placeholder:text-ink-soft/70"
-        />
-        <button
-          type="submit"
-          disabled={running || !text.trim()}
-          className="h-11 rounded-full bg-brand px-7 text-sm font-medium text-white disabled:opacity-50"
+      <div className="flex flex-col gap-2">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            startRun();
+          }}
+          className="flex items-center gap-3"
         >
-          {running ? "寻源中…" : "开始寻源"}
-        </button>
-      </form>
+          <span className="shrink-0 text-sm font-medium text-ink">描述寻源需求</span>
+          <input
+            type="text"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="如：120吨二等玉米，7天内可发，预算2400"
+            className="h-11 flex-1 rounded-full border border-line bg-rice px-5 text-sm text-ink placeholder:text-ink-soft/70"
+          />
+          <button
+            type="submit"
+            disabled={running || !text.trim()}
+            className="h-11 rounded-full bg-brand px-7 text-sm font-medium text-white disabled:opacity-50"
+          >
+            {running ? "寻源中…" : "开始寻源"}
+          </button>
+        </form>
+        {!text.trim() && (
+          <button
+            type="button"
+            onClick={() => setText(EXAMPLE_NEED)}
+            className="self-start text-xs text-brand-deep/70 underline-offset-4 transition-colors hover:text-brand-deep hover:underline"
+          >
+            填入示例需求 →
+          </button>
+        )}
+      </div>
 
       {/* DAG 画布 */}
       <DagCanvas status={status} />
@@ -196,17 +216,29 @@ export default function SourcingTab() {
 
               {plan.eliminated.length > 0 && (
                 <div className="rounded-2xl border border-line bg-panel p-5">
-                  <div className="mb-3 text-sm font-semibold">未入选原因</div>
-                  <ul className="space-y-2">
-                    {plan.eliminated.map((e) => (
-                      <li key={`${e.listing_code}-${e.reason_code}`} className="flex items-start justify-between gap-4 text-sm">
-                        <span className="shrink-0 text-ink">
-                          {e.variety_name}·{e.grade} · {e.supplier_name}
-                        </span>
-                        <span className="text-right text-ink-soft">{e.reason_text}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  <button
+                    type="button"
+                    onClick={() => setEliminatedOpen((open) => !open)}
+                    className="flex w-full items-center gap-2 text-left text-sm font-semibold"
+                  >
+                    未入选原因
+                    <span className="text-xs font-normal text-ink-soft">{plan.eliminated.length} 条</span>
+                    <span className="ml-auto text-xs font-normal text-ink-soft">
+                      {eliminatedOpen ? "收起 ▲" : "展开查看 ▼"}
+                    </span>
+                  </button>
+                  {eliminatedOpen && (
+                    <ul className="mt-3 space-y-2">
+                      {plan.eliminated.map((e) => (
+                        <li key={`${e.listing_code}-${e.reason_code}`} className="flex items-start justify-between gap-4 text-sm">
+                          <span className="shrink-0 text-ink">
+                            {e.variety_name}·{e.grade} · {e.supplier_name}
+                          </span>
+                          <span className="text-right text-ink-soft">{e.reason_text}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               )}
 
@@ -225,8 +257,8 @@ export default function SourcingTab() {
               {plan.ranking_review && (
                 <div className="rounded-2xl border border-brand/35 bg-brand-faint/30 p-5">
                   <div className="flex items-center justify-between gap-3">
-                    <div className="text-sm font-semibold">LLM 排序复核</div>
-                    <span className="text-xs text-brand-deep">{plan.ranking_review.source === "llm" ? "AI 生成" : "规则说明"}</span>
+                    <div className="text-sm font-semibold">AI 比选决策</div>
+                    <span className="text-xs text-brand-deep">{plan.ranking_review.source === "llm" ? "AI 决策" : "规则回退"}</span>
                   </div>
                   <p className="mt-2 text-sm leading-6 text-ink">{plan.ranking_review.summary}</p>
                   <ul className="mt-3 space-y-1.5 text-sm text-ink-soft">

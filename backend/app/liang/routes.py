@@ -1,6 +1,8 @@
+import json
 from datetime import datetime
 
 from fastapi import APIRouter, Depends, Header, HTTPException
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
@@ -8,7 +10,7 @@ from app.database import get_db
 from app.liang import metrics, repository
 from app.liang.llm import interpret_comparison
 from app.liang.models import SourcingTask
-from app.liang.sourcing_graph import run_sourcing_graph
+from app.liang.sourcing_graph import run_sourcing_graph, run_sourcing_graph_stream
 
 router = APIRouter(prefix="/api/liang", tags=["liang"])
 
@@ -171,6 +173,25 @@ def run_sourcing_task(body: SourcingRunRequest, db: Session = Depends(get_db)):
         raise HTTPException(status_code=422, detail="请描述寻源需求")
     listings = [_serialize(item) for item in repository.list_listings(db)]
     return run_sourcing_graph(text, listings)
+
+
+@router.post("/sourcing-runs/stream")
+def run_sourcing_task_stream(body: SourcingRunRequest, db: Session = Depends(get_db)):
+    """流式执行寻源状态机，SSE 实时推送每个节点的完成事件。"""
+    text = body.text.strip()
+    if not text:
+        raise HTTPException(status_code=422, detail="请描述寻源需求")
+    listings = [_serialize(item) for item in repository.list_listings(db)]
+
+    def event_stream():
+        for event in run_sourcing_graph_stream(text, listings):
+            yield f"data: {json.dumps(event, ensure_ascii=False)}\n\n"
+
+    return StreamingResponse(
+        event_stream(),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
 
 
 class TaskCreate(BaseModel):

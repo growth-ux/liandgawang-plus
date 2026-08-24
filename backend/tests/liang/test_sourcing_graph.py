@@ -25,15 +25,16 @@ def _listing(**overrides):
 
 def test_sourcing_graph_generates_trace_and_recommendation(monkeypatch):
     monkeypatch.setattr("app.liang.sourcing_graph.extract_sourcing_need", lambda _text, fallback: (fallback, "llm"))
-    monkeypatch.setattr("app.liang.sourcing_graph.review_sourcing_ranking", lambda _need, _primary, _backup: {"summary": "LLM 排序复核完成", "decision_basis": ["综合到厂成本更优"], "procurement_advice": "优先锁定库存", "source": "llm"})
+    # LLM 比选故意与规则排序相反（主推 LS002），验证最终结果由 AI 决策驱动
+    monkeypatch.setattr("app.liang.sourcing_graph.decide_sourcing_picks", lambda _need, _candidates: {"primary_code": "LS002", "backup_code": "LS001", "summary": "AI 比选完成", "decision_basis": ["到厂成本与发运窗口更优"], "procurement_advice": "优先锁定库存", "source": "llm"})
     result = run_sourcing_graph(
         "120吨二等玉米，7天内可发，预算2400",
         [_listing(), _listing(id=2, listing_code="LS002", price="2390.00")],
     )
 
-    assert [item["node"] for item in result["trace"]] == ["parse", "load", "filter", "sort", "eliminate", "pick", "review", "verify"]
-    assert result["plan"]["primary"]["listing_code"] == "LS001"
-    assert result["plan"]["backup"]["listing_code"] == "LS002"
+    assert [item["node"] for item in result["trace"]] == ["parse", "load", "filter", "sort", "eliminate", "review", "pick", "verify"]
+    assert result["plan"]["primary"]["listing_code"] == "LS002"
+    assert result["plan"]["backup"]["listing_code"] == "LS001"
     assert result["parser_source"] == "llm"
     assert result["plan"]["ranking_review"]["source"] == "llm"
 

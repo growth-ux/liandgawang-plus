@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import NumberInput from "../../components/NumberInput";
-import { previewAnalysis, saveAnalysis } from "./api";
+import { extractAnalysisConditions, previewAnalysis, saveAnalysis } from "./api";
 import {
   VARIETIES,
   type AnalysisAction,
@@ -10,6 +10,11 @@ import {
 
 const GRADES = ["一等", "二等", "三等"];
 const RISKS = ["稳健", "积极", "保守"];
+
+const EXAMPLE_DESCRIBE =
+  "玉米采购120吨，10天内要到货，目标东北产区，二等，预算不超过2400元/吨，库存还能撑8天，风格稳健，水分要求14%以内。";
+/** 后端缺失标签中的研判必填项，用红色提醒 */
+const REQUIRED_MISSING = new Set(["品种", "采购数量", "最晚采购时间", "目标地区"]);
 
 export const ACTION_LABELS: Record<AnalysisAction, string> = {
   buy_now: "立即采购",
@@ -28,7 +33,7 @@ export const ACTION_TONE: Record<AnalysisAction, string> = {
 const COMPLETENESS_LABEL = { high: "充分", medium: "中等", low: "不足" } as const;
 
 const inputCls =
-  "w-full rounded-xl border border-line bg-rice px-3.5 py-2 text-sm text-ink placeholder:text-ink-soft/50 focus:border-tech focus:outline-none";
+  "w-full rounded-xl border border-line bg-rice px-3.5 py-2.5 text-sm text-ink placeholder:text-ink-soft/50 transition-colors focus:border-tech focus:outline-none";
 
 function Field({
   label,
@@ -80,7 +85,7 @@ function Dropdown({
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center justify-between gap-2 rounded-xl border border-line bg-rice px-3.5 py-2 text-sm text-ink transition-colors hover:border-tech"
+        className="flex w-full items-center justify-between gap-2 rounded-xl border border-line bg-rice px-3.5 py-2.5 text-sm text-ink transition-colors hover:border-tech"
       >
         <span className="truncate">{current ? current.label : "请选择"}</span>
         <svg
@@ -169,6 +174,12 @@ export default function ProcurementAnalysisTab({
   const [risk, setRisk] = useState("稳健");
   const [remark, setRemark] = useState("");
 
+  // 一句话描述 → AI 提取 → 表单确认 两段式流程；从研判记录恢复时直接进表单
+  const [stage, setStage] = useState<"describe" | "form">("describe");
+  const [describeText, setDescribeText] = useState("");
+  const [extracting, setExtracting] = useState(false);
+  const [extractMissing, setExtractMissing] = useState<string[] | null>(null);
+
   const [judgment, setJudgment] = useState<AnalysisJudgment | null>(null);
   const [savedId, setSavedId] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
@@ -187,12 +198,42 @@ export default function ProcurementAnalysisTab({
     setStockDays(prefill.stock_days !== null ? String(prefill.stock_days) : "");
     setRisk(prefill.risk_preference ?? "稳健");
     setRemark(prefill.remark ?? "");
+    setStage("form");
+    setExtractMissing(null);
     setJudgment(null);
     setSavedId(null);
     setError(null);
     onPrefillConsumed?.();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prefill]);
+
+  // 一句话描述 → 提取结构化条件填入表单，由用户确认后再生成研判
+  const onExtract = async () => {
+    if (!describeText.trim()) return;
+    setExtracting(true);
+    setError(null);
+    try {
+      const res = await extractAnalysisConditions(describeText);
+      const f = res.fields;
+      if (f.variety_code) onVarietyChange(f.variety_code);
+      setQuantity(f.quantity_tons ?? "");
+      setDeadline(f.deadline_date ?? "");
+      setGrade(f.grade ?? "");
+      setTargetRegion(f.target_region ?? "");
+      setBudget(f.budget_price ?? "");
+      setStockDays(f.stock_days !== null ? String(f.stock_days) : "");
+      setRisk(f.risk_preference ?? "稳健");
+      setRemark(f.remark ?? "");
+      setExtractMissing(res.missing);
+      setStage("form");
+      setJudgment(null);
+      setSavedId(null);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "提取失败");
+    } finally {
+      setExtracting(false);
+    }
+  };
 
   const buildRequest = (): AnalysisRequest | null => {
     if (!quantity || Number(quantity) <= 0) {
@@ -254,39 +295,126 @@ export default function ProcurementAnalysisTab({
 
   return (
     <div className="flex flex-col gap-4">
-      {/* 上：采购条件 */}
+      {/* 第一步：一句话描述采购需求 */}
+      {stage === "describe" && (
+        <div className="rounded-2xl border border-line bg-panel p-5">
+          <div className="mb-3 flex items-center gap-3">
+            <span className="text-sm font-semibold">一句话描述采购需求</span>
+            <span className="text-xs text-ink-soft">
+              瞻小二自动拆解为研判条件，确认后生成采购研判
+            </span>
+          </div>
+          <textarea
+            rows={3}
+            value={describeText}
+            onChange={(e) => setDescribeText(e.target.value)}
+            placeholder={EXAMPLE_DESCRIBE}
+            className="w-full resize-none rounded-xl border border-line bg-rice px-4 py-3 text-sm leading-6 text-ink placeholder:text-ink-soft/40 focus:border-tech focus:outline-none"
+          />
+          <div className="mt-3 flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={onExtract}
+              disabled={!describeText.trim() || extracting}
+              className="rounded-xl bg-tech px-6 py-2 text-sm font-semibold text-rice transition-colors hover:bg-tech/85 disabled:opacity-50"
+            >
+              {extracting ? "瞻小二正在研判…" : "AI 采购研判"}
+            </button>
+            <button
+              type="button"
+              onClick={() => { setStage("form"); setExtractMissing(null); setError(null); }}
+              className="rounded-xl border border-line px-4 py-2 text-sm text-ink-soft transition-colors hover:text-ink"
+            >
+              手动填写条件
+            </button>
+            {!describeText.trim() && (
+              <button
+                type="button"
+                onClick={() => setDescribeText(EXAMPLE_DESCRIBE)}
+                className="ml-auto text-xs text-tech/80 underline-offset-4 transition-colors hover:text-tech hover:underline"
+              >
+                填入示例描述 →
+              </button>
+            )}
+          </div>
+          {error && <p className="mt-3 text-xs text-red-400">{error}</p>}
+        </div>
+      )}
+
+      {/* 第二步：采购条件确认表单 */}
+      {stage === "form" && (
       <div className="rounded-2xl border border-line bg-panel p-5">
+        {/* 提取结果提示：哪些条件已带入、哪些需要补全 */}
+        {extractMissing !== null && (
+          <div className="mb-4 rounded-xl border border-tech/30 bg-tech/5 px-4 py-3">
+            <p className="text-xs font-medium text-tech">
+              已根据你的描述提取以下条件，请确认或补全后再生成研判
+            </p>
+            {extractMissing.length > 0 && (
+              <p className="mt-1.5 flex flex-wrap items-center gap-1.5 text-xs text-ink-soft">
+                待补全：
+                {extractMissing.map((m) => (
+                  <span
+                    key={m}
+                    className={`rounded-full px-2 py-0.5 ${
+                      REQUIRED_MISSING.has(m)
+                        ? "bg-red-400/10 text-red-300"
+                        : "bg-rice-deep text-ink-soft"
+                    }`}
+                  >
+                    {m}{REQUIRED_MISSING.has(m) ? " *" : ""}
+                  </span>
+                ))}
+              </p>
+            )}
+          </div>
+        )}
+
         <div className="mb-4 flex items-center gap-3">
           <span className="text-sm font-semibold">采购条件</span>
           <span className="text-xs text-ink-soft">
             带 <span className="text-red-400">*</span> 为必填，其余条件越全研判越准
           </span>
+          <button
+            type="button"
+            onClick={() => { setStage("describe"); setExtractMissing(null); setError(null); }}
+            className="ml-auto text-xs text-ink-soft transition-colors hover:text-tech"
+          >
+            ← 换用一句话描述
+          </button>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-8">
-          {/* 品种 */}
-          <div className="col-span-2">
-            <span className="mb-1.5 block text-xs text-ink-soft">
-              品种<span className="ml-0.5 text-red-400">*</span>
-            </span>
-            <div className="flex items-center gap-2">
-              {VARIETIES.map((v) => (
-                <button
-                  key={v.code}
-                  type="button"
-                  onClick={() => onVarietyChange(v.code)}
-                  className={`rounded-full px-4 py-1.5 text-sm transition-colors ${
-                    varietyCode === v.code
-                      ? "bg-tech font-semibold text-rice"
-                      : "border border-line bg-panel text-ink-soft hover:text-ink"
-                  }`}
-                >
-                  {v.name}
-                </button>
-              ))}
-            </div>
-          </div>
+        {/* 基础条件（必填） */}
+        <div className="mb-3 flex items-center gap-2">
+          <span className="h-3 w-1 rounded-full bg-tech" />
+          <span className="text-xs font-semibold">基础条件</span>
+          <span className="text-xs text-ink-soft">决定研判框架，均为必填</span>
+        </div>
 
+        {/* 品种：分段选择器 */}
+        <div className="mb-3">
+          <span className="mb-1.5 block text-xs text-ink-soft">
+            品种<span className="ml-0.5 text-red-400">*</span>
+          </span>
+          <div className="flex flex-wrap items-center gap-2">
+            {VARIETIES.map((v) => (
+              <button
+                key={v.code}
+                type="button"
+                onClick={() => onVarietyChange(v.code)}
+                className={`rounded-xl border px-6 py-2 text-sm transition-all ${
+                  varietyCode === v.code
+                    ? "border-tech/60 bg-tech/15 font-semibold text-tech shadow-[0_0_14px_rgba(34,211,238,0.2)]"
+                    : "border-line bg-rice text-ink-soft hover:border-tech/30 hover:text-ink"
+                }`}
+              >
+                {v.name}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-x-4 gap-y-3 lg:grid-cols-4">
           <Field label="采购数量（吨）" required>
             <NumberInput
               min={1}
@@ -303,6 +431,14 @@ export default function ProcurementAnalysisTab({
               onChange={(e) => setDeadline(e.target.value)}
             />
           </Field>
+          <Field label="目标地区" required>
+            <input
+              className={inputCls}
+              value={targetRegion}
+              onChange={(e) => setTargetRegion(e.target.value)}
+              placeholder="如 东北 / 锦州"
+            />
+          </Field>
           <Field label="等级">
             <Dropdown
               value={grade}
@@ -313,72 +449,80 @@ export default function ProcurementAnalysisTab({
               ]}
             />
           </Field>
-          <Field label="目标地区" required>
-            <input
-              className={inputCls}
-              value={targetRegion}
-              onChange={(e) => setTargetRegion(e.target.value)}
-              placeholder="如 东北 / 锦州"
-            />
-          </Field>
+        </div>
+
+        {/* 约束与偏好（选填） */}
+        <div className="mb-3 mt-6 flex items-center gap-2">
+          <span className="h-3 w-1 rounded-full bg-tech/40" />
+          <span className="text-xs font-semibold">约束与偏好</span>
+          <span className="text-xs text-ink-soft">选填，条件越全研判越准</span>
+        </div>
+
+        <div className="grid grid-cols-2 gap-x-4 gap-y-3 lg:grid-cols-3">
           <Field label="目标预算（元/吨）">
             <NumberInput
               min={1}
               value={budget}
               onChange={setBudget}
-              placeholder="可选"
+              placeholder="选填"
             />
           </Field>
-          <Field label="库存可用天数">
+          <Field label="库存可用天数（天）">
             <NumberInput
               min={0}
               value={stockDays}
               onChange={setStockDays}
-              placeholder="可选"
+              placeholder="选填"
+            />
+          </Field>
+          <Field label="风险偏好">
+            <Dropdown
+              value={risk}
+              onChange={setRisk}
+              options={RISKS.map((r) => ({ value: r, label: r }))}
             />
           </Field>
         </div>
 
-        <div className="mt-3 flex flex-wrap items-end gap-3">
-          <div className="shrink-0">
-            <Field label="风险偏好">
-              <Dropdown
-                className="w-25"
-                value={risk}
-                onChange={setRisk}
-                options={RISKS.map((r) => ({ value: r, label: r }))}
-              />
-            </Field>
-          </div>
-          <div className="min-w-[220px] flex-1">
-            <Field label="其他说明">
-              <input
-                className={inputCls}
-                value={remark}
-                onChange={(e) => setRemark(e.target.value)}
-                placeholder="如水分要求、到货方式等（可选）"
-              />
-            </Field>
-          </div>
+        <div className="mt-3">
+          <Field label="其他说明">
+            <input
+              className={inputCls}
+              value={remark}
+              onChange={(e) => setRemark(e.target.value)}
+              placeholder="如水分要求、到货方式等（选填）"
+            />
+          </Field>
+        </div>
+
+        {/* 底部操作栏 */}
+        <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-line/60 pt-4">
+          {extractMissing !== null &&
+            extractMissing.filter((m) => REQUIRED_MISSING.has(m)).length > 0 && (
+              <span className="text-xs text-amber-300">
+                必填待补全：{extractMissing.filter((m) => REQUIRED_MISSING.has(m)).join("、")}
+              </span>
+            )}
           <button
             type="button"
             onClick={onPreview}
             disabled={loading}
-            className="shrink-0 rounded-xl bg-tech px-6 py-2 text-sm font-semibold text-rice transition-colors hover:bg-tech/85 disabled:opacity-50"
+            className="ml-auto rounded-xl bg-tech px-7 py-2.5 text-sm font-semibold text-rice shadow-[0_0_18px_rgba(34,211,238,0.3)] transition-colors hover:bg-tech/85 disabled:opacity-50"
           >
-            {loading ? "瞻小二正在研判…" : "生成采购研判"}
+            {loading ? "瞻小二正在研判…" : "确认条件，生成研判"}
           </button>
         </div>
 
         {error && <p className="mt-3 text-xs text-red-400">{error}</p>}
       </div>
+      )}
 
       {/* 下：研判结论 */}
       <div className="rounded-2xl border border-line bg-panel p-5">
         {!judgment ? (
           <div className="flex min-h-[280px] flex-col items-center justify-center text-center">
             <div className="text-sm text-ink-soft">
-              填写采购条件后，点击「生成采购研判」
+              一句话描述采购需求，或直接填写条件，点击「AI 采购研判」
             </div>
             <p className="mt-2 max-w-lg text-xs leading-5 text-ink-soft/70">
               瞻小二将结合当前演示行情的价格走势、关键事件与你的库存、预算约束，

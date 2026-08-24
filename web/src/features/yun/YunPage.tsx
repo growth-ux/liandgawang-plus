@@ -9,7 +9,7 @@ import TasksTab from "./TasksTab";
 
 const agent = getAgent("yun")!;
 
-/** 运小二：找物流市场浏览 + 运输方案智能决策 + 运输任务 + 询运对接 */
+/** 运小二：物流市场浏览 + 运输方案智能决策 + 运输任务 + 询运对接 */
 export default function YunPage() {
   const [activeTab, setActiveTab] = useState(0);
   const [taskId, setTaskIdRaw] = useState<number | null>(() => {

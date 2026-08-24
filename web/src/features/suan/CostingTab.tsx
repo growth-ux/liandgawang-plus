@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { CostComparison as CostComparisonType, CostingRecord, SchemeDraft, SuanHandoff } from "./types";
 import QuoteInput from "./QuoteInput";
 import SchemeEditor from "./SchemeEditor";
@@ -18,6 +18,52 @@ interface Props {
 
 type Stage = "input" | "editing" | "calculated";
 
+const STEPS: { key: Stage; title: string; desc: string }[] = [
+  { key: "input", title: "录入方案", desc: "粘贴报价或从小二导入" },
+  { key: "editing", title: "参数核对", desc: "确认成本关键参数" },
+  { key: "calculated", title: "测算结果", desc: "对比到厂成本与差异" },
+];
+
+function StepBar({ stage }: { stage: Stage }) {
+  const currentIdx = STEPS.findIndex((s) => s.key === stage);
+  return (
+    <ol className="flex flex-wrap items-center gap-y-3 rounded-2xl border border-line bg-panel/50 px-5 py-3.5">
+      {STEPS.map((step, i) => {
+        const state = i < currentIdx ? "done" : i === currentIdx ? "active" : "todo";
+        return (
+          <li key={step.key} className="flex items-center">
+            {i > 0 && (
+              <span
+                className={`mx-4 h-px w-12 sm:w-20 ${i <= currentIdx ? "bg-violet-400/60" : "bg-line"}`}
+                aria-hidden="true"
+              />
+            )}
+            <div className="flex items-center gap-2.5">
+              <span
+                className={`flex h-6 w-6 flex-none items-center justify-center rounded-full border text-xs font-semibold transition-colors ${
+                  state === "done"
+                    ? "border-violet-400/50 bg-violet-400/15 text-violet-300"
+                    : state === "active"
+                      ? "border-violet-400 bg-violet-500 text-white shadow-[0_0_12px_rgba(139,92,246,0.45)]"
+                      : "border-line text-ink-soft/70"
+                }`}
+              >
+                {state === "done" ? "✓" : i + 1}
+              </span>
+              <div className="leading-tight">
+                <p className={`text-xs font-semibold ${state === "active" ? "text-violet-300" : state === "done" ? "text-ink" : "text-ink-soft/70"}`}>
+                  {step.title}
+                </p>
+                <p className="mt-0.5 text-xs text-ink-soft/70">{step.desc}</p>
+              </div>
+            </div>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
 const AGENT_LABELS: Record<string, string> = {
   liang: "粮小二",
   yun: "运小二",
@@ -36,6 +82,27 @@ export default function CostingTab({ pendingHandoff, onClearHandoff, currentReco
   const [savedRecord, setSavedRecord] = useState<CostingRecord | null>(null);
   const [sourceText, setSourceText] = useState("");
   const [handoffConfirmed, setHandoffConfirmed] = useState(false);
+
+  // 从测算记录打开时，恢复方案与测算结果；切换到新记录时重置流程状态，避免串数据
+  useEffect(() => {
+    if (!currentRecord) return;
+    setSourceText(currentRecord.source_text || "");
+    setSchemes(currentRecord.schemes || []);
+    setSelectedSchemeId(currentRecord.selected_scheme_id);
+    setSavedRecord(currentRecord.status !== "pending" ? currentRecord : null);
+    setQuestions([]);
+    setHandoffConfirmed(true);
+    if (currentRecord.status === "pending") {
+      setComparison(null);
+      setStage("editing");
+    } else if (currentRecord.calculation) {
+      setComparison(currentRecord.calculation);
+      setStage("calculated");
+    } else {
+      setComparison(null);
+      setStage("editing");
+    }
+  }, [currentRecord?.id]);
 
   // 接收交接数据
   const handleAcceptHandoff = () => {
@@ -148,7 +215,10 @@ export default function CostingTab({ pendingHandoff, onClearHandoff, currentReco
   };
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-5">
+      {/* 流程步骤条 */}
+      <StepBar stage={stage} />
+
       {/* 交接提示条 */}
       {pendingHandoff && !handoffConfirmed && (
         <div className="rounded-2xl border border-violet-400/30 bg-violet-400/5 px-5 py-4">
@@ -220,12 +290,12 @@ export default function CostingTab({ pendingHandoff, onClearHandoff, currentReco
           />
 
           {/* 动作区 */}
-          <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-line bg-panel/60 p-4">
+          <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-line bg-panel/60 px-5 py-4">
             {!savedRecord ? (
               <button
                 onClick={handleSave}
                 disabled={loading === "save"}
-                className="rounded-full bg-violet-500 px-6 py-2.5 text-sm font-medium text-white disabled:opacity-40"
+                className="rounded-full bg-violet-500 px-6 py-2.5 text-sm font-medium text-white shadow-[0_0_16px_rgba(139,92,246,0.35)] disabled:opacity-40"
               >
                 {loading === "save" ? "保存中…" : "保存测算"}
               </button>
@@ -245,8 +315,11 @@ export default function CostingTab({ pendingHandoff, onClearHandoff, currentReco
                 onClick={() => onOpenProfit(savedRecord)}
                 className="rounded-full bg-violet-500/80 px-5 py-2 text-sm font-medium text-white"
               >
-                进入盈亏推演
+                进入盈亏推演 →
               </button>
+            )}
+            {!savedRecord && (
+              <span className="ml-auto text-xs text-ink-soft/70">保存后可进入盈亏推演，或交接其他小二降本</span>
             )}
           </div>
 

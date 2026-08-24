@@ -1,4 +1,5 @@
 import type {
+  AnalysisExtractResponse,
   AnalysisJudgment,
   AnalysisRecord,
   AnalysisRequest,
@@ -24,6 +25,20 @@ export async function previewAnalysis(
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(req),
+  });
+  if (!resp.ok) {
+    throw new Error(`请求失败（${resp.status}）`);
+  }
+  return resp.json();
+}
+
+export async function extractAnalysisConditions(
+  text: string,
+): Promise<AnalysisExtractResponse> {
+  const resp = await fetch("/api/analysis/extract", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text }),
   });
   if (!resp.ok) {
     throw new Error(`请求失败（${resp.status}）`);

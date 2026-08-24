@@ -32,9 +32,9 @@ export const DAG_NODES: DagNode[] = [
   { id: "filter", label: "硬条件过滤", deps: ["load"] },
   { id: "sort", label: "排序比较", deps: ["filter"] },
   { id: "eliminate", label: "淘汰归因", deps: ["filter"] },
-  { id: "pick", label: "主推/备选", deps: ["sort"] },
-  { id: "review", label: "LLM 排序复核", deps: ["pick"] },
-  { id: "verify", label: "待核验清单", deps: ["review", "eliminate"] },
+  { id: "review", label: "AI 比选决策", deps: ["sort"] },
+  { id: "pick", label: "主推/备选", deps: ["review"] },
+  { id: "verify", label: "待核验清单", deps: ["pick", "eliminate"] },
   { id: "save", label: "沉淀任务", deps: ["verify"] },
 ];
 
@@ -44,6 +44,7 @@ export const AUTO_BATCHES: DagNodeId[][] = [
   ["load"],
   ["filter"],
   ["sort", "eliminate"],
+  ["review"],
   ["pick"],
   ["verify"],
 ];

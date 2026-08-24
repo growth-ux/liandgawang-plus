@@ -102,6 +102,25 @@ export interface AnalysisRequest {
   remark?: string | null;
 }
 
+/** 一句话需求提取出的结构化条件（未识别项为 null，由用户在表单补全） */
+export interface AnalysisExtractFields {
+  variety_code: string | null;
+  quantity_tons: string | null;
+  deadline_date: string | null;
+  grade: string | null;
+  target_region: string | null;
+  budget_price: string | null;
+  stock_days: number | null;
+  risk_preference: string | null;
+  remark: string | null;
+}
+
+export interface AnalysisExtractResponse {
+  fields: AnalysisExtractFields;
+  /** 未提取到的字段展示名，前四项（品种/数量/时间/地区）为必填 */
+  missing: string[];
+}
+
 export type AnalysisAction = "buy_now" | "split" | "wait" | "verify";
 
 export interface AnalysisJudgment {

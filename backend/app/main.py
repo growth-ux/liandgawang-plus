@@ -1,7 +1,11 @@
+import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+# uvicorn 默认为应用日志器不配 Handler，业务 INFO 日志会被丢弃，这里统一开到终端可见
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 
 from app.analysis.routes import router as analysis_router
 from app.database import Base, engine

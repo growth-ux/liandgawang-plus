@@ -37,7 +37,11 @@ class SourcingNeedExtraction(BaseModel):
     budget_price: int | None = Field(default=None, ge=1)
 
 
-class RankingReview(BaseModel):
+class SourcingPickDecision(BaseModel):
+    """LLM 从候选粮源中做出的主推/备选决策。"""
+
+    primary_code: str
+    backup_code: str | None = None
     summary: str
     decision_basis: list[str] = Field(min_length=1, max_length=3)
     procurement_advice: str
@@ -100,6 +104,7 @@ def extract_sourcing_need(text: str, fallback: dict) -> tuple[dict, str]:
         from langchain_openai import ChatOpenAI
 
         llm = ChatOpenAI(model=model, api_key=api_key, base_url=base_url, temperature=0, timeout=30, max_retries=1)
+        logger.info("LLM 寻源需求解析请求开始: model=%s base_url=%s text=%s", model, base_url, text)
         result = llm.with_structured_output(SourcingNeedExtraction).invoke([
             ("system", "你是粮食采购需求解析助手。仅提取用户明确表达的品种、数量（吨）、等级、粮食年份、最晚发运天数和预算单价（元/吨）；未明确表达的字段必须为 null，禁止推测或补全。"),
             ("human", text),
@@ -117,32 +122,49 @@ def extract_sourcing_need(text: str, fallback: dict) -> tuple[dict, str]:
         return fallback, "rule"
 
 
-def review_sourcing_ranking(need: dict | None, primary: dict, backup: dict | None) -> dict:
-    """解释规则排序的业务取舍，绝不改变已确定的主推与备选。"""
-    fallback = {
-        "summary": f"主推 {primary['listing_code']} 已在信息完整度、综合到厂成本与发运条件的规则排序中优先；最终下单前仍需完成库存和质检核验。",
-        "decision_basis": [
-            f"主推综合到厂成本为 {primary['delivered_price']} 元/吨",
-            f"主推可用量为 {primary['available_quantity_tons']} 吨，最晚可发 {primary['latest_ship_at'] or '待确认'}",
-        ],
-        "procurement_advice": f"优先向 {primary['supplier_name']} 确认库存锁定与正式质检单。" if not backup else f"成本优先可先核验 {primary['supplier_name']}；如更看重备选供应连续性，可同步保留 {backup['supplier_name']} 议价。",
-        "source": "rule",
-    }
+def decide_sourcing_picks(need: dict | None, candidates: list[dict]) -> dict:
+    """LLM 从规则排序后的候选粮源中真实决策主推与备选；不可用时回退规则前二。"""
+    codes = [item["listing_code"] for item in candidates]
+
+    def fallback() -> dict:
+        primary, backup = candidates[0], (candidates[1] if len(candidates) > 1 else None)
+        return {
+            "primary_code": primary["listing_code"],
+            "backup_code": backup["listing_code"] if backup else None,
+            "summary": f"模型不可用，按规则排序选定主推 {primary['listing_code']}：信息完整度、综合到厂成本与发运条件优先。",
+            "decision_basis": [
+                f"主推综合到厂成本 {primary['delivered_price']} 元/吨，可用量 {primary['available_quantity_tons']} 吨",
+                f"最晚可发 {primary['latest_ship_at'] or '待确认'}",
+            ],
+            "procurement_advice": f"优先向 {primary['supplier_name']} 确认库存锁定与正式质检单。" if not backup else f"成本优先可先核验 {primary['supplier_name']}；如更看重供应连续性，可同步保留 {backup['supplier_name']} 议价。",
+            "source": "rule",
+        }
+
     api_key, model, base_url = _config()
     if not api_key:
-        return fallback
+        return fallback()
     try:
         from langchain_openai import ChatOpenAI
 
-        llm = ChatOpenAI(model=model, api_key=api_key, base_url=base_url, temperature=0.2, timeout=20, max_retries=0)
-        result = llm.with_structured_output(RankingReview).invoke([
-            ("system", "你是粮食采购决策助手。你只能解释给定的规则排序结果，不得调整主推或备选顺序，不得编造运费、库存、信用或行情。请说明成本、质量、发运和信息完整度之间的取舍，并给出谨慎的下一步建议。"),
-            ("human", f"采购需求：{need or {}}\n规则主推（名次不可修改）：{primary}\n规则备选（名次不可修改）：{backup or {}}"),
+        llm = ChatOpenAI(model=model, api_key=api_key, base_url=base_url, temperature=0.2, timeout=60, max_retries=1)
+        logger.info("LLM 寻源比选决策请求开始: model=%s 候选=%s", model, codes)
+        result = llm.with_structured_output(SourcingPickDecision).invoke([
+            ("system", "你是粮食采购决策专家。请从候选粮源中选出主推与备选（候选不足两条时备选可为 null），综合权衡到厂成本、质量指标、发运窗口与信息完整度。只能使用给定字段，不得编造运费、库存、信用或行情；决策理由必须来自给定数据。"),
+            ("human", f"采购需求：{need or {}}\n候选粮源（已按规则预排序，仅供参考）：{candidates}\n请返回主推与备选的 listing_code 及决策说明。"),
         ])
-        return {**result.model_dump(), "source": "llm"} if result else fallback
+        if not result:
+            return fallback()
+        decision = result.model_dump()
+        # 只接受候选池内的选择，防止模型幻觉改变结果；备选与主推不能相同
+        if decision.get("primary_code") not in codes:
+            logger.warning("LLM 主推 %s 不在候选池内，回退规则决策", decision.get("primary_code"))
+            return fallback()
+        if decision.get("backup_code") not in codes or decision["backup_code"] == decision["primary_code"]:
+            decision["backup_code"] = next((c for c in codes if c != decision["primary_code"]), None)
+        return {**decision, "source": "llm"}
     except Exception:
-        logger.exception("寻源排序 LLM 复核失败，回退规则说明")
-        return fallback
+        logger.exception("寻源比选 LLM 决策失败，回退规则前二")
+        return fallback()
 
 
 def interpret_comparison(listings: list[dict]) -> dict:
@@ -155,6 +177,7 @@ def interpret_comparison(listings: list[dict]) -> dict:
         from langchain_openai import ChatOpenAI
 
         llm = ChatOpenAI(model=model, api_key=api_key, base_url=base_url, temperature=0.2, timeout=60, max_retries=1)
+        logger.info("LLM 候选粮源对比解读请求开始: model=%s 候选=%s条", model, len(listings))
         prompt = (
             "请根据以下已选候选粮源做采购前横向解读。仅可使用给定字段，不得编造运费、信用、库存状态或行情预测；"
             "不做绝对承诺。每条粮源都必须给出优势和风险，风险至少包含交易前需要核验的信息。\n\n"

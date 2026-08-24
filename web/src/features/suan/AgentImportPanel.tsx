@@ -62,9 +62,33 @@ interface QianRecord {
 type Tab = "liang" | "yun" | "qian" | null;
 
 const AGENT_META = {
-  liang: { label: "粮小二", color: "text-amber-300", border: "border-amber-400/30" },
-  yun: { label: "运小二", color: "text-emerald-300", border: "border-emerald-400/30" },
-  qian: { label: "钱小二", color: "text-orange-300", border: "border-orange-400/30" },
+  liang: {
+    label: "粮小二",
+    char: "粮",
+    desc: "导入寻源报价与质检结果",
+    text: "text-amber-300",
+    avatar: "border-amber-400/30 bg-amber-400/10 text-amber-300",
+    active: "border-amber-400/50 bg-amber-400/[0.07] shadow-[0_0_18px_rgba(251,191,36,0.12)]",
+    hover: "hover:border-amber-400/35",
+  },
+  yun: {
+    label: "运小二",
+    char: "运",
+    desc: "导入运输方案与运费区间",
+    text: "text-emerald-300",
+    avatar: "border-emerald-400/30 bg-emerald-400/10 text-emerald-300",
+    active: "border-emerald-400/50 bg-emerald-400/[0.07] shadow-[0_0_18px_rgba(52,211,153,0.12)]",
+    hover: "hover:border-emerald-400/35",
+  },
+  qian: {
+    label: "钱小二",
+    char: "钱",
+    desc: "导入资金产品与成本估算",
+    text: "text-orange-300",
+    avatar: "border-orange-400/30 bg-orange-400/10 text-orange-300",
+    active: "border-orange-400/50 bg-orange-400/[0.07] shadow-[0_0_18px_rgba(251,146,60,0.12)]",
+    hover: "hover:border-orange-400/35",
+  },
 };
 
 export default function AgentImportPanel({ onImport }: Props) {
@@ -217,61 +241,80 @@ export default function AgentImportPanel({ onImport }: Props) {
   };
 
   return (
-    <div className="rounded-2xl border border-line bg-panel/60 p-5">
-      <h4 className="mb-3 text-sm font-semibold">从其他小二导入方案数据</h4>
-
-      {/* 三个入口 */}
-      <div className="flex gap-2">
-        {(Object.keys(AGENT_META) as Array<keyof typeof AGENT_META>).map((key) => {
-          const meta = AGENT_META[key];
-          const isActive = activeTab === key;
-          return (
-            <button
-              key={key}
-              onClick={() => { setActiveTab(isActive ? null : key); setError(null); }}
-              className={`rounded-full border px-4 py-1.5 text-xs transition-colors ${
-                isActive
-                  ? `${meta.border} ${meta.color} bg-panel`
-                  : "border-line text-ink-soft hover:text-ink"
-              }`}
-            >
-              {meta.label}
-            </button>
-          );
-        })}
+    <div className="overflow-hidden rounded-2xl border border-line bg-panel/60">
+      <div className="border-b border-line/70 px-5 py-3.5">
+        <h4 className="text-sm font-semibold">从其他小二导入方案数据</h4>
+        <p className="mt-0.5 text-xs text-ink-soft">复用粮源、物流、资金环节的已有结果，导入后可补全缺失字段一起测算</p>
       </div>
 
-      {error && <p className="mt-2 text-xs text-red-400">{error}</p>}
-      {loading && <p className="mt-2 text-xs text-ink-soft">加载中…</p>}
-
-      {/* 粮小二列表 */}
-      {activeTab === "liang" && !loading && (
-        <div className="mt-3 flex flex-col gap-2">
-          {liangTasks.length === 0 ? (
-            <p className="text-xs text-ink-soft">暂无已完成的寻源任务</p>
-          ) : (
-            liangTasks.map((t) => {
-              const p = t.plan?.primary!;
-              return (
-                <button
-                  key={t.id}
-                  onClick={() => handleSelectLiang(t)}
-                  className="flex items-center justify-between rounded-xl bg-rice-deep p-3 text-left text-xs hover:bg-rice-deep/80"
+      <div className="p-5">
+        {/* 三个来源入口 */}
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          {(Object.keys(AGENT_META) as Array<keyof typeof AGENT_META>).map((key) => {
+            const meta = AGENT_META[key];
+            const isActive = activeTab === key;
+            return (
+              <button
+                key={key}
+                onClick={() => { setActiveTab(isActive ? null : key); setError(null); }}
+                className={`group flex items-center gap-3 rounded-xl border px-4 py-3 text-left transition-all ${
+                  isActive ? meta.active : `border-line bg-rice-deep ${meta.hover}`
+                }`}
+              >
+                <span
+                  className={`flex h-9 w-9 flex-none items-center justify-center rounded-lg border text-sm font-bold transition-transform group-hover:scale-105 ${meta.avatar}`}
                 >
-                  <div>
-                    <span className="font-medium">{p.variety_name} · {p.origin}</span>
-                    <span className="ml-2 text-ink-soft">{p.supplier_name}</span>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-amber-300">{Number(p.price).toLocaleString()} 元/吨</span>
-                    <span className="ml-2 text-ink-soft">{t.need?.quantity_tons}吨</span>
-                  </div>
-                </button>
-              );
-            })
-          )}
+                  {meta.char}
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className={`block text-sm font-semibold ${isActive ? meta.text : "text-ink"}`}>
+                    {meta.label}
+                  </span>
+                  <span className="mt-0.5 block truncate text-xs text-ink-soft">{meta.desc}</span>
+                </span>
+                <span
+                  className={`flex-none text-xs transition-colors ${
+                    isActive ? meta.text : "text-ink-soft/40 group-hover:text-ink-soft"
+                  }`}
+                >
+                  {isActive ? "▲" : "▼"}
+                </span>
+              </button>
+            );
+          })}
         </div>
-      )}
+
+        {error && <p className="mt-3 text-xs text-red-400">{error}</p>}
+        {loading && <p className="mt-3 text-xs text-ink-soft">加载中…</p>}
+
+        {/* 粮小二列表 */}
+        {activeTab === "liang" && !loading && (
+          <div className="mt-3 flex flex-col gap-2">
+            {liangTasks.length === 0 ? (
+              <p className="text-xs text-ink-soft">暂无已完成的寻源任务</p>
+            ) : (
+              liangTasks.map((t) => {
+                const p = t.plan?.primary!;
+                return (
+                  <button
+                    key={t.id}
+                    onClick={() => handleSelectLiang(t)}
+                    className="flex items-center justify-between rounded-xl bg-rice-deep p-3 text-left text-xs transition-colors hover:bg-rice-deep/80"
+                  >
+                    <div>
+                      <span className="font-medium">{p.variety_name} · {p.origin}</span>
+                      <span className="ml-2 text-ink-soft">{p.supplier_name}</span>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-amber-300">{Number(p.price).toLocaleString()} 元/吨</span>
+                      <span className="ml-2 text-ink-soft">{t.need?.quantity_tons}吨</span>
+                    </div>
+                  </button>
+                );
+              })
+            )}
+          </div>
+        )}
 
       {/* 运小二列表 */}
       {activeTab === "yun" && !loading && (
@@ -345,9 +388,7 @@ export default function AgentImportPanel({ onImport }: Props) {
         </div>
       )}
 
-      <p className="mt-3 text-[11px] text-ink-soft/60">
-        导入后可在编辑区补充缺失字段，与其他方案一起测算。
-      </p>
+      </div>
     </div>
   );
 }

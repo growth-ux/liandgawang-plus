@@ -64,25 +64,28 @@ export default function HandoffAction({ comparison, onHandoff }: Props) {
   if (suggestions.length === 0) return null;
 
   return (
-    <div className="rounded-2xl border border-line bg-panel/60 p-5">
-      <h4 className="mb-3 text-sm font-semibold">降本建议</h4>
-      <div className="flex flex-col gap-3">
+    <div className="overflow-hidden rounded-2xl border border-line bg-panel/60">
+      <div className="border-b border-line/70 px-5 py-3.5">
+        <h4 className="text-sm font-semibold">降本协作建议</h4>
+        <p className="mt-0.5 text-xs text-ink-soft">基于方案差异识别的降本机会，可携带目标值交接给对应小二</p>
+      </div>
+      <div className="flex flex-col gap-2.5 p-5">
         {suggestions.map((s, i) => (
-          <div key={i} className="flex items-center justify-between rounded-xl bg-rice-deep p-3">
+          <div key={i} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line/50 bg-rice-deep px-4 py-3">
             <div>
               <p className="text-sm">{s.reason}</p>
-              <p className="mt-0.5 text-xs text-ink-soft">{s.targetValue}</p>
+              <p className="mt-0.5 text-xs text-ink-soft">目标：{s.targetValue}</p>
             </div>
             <button
               onClick={() => onHandoff(s.targetAgent, s.targetValue, s.reason)}
-              className="flex-shrink-0 rounded-full bg-violet-500/80 px-4 py-1.5 text-xs font-medium text-white"
+              className="flex-none rounded-full bg-violet-500 px-4 py-1.5 text-xs font-medium text-white shadow-[0_0_10px_rgba(139,92,246,0.3)]"
             >
-              交给{s.agentLabel}
+              交给{s.agentLabel} →
             </button>
           </div>
         ))}
       </div>
-      <p className="mt-3 text-[11px] text-ink-soft/60">确认交接后，将携带目标值跳转到对应小二继续办理。</p>
+      <p className="border-t border-line/50 px-5 py-2.5 text-xs text-ink-soft/60">确认交接后，将携带目标值跳转到对应小二继续办理。</p>
     </div>
   );
 }

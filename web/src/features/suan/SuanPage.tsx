@@ -59,18 +59,19 @@ export default function SuanPage() {
           <div className="flex items-center gap-3.5">
             <AgentPortrait agent={agent} />
             <div>
-              <h1 className="text-lg font-semibold">
+              <h1 className="text-lg font-semibold tracking-wide">
                 {agent.name}｜{agent.action}
                 <span className="agent-theme-tag ml-2.5 rounded-full px-2.5 py-0.5 text-xs font-normal">
                   {agent.role}
                 </span>
               </h1>
+              <p className="mt-0.5 text-xs text-ink-soft">汇总粮源、物流与资金报价 · 测算到厂成本与单笔业务盈亏</p>
             </div>
           </div>
           <AgentSwitcher currentId={agent.id} />
         </div>
-        <div className="mx-auto max-w-[1280px] px-6">
-          <div className="flex gap-6">
+        <div className="mx-auto flex max-w-[1280px] items-end justify-between px-6">
+          <nav className="flex gap-7" aria-label="算小二功能">
             {TABS.map((tab, i) => (
               <button
                 key={tab}
@@ -82,10 +83,14 @@ export default function SuanPage() {
               >
                 {tab}
                 {i === activeTab && (
-                  <span className="agent-theme-tab-line absolute inset-x-2 -bottom-px h-0.5 rounded-full" />
+                  <span className="agent-theme-tab-line absolute inset-x-1 -bottom-px h-0.5 rounded-full" />
                 )}
               </button>
             ))}
+          </nav>
+          <div className="mb-3 hidden items-center gap-2 text-xs text-ink-soft md:flex">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)]" />
+            成本模型运行正常
           </div>
         </div>
       </div>

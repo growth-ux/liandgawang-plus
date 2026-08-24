@@ -127,41 +127,57 @@ export default function ProfitTab({ record, onRecordUpdated, onBackToCosting }: 
   }
 
   const displayResult = tempResult || baseResult;
+  const profitValue = displayResult ? parseFloat(displayResult.profit_yuan_per_ton) || 0 : 0;
+  const profitTone = profitValue >= 0 ? "text-emerald-300" : "text-red-400";
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-5">
       {/* 输入区 */}
-      <div className="rounded-2xl border border-line bg-panel/70 p-5">
-        <h3 className="mb-3 text-sm font-semibold">盈亏推演</h3>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-          <label className="block">
-            <span className="mb-1 block text-xs text-ink-soft">预计销售价（元/吨）*</span>
-            <input
-              type="number"
-              value={sellPrice}
-              onChange={(e) => setSellPrice(e.target.value)}
-              placeholder="2600"
-              className="w-full rounded-lg border border-line bg-rice-deep px-3 py-2 text-sm text-ink outline-none focus:border-violet-400"
-            />
-          </label>
-          <label className="block">
-            <span className="mb-1 block text-xs text-ink-soft">销售履约费用（元）</span>
-            <input
-              type="number"
-              value={fulfillmentCost}
-              onChange={(e) => setFulfillmentCost(e.target.value)}
-              className="w-full rounded-lg border border-line bg-rice-deep px-3 py-2 text-sm text-ink outline-none focus:border-violet-400"
-            />
-          </label>
+      <div className="overflow-hidden rounded-2xl border border-line bg-panel/70">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line/70 bg-violet-400/[0.04] px-5 py-3.5">
+          <div className="flex items-center gap-3">
+            <span className="flex h-7 w-7 flex-none items-center justify-center rounded-lg bg-violet-400/15 text-xs font-bold text-violet-300">
+              ¥
+            </span>
+            <div>
+              <h3 className="text-sm font-semibold">输入售价，推演单笔业务盈亏</h3>
+              <p className="mt-0.5 text-xs text-ink-soft">
+                {record.title}{record.selected_scheme_id ? ` · 选定方案 ${record.selected_scheme_id}` : ""}
+              </p>
+            </div>
+          </div>
         </div>
-        <div className="mt-3 flex items-center gap-3">
-          <button
-            onClick={handlePreview}
-            disabled={!sellPrice || loading === "preview"}
-            className="rounded-full bg-violet-500 px-5 py-2 text-sm font-medium text-white disabled:opacity-40"
-          >
-            {loading === "preview" ? "计算中…" : "计算盈亏"}
-          </button>
+        <div className="p-5">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+            <label className="block">
+              <span className="mb-1 block text-xs text-ink-soft">预计销售价（元/吨）<span className="ml-0.5 text-violet-300">*</span></span>
+              <input
+                type="number"
+                value={sellPrice}
+                onChange={(e) => setSellPrice(e.target.value)}
+                placeholder="2600"
+                className="w-full rounded-lg border border-line bg-rice-deep px-3 py-2 text-sm tabular-nums text-ink outline-none transition-colors focus:border-violet-400"
+              />
+            </label>
+            <label className="block">
+              <span className="mb-1 block text-xs text-ink-soft">销售履约费用（元）</span>
+              <input
+                type="number"
+                value={fulfillmentCost}
+                onChange={(e) => setFulfillmentCost(e.target.value)}
+                className="w-full rounded-lg border border-line bg-rice-deep px-3 py-2 text-sm tabular-nums text-ink outline-none transition-colors focus:border-violet-400"
+              />
+            </label>
+          </div>
+          <div className="mt-4 flex items-center gap-3">
+            <button
+              onClick={handlePreview}
+              disabled={!sellPrice || loading === "preview"}
+              className="rounded-full bg-violet-500 px-6 py-2.5 text-sm font-medium text-white shadow-[0_0_16px_rgba(139,92,246,0.35)] disabled:opacity-40"
+            >
+              {loading === "preview" ? "计算中…" : "计算盈亏"}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -178,15 +194,39 @@ export default function ProfitTab({ record, onRecordUpdated, onBackToCosting }: 
             </div>
           )}
 
-          <div className="rounded-2xl border border-violet-400/30 bg-violet-400/5 p-5">
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-              <ResultCell label="吨毛利" value={formatTonPrice(displayResult.profit_yuan_per_ton)} unit="元/吨" />
-              <ResultCell label="总毛利" value={formatYuan(displayResult.total_profit_yuan)} unit="元" />
-              <ResultCell label="毛利率" value={formatPct(displayResult.margin_pct)} />
-              <ResultCell label="盈亏平衡价" value={formatTonPrice(displayResult.break_even_price_yuan_per_ton)} unit="元/吨" />
-              <ResultCell label="安全空间" value={formatTonPrice(displayResult.safety_space_yuan_per_ton)} unit="元/吨" />
+          <div className="overflow-hidden rounded-2xl border border-violet-400/30 bg-panel">
+            {/* 主指标：吨毛利 */}
+            <div className="flex flex-wrap items-end justify-between gap-4 border-b border-line/60 bg-gradient-to-r from-violet-500/[0.12] via-violet-400/[0.04] to-transparent px-5 py-4">
+              <div>
+                <p className="text-xs text-ink-soft">吨毛利</p>
+                <p className={`mt-0.5 text-3xl font-bold tabular-nums ${profitTone}`}>
+                  {formatTonPrice(displayResult.profit_yuan_per_ton)}
+                  <span className="ml-1.5 text-sm font-normal text-ink-soft">元/吨</span>
+                </p>
+              </div>
+              <div className="flex gap-8 pb-0.5">
+                <ResultStat label="总毛利" value={formatYuan(displayResult.total_profit_yuan)} unit="元" />
+                <ResultStat label="毛利率" value={formatPct(displayResult.margin_pct)} tone={profitTone} />
+              </div>
             </div>
-            <p className="mt-3 text-[11px] text-ink-soft/60">
+            {/* 风控参考指标 */}
+            <div className="grid grid-cols-2 divide-x divide-line/50">
+              <div className="px-5 py-3.5">
+                <p className="text-xs text-ink-soft">盈亏平衡价</p>
+                <p className="mt-0.5 text-base font-semibold tabular-nums">
+                  {formatTonPrice(displayResult.break_even_price_yuan_per_ton)}
+                  <span className="ml-1 text-xs font-normal text-ink-soft">元/吨</span>
+                </p>
+              </div>
+              <div className="px-5 py-3.5">
+                <p className="text-xs text-ink-soft">安全空间（售价可降）</p>
+                <p className="mt-0.5 text-base font-semibold tabular-nums">
+                  {formatTonPrice(displayResult.safety_space_yuan_per_ton)}
+                  <span className="ml-1 text-xs font-normal text-ink-soft">元/吨</span>
+                </p>
+              </div>
+            </div>
+            <p className="border-t border-line/50 px-5 py-2.5 text-xs text-ink-soft/60">
               这是单笔业务测算毛利，不等同于企业会计净利润。
             </p>
           </div>
@@ -271,11 +311,11 @@ export default function ProfitTab({ record, onRecordUpdated, onBackToCosting }: 
   );
 }
 
-function ResultCell({ label, value, unit }: { label: string; value: string; unit?: string }) {
+function ResultStat({ label, value, unit, tone }: { label: string; value: string; unit?: string; tone?: string }) {
   return (
-    <div className="rounded-xl bg-rice-deep p-3">
-      <p className="text-[11px] text-ink-soft">{label}</p>
-      <p className="mt-0.5 text-base font-semibold">
+    <div>
+      <p className="text-xs text-ink-soft">{label}</p>
+      <p className={`mt-0.5 text-base font-semibold tabular-nums ${tone ?? ""}`}>
         {value}
         {unit && <span className="ml-1 text-xs font-normal text-ink-soft">{unit}</span>}
       </p>

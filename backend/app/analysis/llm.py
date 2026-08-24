@@ -7,6 +7,8 @@ LangChain + Qwen 只负责组织自然语言解读，不允许改变确定性结
 
 import logging
 import os
+import re
+from datetime import date, timedelta
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -107,3 +109,94 @@ def interpret_judgment(skeleton: dict, conditions: dict) -> str | None:
         # 模型失败不阻塞研判：规则化骨架仍然完整可用，仅记录日志便于排查
         logger.exception("Qwen 研判解读调用失败，回退规则版")
         return None
+
+
+# ─── 一句话采购需求 → 结构化条件（确定性规则提取，不依赖大模型） ────────────────
+# 与算小二报价提取同模式：正则抽取可识别字段，未识别的留给用户在表单里确认补全。
+
+_VARIETY_CODES = {"玉米": "corn", "小麦": "wheat", "大豆": "soybean", "稻谷": "rice", "水稻": "rice"}
+_QUANTITY_RE = re.compile(r"(\d+(?:\.\d+)?)\s*吨")
+_WITHIN_DAYS_RE = re.compile(r"(\d+)\s*天内")
+_FULL_DATE_RE = re.compile(r"(\d{4})\s*[-/年.]\s*(\d{1,2})\s*[-/月.]\s*(\d{1,2})")
+_MD_DATE_RE = re.compile(r"(\d{1,2})\s*月\s*(\d{1,2})\s*[日号]")
+_GRADE_RE = re.compile(r"(一等|二等|三等)")
+_REGIONS = [
+    "东北", "华北", "黄淮", "锦州", "鲅鱼圈", "北方港", "南方港",
+    "黑龙江", "吉林", "辽宁", "内蒙古", "山东", "河南", "河北",
+    "广东", "蛇口", "广西", "四川", "云南", "长江沿线",
+]
+_BUDGET_RE = re.compile(r"(?:预算|不超过|不高于|控制在|低于)\s*(?:约|在)?\s*(\d{3,5}(?:\.\d+)?)")
+_STOCK_DAYS_RE = re.compile(r"(?:库存|余粮|厂里)\s*(?:还|也)?\s*(?:能|可)?\s*(?:用|撑|支撑|够用)\s*(\d+)\s*天")
+_RISK_MAP = {"稳健": "稳健", "保守": "保守", "积极": "积极", "激进": "积极"}
+_REMARK_KEYWORDS = re.compile(r"水分|杂质|容重|霉变|到货|到厂|卸车|运输方式|袋装|散装")
+# 缺失字段的展示名称，前端按此提示用户补全；前四项为研判必填
+MISSING_LABELS = [
+    ("variety_code", "品种"),
+    ("quantity_tons", "采购数量"),
+    ("deadline_date", "最晚采购时间"),
+    ("target_region", "目标地区"),
+    ("budget_price", "目标预算"),
+    ("stock_days", "库存可用天数"),
+    ("risk_preference", "风险偏好"),
+]
+
+
+def _resolve_deadline(text: str, today: date) -> date | None:
+    """识别绝对日期（2026-09-30 / 9月30日）、月底、相对天数（10天内）。"""
+    m = _FULL_DATE_RE.search(text)
+    if m:
+        try:
+            return date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+        except ValueError:
+            return None
+    m = _MD_DATE_RE.search(text)
+    if m:
+        try:
+            d = date(today.year, int(m.group(1)), int(m.group(2)))
+        except ValueError:
+            return None
+        return d if d >= today else date(today.year + 1, d.month, d.day)
+    if "月底" in text:
+        if today.month == 12:
+            return date(today.year, 12, 31)
+        return date(today.year, today.month + 1, 1) - timedelta(days=1)
+    m = _WITHIN_DAYS_RE.search(text)
+    if m:
+        return today + timedelta(days=int(m.group(1)))
+    return None
+
+
+def extract_conditions(text: str) -> dict:
+    """把一句话采购需求拆成结构化条件，返回 fields 与缺失项标签列表。"""
+    today = date.today()
+
+    variety = next((code for name, code in _VARIETY_CODES.items() if name in text), None)
+    qty_m = _QUANTITY_RE.search(text)
+    deadline = _resolve_deadline(text, today)
+    grade_m = _GRADE_RE.search(text)
+    region = next((r for r in _REGIONS if r in text), None)
+    budget_m = _BUDGET_RE.search(text)
+    stock_m = _STOCK_DAYS_RE.search(text)
+    risk = next((v for k, v in _RISK_MAP.items() if k in text), None)
+
+    # 备注：取含质量/到货要求且非“N 天内”期限的子句，避免与最晚时间重复
+    clauses = [c.strip() for c in re.split(r"[，,。；;]", text) if c.strip()]
+    remark_parts = [
+        c for c in clauses
+        if _REMARK_KEYWORDS.search(c) and not _WITHIN_DAYS_RE.search(c)
+    ]
+    remark = "，".join(remark_parts)[:256] or None
+
+    fields = {
+        "variety_code": variety,
+        "quantity_tons": qty_m.group(1) if qty_m else None,
+        "deadline_date": deadline.isoformat() if deadline else None,
+        "grade": grade_m.group(1) if grade_m else None,
+        "target_region": region,
+        "budget_price": budget_m.group(1) if budget_m else None,
+        "stock_days": int(stock_m.group(1)) if stock_m else None,
+        "risk_preference": risk,
+        "remark": remark,
+    }
+    missing = [label for key, label in MISSING_LABELS if fields[key] is None]
+    return {"fields": fields, "missing": missing}

@@ -207,14 +207,14 @@ export default function CompareTab({ onGoFind }: { onGoFind: () => void }) {
         <span className="text-[11px] font-medium tracking-[0.16em] text-tech">CANDIDATE COMPARISON</span>
         <h2 className="mt-3 text-lg font-semibold text-ink">暂未选择粮源</h2>
         <p className="mt-2 max-w-sm text-sm leading-6 text-ink-soft">
-          前往「找粮源」勾选至少 2 条粮源，再从报价、可用量、发运和质检指标中进行横向比较。
+          前往「粮源市场」勾选至少 2 条粮源，再从报价、可用量、发运和质检指标中进行横向比较。
         </p>
         <button
           type="button"
           onClick={onGoFind}
           className="mt-5 h-10 rounded-full bg-brand px-6 text-sm font-medium text-white"
         >
-          去找粮源
+          去粮源市场
         </button>
       </div>
     );

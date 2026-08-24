@@ -78,6 +78,7 @@ function HistoryRow({
   onHandoffToSuan: (task: SourcingTask) => void;
 }) {
   const [open, setOpen] = useState(false);
+  const [eliminatedOpen, setEliminatedOpen] = useState(false);
   const [confirming, setConfirming] = useState(false);
   const need = task.need;
   const primary = task.plan?.primary ?? null;
@@ -164,22 +165,31 @@ function HistoryRow({
           {/* 未入选 */}
           {task.plan?.eliminated && task.plan.eliminated.length > 0 && (
             <div className="mt-3">
-              <div className="mb-2 text-xs font-semibold text-ink-soft">
+              <button
+                type="button"
+                onClick={() => setEliminatedOpen((v) => !v)}
+                className="flex w-full items-center gap-2 text-left text-xs font-semibold text-ink-soft"
+              >
                 未入选原因（{task.plan.eliminated.length}）
-              </div>
-              <ul className="space-y-1.5">
-                {task.plan.eliminated.map((e) => (
-                  <li
-                    key={e.listing_code}
-                    className="flex items-start justify-between gap-4 text-sm"
-                  >
-                    <span className="shrink-0 text-ink">
-                      {e.variety_name}·{e.grade} · {e.supplier_name}
-                    </span>
-                    <span className="text-right text-ink-soft">{e.reason_text}</span>
-                  </li>
-                ))}
-              </ul>
+                <span className="ml-auto font-normal">
+                  {eliminatedOpen ? "收起 ▲" : "展开查看 ▼"}
+                </span>
+              </button>
+              {eliminatedOpen && (
+                <ul className="mt-2 space-y-1.5">
+                  {task.plan.eliminated.map((e) => (
+                    <li
+                      key={e.listing_code}
+                      className="flex items-start justify-between gap-4 text-sm"
+                    >
+                      <span className="shrink-0 text-ink">
+                        {e.variety_name}·{e.grade} · {e.supplier_name}
+                      </span>
+                      <span className="text-right text-ink-soft">{e.reason_text}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           )}
 

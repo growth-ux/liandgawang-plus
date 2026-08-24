@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.analysis.llm import interpret_judgment
+from app.analysis.llm import extract_conditions, interpret_judgment
 from app.analysis.models import AnalysisRecord
 from app.analysis.rules import build_procurement_judgment, pick_baseline_spot
 from app.database import get_db
@@ -30,6 +30,16 @@ class AnalysisRequest(BaseModel):
     stock_days: int | None = Field(default=None, ge=0)
     risk_preference: str | None = None
     remark: str | None = Field(default=None, max_length=256)
+
+
+class ExtractConditionsRequest(BaseModel):
+    text: str = Field(min_length=1, max_length=512)
+
+
+@router.post("/extract")
+def extract_analysis_conditions(body: ExtractConditionsRequest):
+    """一句话采购需求 → 结构化条件，填回表单供用户确认后再研判。"""
+    return extract_conditions(body.text)
 
 
 def _compute(req: AnalysisRequest, db: Session) -> dict:
