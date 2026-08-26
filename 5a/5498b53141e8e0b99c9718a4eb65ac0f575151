@@ -1,0 +1,66 @@
+README.md
+  h_7549b7dc6a6921 1,5,249
+backend/app/costing/llm.py
+  h_7549b7dc6a6921 177,183,241
+backend/app/finance/llm.py
+  h_7549b7dc6a6921 39,46
+backend/app/liang/llm.py
+  h_7549b7dc6a6921 194
+backend/app/logistics/llm.py
+  h_7549b7dc6a6921 29
+backend/app/main.py
+  h_7549b7dc6a6921 54
+backend/pyproject.toml
+  h_7549b7dc6a6921 2,4
+backend/uv.lock
+  h_7549b7dc6a6921 870
+docs/superpowers/plans/2026-08-22-zhan-xiaoer-implementation.md
+  h_7549b7dc6a6921 1083
+docs/superpowers/plans/2026-08-23-qian-xiaoer-implementation.md
+  h_7549b7dc6a6921 65,796,1010,1531,1569
+docs/superpowers/plans/2026-08-23-yun-xiaoer-first-tab.md
+  h_7549b7dc6a6921 1469
+docs/superpowers/plans/2026-08-23-yun-xiaoer-implementation.md
+  h_7549b7dc6a6921 629,879
+docs/superpowers/plans/2026-08-23-zhan-watch-tab.md
+  h_7549b7dc6a6921 856
+docs/superpowers/specs/2026-08-22-zhan-xiaoer-design.md
+  h_7549b7dc6a6921 11
+docs/superpowers/specs/2026-08-23-qian-xiaoer-design.md
+  h_7549b7dc6a6921 421
+docs/superpowers/specs/2026-08-24-liang-zhanggui-design.md
+  h_7549b7dc6a6921 27
+docs/粮达网Plus产品设计文档-V2.md
+  h_7549b7dc6a6921 250
+pyproject.toml
+  h_7549b7dc6a6921 2
+uv.lock
+  h_7549b7dc6a6921 6
+web/index.html
+  h_7549b7dc6a6921 6
+web/package-lock.json
+  h_7549b7dc6a6921 2,8
+web/package.json
+  h_7549b7dc6a6921 2
+web/src/components/TopNav.tsx
+  h_7549b7dc6a6921 19
+web/src/components/field/HoloProp.tsx
+  h_7549b7dc6a6921 3
+web/src/data/agents.ts
+  h_7549b7dc6a6921 58
+web/src/features/qian/MatchRecordsTab.tsx
+  h_7549b7dc6a6921 218
+web/src/features/zhan/components/MarketEventList.tsx
+  h_7549b7dc6a6921 63
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "5a5498b53141e8e0b99c9718a4eb65ac0f575151",
+  "prompts": {},
+  "humans": {
+    "h_7549b7dc6a6921": {
+      "author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
