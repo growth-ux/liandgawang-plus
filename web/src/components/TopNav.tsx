@@ -16,8 +16,7 @@ export default function TopNav() {
             粮
           </span>
           <span className="text-lg font-semibold tracking-wide">
-            粮达网
-            <span className="ml-1 text-brand">Plus</span>
+            粮达<span className="ml-1 text-brand">e销</span>
           </span>
         </NavLink>
 

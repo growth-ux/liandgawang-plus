@@ -60,7 +60,7 @@ export default function MarketEventList({ events }: { events: MarketEvent[] }) {
             })}
           </div>
           <div className="mt-3 border-t border-line pt-3 text-[11px] text-ink-soft/70">
-            事件整理：粮达网行情资讯跟踪 · 影响评估为瞻小二研判观点，仅供参考
+            事件整理：粮达e销行情资讯跟踪 · 影响评估为瞻小二研判观点，仅供参考
           </div>
         </>
       )}

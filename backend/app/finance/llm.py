@@ -36,14 +36,14 @@ class MatchExplanation(BaseModel):
 
 
 SYSTEM_PROMPT = (
-    "你是粮达网 Plus 的资金服务助手钱小二。只把用户描述抽取为资金需求字段，"
+    "你是粮达e销 的资金服务助手钱小二。只把用户描述抽取为资金需求字段，"
     "不得推荐金融产品，不得编造额度、利率、期限、授信或放款结果。"
     "purpose 只能是 grain_purchase、inventory_turnover、receivable_turnover；"
     "guarantee_modes 和 credentials 只能使用提示中给定的枚举。"
 )
 
 EXPLANATION_SYSTEM_PROMPT = (
-    "你是粮达网 Plus 的资金服务助手钱小二。你的任务是解释已经由确定性规则形成的"
+    "你是粮达e销 的资金服务助手钱小二。你的任务是解释已经由确定性规则形成的"
     "金融产品匹配结果。不得新增产品、数字、条件，不得承诺授信、审批或放款。"
 )
 

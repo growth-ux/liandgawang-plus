@@ -1,7 +1,7 @@
 [project]
-name = "liangdawang-plus-backend"
+name = "liangda-ecxiao-backend"
 version = "0.1.0"
-description = "粮达网 Plus 后端（FastAPI + MySQL）"
+description = "粮达e销 后端（FastAPI + MySQL）"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.115",

@@ -215,7 +215,7 @@ export default function MatchRecordsTab({ refreshKey, onReuse, onOpenProduct: _o
                           id: `qian-${detail.id}-${Date.now()}`,
                           partnerType: "finance",
                           partnerName: primary.product.institution_name,
-                          region: "粮达网资金服务",
+                          region: "粮达e销资金服务",
                           business: primary.product.scenario,
                           sourceAgent: "钱小二",
                           sourceTask: `${detail.match_code} · ${primary.product.name}`,

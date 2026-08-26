@@ -55,7 +55,7 @@ export const agents: Agent[] = [
     zone: "中央业务台",
     accent: "#e35d2b",
     tabs: ["开始新任务", "历史任务"],
-    image: "/images/agents/liangdawang-plus-collaboration-duo-v1.png",
+    image: "/images/agents/liangda-ecxiao-collaboration-duo-v1.png",
     doing: "正在拆解 200 吨玉米采购目标，组织六位小二分工",
     pos: { x: 50, y: 57, size: 30 },
     holo: { type: "rings", side: "right", offsetY: 0 },

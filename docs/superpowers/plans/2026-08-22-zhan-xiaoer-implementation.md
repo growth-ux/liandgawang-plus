@@ -1080,7 +1080,7 @@ Expected: PASS。
 - Modify: `README.md`
 - Review: `docs/superpowers/specs/2026-08-22-zhan-xiaoer-design.md`
 - Review: `docs/superpowers/plans/2026-08-22-zhan-xiaoer-implementation.md`
-- Review: `docs/粮达网Plus产品设计文档-V2.md`
+- Review: `docs/粮达e销产品设计文档-V2.md`
 
 ### Step 1: 编写核心 E2E
 

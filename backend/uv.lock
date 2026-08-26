@@ -867,7 +867,7 @@ wheels = [
 ]
 
 [[package]]
-name = "liangdawang-plus-backend"
+name = "liangda-ecxiao-backend"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

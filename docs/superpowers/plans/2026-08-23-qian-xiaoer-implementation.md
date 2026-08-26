@@ -62,7 +62,7 @@
 - `web/src/features/qian/MatchRecordsTab.tsx`：历史匹配、查看与重新匹配。
 - `web/src/pages/agents/AgentServicePage.tsx`：对 `agent.id === "qian"` 渲染 `QianPage`。
 - `web/src/data/agents.ts`：将钱小二 Tab 更新为三个已确认名称。
-- `docs/粮达网Plus产品设计文档-V2.md`：同步钱小二首版定位和三个 Tab。
+- `docs/粮达e销产品设计文档-V2.md`：同步钱小二首版定位和三个 Tab。
 
 ---
 
@@ -793,7 +793,7 @@ class RequirementExtraction(BaseModel):
 
 
 SYSTEM_PROMPT = (
-    "你是粮达网 Plus 的资金服务助手钱小二。只把用户描述抽取为资金需求字段，"
+    "你是粮达e销 的资金服务助手钱小二。只把用户描述抽取为资金需求字段，"
     "不得推荐金融产品，不得编造额度、利率、期限、授信或放款结果。"
     "purpose 只能是 grain_purchase、inventory_turnover、receivable_turnover；"
     "guarantee_modes 和 credentials 只能使用提示中给定的枚举。"
@@ -1007,7 +1007,7 @@ class MatchExplanation(BaseModel):
 
 
 EXPLANATION_SYSTEM_PROMPT = (
-    "你是粮达网 Plus 的资金服务助手钱小二。你的任务是解释已经由确定性规则形成的"
+    "你是粮达e销 的资金服务助手钱小二。你的任务是解释已经由确定性规则形成的"
     "金融产品匹配结果。不得新增产品、数字、条件，不得承诺授信、审批或放款。"
 )
 
@@ -1528,7 +1528,7 @@ Expected: 无输出。不要提交。
 - Create: `web/src/features/qian/MatchRecordsTab.tsx`
 - Modify: `web/src/features/qian/QianPage.tsx`
 - Modify: `web/src/features/qian/SmartMatchTab.tsx`
-- Modify: `docs/粮达网Plus产品设计文档-V2.md`
+- Modify: `docs/粮达e销产品设计文档-V2.md`
 
 **Interfaces:**
 - Consumes: `fetchFinanceMatches()`、`fetchFinanceMatch(id)`、`handoffFinanceMatchToSuan(id)`。
@@ -1566,7 +1566,7 @@ onReuse(record.requirement);
 
 - [ ] **Step 4: 同步总产品文档**
 
-在 `docs/粮达网Plus产品设计文档-V2.md` 的钱小二章节和 8.7 页面结构中明确替换为：
+在 `docs/粮达e销产品设计文档-V2.md` 的钱小二章节和 8.7 页面结构中明确替换为：
 
 ```text
 钱小二首版聚焦金融产品市场与智能匹配，只回答“市场上有什么”和“我适合哪个”。

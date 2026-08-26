@@ -1,6 +1,6 @@
 /**
  * 首页全息道具：每个小二「正在操作」的橙色全息屏（纯 SVG + CSS 动画装饰层）
- * 造型对照官方参考图 product-design/assets/generated/liangdawang-plus-home-collaboration-field-v1.png
+ * 造型对照官方参考图 product-design/assets/generated/liangda-ecxiao-home-collaboration-field-v1.png
  */
 import type { CSSProperties } from "react";
 import type { Holo, HoloType } from "../../data/agents";

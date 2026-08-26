@@ -626,7 +626,7 @@ class DemandExtraction(BaseModel):
 
 
 SYSTEM_PROMPT = (
-    "你是粮达网 Plus 的物流助手运小二。你的任务是从用户表达中提取运输条件，"
+    "你是粮达e销 的物流助手运小二。你的任务是从用户表达中提取运输条件，"
     "或解释普通 Python 已经生成的方案结果。不得编造承运商、运价、运力或路线；"
     "不得修改主推与备选；缺少信息必须明确指出。"
 )
@@ -876,7 +876,7 @@ Manual: 物流市场 → 找物流 → 创建任务 → 查看主备选与未入
 - Create: `web/src/features/yun/components/YunChat.tsx`
 - Modify: `web/src/features/yun/YunPage.tsx`
 - Modify: `backend/tests/logistics/test_routes.py`
-- Modify: `docs/粮达网Plus产品设计文档-V2.md`
+- Modify: `docs/粮达e销产品设计文档-V2.md`
 
 **Interfaces:**
 - Consumes: 当前 Tab、当前任务、需求草稿、方案结果和 Task 5 Agent API。

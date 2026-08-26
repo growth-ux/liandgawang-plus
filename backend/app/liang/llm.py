@@ -191,7 +191,7 @@ def interpret_comparison(listings: list[dict]) -> dict:
             f"候选粮源：{listings}"
         )
         result = llm.with_structured_output(ComparisonInterpretation).invoke([
-            ("system", "你是粮达网 Plus 的粮小二，负责协助采购员对多条候选粮源做客观、专业、可执行的对比解读。"),
+            ("system", "你是粮达e销 的粮小二，负责协助采购员对多条候选粮源做客观、专业、可执行的对比解读。"),
             ("human", prompt),
         ])
         return {**result.model_dump(), "source": "llm"} if result else fallback

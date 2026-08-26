@@ -174,13 +174,13 @@ def explain_comparison(comparison: CostComparison) -> str:
         return fallback
     try:
         prompt = (
-            "你是粮达网 Plus 的算小二。以下数据已由确定性规则计算完成。"
+            "你是粮达e销 的算小二。以下数据已由确定性规则计算完成。"
             "只引用方案 ID 和已有字段进行解释，不得重新计算或生成新数字，"
             "不得使用'预计节省'等未经确认的表述。\n"
             + json.dumps(comparison.model_dump(mode="json"), ensure_ascii=False)
         )
         result = _build_llm(api_key, model, base_url).invoke(
-            [("system", "你是粮达网 Plus 的算小二，解释已完成的成本测算结果。"), ("human", prompt)]
+            [("system", "你是粮达e销 的算小二，解释已完成的成本测算结果。"), ("human", prompt)]
         )
         text = result.content.strip() if hasattr(result, "content") else ""
         if not text or "预计节省" in text:
@@ -238,7 +238,7 @@ def answer_with_context(tab: str, question: str, record: dict | None) -> str:
             return "请先选择意向方案并输入预计销售价，即可计算盈亏。"
         return "可以在测算记录中查看历史测算，选择继续或复制。"
     try:
-        system = "你是粮达网 Plus 的算小二。基于当前业务上下文回答用户问题，不编造数字。"
+        system = "你是粮达e销 的算小二。基于当前业务上下文回答用户问题，不编造数字。"
         context = ""
         if record:
             context = f"\n当前记录：{json.dumps(record, ensure_ascii=False, default=str)}"
