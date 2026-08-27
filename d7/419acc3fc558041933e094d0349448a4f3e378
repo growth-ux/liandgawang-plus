@@ -1,0 +1,42 @@
+AGENTS.md
+  h_7549b7dc6a6921 15
+  s_4e6912ff3df2b1::t_79296410da77ea 14
+docs/架构图/粮达e销-系统架构图.drawio
+  s_39f6fd989afa9f::t_870d1b40bf93e0 1-239
+docs/录屏文案.txt
+  h_7549b7dc6a6921 1,8
+  s_39f6fd989afa9f::t_c6a328c763460c 4
+  s_39f6fd989afa9f::t_b54a2a123f012d 2,5,10,18,26,33,40,47,54
+CLAUDE.md
+  h_7549b7dc6a6921 15
+  s_4e6912ff3df2b1::t_f9c830af58d3a2 14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "d7419acc3fc558041933e094d0349448a4f3e378",
+  "prompts": {},
+  "humans": {
+    "h_7549b7dc6a6921": {
+      "author": "tiger <1360055716@qq.com>"
+    }
+  },
+  "sessions": {
+    "s_39f6fd989afa9f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "267923ce-9113-4b70-8161-1fc9ba7ddd41",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    },
+    "s_4e6912ff3df2b1": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a04239-999a-72b0-8b07-10c11690b917",
+        "model": "unknown"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
