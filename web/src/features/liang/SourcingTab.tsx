@@ -12,7 +12,7 @@ import RiskHandoffDialog from "../an/RiskHandoffDialog";
 import type { RiskHandoffDraft } from "../an/handoff";
 import { createHandoff } from "../handoff/api";
 
-const EXAMPLE_NEED = "需要120吨二等玉米，7天内可发，预算2400元/吨";
+const EXAMPLE_NEED = "需要120吨二等玉米，7天内可发，预算2800元/吨";
 // DAG 执行顺序：节点完成事件到达后，点亮下一个节点为执行中
 const NODE_ORDER: DagNodeId[] = ["parse", "load", "filter", "sort", "eliminate", "review", "pick", "verify"];
 
