@@ -1,0 +1,32 @@
+.fill_scene_card.py
+  h_7549b7dc6a6921 1-290
+web/src/features/liang/SourcingTab.tsx
+  h_7549b7dc6a6921 15
+docs/录屏文案.txt
+  s_4e6912ff3df2b1::t_56439290f7d46c 54-57
+  h_7549b7dc6a6921 24,45,53
+  h_7549b7dc6a6921 1-23,25-44,46-52
+.tmp_build_scene_card.py
+  h_7549b7dc6a6921 1-254
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "f5a787c1ad4b2c1b9a1f07e4fe9d8267988f6d30",
+  "prompts": {},
+  "humans": {
+    "h_7549b7dc6a6921": {
+      "author": "tiger <1360055716@qq.com>"
+    }
+  },
+  "sessions": {
+    "s_4e6912ff3df2b1": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a04239-999a-72b0-8b07-10c11690b917",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
