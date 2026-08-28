@@ -1,0 +1,253 @@
+<mxfile host="Electron" agent="Lingma">
+  <diagram name="粮达e销系统架构图" id="liangda-arch-layered">
+    <mxGraphModel dx="1800" dy="400" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1800" pageHeight="1900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="t1" value="粮达e销 · 多智能体粮贸协作平台系统架构图" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=26;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="1">
+          <mxGeometry x="40" y="16" width="900" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="t2" value="一句话采购目标 → 粮掌柜按需编排六位专业小二 → 可比较、可解释、可执行的方案 → 企业知识自动沉淀、下次主动引用（完整闭环）" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=13;fontColor=#475569;" vertex="1" parent="1">
+          <mxGeometry x="40" y="58" width="1200" height="24" as="geometry" />
+        </mxCell>
+
+        <mxCell id="L1" value="① 用户层 · 业务目标入口" style="swimlane;html=1;rounded=1;whiteSpace=wrap;startSize=36;container=1;collapsible=0;horizontal=1;fillColor=#f8fafc;strokeColor=#6366f1;fontSize=15;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="1">
+          <mxGeometry x="40" y="100" width="1520" height="112" as="geometry" />
+        </mxCell>
+        <mxCell id="c11" value="粮贸企业采购人员&#xa;一句话自然语言目标：&quot;未来 15 天采购 200 吨二等玉米到潍坊，综合成本控制在 2500 元/吨以内&quot;" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#e0e7ff;strokeColor=#6366f1;fontSize=13;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="L1">
+          <mxGeometry x="24" y="44" width="728" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="c12" value="单项服务用户&#xa;无需编排，直接进入某个专业小二完成单项任务（行情 / 粮源 / 物流 / 成本 / 资金 / 风控）" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#e0e7ff;strokeColor=#6366f1;fontSize=13;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="L1">
+          <mxGeometry x="776" y="44" width="728" height="52" as="geometry" />
+        </mxCell>
+
+        <mxCell id="L2" value="② 展示层 · React 科技感交互前端（web）" style="swimlane;html=1;rounded=1;whiteSpace=wrap;startSize=36;container=1;collapsible=0;horizontal=1;fillColor=#f8fafc;strokeColor=#2563eb;fontSize=15;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="1">
+          <mxGeometry x="40" y="246" width="1520" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="c21" value="首页协作场&#xa;2.5D 多 Agent 协作指挥舱 · 专业协作星环&#xa;SSE 实时呈现编排过程" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#dbeafe;strokeColor=#2563eb;fontSize=13;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="L2">
+          <mxGeometry x="24" y="48" width="480" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="c22" value="六位专业小二工作台&#xa;瞻·行情 / 粮·寻源 / 运·物流&#xa;算·成本 / 钱·资金 / 安·风控" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#dbeafe;strokeColor=#2563eb;fontSize=13;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="L2">
+          <mxGeometry x="524" y="48" width="480" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="c23" value="我的办事 · 企业知识库&#xa;办事进度跟踪 · 知识总览与纠偏&#xa;跨小二任务交接（handoff）" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#dbeafe;strokeColor=#2563eb;fontSize=13;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="L2">
+          <mxGeometry x="1024" y="48" width="480" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="L3" value="③ 服务层 · FastAPI REST 接口" style="swimlane;html=1;rounded=1;whiteSpace=wrap;startSize=36;container=1;collapsible=0;horizontal=1;fillColor=#f8fafc;strokeColor=#06b6d4;fontSize=15;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="1">
+          <mxGeometry x="40" y="430" width="1520" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="c31" value="10 个业务路由&#xa;market · analysis · workflow · logistics · liang&#xa;finance · costing · knowledge · zhanggui · handoff" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#ecfeff;strokeColor=#06b6d4;fontSize=13;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="L3">
+          <mxGeometry x="24" y="46" width="728" height="66" as="geometry" />
+        </mxCell>
+        <mxCell id="c32" value="工程支撑&#xa;SSE 流式编排事件推送 · 请求日志中间件&#xa;CORS · 启动种子数据" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#ecfeff;strokeColor=#06b6d4;fontSize=13;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="L3">
+          <mxGeometry x="776" y="46" width="728" height="66" as="geometry" />
+        </mxCell>
+
+        <mxCell id="L4" value="④ Agent 编排层 · 粮掌柜（LangGraph + LangChain）" style="swimlane;html=1;rounded=1;whiteSpace=wrap;startSize=36;container=1;collapsible=0;horizontal=1;fillColor=#f8fafc;strokeColor=#9333ea;fontSize=15;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="1">
+          <mxGeometry x="40" y="594" width="1520" height="252" as="geometry" />
+        </mxCell>
+        <mxCell id="c41" value="1. 目标理解 goal_parser&#xa;自然语言目标提取：&#xa;规则兜底 + LLM 补充 + 企业记忆引用" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#f3e8ff;strokeColor=#9333ea;fontSize=13;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="L4">
+          <mxGeometry x="24" y="52" width="352" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="c42" value="2. 组队推荐 team_rules&#xa;按目标复杂度识别所需专业小二&#xa;按需入席，不强行组队" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#f3e8ff;strokeColor=#9333ea;fontSize=13;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="L4">
+          <mxGeometry x="396" y="52" width="352" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="c43" value="3. LangGraph 图编排&#xa;并行办理 瞻/粮/运/钱&#xa;依赖办理 算 → 安（复用上游结果）" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#f3e8ff;strokeColor=#9333ea;fontSize=13;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="L4">
+          <mxGeometry x="768" y="52" width="352" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="c44" value="4. 冲突检测与综合建议&#xa;conflict_rules 跨专业冲突检测 + 定向补充&#xa;synthesizer 汇总主推 / 备选方案" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#f3e8ff;strokeColor=#9333ea;fontSize=13;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="L4">
+          <mxGeometry x="1140" y="52" width="352" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="c45" value="统一适配器协议 AgentResult&#xa;每位小二可独立使用 · 协作结果结构化（事实 / 建议 / 风险 / 证据）· 单个小二失败结构化降级不阻塞整体" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#ede9fe;strokeColor=#a78bfa;fontSize=13;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="L4">
+          <mxGeometry x="24" y="160" width="724" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="c46" value="三道人工闸门（AI 提建议，人做决策）&#xa;目标闸门：确认采购口径 → 协作闸门：确认参与小二 → 方案闸门：确认最终方案后才生成行动任务" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#fee2e2;strokeColor=#ef4444;fontSize=13;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="L4">
+          <mxGeometry x="768" y="160" width="724" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="e41" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jettySize=auto;strokeColor=#9333ea;endArrow=block;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="L4" source="c41" target="c42">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e42" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jettySize=auto;strokeColor=#9333ea;endArrow=block;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="L4" source="c42" target="c43">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e43" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jettySize=auto;strokeColor=#9333ea;endArrow=block;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="L4" source="c43" target="c44">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="L5" value="⑤ 专业能力层 · 六位专业小二（规则 + LLM 混合推理，各自独立可用）" style="swimlane;html=1;rounded=1;whiteSpace=wrap;startSize=36;container=1;collapsible=0;horizontal=1;fillColor=#f8fafc;strokeColor=#16a34a;fontSize=15;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="1">
+          <mxGeometry x="40" y="880" width="1520" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="c51" value="瞻小二 · 行情研判&#xa;当前判断 · 依据&#xa;业务时机与行动建议" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#dcfce7;strokeColor=#16a34a;fontSize=12;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="L5">
+          <mxGeometry x="24" y="50" width="228" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="c52" value="粮小二 · 粮源寻采&#xa;候选粮源 · 匹配理由&#xa;报价口径 · 待核实事项" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#dcfce7;strokeColor=#16a34a;fontSize=12;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="L5">
+          <mxGeometry x="276" y="50" width="228" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="c53" value="运小二 · 物流方案&#xa;运输方式与路线 · 运费时效&#xa;延误与集中到货风险" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#dcfce7;strokeColor=#16a34a;fontSize=12;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="L5">
+          <mxGeometry x="528" y="50" width="228" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="c54" value="算小二 · 综合成本&#xa;规则化计算货价/运费/损耗/资金成本&#xa;多方案同口径比较" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#dcfce7;strokeColor=#16a34a;fontSize=12;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="L5">
+          <mxGeometry x="780" y="50" width="228" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="c55" value="钱小二 · 资金服务&#xa;资金缺口判断&#xa;服务匹配 · 资金成本说明" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#dcfce7;strokeColor=#16a34a;fontSize=12;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="L5">
+          <mxGeometry x="1032" y="50" width="228" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="c56" value="安小二 · 独立风控&#xa;风险分级 · 判断依据&#xa;规避建议 · 是否继续推进" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#dcfce7;strokeColor=#16a34a;fontSize=12;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="L5">
+          <mxGeometry x="1284" y="50" width="228" height="78" as="geometry" />
+        </mxCell>
+
+        <mxCell id="L6" value="⑥ 模型智能层 · 通义千问大模型 + 规则兜底" style="swimlane;html=1;rounded=1;whiteSpace=wrap;startSize=36;container=1;collapsible=0;horizontal=1;fillColor=#f8fafc;strokeColor=#f97316;fontSize=15;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1064" width="1520" height="126" as="geometry" />
+        </mxCell>
+        <mxCell id="c61" value="通义千问 qwen-plus（DashScope）&#xa;目标提取 / 粮源对比解读 / 行情研判 / 知识提炼" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#ffedd5;strokeColor=#f97316;fontSize=13;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="L6">
+          <mxGeometry x="24" y="46" width="480" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="c62" value="LangChain 结构化输出&#xa;Pydantic Schema 约束，模型结果结构化可校验" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#ffedd5;strokeColor=#f97316;fontSize=13;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="L6">
+          <mxGeometry x="524" y="46" width="480" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="c63" value="规则兜底降级&#xa;模型不可用时自动回退业务规则，主流程不中断" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#ffedd5;strokeColor=#f97316;fontSize=13;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="L6">
+          <mxGeometry x="1024" y="46" width="480" height="64" as="geometry" />
+        </mxCell>
+
+        <mxCell id="L7" value="⑦ 知识记忆层 · 企业知识大脑（小二共享记忆）" style="swimlane;html=1;rounded=1;whiteSpace=wrap;startSize=36;container=1;collapsible=0;horizontal=1;fillColor=#f8fafc;strokeColor=#f59e0b;fontSize=15;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1224" width="1520" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="c71" value="知识提炼 extractor&#xa;只从已确认的办事记录提炼&#xa;企业事实 / 业务偏好 / 决策经验" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#fef3c7;strokeColor=#f59e0b;fontSize=12;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="L7">
+          <mxGeometry x="24" y="52" width="352" height="88" as="geometry" />
+        </mxCell>
+        <mxCell id="c72" value="权威知识状态（MySQL）&#xa;shared_experiences + 跨小二引用记录&#xa;可控纠偏：本次不采用 / 编辑范围 / 停用" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#fef3c7;strokeColor=#f59e0b;fontSize=12;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="L7">
+          <mxGeometry x="396" y="52" width="352" height="88" as="geometry" />
+        </mxCell>
+        <mxCell id="c73" value="Mem0 + Milvus 语义记忆&#xa;text-embedding-v4 向量化&#xa;跨小二语义召回，异常回退规则检索" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#fef3c7;strokeColor=#f59e0b;fontSize=12;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="L7">
+          <mxGeometry x="768" y="52" width="352" height="88" as="geometry" />
+        </mxCell>
+        <mxCell id="c74" value="主动引用&#xa;后续相似任务中各小二主动引用经验&#xa;明示为什么适用、影响了什么决策" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#fef3c7;strokeColor=#f59e0b;fontSize=12;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="L7">
+          <mxGeometry x="1140" y="52" width="352" height="88" as="geometry" />
+        </mxCell>
+        <mxCell id="e71" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jettySize=auto;strokeColor=#f59e0b;endArrow=block;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="L7" source="c71" target="c72">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e72" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jettySize=auto;strokeColor=#f59e0b;endArrow=block;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="L7" source="c72" target="c73">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e73" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jettySize=auto;strokeColor=#f59e0b;endArrow=block;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="L7" source="c73" target="c74">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="L8" value="⑧ 数据存储层 · 本地 Docker" style="swimlane;html=1;rounded=1;whiteSpace=wrap;startSize=36;container=1;collapsible=0;horizontal=1;fillColor=#f8fafc;strokeColor=#94a3b8;fontSize=15;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1428" width="1520" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="c81" value="MySQL（SQLAlchemy）&#xa;行情 / 粮源 / 物流 / 资金产品 / 成本测算&#xa;任务与办事记录 / 知识 / 引用" style="shape=cylinder3;html=1;whiteSpace=wrap;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#f1f5f9;strokeColor=#64748b;fontSize=12;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="L8">
+          <mxGeometry x="40" y="44" width="440" height="88" as="geometry" />
+        </mxCell>
+        <mxCell id="c82" value="Milvus 向量库&#xa;liangda_enterprise_memory&#xa;企业记忆向量集合" style="shape=cylinder3;html=1;whiteSpace=wrap;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#f1f5f9;strokeColor=#64748b;fontSize=12;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="L8">
+          <mxGeometry x="520" y="44" width="440" height="88" as="geometry" />
+        </mxCell>
+        <mxCell id="c83" value="业务种子数据 seed&#xa;按真实粮贸场景设定，覆盖玉米 / 小麦 / 大豆 / 稻谷等品种&#xa;启动自动注入，保证演示数据连贯可信" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#f1f5f9;strokeColor=#94a3b8;fontSize=12;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="L8">
+          <mxGeometry x="1000" y="44" width="504" height="88" as="geometry" />
+        </mxCell>
+
+        <mxCell id="L9" value="⑨ 输出层 · 业务交付物" style="swimlane;html=1;rounded=1;whiteSpace=wrap;startSize=36;container=1;collapsible=0;horizontal=1;fillColor=#f8fafc;strokeColor=#fb7185;fontSize=15;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1612" width="1520" height="148" as="geometry" />
+        </mxCell>
+        <mxCell id="c91" value="可比较 · 可解释 · 可执行的采购方案&#xa;主推方案 + 备选方案 + 行动清单&#xa;每条结论带依据、生效条件与淘汰原因" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#ffe4e6;strokeColor=#fb7185;fontSize=13;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="L9">
+          <mxGeometry x="24" y="48" width="480" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="c92" value="专业交付物&#xa;行情研判 / 粮源候选清单 / 物流方案&#xa;成本对比面板 / 资金匹配 / 风险审核结论" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#ffe4e6;strokeColor=#fb7185;fontSize=13;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="L9">
+          <mxGeometry x="524" y="48" width="480" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="c93" value="衔接粮达网交易服务&#xa;下单 · 电子签约 · 物流执行 · 资金服务&#xa;AI 负责组织建议，最终业务决定由人做出" style="rounded=1;html=1;whiteSpace=wrap;fillColor=#ffe4e6;strokeColor=#fb7185;fontSize=13;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="L9">
+          <mxGeometry x="1024" y="48" width="480" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ed1" style="endArrow=block;endFill=1;html=1;rounded=0;strokeColor=#0f172a;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="800" y="212" as="sourcePoint" />
+            <mxPoint x="800" y="246" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ed2" value="HTTP / SSE" style="endArrow=block;endFill=1;html=1;rounded=0;strokeColor=#0f172a;strokeWidth=2;fontSize=11;fontColor=#475569;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="800" y="396" as="sourcePoint" />
+            <mxPoint x="800" y="430" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ed3" style="endArrow=block;endFill=1;html=1;rounded=0;strokeColor=#0f172a;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="800" y="560" as="sourcePoint" />
+            <mxPoint x="800" y="594" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ed4" value="调度 / 专业结果回流" style="endArrow=block;endFill=1;html=1;rounded=0;strokeColor=#16a34a;strokeWidth=2;fontSize=11;fontColor=#166534;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="800" y="846" as="sourcePoint" />
+            <mxPoint x="800" y="880" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ed5" value="LLM 调用" style="endArrow=block;endFill=1;html=1;rounded=0;strokeColor=#f97316;strokeWidth=2;fontSize=11;fontColor=#9a3412;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="800" y="1030" as="sourcePoint" />
+            <mxPoint x="800" y="1064" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ed6" style="endArrow=block;endFill=1;html=1;rounded=0;strokeColor=#0f172a;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="800" y="1190" as="sourcePoint" />
+            <mxPoint x="800" y="1224" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ed7" value="持久化 / 检索" style="endArrow=block;endFill=1;html=1;rounded=0;strokeColor=#f59e0b;strokeWidth=2;fontSize=11;fontColor=#92400e;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="800" y="1394" as="sourcePoint" />
+            <mxPoint x="800" y="1428" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ed8" value="数据支撑方案生成" style="endArrow=block;endFill=1;html=1;rounded=0;strokeColor=#0f172a;strokeWidth=2;fontSize=11;fontColor=#475569;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="800" y="1578" as="sourcePoint" />
+            <mxPoint x="800" y="1612" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="ed9" value="目标理解 / 知识提炼直接调用" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jettySize=auto;dashed=1;strokeColor=#9333ea;endArrow=block;endFill=1;fontSize=11;fontColor=#6b21a8;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="40" y="700" as="sourcePoint" />
+            <mxPoint x="40" y="1110" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="16" y="700" />
+              <mxPoint x="16" y="1110" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="fb1" value="用户确认后，办事记录自动沉淀为企业知识" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jettySize=auto;strokeColor=#f59e0b;strokeWidth=2.5;endArrow=block;endFill=1;fontSize=12;fontStyle=1;fontColor=#92400e;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1560" y="1690" as="sourcePoint" />
+            <mxPoint x="1560" y="1316" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="1604" y="1690" />
+              <mxPoint x="1604" y="1316" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fb2" value="下一次相似任务，各小二主动引用经验" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jettySize=auto;strokeColor=#9333ea;strokeWidth=2.5;endArrow=block;endFill=1;fontSize=12;fontStyle=1;fontColor=#6b21a8;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1560" y="1268" as="sourcePoint" />
+            <mxPoint x="1560" y="720" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="1656" y="1268" />
+              <mxPoint x="1656" y="720" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="fb3" value="闭环：办得越多，组织越聪明" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=12;fontStyle=3;fontColor=#0f172a;" vertex="1" parent="1">
+          <mxGeometry x="1568" y="960" width="150" height="24" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
