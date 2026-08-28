@@ -1,0 +1,24 @@
+docs/架构图/粮达e销-系统架构图-分层闭环-bak.drawio
+  s_1a0f8b0f94672c::t_d2f915e693f601 1-253
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "b900c32c7f17d758f0e0db3570aedb6082b5efd4",
+  "prompts": {},
+  "humans": {
+    "h_7549b7dc6a6921": {
+      "author": "tiger <1360055716@qq.com>"
+    }
+  },
+  "sessions": {
+    "s_1a0f8b0f94672c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a045f5-387a-7e42-bffa-812b25507eaf",
+        "model": "unknown"
+      },
+      "human_author": "tiger <1360055716@qq.com>"
+    }
+  }
+}
