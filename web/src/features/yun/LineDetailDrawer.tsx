@@ -13,9 +13,11 @@ function Row({ label, value }: { label: string; value: string }) {
 export default function LineDetailDrawer({
   line,
   onClose,
+  onBooking,
 }: {
   line: LogisticsLine;
   onClose: () => void;
+  onBooking?: (line: LogisticsLine) => void;
 }) {
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-black/50" onClick={onClose}>
@@ -55,6 +57,16 @@ export default function LineDetailDrawer({
           <div className="mt-4 rounded-xl border border-amber-300/40 bg-amber-300/10 px-4 py-3 text-sm text-amber-300">
             风险提示：{line.risk_note}
           </div>
+        )}
+
+        {onBooking && (
+          <button
+            type="button"
+            onClick={() => onBooking(line)}
+            className="mt-5 w-full rounded-full bg-brand py-2.5 text-sm font-medium text-white hover:bg-brand/90"
+          >
+            发起运力采购
+          </button>
         )}
       </div>
     </div>

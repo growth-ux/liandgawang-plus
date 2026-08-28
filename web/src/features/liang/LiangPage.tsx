@@ -9,10 +9,12 @@ import MarketSummaryBar from "./MarketSummaryBar";
 import FilterPanel from "./FilterPanel";
 import ListingTable from "./ListingTable";
 import ListingDetailDrawer from "./ListingDetailDrawer";
+import MarketOrderDialog from "../../components/MarketOrderDialog";
 import CandidateBasket from "./CandidateBasket";
 import Pagination from "./Pagination";
 import CompareTab from "./CompareTab";
 import SourcingTab from "./SourcingTab";
+import { fmtInt } from "./format";
 import type {
   Listing,
   ListingFilters,
@@ -29,6 +31,7 @@ export default function LiangPage() {
   const [listings, setListings] = useState<Listing[]>([]);
   const [summary, setSummary] = useState<MarketSummary | null>(null);
   const [detail, setDetail] = useState<Listing | null>(null);
+  const [purchase, setPurchase] = useState<Listing | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
 
@@ -151,6 +154,7 @@ export default function LiangPage() {
                     <ListingTable
                       listings={pageListings}
                       onDetail={setDetail}
+                      onPurchase={setPurchase}
                     />
                     <Pagination
                       page={page}
@@ -169,7 +173,47 @@ export default function LiangPage() {
         <CandidateBasket onGoCompare={goCompare} />
 
         {/* 详情抽屉 */}
-        {detail && <ListingDetailDrawer listing={detail} onClose={() => setDetail(null)} />}
+        {detail && (
+          <ListingDetailDrawer
+            listing={detail}
+            onClose={() => setDetail(null)}
+            onPurchase={(l) => {
+              setDetail(null);
+              setPurchase(l);
+            }}
+          />
+        )}
+
+        {/* 立即采购弹窗 */}
+        {purchase && (
+          <MarketOrderDialog
+            orderType="grain_purchase"
+            title={`采购 ${purchase.variety_name}·${purchase.grade}`}
+            subtitle="提交后生成正式采购单，供应方确认即锁定粮源。"
+            submitLabel="确认采购"
+            summaryRows={[
+              { label: "粮源标的", value: purchase.listing_code },
+              { label: "供应方", value: `${purchase.supplier_name}（${purchase.supplier_region}）` },
+              { label: "报价", value: `${fmtInt(purchase.price)} 元/吨 · ${purchase.price_type}` },
+              { label: "可用量", value: `${fmtInt(purchase.available_quantity_tons)} 吨` },
+              { label: "交收方式", value: purchase.delivery_type },
+              { label: "发运窗口", value: `${purchase.earliest_ship_at ?? "--"} ~ ${purchase.latest_ship_at ?? "--"}` },
+            ]}
+            fields={[
+              {
+                key: "quantity_tons",
+                label: "采购数量（吨）",
+                type: "number",
+                required: true,
+                hint: `最多可采 ${fmtInt(purchase.available_quantity_tons)} 吨`,
+              },
+              { key: "ship_date", label: "期望发运日期", type: "date" },
+              { key: "note", label: "备注", type: "textarea", placeholder: "如质检、开票、交接要求等（选填）" },
+            ]}
+            defaultValues={{ quantity_tons: String(Math.min(purchase.available_quantity_tons, 100)) }}
+            onClose={() => setPurchase(null)}
+          />
+        )}
       </div>
     </CandidateProvider>
   );

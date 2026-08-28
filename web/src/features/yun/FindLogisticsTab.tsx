@@ -6,19 +6,18 @@ import LogisticsSummaryBar from "./LogisticsSummaryBar";
 import LogisticsFilterPanel, { type LogisticsFilters } from "./LogisticsFilterPanel";
 import LineDetailDrawer from "./LineDetailDrawer";
 import Pagination from "./Pagination";
-import RiskHandoffDialog from "../an/RiskHandoffDialog";
-import type { RiskHandoffDraft } from "../an/handoff";
+import MarketOrderDialog from "../../components/MarketOrderDialog";
 
 const PAGE_SIZE = 10;
 
-/** 首 tab：运力发现 —— 概览条 + 筛选 + 线路表格 + 详情 */
+/** 首 tab：运力发现 —— 概览条 + 筛选 + 线路表格 + 详情（风险核验在选定方案后进行，见运输方案页） */
 export default function FindLogisticsTab() {
   const [lines, setLines] = useState<LogisticsLine[]>([]);
   const [filters, setFilters] = useState<LogisticsFilters>({});
   const [detail, setDetail] = useState<LogisticsLine | null>(null);
+  const [booking, setBooking] = useState<LogisticsLine | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
-  const [riskDraft, setRiskDraft] = useState<RiskHandoffDraft | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -98,7 +97,7 @@ export default function FindLogisticsTab() {
                 <thead>
                   <tr className="border-b border-line bg-rice/40 text-left text-[11px] tracking-wide text-ink-soft">
                     <th className="px-4 py-3 font-normal">起终点</th>
-                    <th className="px-4 py-3 font-normal">方式</th>
+                    <th className="whitespace-nowrap px-4 py-3 font-normal">方式</th>
                     <th className="px-4 py-3 font-normal">承运方</th>
                     <th className="px-4 py-3 font-normal">运力（吨）</th>
                     <th className="px-4 py-3 font-normal">运价（元/吨）</th>
@@ -116,8 +115,8 @@ export default function FindLogisticsTab() {
                       <td className="px-4 py-3.5 font-medium text-ink">
                         {l.origin} <span className="mx-1 text-ink-soft">→</span> {l.destination}
                       </td>
-                      <td className="px-4 py-3">
-                        <span className="rounded-full bg-brand-faint px-2 py-0.5 text-xs text-brand-deep">
+                      <td className="whitespace-nowrap px-4 py-3">
+                        <span className="whitespace-nowrap rounded-full bg-brand-faint px-3 py-0.5 text-xs text-brand-deep">
                           {l.mode_name}
                         </span>
                       </td>
@@ -136,34 +135,17 @@ export default function FindLogisticsTab() {
                         <div className="flex gap-1.5">
                           <button
                             type="button"
+                            onClick={() => setBooking(l)}
+                            className="rounded-full bg-brand px-3 py-1 text-xs font-medium text-white hover:bg-brand/90"
+                          >
+                            运力采购
+                          </button>
+                          <button
+                            type="button"
                             onClick={() => setDetail(l)}
                             className="rounded-full border border-line px-2.5 py-1 text-xs text-ink-soft hover:border-tech hover:text-ink"
                           >
                             详情
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setRiskDraft({
-                              id: `yun-${l.carrier}-${l.origin}-${l.destination}-${Date.now()}`,
-                              partnerType: "logistics",
-                              partnerName: l.carrier,
-                              region: `${l.origin} → ${l.destination}`,
-                              business: `${l.mode_name}粮食运输服务`,
-                              sourceAgent: "运小二",
-                              sourceTask: `${l.origin}—${l.destination} · ${l.mode_name}线路`,
-                              profile: [
-                                { label: "线路", value: `${l.origin} → ${l.destination}` },
-                                { label: "参考运价", value: `${fmtInt(l.price_low)}~${fmtInt(l.price_high)} 元/吨` },
-                                { label: "承运能力", value: `${fmtInt(l.tonnage_min)}~${fmtInt(l.tonnage_max)} 吨` },
-                                { label: "预计时效", value: `${l.days_low}~${l.days_high} 天` },
-                              ],
-                              findings: l.risk_note ? [l.risk_note] : [],
-                              positiveEvidence: [l.performance_note, `发运窗口：${l.dispatch_window}`].filter(Boolean),
-                              createdAt: new Date().toISOString(),
-                            })}
-                            className="rounded-full border border-emerald-400/25 px-2.5 py-1 text-xs text-emerald-300 hover:bg-emerald-400/10"
-                          >
-                            查风险
                           </button>
                         </div>
                       </td>
@@ -190,8 +172,45 @@ export default function FindLogisticsTab() {
         )}
       </div>
 
-      {detail && <LineDetailDrawer line={detail} onClose={() => setDetail(null)} />}
-      {riskDraft && <RiskHandoffDialog draft={riskDraft} onClose={() => setRiskDraft(null)} />}
+      {detail && (
+        <LineDetailDrawer
+          line={detail}
+          onClose={() => setDetail(null)}
+          onBooking={(line) => {
+            setDetail(null);
+            setBooking(line);
+          }}
+        />
+      )}
+      {booking && (
+        <MarketOrderDialog
+          orderType="transport_booking"
+          title={`运力采购 ${booking.origin} → ${booking.destination}`}
+          subtitle="提交后生成正式运力采购单，承运方确认后排车/配船。"
+          submitLabel="确认采购"
+          summaryRows={[
+            { label: "线路", value: `${booking.origin} → ${booking.destination}（${fmtInt(booking.distance_km)} 公里）` },
+            { label: "运输方式", value: booking.mode_name },
+            { label: "承运方", value: booking.carrier },
+            { label: "参考运价", value: `${fmtInt(booking.price_low)}~${fmtInt(booking.price_high)} 元/吨` },
+            { label: "承运能力", value: `${fmtInt(booking.tonnage_min)}~${fmtInt(booking.tonnage_max)} 吨` },
+            { label: "发运窗口", value: booking.dispatch_window },
+          ]}
+          fields={[
+            {
+              key: "quantity_tons",
+              label: "发运吨数",
+              type: "number",
+              required: true,
+              hint: `该线路可承运 ${fmtInt(booking.tonnage_min)}~${fmtInt(booking.tonnage_max)} 吨`,
+            },
+            { key: "ship_date", label: "期望发运日期", type: "date" },
+            { key: "note", label: "备注", type: "textarea", placeholder: "如装卸条件、随行单据等（选填）" },
+          ]}
+          defaultValues={{ quantity_tons: String(Math.min(booking.tonnage_max, 200)) }}
+          onClose={() => setBooking(null)}
+        />
+      )}
     </div>
   );
 }

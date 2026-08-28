@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import TechSelect from "../../components/TechSelect";
+import MarketOrderDialog from "../../components/MarketOrderDialog";
 import { fetchFinanceMeta, fetchFinanceProducts } from "./api";
 import type { FinanceCategory, FinanceMeta, FinanceProduct, FinancePurpose, FinanceRequirement } from "./types";
 
@@ -44,6 +45,7 @@ export default function FinanceMarketTab({ onStartMatch, onViewProduct }: Props)
   });
   const [appliedFilters, setAppliedFilters] = useState(filters);
   const [page, setPage] = useState(1);
+  const [applying, setApplying] = useState<FinanceProduct | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -218,6 +220,12 @@ export default function FinanceMarketTab({ onStartMatch, onViewProduct }: Props)
                     查看详情
                   </button>
                   <button
+                    onClick={() => setApplying(p)}
+                    className="rounded-full bg-brand px-4 py-1.5 text-xs font-medium text-white hover:bg-brand/90"
+                  >
+                    立即申请
+                  </button>
+                  <button
                     onClick={() => onStartMatch({
                       purpose: p.purposes[0] as FinanceRequirement["purpose"],
                       amount_yuan: p.min_amount_yuan,
@@ -267,6 +275,44 @@ export default function FinanceMarketTab({ onStartMatch, onViewProduct }: Props)
           )}
         </div>
       </div>
+
+      {/* 融资申请弹窗 */}
+      {applying && (
+        <MarketOrderDialog
+          orderType="finance_application"
+          title={`申请「${applying.name}」`}
+          subtitle={`${applying.institution_name} · 提交后生成融资申请单，金融顾问会尽快对接。`}
+          submitLabel="提交申请"
+          summaryRows={[
+            { label: "产品类别", value: CATEGORY_NAMES[applying.category] },
+            { label: "额度范围", value: `${formatWan(applying.min_amount_yuan)}–${formatWan(applying.max_amount_yuan)}` },
+            { label: "使用期限", value: `${applying.min_days}–${applying.max_days} 天` },
+            {
+              label: "参考年化",
+              value: applying.annual_rate_pct ? `${applying.annual_rate_pct}%` : "需人工确认",
+            },
+          ]}
+          fields={[
+            {
+              key: "amount_yuan",
+              label: "申请金额（元）",
+              type: "number",
+              required: true,
+              hint: `该产品支持 ${formatWan(applying.min_amount_yuan)}–${formatWan(applying.max_amount_yuan)}`,
+            },
+            {
+              key: "duration_days",
+              label: "使用天数",
+              type: "number",
+              required: true,
+              hint: `该产品支持 ${applying.min_days}–${applying.max_days} 天`,
+            },
+            { key: "note", label: "资金用途说明", type: "textarea", placeholder: "如采购品种、周转场景等（选填）" },
+          ]}
+          defaultValues={{ amount_yuan: applying.min_amount_yuan, duration_days: String(applying.min_days) }}
+          onClose={() => setApplying(null)}
+        />
+      )}
     </div>
   );
 }

@@ -30,6 +30,11 @@ from app.zhanggui import models as zhanggui_models  # noqa: F401
 from app.zhanggui.routes import router as zhanggui_router
 from app.handoff import models as handoff_models  # noqa: F401
 from app.handoff.routes import router as handoff_router
+from app.order import models as order_models  # noqa: F401
+from app.order.routes import router as order_router
+
+# 全局开启 INFO 日志：确保各模块 LLM 请求日志（请求开始/耗时/降级原因）可见，便于演示与排障
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
 
 # 粮掌柜编排链路日志：确保 logger 级别为 INFO
 logging.getLogger("zhanggui").setLevel(logging.INFO)
@@ -86,3 +91,4 @@ app.include_router(costing_router)
 app.include_router(knowledge_router)
 app.include_router(zhanggui_router)
 app.include_router(handoff_router)
+app.include_router(order_router)

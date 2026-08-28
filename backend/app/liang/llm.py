@@ -3,6 +3,7 @@
 import logging
 import os
 import re
+import time
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -100,16 +101,19 @@ def extract_sourcing_need(text: str, fallback: dict) -> tuple[dict, str]:
     """优先由 LLM 理解自然语言需求；不可用时保留确定性解析结果。"""
     api_key, model, base_url = _config()
     if not api_key:
+        logger.warning("LLM 寻源需求解析跳过：未配置 QWEN_API_KEY，回退规则解析")
         return fallback, "rule"
     try:
         from langchain_openai import ChatOpenAI
 
-        llm = ChatOpenAI(model=model, api_key=api_key, base_url=base_url, temperature=0, timeout=30, max_retries=1)
+        llm = ChatOpenAI(model=model, api_key=api_key, base_url=base_url, temperature=0, timeout=30, max_retries=2)
         logger.info("LLM 寻源需求解析请求开始: model=%s base_url=%s text=%s", model, base_url, text)
+        start = time.monotonic()
         result = llm.with_structured_output(SourcingNeedExtraction).invoke([
             ("system", "你是粮食采购需求解析助手。仅提取用户明确表达的品种、数量（吨）、等级、粮食年份、最晚发运天数和预算单价（元/吨）；未明确表达的字段必须为 null，禁止推测或补全。"),
             ("human", text),
         ])
+        logger.info("LLM 寻源需求解析成功: 耗时 %.1fs 提取=%s", time.monotonic() - start, result)
         parsed = result.model_dump(exclude_none=True) if result else {}
         valid_varieties = {"玉米", "小麦", "大豆"}
         valid_grades = {"一等", "二等", "三等", "四等"}
@@ -118,8 +122,8 @@ def extract_sourcing_need(text: str, fallback: dict) -> tuple[dict, str]:
         if parsed.get("grade") not in valid_grades:
             parsed.pop("grade", None)
         return parsed or fallback, "llm"
-    except Exception:
-        logger.exception("寻源需求 LLM 解析失败，回退规则解析")
+    except Exception as e:
+        logger.exception("LLM 寻源需求解析失败（%s: %s），回退规则解析", type(e).__name__, str(e)[:200])
         return fallback, "rule"
 
 
@@ -127,12 +131,17 @@ def decide_sourcing_picks(need: dict | None, candidates: list[dict]) -> dict:
     """LLM 从规则排序后的候选粮源中真实决策主推与备选；不可用时回退规则前二。"""
     codes = [item["listing_code"] for item in candidates]
 
-    def fallback() -> dict:
+    def fallback(reason: str) -> dict:
         primary, backup = candidates[0], (candidates[1] if len(candidates) > 1 else None)
+        # 区分降级原因：调用失败说“暂时繁忙”，内容校验失败说“规则复核”，避免误导演示解说
+        if reason.startswith("调用"):
+            summary = f"AI 决策暂时繁忙（{reason}），已按规则排序选定主推 {primary['listing_code']}：信息完整度、综合到厂成本与发运条件优先。"
+        else:
+            summary = f"已按规则复核选定主推 {primary['listing_code']}（{reason}）：信息完整度、综合到厂成本与发运条件优先。"
         return {
             "primary_code": primary["listing_code"],
             "backup_code": backup["listing_code"] if backup else None,
-            "summary": f"模型不可用，按规则排序选定主推 {primary['listing_code']}：信息完整度、综合到厂成本与发运条件优先。",
+            "summary": summary,
             "decision_basis": [
                 f"主推综合到厂成本 {primary['delivered_price']} 元/吨，可用量 {primary['available_quantity_tons']} 吨",
                 f"最晚可发 {primary['latest_ship_at'] or '待确认'}",
@@ -143,35 +152,40 @@ def decide_sourcing_picks(need: dict | None, candidates: list[dict]) -> dict:
 
     api_key, model, base_url = _config()
     if not api_key:
-        return fallback()
+        logger.warning("LLM 寻源比选决策跳过：未配置 QWEN_API_KEY，回退规则前二")
+        return fallback("未配置模型")
     try:
         from langchain_openai import ChatOpenAI
 
-        llm = ChatOpenAI(model=model, api_key=api_key, base_url=base_url, temperature=0.2, timeout=60, max_retries=1)
+        llm = ChatOpenAI(model=model, api_key=api_key, base_url=base_url, temperature=0.2, timeout=90, max_retries=2)
         logger.info("LLM 寻源比选决策请求开始: model=%s 候选=%s", model, codes)
+        start = time.monotonic()
         result = llm.with_structured_output(SourcingPickDecision).invoke([
             ("system", "你是粮食采购决策专家。请从候选粮源中选出主推与备选（候选不足两条时备选可为 null），综合权衡到厂成本、质量指标、发运窗口与信息完整度。只能使用给定字段，不得编造运费、库存、信用或行情；决策理由必须来自给定数据。所有 summary、decision_basis、procurement_advice 必须使用简体中文，禁止输出英文句子。预算为综合到厂价上限，严禁把高于预算的候选表述为满足预算。"),
             ("human", f"采购需求：{need or {}}\n候选粮源（已按规则预排序，仅供参考）：{candidates}\n请返回主推与备选的 listing_code 及决策说明。"),
         ])
+        logger.info("LLM 寻源比选决策响应: 耗时 %.1fs 结果=%s", time.monotonic() - start, result)
         if not result:
-            return fallback()
+            logger.warning("LLM 寻源比选返回空结果，回退规则前二")
+            return fallback("调用返回空")
         decision = result.model_dump()
         # 只接受候选池内的选择，防止模型幻觉改变结果；备选与主推不能相同
         if decision.get("primary_code") not in codes:
-            logger.warning("LLM 主推 %s 不在候选池内，回退规则决策", decision.get("primary_code"))
-            return fallback()
+            logger.warning("LLM 主推 %s 不在候选池 %s 内，回退规则决策", decision.get("primary_code"), codes)
+            return fallback("主推不在候选池")
         if decision.get("backup_code") not in codes or decision["backup_code"] == decision["primary_code"]:
             decision["backup_code"] = next((c for c in codes if c != decision["primary_code"]), None)
         # listing_code 可以保留英文编号；面向用户的解释不得出现英文句子。
         prose = " ".join([decision.get("summary", ""), *decision.get("decision_basis", []), decision.get("procurement_advice", "")])
         prose_without_codes = re.sub(r"\b[A-Z]+-[A-Z0-9-]+\b", "", prose)
         if re.search(r"[A-Za-z]{3,}", prose_without_codes):
-            logger.warning("LLM 比选说明包含英文内容，回退规则决策")
-            return fallback()
+            logger.warning("LLM 比选说明包含英文内容，回退规则决策: %s", prose[:200])
+            return fallback("说明含英文，规则复核")
+        logger.info("LLM 寻源比选决策成功: 主推=%s 备选=%s", decision.get("primary_code"), decision.get("backup_code"))
         return {**decision, "source": "llm"}
-    except Exception:
-        logger.exception("寻源比选 LLM 决策失败，回退规则前二")
-        return fallback()
+    except Exception as e:
+        logger.exception("LLM 寻源比选决策失败（%s: %s），回退规则前二", type(e).__name__, str(e)[:200])
+        return fallback(f"调用异常 {type(e).__name__}")
 
 
 def interpret_comparison(listings: list[dict]) -> dict:
@@ -179,12 +193,14 @@ def interpret_comparison(listings: list[dict]) -> dict:
     fallback = _fallback(listings)
     api_key, model, base_url = _config()
     if not api_key:
+        logger.warning("LLM 候选对比解读跳过：未配置 QWEN_API_KEY，回退规则解读")
         return fallback
     try:
         from langchain_openai import ChatOpenAI
 
-        llm = ChatOpenAI(model=model, api_key=api_key, base_url=base_url, temperature=0.2, timeout=60, max_retries=1)
+        llm = ChatOpenAI(model=model, api_key=api_key, base_url=base_url, temperature=0.2, timeout=90, max_retries=2)
         logger.info("LLM 候选粮源对比解读请求开始: model=%s 候选=%s条", model, len(listings))
+        start = time.monotonic()
         prompt = (
             "请根据以下已选候选粮源做采购前横向解读。仅可使用给定字段，不得编造运费、信用、库存状态或行情预测；"
             "不做绝对承诺。每条粮源都必须给出优势和风险，风险至少包含交易前需要核验的信息。\n\n"
@@ -194,7 +210,8 @@ def interpret_comparison(listings: list[dict]) -> dict:
             ("system", "你是粮达e销 的粮小二，负责协助采购员对多条候选粮源做客观、专业、可执行的对比解读。"),
             ("human", prompt),
         ])
+        logger.info("LLM 候选对比解读成功: 耗时 %.1fs", time.monotonic() - start)
         return {**result.model_dump(), "source": "llm"} if result else fallback
-    except Exception:
-        logger.exception("候选粮源 AI 对比调用失败，回退规则解读")
+    except Exception as e:
+        logger.exception("LLM 候选对比解读失败（%s: %s），回退规则解读", type(e).__name__, str(e)[:200])
         return fallback

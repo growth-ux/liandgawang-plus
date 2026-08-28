@@ -14,9 +14,11 @@ function QualityCell({ listing }: { listing: Listing }) {
 export default function ListingTable({
   listings,
   onDetail,
+  onPurchase,
 }: {
   listings: Listing[];
   onDetail: (l: Listing) => void;
+  onPurchase: (l: Listing) => void;
 }) {
   const { add, remove, has } = useCandidates();
   return (
@@ -62,6 +64,13 @@ export default function ListingTable({
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => onPurchase(l)}
+                      className="rounded-full bg-brand px-3 py-1 text-xs font-medium text-white hover:bg-brand/90"
+                    >
+                      立即采购
+                    </button>
                     <button
                       type="button"
                       onClick={() => (added ? remove(l.id) : add(l))}

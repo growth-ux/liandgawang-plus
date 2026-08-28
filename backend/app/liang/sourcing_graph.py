@@ -244,7 +244,7 @@ def review_node(state: SourcingState) -> dict:
     started = time.perf_counter()
     decision = decide_sourcing_picks(_need_summary(state["need"] or {}), candidates)
     logger.info("[review] AI 比选完成: source=%s 主推=%s 备选=%s 耗时%.1fs", decision.get("source"), decision.get("primary_code"), decision.get("backup_code") or "无", time.perf_counter() - started)
-    detail = f"AI 已选定主推 {decision['primary_code']}" if decision.get("source") == "llm" else f"规则选定主推 {decision['primary_code']}（模型不可用）"
+    detail = f"AI 已选定主推 {decision['primary_code']}" if decision.get("source") == "llm" else f"规则选定主推 {decision['primary_code']}（规则兜底，详见后端日志）"
     return {"decision": decision, "trace": _append_trace(state, "review", "done", detail)}
 
 

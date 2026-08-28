@@ -14,9 +14,11 @@ function Row({ label, value }: { label: string; value: string }) {
 export default function ListingDetailDrawer({
   listing,
   onClose,
+  onPurchase,
 }: {
   listing: Listing;
   onClose: () => void;
+  onPurchase?: (l: Listing) => void;
 }) {
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-black/50" onClick={onClose}>
@@ -53,6 +55,15 @@ export default function ListingDetailDrawer({
           <Row label="容重" value={`${fmtQuality(listing.test_weight_g_l)} g/L`} />
           <Row label="杂质" value={`${fmtQuality(listing.impurity_pct)}%`} />
         </div>
+        {onPurchase && (
+          <button
+            type="button"
+            onClick={() => onPurchase(listing)}
+            className="mt-5 w-full rounded-full bg-brand py-2.5 text-sm font-medium text-white hover:bg-brand/90"
+          >
+            立即采购这条粮源
+          </button>
+        )}
       </div>
     </div>
   );

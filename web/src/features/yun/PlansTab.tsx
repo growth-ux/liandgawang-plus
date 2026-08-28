@@ -19,6 +19,8 @@ import PlanReferenceCards from "./PlanReferenceCards";
 import { selectPlanReferences } from "./planReferences";
 import KnowledgeReferencePanel from "../knowledge/KnowledgeReferencePanel";
 import { createHandoff } from "../handoff/api";
+import RiskHandoffDialog from "../an/RiskHandoffDialog";
+import type { RiskHandoffDraft } from "../an/handoff";
 
 interface Props {
   taskId: number | null;
@@ -52,6 +54,7 @@ export default function PlansTab({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [meta, setMeta] = useState<LogisticsMeta | null>(null);
+  const [riskDraft, setRiskDraft] = useState<RiskHandoffDraft | null>(null);
   // 记录「本组件已加载的任务」，避免 onTaskCreated 触发外部 taskId 变化后重复 fetch
   const loadedRef = useRef<number | null>(null);
 
@@ -291,6 +294,41 @@ export default function PlansTab({
                 </div>
               </section>
 
+              {/* 交给安小二：选定主推方案后才核验承运风险 */}
+              <section className="rounded-3xl border border-line bg-panel/60 p-5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium">承运方靠不靠谱？</p>
+                    <p className="mt-0.5 text-xs text-ink-soft">
+                      将主推方案的风险提示与待核验项交给安小二独立核验，不影响当前推荐
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setRiskDraft({
+                      id: `yun-plan-${primary.id}-${Date.now()}`,
+                      partnerType: "logistics",
+                      partnerName: primary.title,
+                      region: `${detail.task.origin} → ${detail.task.destination}`,
+                      business: `${detail.task.variety_name} ${detail.task.quantity_tons} 吨粮食运输`,
+                      sourceAgent: "运小二",
+                      sourceTask: `主推运输方案 · ${primary.title}`,
+                      profile: [
+                        { label: "参考运价", value: `¥${primary.price_low}~${primary.price_high} 元/吨` },
+                        { label: "预计时效", value: `${primary.days_low}~${primary.days_high} 天` },
+                        { label: "换装次数", value: `${primary.transship_count} 次` },
+                      ],
+                      findings: [...(primary.risk_note ? [primary.risk_note] : []), ...primary.check_items],
+                      positiveEvidence: primary.reason ? [primary.reason] : [],
+                      createdAt: new Date().toISOString(),
+                    })}
+                    className="shrink-0 rounded-full border border-emerald-400/30 px-5 py-2 text-xs font-medium text-emerald-300 hover:bg-emerald-400/10"
+                  >
+                    查承运方风险
+                  </button>
+                </div>
+              </section>
+
               {/* 未入选折叠区 */}
               {rejected.length > 0 && (
                 <details className="rounded-3xl border border-line bg-panel/60 p-5 text-sm">
@@ -344,6 +382,8 @@ export default function PlansTab({
           </section>
         </div>
       )}
+
+      {riskDraft && <RiskHandoffDialog draft={riskDraft} onClose={() => setRiskDraft(null)} />}
     </div>
   );
 }
