@@ -16,15 +16,21 @@ from app.zhanggui.schemas import AgentResult
 def run(db: Session, context: AgentContext) -> AgentResult:
     goal = context.goal
     gap = goal.financing_gap_yuan
+    estimated = False
     if gap in (None, "", "0"):
-        return AgentResult(
-            agent_id="qian",
-            status="completed",
-            summary="当前未发现资金缺口或账期需求，钱小二保持待命",
-            facts={},
-            evidence=[],
-            impact_on_mission="本次方案不计入资金成本",
-        )
+        # 被手动邀请但目标未给出资金缺口：按采购规模（数量×吨预算）估算资金需求
+        try:
+            gap = str(Decimal(str(goal.quantity_tons)) * Decimal(str(goal.budget_yuan_per_ton)))
+            estimated = True
+        except (ArithmeticError, TypeError, ValueError):
+            return AgentResult(
+                agent_id="qian",
+                status="completed",
+                summary="当前未发现资金缺口或账期需求，也未提供数量与预算供测算，钱小二保持待命",
+                facts={},
+                evidence=[],
+                impact_on_mission="本次方案不计入资金成本",
+            )
 
     deadline_days = 45
     if goal.deadline_date:
@@ -64,6 +70,7 @@ def run(db: Session, context: AgentContext) -> AgentResult:
         cost = calculate_reference_cost(requirement.amount_yuan, product.annual_rate_pct, requirement.duration_days)
     facts = {
         "amount_yuan": gap,
+        "amount_source": "estimated" if estimated else "user",
         "duration_days": deadline_days,
         "product_code": product.product_code,
         "product_name": product.name,
@@ -73,10 +80,11 @@ def run(db: Session, context: AgentContext) -> AgentResult:
         "matched_reasons": preview.primary.matched_reasons,
         "pending_conditions": preview.primary.pending_conditions,
     }
+    amount_desc = f"约 {gap} 元（按采购数量×吨预算估算）" if estimated else f"约 {gap} 元"
     return AgentResult(
         agent_id="qian",
         status="completed",
-        summary=f"为约 {gap} 元资金缺口主推 {product.name}（{product.institution_name}），参考资金成本 {facts['estimated_cost_yuan']} 元。",
+        summary=f"为{amount_desc}资金需求主推 {product.name}（{product.institution_name}），参考资金成本 {facts['estimated_cost_yuan']} 元。",
         facts=facts,
         recommendations=["融资审批周期需与采购窗口核对", "放款前需完成采购合同等凭证核验"],
         risks=[],

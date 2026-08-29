@@ -21,8 +21,18 @@ def test_suan_and_an_create_cost_and_risk_opinions(db_session, demo_goal, base_a
     assert an.risks[0]["code"] == "supplier_delivery_evidence_missing"
 
 
-def test_qian_standby_without_financing_gap(db_session, demo_goal, base_agent_results):
+def test_qian_estimates_amount_when_invited_without_gap(db_session, demo_goal, base_agent_results):
+    """手动邀请但未给资金缺口：按采购数量×吨预算估算资金需求并匹配产品。"""
     qian = run_agent("qian", db_session, AgentContext(1, demo_goal, base_agent_results))
+    assert qian.status == "completed"
+    assert qian.facts["amount_yuan"] == "500000"
+    assert qian.facts["amount_source"] == "estimated"
+    assert qian.facts["product_code"]
+
+
+def test_qian_standby_without_gap_and_basis(db_session, demo_goal, base_agent_results):
+    goal = demo_goal.model_copy(update={"quantity_tons": None, "budget_yuan_per_ton": None})
+    qian = run_agent("qian", db_session, AgentContext(1, goal, base_agent_results))
     assert qian.status == "completed"
     assert "待命" in qian.summary
 
