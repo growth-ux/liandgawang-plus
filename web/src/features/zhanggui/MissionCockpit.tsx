@@ -81,16 +81,17 @@ export default function MissionCockpit({ mission, onMissionChange, onBack }: Mis
             setLiveRuns({});
             onMissionChange(snapshot);
           } else {
-            // 同步 agent_runs 状态到 liveRuns，让节点动态变化
-            const runs: Record<string, AgentRun["status"]> = {};
-            for (const run of snapshot.agent_runs) {
-              if (run.status !== "pending") {
-                runs[run.agent_id] = run.status;
+            // 同步 agent_runs 状态到 liveRuns：合并而非整体替换，
+            // 避免快照滞后时把实时流已收到的“办理中”拉回“待启动”
+            setLiveRuns((prev) => {
+              const merged = { ...prev };
+              for (const run of snapshot.agent_runs) {
+                if (run.status !== "pending") {
+                  merged[run.agent_id] = run.status;
+                }
               }
-            }
-            if (Object.keys(runs).length > 0) {
-              setLiveRuns(runs);
-            }
+              return merged;
+            });
             // 同步最新快照：让已完成的小二卡片可点击查看专业结果
             onMissionChange(snapshot);
           }

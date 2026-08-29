@@ -11,14 +11,19 @@ export default function NewRiskReviewDialog({
   onConfirm: (partnerId: string) => void;
 }) {
   const [type, setType] = useState<PartnerType>("grain");
+  // 候选只限系统基础合作方：排除交接副本（H-）与历史独立体检副本（I-），否则选中后无法发起体检
+  const basePartners = useMemo(
+    () => partners.filter((partner) => !partner.id.startsWith("H-") && !partner.id.startsWith("I-")),
+    [partners],
+  );
   const available = useMemo(
-    () => partners.filter((partner) => partner.type === type && !partner.id.startsWith("H-")),
-    [partners, type],
+    () => basePartners.filter((partner) => partner.type === type),
+    [basePartners, type],
   );
   const [selectedByType, setSelectedByType] = useState<Record<PartnerType, string>>({
-    grain: partners.find((partner) => partner.type === "grain" && !partner.id.startsWith("H-"))?.id ?? "",
-    logistics: partners.find((partner) => partner.type === "logistics" && !partner.id.startsWith("H-"))?.id ?? "",
-    finance: partners.find((partner) => partner.type === "finance" && !partner.id.startsWith("H-"))?.id ?? "",
+    grain: basePartners.find((partner) => partner.type === "grain")?.id ?? "",
+    logistics: basePartners.find((partner) => partner.type === "logistics")?.id ?? "",
+    finance: basePartners.find((partner) => partner.type === "finance")?.id ?? "",
   });
   const selectedId = selectedByType[type];
   const selected = partners.find((partner) => partner.id === selectedId);

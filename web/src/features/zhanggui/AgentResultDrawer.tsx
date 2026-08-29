@@ -14,6 +14,8 @@ export default function AgentResultDrawer({ run, onClose }: AgentResultDrawerPro
   const agent = getAgent(run.agent_id);
   const accent = agent?.accent ?? "#22d3ee";
   const output = run.output_snapshot;
+  const interpretation = typeof output?.facts?.interpretation === "string" ? output.facts.interpretation : null;
+  const interpretationByQwen = output?.facts?.interpretation_source === "qwen";
   const pending = run.status === "pending";
   const running = run.status === "running";
   const failed = run.status === "failed" || (!output && !pending && !running);
@@ -63,6 +65,12 @@ export default function AgentResultDrawer({ run, onClose }: AgentResultDrawerPro
             <Section title="核心结论">
               <p>{output.summary}</p>
             </Section>
+
+            {interpretation && (
+              <Section title={interpretationByQwen ? "AI 解读 · 大模型生成" : "AI 解读 · 规则生成"}>
+                <p className="leading-6 text-ink">{interpretation}</p>
+              </Section>
+            )}
 
             {Object.keys(output.facts ?? {}).length > 0 && (
               <Section title="关键事实">

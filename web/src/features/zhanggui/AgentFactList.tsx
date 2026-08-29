@@ -83,12 +83,15 @@ const FIELD_LABELS: Record<string, string> = {
   matched_reasons: "匹配原因",
   pending_conditions: "待满足条件",
   candidates_reviewed: "已审核候选方",
+  risk_adjustment_yuan_per_ton: "履约风险折价",
+  risk_adjusted_cost_yuan_per_ton: "风险调整后吨成本",
+  recommendation_flipped_by_risk: "风险折价触发推荐翻转",
   allow_split: "允许分批运输",
   today: "测算日期",
   decision_preference: "方案偏好",
 };
 
-const HIDDEN_TECHNICAL_FIELDS = new Set(["action", "risk_codes", "mode", "price_unit", "reason_code"]);
+const HIDDEN_TECHNICAL_FIELDS = new Set(["action", "risk_codes", "mode", "price_unit", "reason_code", "interpretation", "interpretation_source"]);
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);

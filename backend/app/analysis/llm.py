@@ -60,8 +60,11 @@ def qwen_available() -> bool:
     return bool(_config()[0])
 
 
-def interpret_judgment(skeleton: dict, conditions: dict) -> str | None:
-    """调用 Qwen 生成研判解读；未配置 key 或调用失败时返回 None。"""
+def interpret_judgment(skeleton: dict, conditions: dict, timeout_seconds: float = 180) -> str | None:
+    """调用 Qwen 生成研判解读；未配置 key 或调用失败时返回 None。
+
+    粮掌柜编排内调用时传更短的超时（worker 有 30 秒上限）。
+    """
     api_key, model, base_url = _config()
     if not api_key:
         return None
@@ -73,7 +76,7 @@ def interpret_judgment(skeleton: dict, conditions: dict) -> str | None:
             api_key=api_key,
             base_url=base_url,
             temperature=0.3,
-            timeout=180,
+            timeout=timeout_seconds,
             max_retries=1,
         )
         prompt = (

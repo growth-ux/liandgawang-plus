@@ -1,10 +1,15 @@
-"""算小二适配器：把粮源与运输结果组合成两套方案比较综合成本。"""
+"""算小二适配器：把粮源与运输结果组合成两套方案比较综合成本。
+
+收到安小二的风险异议后（粮掌柜定向补充复算），会把量化的履约风险折价
+计入综合成本重新比较：折价仍不改变排序时维持推荐并标注，折价超出成本
+优势时直接翻转贴牌推荐。
+"""
 
 from decimal import Decimal
 
 from sqlalchemy.orm import Session
 
-from app.costing.rules import compare_schemes
+from app.costing.rules import compare_schemes, money
 from app.costing.schemas import FieldMeta, SchemeInput
 from app.zhanggui import demo_data
 from app.zhanggui.adapters import liang as liang_adapter
@@ -13,6 +18,19 @@ from app.zhanggui.schemas import AgentResult
 
 # 粮小二候选与采购方案的映射：低成本出厂价候选为 A，港口稳定候选为 B
 _SCHEME_BY_SUPPLIER = {"SUP-A": "A", "SUP-B": "B"}
+
+
+def _risk_premiums_by_scheme(an_result: AgentResult | None) -> dict[str, Decimal]:
+    """从安小二的风险异议中提取各方案的履约风险折价（元/吨）。"""
+    premiums: dict[str, Decimal] = {}
+    if an_result is None or an_result.status == "failed":
+        return premiums
+    for risk in an_result.risks:
+        scheme_id = risk.get("scheme_id")
+        premium = risk.get("risk_premium_yuan_per_ton")
+        if scheme_id and premium:
+            premiums[scheme_id] = Decimal(str(premium))
+    return premiums
 
 
 def run(db: Session, context: AgentContext) -> AgentResult:
@@ -88,17 +106,49 @@ def run(db: Session, context: AgentContext) -> AgentResult:
         "contains_estimates": comparison.contains_estimates,
     }
 
+    # 风险感知复算：响应安小二异议，把履约风险折价计入综合成本重新比较排序；
+    # 仅在拿到安小二结果后生效（首次办理无异议时保持纯成本口径）
+    risk_premiums = _risk_premiums_by_scheme(context.prior_results.get("an"))
+    adjusted_best: str | None = None
+    if risk_premiums:
+        adjusted = {
+            r.scheme_id: money(r.delivered_cost_yuan_per_ton + risk_premiums.get(r.scheme_id, Decimal("0")))
+            for r in comparison.results
+        }
+        adjusted_best = min(adjusted, key=lambda sid: adjusted[sid])
+        facts["risk_adjustment_yuan_per_ton"] = {sid: str(p) for sid, p in risk_premiums.items()}
+        facts["risk_adjusted_cost_yuan_per_ton"] = {sid: str(v) for sid, v in adjusted.items()}
+        if adjusted_best != best_id:
+            facts["recommendation_flipped_by_risk"] = True
+            facts["recommended_scheme_id"] = adjusted_best
+            facts["backup_scheme_id"] = best_id
+
     detail = "、".join(
         f"方案{r.scheme_id}到厂吨成本 {r.delivered_cost_yuan_per_ton} 元" for r in comparison.results
     )
-    summary = f"推荐成本更低的方案 {best_id}（{detail}），方案间总计相差 {facts['saving_total_yuan']} 元。"
+    summary = f"推荐成本更低的方案 {facts['recommended_scheme_id']}（{detail}），方案间总计相差 {facts['saving_total_yuan']} 元。"
+    if risk_premiums:
+        if adjusted_best != best_id:
+            summary = (
+                f"响应安小二异议的风险感知复算：方案 {best_id} 账面成本更低，"
+                f"但计入履约风险折价后方案 {adjusted_best}（{results[adjusted_best].name}）综合成本反而更低，改为主推。"
+            )
+        else:
+            summary += f" 方案 {best_id} 已计入履约风险折价复核，调整后仍是综合成本最低。"
+
+    recommendations = [
+        f"按方案 {facts['recommended_scheme_id']} 锁定采购与运输组合",
+        "签约前确认报价含税口径与有效期",
+    ]
+    if risk_premiums:
+        recommendations.append("综合成本已计入履约风险折价，最终排序以风险调整后吨成本为准")
 
     return AgentResult(
         agent_id="suan",
         status="completed",
         summary=summary,
         facts=facts,
-        recommendations=[f"按方案 {best_id} 锁定采购与运输组合", "签约前确认报价含税口径与有效期"],
+        recommendations=recommendations,
         risks=[],
         missing_information=[],
         evidence=[

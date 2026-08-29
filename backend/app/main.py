@@ -28,6 +28,7 @@ from app.knowledge.routes import router as knowledge_router
 from app.knowledge.seed import seed_enterprise_knowledge
 from app.zhanggui import models as zhanggui_models  # noqa: F401
 from app.zhanggui.routes import router as zhanggui_router
+from app.an.routes import router as an_router
 from app.handoff import models as handoff_models  # noqa: F401
 from app.handoff.routes import router as handoff_router
 from app.order import models as order_models  # noqa: F401
@@ -91,4 +92,5 @@ app.include_router(costing_router)
 app.include_router(knowledge_router)
 app.include_router(zhanggui_router)
 app.include_router(handoff_router)
+app.include_router(an_router)
 app.include_router(order_router)

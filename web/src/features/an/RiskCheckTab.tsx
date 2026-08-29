@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { askPartner } from "./api";
 import type { Partner, PartnerType, RiskItem, RiskLevel, Verdict } from "./types";
 
 const typeOptions: Array<{ value: "all" | PartnerType; label: string }> = [
@@ -28,6 +29,7 @@ interface Props {
   onAddVerification: (partnerId: string, risk: RiskItem) => void;
   onOpenVerifications: () => void;
   onNewReview: () => void;
+  summaryLoading?: boolean;
 }
 
 export default function RiskCheckTab({
@@ -38,10 +40,12 @@ export default function RiskCheckTab({
   onAddVerification,
   onOpenVerifications,
   onNewReview,
+  summaryLoading = false,
 }: Props) {
   const [type, setType] = useState<"all" | PartnerType>("all");
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
+  const [asking, setAsking] = useState(false);
   const [scanning, setScanning] = useState(false);
   const partner = partners.find((item) => item.id === selectedPartnerId) ?? partners[0];
   const filtered = useMemo(() => partners.filter((item) => type === "all" || item.type === type), [type]);
@@ -53,13 +57,23 @@ export default function RiskCheckTab({
     window.setTimeout(() => setScanning(false), 850);
   };
 
-  const ask = () => {
+  const ask = async () => {
     const text = question.trim();
-    if (!text) return;
-    setAnswer(
-      `安小二已结合${partner.sourceAgent}结果和企业合作记录核对：${partner.summary} 当前最需要优先处理的是“${importantRisks[0]?.title ?? "补充基础信息"}”。`,
-    );
+    if (!text || asking) return;
+    setAsking(true);
     setQuestion("");
+    setAnswer("");
+    try {
+      // 带体检证据调用后端大模型；失败时回退本地规则版回答，问答不中断
+      const result = await askPartner(text, partner);
+      setAnswer(result.answer);
+    } catch {
+      setAnswer(
+        `安小二已结合${partner.sourceAgent}结果和企业合作记录核对：${partner.summary} 当前最需要优先处理的是“${importantRisks[0]?.title ?? "补充基础信息"}”。`,
+      );
+    } finally {
+      setAsking(false);
+    }
   };
 
   return (
@@ -212,7 +226,8 @@ export default function RiskCheckTab({
           </div>
 
           <aside className="space-y-4">
-            <div className="rounded-2xl border border-emerald-400/20 bg-[linear-gradient(145deg,rgba(52,211,153,0.09),rgba(19,28,54,0.7))] p-4">
+            <div className="relative overflow-hidden rounded-2xl border border-emerald-400/20 bg-[linear-gradient(145deg,rgba(52,211,153,0.09),rgba(19,28,54,0.7))] p-4">
+              {summaryLoading && <span className="an-scan-line pointer-events-none absolute inset-x-0 top-0 h-px bg-emerald-300 shadow-[0_0_18px_3px_rgba(52,211,153,0.55)]" />}
               <div className="flex items-center gap-2">
                 <span className="flex h-7 w-7 items-center justify-center rounded-lg border border-emerald-400/25 bg-emerald-400/10 text-xs text-emerald-300">安</span>
                 <div>
@@ -220,7 +235,11 @@ export default function RiskCheckTab({
                   <div className="text-[10px] text-ink-soft">AI 整理 · 规则定级</div>
                 </div>
               </div>
-              <p className="mt-3 text-xs leading-6 text-ink-soft">{partner.summary}</p>
+              {summaryLoading ? (
+                <p className="mt-3 animate-pulse text-xs leading-6 text-emerald-300/80">正在结合基础资料与企业历史经验生成体检结论…</p>
+              ) : (
+                <p className="mt-3 text-xs leading-6 text-ink-soft">{partner.summary}</p>
+              )}
               <div className="mt-3 rounded-xl bg-rice/50 p-3 text-[11px] leading-5">
                 <span className="text-emerald-300">优先动作：</span>{importantRisks[0]?.action ?? "当前无需新增核验动作。"}
               </div>
@@ -235,7 +254,9 @@ export default function RiskCheckTab({
                 rows={3}
                 className="mt-3 w-full resize-none rounded-xl border border-line bg-rice/60 px-3 py-2 text-xs leading-5 outline-none placeholder:text-ink-soft/60 focus:border-emerald-400/30"
               />
-              <button type="button" onClick={ask} className="mt-2 w-full rounded-xl bg-emerald-500/90 px-3 py-2 text-xs font-medium text-slate-950 hover:bg-emerald-400">结合当前证据回答</button>
+              <button type="button" onClick={ask} disabled={asking} className="mt-2 w-full rounded-xl bg-emerald-500/90 px-3 py-2 text-xs font-medium text-slate-950 hover:bg-emerald-400 disabled:opacity-60">
+                {asking ? "安小二正在核对证据…" : "结合当前证据回答"}
+              </button>
               {answer && <p className="mt-3 rounded-xl border border-emerald-400/15 bg-emerald-400/[0.06] p-3 text-[11px] leading-5 text-ink-soft">{answer}</p>}
             </div>
           </aside>

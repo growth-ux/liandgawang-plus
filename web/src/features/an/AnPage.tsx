@@ -9,6 +9,7 @@ import ReviewRecordsTab from "./ReviewRecordsTab";
 import VerificationTab from "./VerificationTab";
 import NewRiskReviewDialog from "./NewRiskReviewDialog";
 import { partnerFromHandoff, readRiskHandoff } from "./handoff";
+import { reviewPartnerSummary } from "./api";
 import type { Partner, RiskItem, VerificationItem, VerificationStatus } from "./types";
 import type { RiskHandoffDraft } from "./handoff";
 import { acceptHandoff, fetchHandoff, ignoreHandoff, type AgentHandoff } from "../handoff/api";
@@ -49,6 +50,33 @@ export default function AnPage() {
   const [selectedPartnerId, setSelectedPartnerId] = useState(() => handoffDraft ? `H-${handoffDraft.id}` : partners[0].id);
   const [verifications, setVerifications] = useState<VerificationItem[]>(initialVerifications);
   const [newReviewOpen, setNewReviewOpen] = useState(false);
+  const [summaryLoading, setSummaryLoading] = useState(false);
+
+  /** 独立发起体检：先展示确定性风险项，体检结论由大模型现场生成。 */
+  const startIndependentReview = (partnerId: string) => {
+    // 容错：传入的是体检副本 id（I-前缀）时回退到基础合作方，避免点击无响应
+    const baseId = partnerId.startsWith("I-") ? partnerId.slice(2) : partnerId;
+    const base = partners.find((partner) => partner.id === baseId);
+    if (!base) return;
+    const independent: Partner = {
+      ...base,
+      id: `I-${base.id}`,
+      sourceAgent: "系统合作方资料",
+      sourceTask: "独立发起 · 未关联业务任务",
+      summary: "本次未关联具体业务方案。以下判断基于合作方基础资料和企业历史经验；进入实际交易前，仍需结合本次价格、数量和交付条件重新核验。",
+    };
+    setIndependentPartner(independent);
+    setSelectedPartnerId(independent.id);
+    setActiveTab(0);
+    setNewReviewOpen(false);
+    setSummaryLoading(true);
+    reviewPartnerSummary(independent)
+      .then((result) => setIndependentPartner(
+        (current) => (current && current.id === independent.id ? { ...current, summary: result.summary } : current),
+      ))
+      .catch(() => {})
+      .finally(() => setSummaryLoading(false));
+  };
 
   const addVerification = (partnerId: string, risk: RiskItem) => {
     if (verifications.some((item) => item.riskId === risk.id)) {
@@ -145,6 +173,7 @@ export default function AnPage() {
             onAddVerification={addVerification}
             onOpenVerifications={() => setActiveTab(1)}
             onNewReview={() => setNewReviewOpen(true)}
+            summaryLoading={summaryLoading}
           />
         )}
         {activeTab === 1 && (
@@ -164,21 +193,7 @@ export default function AnPage() {
         <NewRiskReviewDialog
           partners={partnerList}
           onClose={() => setNewReviewOpen(false)}
-          onConfirm={(partnerId) => {
-            const base = partners.find((partner) => partner.id === partnerId);
-            if (!base) return;
-            const independent: Partner = {
-              ...base,
-              id: `I-${base.id}`,
-              sourceAgent: "系统合作方资料",
-              sourceTask: "独立发起 · 未关联业务任务",
-              summary: `本次未关联具体业务方案。以下判断基于合作方基础资料和企业历史经验；进入实际交易前，仍需结合本次价格、数量和交付条件重新核验。`,
-            };
-            setIndependentPartner(independent);
-            setSelectedPartnerId(independent.id);
-            setActiveTab(0);
-            setNewReviewOpen(false);
-          }}
+          onConfirm={startIndependentReview}
         />
       )}
     </div>

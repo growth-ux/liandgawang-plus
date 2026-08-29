@@ -38,16 +38,27 @@ def _detect_cost_vs_risk(goal, results, conflicts, seen) -> None:
     for risk in an.risks:
         if risk.get("scheme_id") != recommended:
             continue
+        evidence = [risk.get("detail", "")]
+        detail = (
+            f"算小二推荐综合成本最低的方案 {recommended}，"
+            f"安小二对 {risk.get('supplier_name', '该供应方')} 提出履约证据不足的异议。"
+        )
+        # 算小二已完成风险感知复算时，把量化折价与调整后成本写进冲突证据，供用户裁决
+        adjusted = (suan.facts.get("risk_adjusted_cost_yuan_per_ton") or {}).get(recommended)
+        if adjusted:
+            premium = (suan.facts.get("risk_adjustment_yuan_per_ton") or {}).get(recommended)
+            evidence.append(
+                f"算小二风险感知复算：方案 {recommended} 已计入履约风险折价 {premium} 元/吨，"
+                f"风险调整后吨成本 {adjusted} 元"
+            )
+            detail += " 算小二已响应安小二异议完成复算：计入风险折价后推荐不变，须附加履约担保核验条件。"
         _add(conflicts, seen, MissionConflict(
             kind="cost_vs_risk",
             scheme_id=recommended,
             agent_ids=["suan", "an"],
             title=f"方案 {recommended} 成本最低，但履约风险更高",
-            detail=(
-                f"算小二推荐综合成本最低的方案 {recommended}，"
-                f"安小二对 {risk.get('supplier_name', '该供应方')} 提出履约证据不足的异议。"
-            ),
-            evidence=[risk.get("detail", "")],
+            detail=detail,
+            evidence=evidence,
             severity="high",
         ))
 

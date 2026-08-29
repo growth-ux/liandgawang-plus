@@ -107,6 +107,14 @@ def build_recommendation(
         tradeoffs.append(f"方案 {backup} 每吨贵 {delta} 元，总计多花 {saving} 元，但交付稳定性更高")
     if gated:
         tradeoffs.append(f"方案 {primary} 需要先完成{a_name}履约担保核验，存在今日无法通过的可能")
+        # 算小二风险感知复算结论：风险折价已量化计入，仍维持成本排序时在此说明
+        adjusted = (facts.get("risk_adjusted_cost_yuan_per_ton") or {}).get(primary)
+        if adjusted:
+            premium = (facts.get("risk_adjustment_yuan_per_ton") or {}).get(primary)
+            tradeoffs.append(
+                f"算小二风险感知复算：方案 {primary} 已计入履约风险折价 {premium} 元/吨，"
+                f"调整后吨成本 {adjusted} 元，仍是综合成本最低"
+            )
     zhan = results.get("zhan")
     if zhan and zhan.status != "failed" and zhan.facts.get("time_window"):
         tradeoffs.append(f"行情节奏参考：{zhan.facts['time_window']}")

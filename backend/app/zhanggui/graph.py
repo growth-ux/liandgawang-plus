@@ -76,7 +76,6 @@ def _run_worker(session_factory: sessionmaker, agent_id: str, mission_id: int, g
         lo, hi = _AGENT_SIM_DELAY.get(agent_id, (1.5, 3.0))
         delay = random.uniform(lo, hi)
         zlog(f"[graph] {agent_id} 开始办理（预计 {delay:.1f}s）")
-        time.sleep(delay)
         session = session_factory()
         try:
             context = AgentContext(mission_id=mission_id, goal=goal, prior_results=prior_results)
@@ -120,10 +119,26 @@ def _build_graph(session_factory: sessionmaker, emit: Callable[[dict], None], us
         else:
             _write()
 
+    def _mark_running(agent_id: str, mission_id: int) -> None:
+        """小二启动即写入 running 与开始时间：快照轮询才能看到办理中状态。"""
+        def _write() -> None:
+            session = session_factory()
+            try:
+                repository.upsert_agent_run(session, mission_id, agent_id, status="running", started_at=datetime.now())
+            finally:
+                session.close()
+
+        if use_lock:
+            with _WORKER_LOCK:
+                _write()
+        else:
+            _write()
+
     def _run_single(agent_id: str, state: MissionGraphState, prior: dict[str, dict], reason: str = "") -> AgentResult:
         mission_id = state["mission_id"]
         goal = MissionGoal.model_validate(state["goal"])
         logger.info("[任务 %s] %s 开始办理", mission_id, agent_id)
+        _mark_running(agent_id, mission_id)
         _emit(emit, "agent_started", mission_id, agent_id)
         result = _run_worker(session_factory, agent_id, mission_id, goal, prior, use_lock)
         _persist_result(agent_id, mission_id, result, reason)
@@ -152,6 +167,9 @@ def _build_graph(session_factory: sessionmaker, emit: Callable[[dict], None], us
             return {}
         logger.info("[任务 %s] 并行办理启动：%s (共 %d 个)", mission_id, "、".join(targets), len(targets))
         logger.info("[任务 %s] 创建 ThreadPoolExecutor (max_workers=4)", mission_id)
+        # 启动即标记 running：快照轮询不会把办理中的小二误读为待启动
+        for agent_id in targets:
+            _mark_running(agent_id, mission_id)
         with ThreadPoolExecutor(max_workers=4) as pool:
             futures = {}
             for agent_id in targets:
