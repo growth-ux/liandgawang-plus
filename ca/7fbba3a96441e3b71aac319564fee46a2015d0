@@ -1,0 +1,78 @@
+docs/superpowers/specs/2026-09-09-yun-xiaoer-logistics-intelligent-matching-design.md
+  s_85cfab16762d8e::t_d2a2e4bfc9af8c 2-4,6,45,47,49,51,53-55,57-104,115-119,127-129,135-139,141-143,145-149,151-166,168,172-174,176,186,188,190,192,196,208-210,212,214,222-224,226-230,232,239,241,243-245,247,249,251,257,259,261,263-265,267,269
+  h_f75b2dd43abf29 120
+  s_85cfab16762d8e::t_0e0636349ae703 178,180,184,198,200,202-204
+  s_85cfab16762d8e::t_5b909af22d89d0 1
+  s_85cfab16762d8e::t_74dd9932957e77 5
+  s_85cfab16762d8e::t_1a40d32c755029 7-9,42-44
+  s_85cfab16762d8e::t_fe8399f3fe4b3f 46
+  s_85cfab16762d8e::t_d757b71b3d654e 48
+  s_85cfab16762d8e::t_d67e32cdb369b8 50
+  s_85cfab16762d8e::t_113512d3ea9a61 52
+  s_85cfab16762d8e::t_da1d55553eda0a 56
+  s_85cfab16762d8e::t_14d3cc6ab6a019 105-107,112-114
+  s_85cfab16762d8e::t_19b2a6218b0bd9 130-134
+  s_85cfab16762d8e::t_d092de3f45027f 140
+  s_85cfab16762d8e::t_bb51b1fcbd3e10 144
+  s_85cfab16762d8e::t_777a6acf750dda 150
+  s_85cfab16762d8e::t_631d901c4665cb 167
+  s_85cfab16762d8e::t_6d8b9f8b4f2c2a 169-171
+  s_85cfab16762d8e::t_9ba12b0087b914 175
+  s_85cfab16762d8e::t_363a3d0668232c 177
+  s_85cfab16762d8e::t_688819e632acdf 179
+  s_85cfab16762d8e::t_6488db6a34fce4 181-183
+  s_85cfab16762d8e::t_3e2dd89d1ec173 185
+  s_85cfab16762d8e::t_d0c3230b3f95f1 187
+  s_85cfab16762d8e::t_7bcfbf8dad28c6 189
+  s_85cfab16762d8e::t_509ecc92323009 191
+  s_85cfab16762d8e::t_ada25f0a277b9e 193-195
+  s_85cfab16762d8e::t_e67760e01c43e8 197
+  s_85cfab16762d8e::t_1f288dc843a006 199
+  s_85cfab16762d8e::t_2d38a97c43694b 201
+  s_85cfab16762d8e::t_36ee148715fe7e 205-207
+  s_85cfab16762d8e::t_4173158ceaf99d 211
+  s_85cfab16762d8e::t_f15bced54f1041 213
+  s_85cfab16762d8e::t_176f7a10c8e04f 215-217,219-221
+  s_85cfab16762d8e::t_ddea5444156876 225
+  s_85cfab16762d8e::t_3023e2ad44dcde 231
+  s_85cfab16762d8e::t_e1ad5c13053b4a 233-238
+  s_85cfab16762d8e::t_685dc22d7e36bf 240
+  s_85cfab16762d8e::t_cadff7412a41c7 242
+  s_85cfab16762d8e::t_7db71a7dc634b7 246
+  s_85cfab16762d8e::t_852f86f6b36822 248
+  s_85cfab16762d8e::t_c428243e97ee66 250
+  s_85cfab16762d8e::t_46eba095e07d03 252-256
+  s_85cfab16762d8e::t_090a26933eb144 258
+  s_85cfab16762d8e::t_010f60f2ca9341 260
+  s_85cfab16762d8e::t_2543fb8c15bda0 262
+  s_85cfab16762d8e::t_d247fb1a624402 266
+  s_85cfab16762d8e::t_edf75a57c96e8f 268
+  s_85cfab16762d8e::t_f5e52e0bc76b86 270
+  h_f75b2dd43abf29 10-41,108-111,121-126,218
+docs/superpowers/specs/2026-09-09-liang-xiaoer-grain-source-intelligent-matching-design.md
+  h_f75b2dd43abf29 31-75
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "ca7fbba3a96441e3b71aac319564fee46a2015d0",
+  "prompts": {},
+  "humans": {
+    "h_7549b7dc6a6921": {
+      "author": "tiger <1360055716@qq.com>"
+    },
+    "h_f75b2dd43abf29": {
+      "author": "weiyu.1024 <1360055716@qq.com>"
+    }
+  },
+  "sessions": {
+    "s_85cfab16762d8e": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08626-3d75-7e80-a459-683d4d428ad3",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    }
+  }
+}
