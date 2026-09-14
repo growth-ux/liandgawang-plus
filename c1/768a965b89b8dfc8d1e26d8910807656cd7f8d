@@ -1,0 +1,127 @@
+.gitignore
+  h_f75b2dd43abf29 9-13
+docs/QA.md
+  s_b6edfdd9fc937c::t_4c6d0756a2eb35 29,31-77
+  s_2f8b4796c60bc6::t_7ec783b2396b38 1-4,6,8,10,12,14,16,22,24,26
+  s_b6edfdd9fc937c::t_b9103536ab76ad 5,7,9,11,13,15,17-21,23,25,27
+  h_f75b2dd43abf29 28,30
+docs/四项重点工作和一号工程通知解读与项目设计指导.md
+  s_b658defabe9254::t_8607f3cc1241a1 1-230
+docs/架构图/粮达e销-纯技术架构图.drawio
+  s_7ca947d91a0398::t_d877cf087f5cee 13,17,20,23,25-26,55-56,76-77,91-92,94-95,97-98,101,103-104,118,126-127,132-133,136,138-139,142,144-145
+  s_7ca947d91a0398::t_cdffb795002cfc 1-12,15,18,21,24,27,54,57-66,72-75,78-87,99,102,105-117,119-125,128-131,134-135,137,140-141,143,148-151
+  s_7ca947d91a0398::t_05f1730a67c1d0 30-51,69,90,93,96,146-147
+  s_7ca947d91a0398::t_20e10406443c7a 14
+  s_7ca947d91a0398::t_02862e31cf4e59 16
+  s_7ca947d91a0398::t_ebd5036eb62d55 19
+  s_7ca947d91a0398::t_46c06057083613 22
+  s_7ca947d91a0398::t_baa97053862fe5 28-29
+  s_7ca947d91a0398::t_bb477b5d91b319 52-53
+  s_7ca947d91a0398::t_c575315f43d927 67-68
+  s_7ca947d91a0398::t_f08b5f1b1c0932 70-71
+  s_7ca947d91a0398::t_efd6a015b3d653 88-89
+  s_7ca947d91a0398::t_9c4bceb5d131f3 100
+AGENTS.md
+  h_f75b2dd43abf29 4,16
+  h_f75b2dd43abf29 15
+docs/superpowers/specs/2026-09-09-yun-xiaoer-logistics-intelligent-matching-design.md
+  s_8461147563f7ff::t_f4400c70769231 56,67,115-118
+  s_8461147563f7ff::t_489b7d81e2ed0d 119
+CLAUDE.md
+  h_f75b2dd43abf29 4,16
+  h_f75b2dd43abf29 15
+docs/5+1重点工程.md
+  h_f75b2dd43abf29 1-14
+docs/粮达e销-量化指标体系.md
+  s_32f32b1e7840b9::t_112cdaac5d4c2c 1-8,10-14,16,18,20,41-49,51,53-59,62-74,94-103,105-111,114,116,118-120,122-124,126-128,131-136,138-140
+  s_271830663ae692::t_1b22d766198801 9,21-40,60,112-113,115,117
+  s_32f32b1e7840b9::t_a85377ebb52a42 15,17,19
+  s_32f32b1e7840b9::t_6b94f8731c003f 61
+  h_f75b2dd43abf29 153
+  s_32f32b1e7840b9::t_69c2ba69927b96 137,141-142
+  s_32f32b1e7840b9::t_ea41bac36f914b 121,125
+  s_271830663ae692::t_9e53c04a740564 148
+  s_32f32b1e7840b9::t_577435aad03790 129-130
+  s_32f32b1e7840b9::t_493345a0e5ec8d 104
+  s_32f32b1e7840b9::t_ff794dc0dde42d 50,52
+  s_32f32b1e7840b9::t_e8cb8000b44090 75-93
+  s_271830663ae692::t_c1def0092b60da 152
+  s_271830663ae692::t_86b616456d8ad9 143-147,149
+  s_271830663ae692::t_98742321e3f206 150-151,154-155
+docs/备注与优化建议
+  h_f75b2dd43abf29 1-78
+docs/架构图/粮达e销-纯技术架构图.bak.drawio
+  s_7ca947d91a0398::t_3ba3cc82fa5b56 1-89
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "c1768a965b89b8dfc8d1e26d8910807656cd7f8d",
+  "prompts": {},
+  "humans": {
+    "h_7549b7dc6a6921": {
+      "author": "tiger <1360055716@qq.com>"
+    },
+    "h_f75b2dd43abf29": {
+      "author": "weiyu.1024 <1360055716@qq.com>"
+    }
+  },
+  "sessions": {
+    "s_271830663ae692": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08baf-0cd6-7791-940d-f7395f2fbda4",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    },
+    "s_2f8b4796c60bc6": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08971-5948-7a30-9a98-11cc0a89582d",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    },
+    "s_32f32b1e7840b9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4049c443-0111-47f0-86ca-32d6fede7cba",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    },
+    "s_7ca947d91a0398": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08624-38f6-7332-82d6-c3ff61214a00",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    },
+    "s_8461147563f7ff": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a089cd-cc81-7d20-b69b-dc5f489ad641",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    },
+    "s_b658defabe9254": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08449-6a52-7a63-a9b4-785b16a9edaf",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    },
+    "s_b6edfdd9fc937c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a089eb-69b4-75c3-bac1-d20d303d513e",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    }
+  }
+}
