@@ -6,3 +6,8 @@ __pycache__/
 *.pyc
 .venv/
 .env
+docs/ppt-work
+tmp/
+output/
+docs/*.pptx
+output/*.pptx
