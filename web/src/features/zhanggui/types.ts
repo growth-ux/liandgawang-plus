@@ -197,6 +197,9 @@ export interface MissionSummary {
   updated_at?: string | null;
 }
 
+/** 驾驶舱只消费协作视图；后端分析和采购阶段共用同一可视化组件。 */
+export type CollaborationSnapshot = Pick<MissionSnapshot, "team" | "agent_runs" | "conflicts" | "status" | "recommendation">;
+
 export interface MissionEvent {
   type:
     | "mission_started"

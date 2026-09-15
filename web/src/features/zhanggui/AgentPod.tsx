@@ -11,6 +11,8 @@ export interface AgentPodProps {
   x: number;
   y: number;
   onClick(): void;
+  standbyLabel?: string;
+  disabled?: boolean;
 }
 
 const STATUS_TEXT: Record<string, string> = {
@@ -22,10 +24,23 @@ const STATUS_TEXT: Record<string, string> = {
 };
 
 /** 单个小二空间节点：位置、深度与状态由真实任务状态驱动。 */
-export default function AgentPod({ agent, run, depth, active, inConflict, x, y, onClick }: AgentPodProps) {
+export default function AgentPod({
+  agent,
+  run,
+  depth,
+  active,
+  inConflict,
+  x,
+  y,
+  onClick,
+  standbyLabel,
+  disabled,
+}: AgentPodProps) {
   const profile = getAgent(agent.agent_id);
   const status = agent.selected ? (run?.status ?? "pending") : "standby";
-  const statusText = !agent.selected ? "未参与" : STATUS_TEXT[status] ?? status;
+  const statusText = !agent.selected
+    ? (standbyLabel ?? "未参与")
+    : (STATUS_TEXT[status] ?? status);
   const summary = run?.output_snapshot?.summary;
   const evidenceCount = run?.output_snapshot?.evidence.length ?? 0;
   const riskCount = run?.output_snapshot?.risks.length ?? 0;
@@ -41,11 +56,19 @@ export default function AgentPod({ agent, run, depth, active, inConflict, x, y, 
       data-participating={agent.selected || undefined}
       style={{ "--x": `${x}px`, "--y": `${y}px` } as CSSProperties}
       onClick={onClick}
+      disabled={disabled}
       aria-pressed={active}
       aria-label={`查看${agent.name}专业结果`}
     >
       <div className="zg-pod-head">
-        <span className="zg-pod-avatar" style={{ "--agent-accent": profile?.accent ?? "var(--color-tech)" } as CSSProperties}>
+        <span
+          className="zg-pod-avatar"
+          style={
+            {
+              "--agent-accent": profile?.accent ?? "var(--color-tech)",
+            } as CSSProperties
+          }
+        >
           {profile?.char ?? agent.name.slice(0, 1)}
         </span>
         <span className="zg-pod-identity">
@@ -53,11 +76,16 @@ export default function AgentPod({ agent, run, depth, active, inConflict, x, y, 
           <small>{profile?.role ?? "专业协作"}</small>
         </span>
         <span className="zg-pod-status" data-status={status}>
-          <span className="zg-pod-status-dot" />{statusText}
+          <span className="zg-pod-status-dot" />
+          {statusText}
         </span>
       </div>
       <p className="zg-pod-summary">
-        {!agent.selected ? agent.reason : status === "failed" ? "专业结果缺失，可重试" : summary || agent.reason}
+        {!agent.selected
+          ? agent.reason
+          : status === "failed"
+            ? "专业结果缺失，可重试"
+            : summary || agent.reason}
       </p>
       <span className="zg-pod-foot">
         {summary ? (
@@ -66,9 +94,14 @@ export default function AgentPod({ agent, run, depth, active, inConflict, x, y, 
             <span>{riskCount > 0 ? `${riskCount} 项风险` : "已形成结论"}</span>
           </>
         ) : (
-          <span>{agent.expected_output || (agent.selected ? "等待专业结果" : "本轮保持待命")}</span>
+          <span>
+            {agent.expected_output ||
+              (agent.selected ? "等待专业结果" : "本轮保持待命")}
+          </span>
         )}
-        <span className="zg-pod-open">查看详情</span>
+        <span className="zg-pod-open">
+          {disabled ? "按需协作" : "查看详情"}
+        </span>
       </span>
     </button>
   );

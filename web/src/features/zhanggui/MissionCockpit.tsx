@@ -1,4 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { purchaseFromMission } from "./purchaseMission";
+import { PURCHASE_STORAGE_KEY, readPurchases } from "./purchaseModel";
 import { fetchMission, streamMissionEvents } from "./api";
 import ActionTaskList from "./ActionTaskList";
 import AgentResultDrawer from "./AgentResultDrawer";
@@ -18,6 +21,19 @@ export interface MissionCockpitProps {
 
 /** 粮掌柜 2.5D 指挥舱：顶部阶段轨 + 协作星环 + 决策面板。 */
 export default function MissionCockpit({ mission, onMissionChange, onBack }: MissionCockpitProps) {
+  const navigate = useNavigate();
+  const [purchaseError, setPurchaseError] = useState<string | null>(null);
+  function continuePurchase() {
+    try {
+      const records = readPurchases();
+      const existing = records.find(item => item.originMission?.id === mission.id);
+      const purchase = existing ?? purchaseFromMission(mission);
+      if (!existing) localStorage.setItem(PURCHASE_STORAGE_KEY, JSON.stringify([purchase, ...records]));
+      navigate(`/agent/da?purchase=${encodeURIComponent(purchase.id)}`);
+    } catch (error) {
+      setPurchaseError(error instanceof Error ? error.message : "采购接续失败，请重试。");
+    }
+  }
   const [selectedAgentId, setSelectedAgentId] = useState<string | null>(null);
   const [liveRuns, setLiveRuns] = useState<Record<string, AgentRun["status"]>>({});
   const [streamError, setStreamError] = useState<string | null>(null);
@@ -117,7 +133,7 @@ export default function MissionCockpit({ mission, onMissionChange, onBack }: Mis
           <p className="text-xs tracking-[0.3em] text-tech">粮掌柜多 Agent 任务 · {mission.mission_code}</p>
           <h1 className="mt-1 text-xl font-semibold">{mission.title}</h1>
           <p className="mt-1 text-xs text-ink-soft">
-            {PHASE_LABELS[mission.phase] ?? mission.phase} · {STATUS_LABELS[mission.status]}
+            {mission.status === "completed" ? "方案已确认 · 可继续采购办理" : `${PHASE_LABELS[mission.phase] ?? mission.phase} · ${STATUS_LABELS[mission.status]}`}
           </p>
         </div>
         <div className="flex items-center gap-3 text-sm text-ink-soft">
@@ -141,6 +157,8 @@ export default function MissionCockpit({ mission, onMissionChange, onBack }: Mis
       )}
 
       <MissionRail phase={mission.phase} status={mission.status} mission={mission} />
+
+      {mission.status === "completed" && <section className="my-4 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-tech/30 bg-tech/5 px-5 py-4"><div><h2 className="text-sm font-medium text-tech">方案已确认，继续同一笔采购</h2><p className="mt-1 text-xs text-ink-soft">带入本任务需求、已选粮源、运输与成本结果，继续准入核验、下单履约和复盘。</p>{purchaseError && <p role="alert" className="mt-2 text-xs text-amber-300">{purchaseError}</p>}</div><button type="button" className="rounded-lg bg-brand px-5 py-3 text-sm text-slate-950" onClick={continuePurchase}>继续办理采购 →</button></section>}
 
       <div className="zg-cockpit-grid">
         <div className="flex min-w-0 flex-col gap-3">

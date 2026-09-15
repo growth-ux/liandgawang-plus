@@ -206,7 +206,7 @@ function FactRows({ facts, nested = false }: { facts: Record<string, unknown>; n
         const complex = Array.isArray(value) && value.some(isRecord);
         return (
           <div key={key} className={complex ? "grid gap-1.5" : "flex items-start justify-between gap-4"}>
-            <span className="shrink-0 text-ink-soft">{FIELD_LABELS[key] ?? "补充信息"}</span>
+            <span className="shrink-0 text-ink-soft">{FIELD_LABELS[key] ?? (/^[\u4e00-\u9fff]/.test(key) ? key : "补充信息")}</span>
             <div className={complex ? "min-w-0" : "min-w-0 text-right text-ink"}>
               <FieldValue fieldKey={key} value={value} />
             </div>

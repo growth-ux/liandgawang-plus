@@ -2,10 +2,15 @@ import { useEffect, useRef, useState } from "react";
 import AgentFlowSvg from "./AgentFlowSvg";
 import AgentPod from "./AgentPod";
 import { AGENT_POSITIONS } from "./AgentFlowSvg";
-import type { AgentRun, MissionSnapshot } from "./types";
+import type { AgentRun, CollaborationSnapshot } from "./types";
 
 export interface SpatialAgentStageProps {
-  mission: MissionSnapshot;
+  mission: CollaborationSnapshot;
+  title?: string;
+  subtitle?: string;
+  hubSummary?: string;
+  hubLabel?: string;
+  purchaseMode?: boolean;
   /** 流式事件实时覆盖的运行状态（尚未落入快照） */
   liveRuns?: Record<string, AgentRun["status"]>;
   selectedAgentId: string | null;
@@ -13,7 +18,11 @@ export interface SpatialAgentStageProps {
 }
 
 /** 状态到空间深度的纯映射：冲突→前景，办理中→中景，其余→后景。 */
-export function resolveAgentDepth(run: AgentRun | undefined, hasConflict: boolean, liveStatus?: AgentRun["status"]) {
+export function resolveAgentDepth(
+  run: AgentRun | undefined,
+  hasConflict: boolean,
+  liveStatus?: AgentRun["status"],
+) {
   if (hasConflict) return "front" as const;
   const status = liveStatus ?? run?.status;
   if (status === "running") return "middle" as const;
@@ -21,7 +30,17 @@ export function resolveAgentDepth(run: AgentRun | undefined, hasConflict: boolea
 }
 
 /** 2.5D 协作沙盘：空间深度承担业务语义，动画只表达后端已有状态。 */
-export default function SpatialAgentStage({ mission, liveRuns, selectedAgentId, onSelectAgent }: SpatialAgentStageProps) {
+export default function SpatialAgentStage({
+  mission,
+  liveRuns,
+  selectedAgentId,
+  onSelectAgent,
+  title,
+  subtitle,
+  hubSummary,
+  hubLabel,
+  purchaseMode,
+}: SpatialAgentStageProps) {
   const stageRef = useRef<HTMLDivElement>(null);
   const [paused, setPaused] = useState(false);
 
@@ -30,60 +49,101 @@ export default function SpatialAgentStage({ mission, liveRuns, selectedAgentId, 
       setPaused(document.visibilityState !== "visible");
     }
     document.addEventListener("visibilitychange", handleVisibility);
-    return () => document.removeEventListener("visibilitychange", handleVisibility);
+    return () =>
+      document.removeEventListener("visibilitychange", handleVisibility);
   }, []);
 
   const selectedMembers = mission.team.filter((member) => member.selected);
   const completedCount = selectedMembers.filter((member) => {
-    const status = liveRuns?.[member.agent_id] ?? mission.agent_runs.find((run) => run.agent_id === member.agent_id)?.status;
+    const status =
+      liveRuns?.[member.agent_id] ??
+      mission.agent_runs.find((run) => run.agent_id === member.agent_id)
+        ?.status;
     return status === "completed" || status === "completed_with_objection";
   }).length;
 
   return (
-    <section className="zg-spatial-stage" ref={stageRef} data-paused={paused || undefined}>
+    <section
+      className="zg-spatial-stage"
+      ref={stageRef}
+      data-paused={paused || undefined}
+    >
       <header className="zg-stage-meta">
         <div className="zg-stage-heading">
-          <p className="zg-stage-title">专业协作星环</p>
-          <p className="zg-stage-subtitle">专业小二独立研判，粮掌柜汇总冲突与行动条件</p>
+          <p className="zg-stage-title">{title ?? "专业协作星环"}</p>
+          <p className="zg-stage-subtitle">
+            {subtitle ?? "专业小二独立研判，粮掌柜汇总冲突与行动条件"}
+          </p>
         </div>
         <div className="zg-stage-stats" aria-label="协作状态">
-          <span><strong>{selectedMembers.length}</strong> 位参与</span>
-          <span><strong>{completedCount}</strong> 位完成</span>
-          <span data-alert={mission.conflicts.length > 0 || undefined}><strong>{mission.conflicts.length}</strong> 项冲突</span>
+          {purchaseMode && selectedMembers.length === 0 ? (
+            <span>粮掌柜主理 · 待确认需求</span>
+          ) : (
+            <span>
+              <strong>{selectedMembers.length}</strong> 位
+              {purchaseMode ? "小二协作" : "参与"}
+            </span>
+          )}
+          {(!purchaseMode || selectedMembers.length > 0) && (
+            <span>
+              <strong>{completedCount}</strong> 位完成
+            </span>
+          )}
+          <span data-alert={mission.conflicts.length > 0 || undefined}>
+            <strong>{mission.conflicts.length}</strong> 项冲突
+          </span>
         </div>
       </header>
       <div className="zg-floor" />
-      <AgentFlowSvg mission={mission} />
+      <AgentFlowSvg mission={mission} liveRuns={liveRuns} />
 
-      <div className="zg-hub" data-processing={mission.status === "running" || undefined}>
+      <div
+        className="zg-hub"
+        data-processing={mission.status === "running" || undefined}
+      >
         <div className="zg-hub-core">
           掌
           <span className="zg-hub-ring" />
           <span className="zg-hub-ring zg-hub-ring--outer" />
           <span className="zg-hub-beam" />
-          {mission.status === "running" && <span className="zg-hub-pulse-ring" />}
+          {mission.status === "running" && (
+            <span className="zg-hub-pulse-ring" />
+          )}
         </div>
-        <p className="text-xs font-medium text-brand-deep">粮掌柜 · 中央编排</p>
+        <p className="text-xs font-medium text-brand-deep">
+          {hubLabel ?? "粮掌柜 · 中央编排"}
+        </p>
         <p className="max-w-[180px] text-center text-[10px] leading-4 text-ink-soft">
-          {mission.recommendation
-            ? `主推方案 ${mission.recommendation.primary_scheme_id}`
-            : mission.status === "running"
-              ? "正在汇总各专业结果…"
-              : "等待任务推进"}
+          {hubSummary ??
+            (mission.recommendation
+              ? `主推方案 ${mission.recommendation.primary_scheme_id}`
+              : mission.status === "running"
+                ? "正在汇总各专业结果…"
+                : "等待任务推进")}
         </p>
       </div>
 
       {mission.team.map((member) => {
         const position = AGENT_POSITIONS[member.agent_id] ?? { x: 0, y: 0 };
-        const run = mission.agent_runs.find((item) => item.agent_id === member.agent_id);
+        const run = mission.agent_runs.find(
+          (item) => item.agent_id === member.agent_id,
+        );
         const effectiveRun =
-          run && liveRuns?.[member.agent_id] && liveRuns[member.agent_id] !== run.status
+          run &&
+          liveRuns?.[member.agent_id] &&
+          liveRuns[member.agent_id] !== run.status
             ? { ...run, status: liveRuns[member.agent_id] }
             : run;
         // 冲突关联方不等于异议发起方：卡片只高亮真正提交专业异议的小二。
-        const hasObjection = member.selected && effectiveRun?.status === "completed_with_objection";
+        const hasObjection =
+          member.selected &&
+          effectiveRun?.status === "completed_with_objection";
         const depth = member.selected
-          ? resolveAgentDepth(effectiveRun, hasObjection, liveRuns?.[member.agent_id])
+          ? resolveAgentDepth(
+              effectiveRun,
+              hasObjection,
+              liveRuns?.[member.agent_id],
+            )
           : "back";
         return (
           <AgentPod
@@ -96,6 +156,8 @@ export default function SpatialAgentStage({ mission, liveRuns, selectedAgentId, 
             x={position.x}
             y={position.y}
             onClick={() => onSelectAgent(member.agent_id)}
+            standbyLabel={purchaseMode ? "本步待命" : undefined}
+            disabled={purchaseMode && !member.selected}
           />
         );
       })}

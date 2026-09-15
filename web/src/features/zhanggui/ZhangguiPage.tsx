@@ -7,6 +7,7 @@ import GoalConfirmation from "./GoalConfirmation";
 import TeamConfirmation from "./TeamConfirmation";
 import MissionCockpit from "./MissionCockpit";
 import HistoryView from "./HistoryView";
+import PurchaseWorkbench from "./PurchaseWorkbench";
 import "./zhanggui.css";
 
 /** 粮掌柜独立服务页：按任务状态路由到目标确认 / 团队确认 / 指挥舱。 */
@@ -20,6 +21,7 @@ export default function ZhangguiPage() {
 
   useEffect(() => {
     if (!missionParam) {
+      setMission(null);
       setLoading(false);
       return;
     }
@@ -70,6 +72,7 @@ export default function ZhangguiPage() {
   }
 
   if (!mission) {
+    if (searchParams.get("view") !== "analysis") return <PurchaseWorkbench />;
     return (
       <MissionStart
         onCreated={openMission}

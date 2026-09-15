@@ -108,7 +108,7 @@ function MissionResultPanel({ mission }: { mission: MissionSnapshot }) {
   const readyCount = mission.action_tasks.filter((task) => task.status === "ready").length;
   const waitingCount = mission.action_tasks.filter((task) => task.status === "waiting_prerequisite").length;
   const resultState = mission.status === "failed" ? "failed" : mission.status === "partially_completed" ? "partial" : "completed";
-  const resultLabel = resultState === "failed" ? "未形成可用方案" : resultState === "partial" ? "方案已形成，部分结果缺失" : "任务已完成";
+  const resultLabel = resultState === "failed" ? "未形成可用方案" : resultState === "partial" ? "方案已形成，部分结果缺失" : "方案已确认，待继续采购";
   const primaryScheme = recommendation ? getSchemeDisplay(mission, recommendation.primary_scheme_id) : null;
   const backupScheme = recommendation?.backup_scheme_id ? getSchemeDisplay(mission, recommendation.backup_scheme_id) : null;
 
