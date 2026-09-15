@@ -22,8 +22,8 @@ function AgentActor({ agent, index }: { agent: Agent; index: number }) {
           {/* 镜像层独立于 sway/悬停缩放，避免 transform 互相覆盖 */}
           <div className="h-full" style={agent.flip ? { transform: "scaleX(-1)" } : undefined}>
             <AgentSprite
-              src={agent.image}
-              alt={`${agent.name}｜${agent.action}`}
+              src={agent.id === "da" ? "/images/agents/liangdawang-plus-collaboration-duo-v1.png?v=zhanggui-tall-v2" : agent.image}
+              alt={agent.id === "da" ? "人与粮掌柜协作｜帮我办事" : `${agent.name}｜${agent.action}`}
               className="h-full w-auto object-contain drop-shadow-[0_12px_18px_rgba(0,0,0,0.5)] transition-transform duration-300 group-hover:scale-[1.06]"
             />
           </div>

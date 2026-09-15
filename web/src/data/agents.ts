@@ -32,7 +32,7 @@ export interface Agent {
   accent: string;
   /** 页内 Tab（设计文档第 8 章） */
   tabs: string[];
-  /** 专属 IP 形象图（assets/generated，透明底 PNG） */
+  /** 专属 IP 形象图（统一使用 assets/ip 新形象的发布资源） */
   image: string;
   /** 当前正在做的具体事情（首页名称气泡第二行） */
   doing: string;
@@ -55,7 +55,7 @@ export const agents: Agent[] = [
     zone: "中央业务台",
     accent: "#e35d2b",
     tabs: ["开始新任务", "历史任务"],
-    image: "/images/agents/liangda-ecxiao-collaboration-duo-v1.png",
+    image: "/images/agents/ip/da.png?v=zhanggui-tall-v2",
     doing: "正在拆解 200 吨玉米采购目标，组织六位小二分工",
     pos: { x: 50, y: 57, size: 30 },
     holo: { type: "rings", side: "right", offsetY: 0 },
@@ -70,7 +70,7 @@ export const agents: Agent[] = [
     zone: "行情与资讯屏",
     accent: "#2f7fb8",
     tabs: ["市场全景", "品种行情", "我的关注", "采购研判", "研判记录"],
-    image: "/images/agents/zhan.png",
+    image: "/images/agents/ip/zhan-balanced-v2.png",
     doing: "跟踪玉米拍卖底价与港口平仓价，整理本周行情研判",
     pos: { x: 28, y: 31, size: 19 },
     holo: { type: "chart", side: "right", offsetY: 8, tilt: { y: 16 } },
@@ -85,7 +85,7 @@ export const agents: Agent[] = [
     zone: "农田与粮源区",
     accent: "#c9902a",
     tabs: ["粮源市场", "寻源任务", "候选对比"],
-    image: "/images/agents/liangxiaoer-hologram-pose-transparent.png",
+    image: "/images/agents/ip/liang.png",
     doing: "对比东北产区 3 家供应方的粮源报价与质检报告",
     pos: { x: 69, y: 31, size: 19 },
     holo: { type: "grain", side: "right", offsetY: 48, tilt: { y: 10, x: 2 } },
@@ -100,11 +100,10 @@ export const agents: Agent[] = [
     zone: "仓储与物流区",
     accent: "#3f9d6e",
     tabs: ["物流市场", "运输方案", "运输任务", "询运对接"],
-    image: "/images/agents/yun.png",
+    image: "/images/agents/ip/yun.png",
     doing: "规划港口到厂的 2 条运输路线，核对车辆排期",
     pos: { x: 89, y: 57, size: 20 },
     holo: { type: "route", side: "left", gap: 68, offsetY: 0, tilt: { y: -14 } },
-    flip: true,
   },
   {
     id: "suan",
@@ -116,11 +115,10 @@ export const agents: Agent[] = [
     zone: "方案测算台",
     accent: "#7a6bc0",
     tabs: ["成本测算", "盈亏推演", "测算记录"],
-    image: "/images/agents/suan-xiaoer-thinking-operation-transparent.png",
+    image: "/images/agents/ip/suan.png",
     doing: "测算方案 A 的到厂成本，比对运费与水分扣量影响",
     pos: { x: 70, y: 90, size: 21 },
     holo: { type: "chips", side: "right", offsetY: 0 },
-    flip: true,
   },
   {
     id: "qian",
@@ -132,7 +130,7 @@ export const agents: Agent[] = [
     zone: "金融服务区",
     accent: "#c76a3f",
     tabs: ["资金产品", "智能匹配", "我的匹配"],
-    image: "/images/agents/qian.png",
+    image: "/images/agents/ip/qian.png",
     doing: "分析采购资金需求，从金融产品市场筛选主推与备选方案",
     pos: { x: 26, y: 88, size: 21 },
     holo: { type: "fund", side: "right", offsetY: 10, tilt: { y: 16 } },
@@ -147,7 +145,7 @@ export const agents: Agent[] = [
     zone: "全局巡检位",
     accent: "#4b8f8c",
     tabs: ["合作方体检", "待办核验", "风控记录"],
-    image: "/images/agents/an.png",
+    image: "/images/agents/ip/an.png",
     doing: "巡检粮源、物流与资金合作方，标记 2 项待核验风险",
     pos: { x: 13, y: 57, size: 20 },
     holo: { type: "shield", side: "right", offsetY: 8, tilt: { y: 12 } },

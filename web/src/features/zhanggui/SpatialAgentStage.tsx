@@ -308,7 +308,11 @@ export default function SpatialAgentStage({
             >
               <span className="zg-ip-figure">
                 <IpPedestal central feedback={visibleFeedback} />
-                <IpPortrait agentId="da" name="粮掌柜" />
+                <IpPortrait
+                  agentId="da"
+                  name="商务男与粮掌柜协作"
+                  image="/images/agents/liangdawang-plus-collaboration-duo-v1.png?v=zhanggui-tall-v2"
+                />
               </span>
               <div className="zg-hub-caption">
                 <strong>{hubLabel ?? "粮掌柜 · 中央编排"}</strong>

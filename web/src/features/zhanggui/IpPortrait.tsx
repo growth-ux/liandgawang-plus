@@ -1,17 +1,19 @@
 import { useState } from "react";
 import { getAgent } from "../../data/agents";
 
-/** 仅舞台使用独立粮掌柜 IP，不改变首页素材配置。 */
+/** 与首页、各小二独立页面共用同一套 IP 形象。 */
 export default function IpPortrait({
   agentId,
   name,
+  image,
 }: {
   agentId: string;
   name: string;
+  image?: string;
 }) {
   const [failed, setFailed] = useState(false);
   const profile = getAgent(agentId);
-  const src = agentId === "da" ? "/images/agents/da.png" : profile?.image;
+  const src = image ?? profile?.image;
   return (
     <span
       className="zg-ip-portrait"
