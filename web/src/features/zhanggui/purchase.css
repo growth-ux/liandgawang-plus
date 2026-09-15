@@ -1235,7 +1235,7 @@
   }
 }
 
-/* 同一任务的驾驶舱与业务操作区。固定设计画布按容器等比缩放，避免节点裁切。 */
+/* 同一任务的驾驶舱与业务操作区，舞台自行适配容器。 */
 .pw-cockpit {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 305px;
@@ -1278,12 +1278,13 @@
   overflow: hidden;
   visibility: hidden;
 }
-.pw-stage-scale .zg-spatial-stage {
+.pw-stage-frame .zg-spatial-stage {
   border: none;
   border-radius: 0;
 }
 .pw-cockpit-legend {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 16px;
   padding: 12px 18px;
@@ -1291,11 +1292,17 @@
   font-size: 10px;
   color: #789ab0;
 }
-.pw-cockpit-legend span:first-child {
+.pw-cockpit-legend [data-state="running"] {
   color: #68c3d0;
 }
-.pw-cockpit-legend span:nth-child(2) {
-  color: #dca25e;
+.pw-cockpit-legend [data-state="completed"] {
+  color: #4ade80;
+}
+.pw-cockpit-legend [data-state="objection"] {
+  color: #fbbf24;
+}
+.pw-cockpit-legend [data-state="failed"] {
+  color: #f87171;
 }
 .pw-cockpit-legend small {
   margin-left: auto;
@@ -1420,27 +1427,6 @@
   line-height: 1.9;
   margin-top: 8px;
 }
-@media (min-width: 1025px) {
-  .pw-stage-frame {
-    height: calc(600px * var(--cockpit-scale, 1));
-  }
-  .pw-stage-scale {
-    width: 1040px;
-    height: 600px;
-    transform: scale(var(--cockpit-scale, 1));
-    transform-origin: top left;
-  }
-  .pw-stage-scale .zg-spatial-stage {
-    width: 1040px;
-    height: 600px;
-  }
-  .pw-stage-scale .zg-stage-heading {
-    display: block;
-  }
-  .pw-stage-scale .zg-stage-subtitle {
-    margin-top: 5px;
-  }
-}
 @media (max-width: 1180px) {
   .pw-cockpit {
     grid-template-columns: minmax(0, 1fr) 265px;
@@ -1478,9 +1464,6 @@
   .pw-mission-control > .pw-button {
     align-self: end;
   }
-  .pw-stage-scale .zg-agent-pod {
-    font-size: 12px;
-  }
   .pw-cockpit-legend {
     flex-wrap: wrap;
   }
@@ -1496,28 +1479,6 @@
   .pw-cockpit-compact button {
     flex-basis: calc(50% - 60px);
   }
-  .pw-stage-scale .zg-spatial-stage {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-    padding: 12px;
-  }
-  .pw-stage-scale .zg-hub,
-  .pw-stage-scale .zg-stage-meta {
-    grid-column: 1/-1;
-  }
-  .pw-stage-scale .zg-pod-head {
-    flex-wrap: wrap;
-  }
-  .pw-stage-scale .zg-pod-summary {
-    font-size: 10px;
-  }
-  .pw-stage-scale .zg-pod-foot {
-    flex-wrap: wrap;
-    gap: 3px;
-  }
-  .pw-stage-scale .zg-pod-open {
-    display: none;
-  }
   .pw-mission-control {
     display: flex;
   }
@@ -1528,12 +1489,6 @@
     width: 100%;
     margin: 0;
   }
-}
-.pw-stage-scale .zg-pod-summary {
-  margin-top: 0.55rem;
-}
-.pw-stage-scale .zg-pod-identity small {
-  font-size: 0.6rem;
 }
 
 /* 行情研判：先确认采购时机，再带入采购需求。 */

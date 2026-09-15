@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useState } from "react";
 import SpatialAgentStage from "./SpatialAgentStage";
 import AgentResultDrawer from "./AgentResultDrawer";
 import {
@@ -26,8 +26,6 @@ export default function PurchaseCockpit({
 }) {
   const [selected, setSelected] = useState<string | null>(null);
   const [expanded, setExpanded] = useState(true);
-  const [scale, setScale] = useState(1);
-  const frame = useRef<HTMLDivElement>(null);
   const mission = purchaseCollaboration(purchase, need, stage, checking);
   const run =
     mission.agent_runs.find((item) => item.agent_id === selected) ?? null;
@@ -47,14 +45,6 @@ export default function PurchaseCockpit({
   useEffect(() => {
     if (selected && !roles.members.includes(selected)) setSelected(null);
   }, [selected, roles.members.join(",")]);
-  useEffect(() => {
-    if (!frame.current || typeof ResizeObserver === "undefined") return;
-    const observer = new ResizeObserver((entries) =>
-      setScale(entries[0].contentRect.width / 1040),
-    );
-    observer.observe(frame.current);
-    return () => observer.disconnect();
-  }, []);
   function openStep() {
     const element = document.getElementById("purchase-step-content");
     element?.scrollIntoView?.({
@@ -85,40 +75,36 @@ export default function PurchaseCockpit({
               {expanded ? "收起协作全景" : "展开协作全景"}
             </button>
           </div>
-          <div
-            ref={frame}
-            className={`pw-stage-frame${expanded ? "" : " is-collapsed"}`}
-            style={{ "--cockpit-scale": scale } as CSSProperties}
-          >
-            <div className="pw-stage-scale">
-              <SpatialAgentStage
-                mission={mission}
-                selectedAgentId={selected}
-                onSelectAgent={setSelected}
-                purchaseMode
-                title={`${PURCHASE_STAGES[stage]} · ${stage === 0 ? "粮掌柜主理" : "专业协作"}`}
-                subtitle={
-                  stage === 0
-                    ? "粮掌柜整理采购目标，确认后再安排专业小二"
-                    : "粮掌柜主理 · 点击本步协作小二查看依据"
-                }
-                hubLabel={`粮掌柜 · ${roles.steward}`}
-                hubSummary={
-                  stage === 0
-                    ? demandStatus
-                    : checking !== null
-                      ? "正在并行核验交易条件"
-                      : stage === 1 &&
-                          purchase?.marketDecision?.action === "watch"
-                        ? "研判已保存 · 观望中"
-                        : blocked
-                          ? "发现阻塞，等待处理"
-                          : purchase?.received
-                            ? "采购闭环 · 经验已沉淀"
-                            : `${PURCHASE_STAGES[stage]} · 等待你的确认`
-                }
-              />
-            </div>
+          <div className={`pw-stage-frame${expanded ? "" : " is-collapsed"}`}>
+            <SpatialAgentStage
+              mission={mission}
+              animationKey={`${purchase?.id ?? "draft"}:${stage}:${Boolean(purchase?.ordered)}`}
+              visible={expanded}
+              selectedAgentId={selected}
+              onSelectAgent={setSelected}
+              purchaseMode
+              title={`${PURCHASE_STAGES[stage]} · ${stage === 0 ? "粮掌柜主理" : "专业协作"}`}
+              subtitle={
+                stage === 0
+                  ? "粮掌柜整理采购目标，确认后再安排专业小二"
+                  : "粮掌柜主理 · 点击本步协作小二查看依据"
+              }
+              hubLabel={`粮掌柜 · ${roles.steward}`}
+              hubSummary={
+                stage === 0
+                  ? demandStatus
+                  : checking !== null
+                    ? "正在并行核验交易条件"
+                    : stage === 1 &&
+                        purchase?.marketDecision?.action === "watch"
+                      ? "研判已保存 · 观望中"
+                      : blocked
+                        ? "发现阻塞，等待处理"
+                        : purchase?.received
+                          ? "采购闭环 · 经验已沉淀"
+                          : `${PURCHASE_STAGES[stage]} · 等待你的确认`
+              }
+            />
           </div>
           {!expanded && (
             <div className="pw-cockpit-compact">
@@ -148,8 +134,10 @@ export default function PurchaseCockpit({
             </div>
           )}
           <div className="pw-cockpit-legend">
-            <span>青色 · 本步协作</span>
-            <span>橙色 · 需要处理</span>
+            <span data-state="running">青色 · 办理中</span>
+            <span data-state="completed">绿色 · 已完成</span>
+            <span data-state="objection">琥珀 · 有异议</span>
+            <span data-state="failed">红色 · 结果缺失</span>
             <span>灰色 · 本步待命</span>
             <small>{purchase?.id ?? "确认需求后创建采购任务"}</small>
           </div>
