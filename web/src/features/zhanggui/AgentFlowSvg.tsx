@@ -1,69 +1,83 @@
 import type { AgentRun, CollaborationSnapshot } from "./types";
 
-/** 舞台坐标系：以中央粮掌柜为原点，单位为 px（与 AgentPod 的 --x/--y 一致）。 */
-export const STAGE_VIEW = { minX: -520, minY: -300, width: 1040, height: 600 };
-
+/** 背景、脚底锚点和连线共用同一设计坐标。 */
+export const STAGE_VIEW = { minX: 0, minY: 0, width: 1040, height: 720 };
+export const HUB_POSITION = { x: 520, y: 370 };
 export const AGENT_POSITIONS: Record<string, { x: number; y: number }> = {
-  zhan: { x: -300, y: -188 },
-  liang: { x: 286, y: -184 },
-  yun: { x: 392, y: 10 },
-  suan: { x: 286, y: 194 },
-  qian: { x: -300, y: 198 },
-  an: { x: -402, y: 8 },
+  zhan: { x: 260, y: 245 },
+  liang: { x: 755, y: 245 },
+  yun: { x: 880, y: 430 },
+  suan: { x: 720, y: 575 },
+  qian: { x: 325, y: 575 },
+  an: { x: 155, y: 430 },
 };
+export type LinkKind =
+  | "running"
+  | "completed"
+  | "conflict"
+  | "standby"
+  | "failed";
 
-export type LinkKind = "normal" | "conflict" | "standby" | "failed";
-
-/** 连线与节点共用有效运行状态，待启动与未参与都保持灰色。 */
 export function resolveLinkKind(
   mission: CollaborationSnapshot,
   agentId: string,
   liveStatus?: AgentRun["status"],
 ): LinkKind {
-  const member = mission.team.find((item) => item.agent_id === agentId);
-  if (!member?.selected) return "standby";
-  const run = mission.agent_runs.find((item) => item.agent_id === agentId);
-  const status = liveStatus ?? run?.status;
+  if (!mission.team.find((item) => item.agent_id === agentId)?.selected)
+    return "standby";
+  const status =
+    liveStatus ??
+    mission.agent_runs.find((item) => item.agent_id === agentId)?.status;
   if (!status || status === "pending") return "standby";
-  if (status === "failed") return "failed";
-  // 只有该小二自己提出异议时才用橙色连线；仅被其他小二引用为冲突关联方不算异议
+  // 关联冲突不等于主动提出异议，只高亮实际异议节点。
   if (status === "completed_with_objection") return "conflict";
-  return "normal";
+  return status;
 }
 
 export interface AgentFlowSvgProps {
   mission: CollaborationSnapshot;
   liveRuns?: Record<string, AgentRun["status"]>;
+  returningAgentIds?: string[];
+  dispatchingAgentIds?: string[];
 }
 
-/** SVG 数据流：蓝色正常交接、橙色冲突、灰色待命、红灰断线。 */
-export default function AgentFlowSvg({ mission, liveRuns }: AgentFlowSvgProps) {
+export default function AgentFlowSvg({
+  mission,
+  liveRuns,
+  returningAgentIds = [],
+  dispatchingAgentIds = [],
+}: AgentFlowSvgProps) {
   return (
-    <svg
-      className="zg-flow-svg"
-      viewBox={`${STAGE_VIEW.minX} ${STAGE_VIEW.minY} ${STAGE_VIEW.width} ${STAGE_VIEW.height}`}
-      preserveAspectRatio="xMidYMid meet"
-      aria-hidden
-    >
-      <ellipse className="zg-orbit-track" cx="0" cy="4" rx="398" ry="208" />
-      {mission.team.map((member) => {
-        const position = AGENT_POSITIONS[member.agent_id];
-        if (!position) return null;
-        const kind = resolveLinkKind(
-          mission,
-          member.agent_id,
-          liveRuns?.[member.agent_id],
+    <svg className="zg-flow-svg" viewBox="0 0 1040 720" aria-hidden="true">
+      {Object.entries(AGENT_POSITIONS).map(([id, position]) => {
+        const participating = mission.team.some(
+          (member) => member.agent_id === id && member.selected,
         );
-        const midX = position.x * 0.45;
-        const midY = position.y * 0.45 - 26;
+        const kind = resolveLinkKind(mission, id, liveRuns?.[id]);
+        const returning =
+          returningAgentIds.includes(id) &&
+          (kind === "completed" || kind === "conflict");
+        const dispatching = dispatchingAgentIds.includes(id) && kind === "running";
+        const d = `M ${HUB_POSITION.x} ${HUB_POSITION.y} Q ${(position.x + HUB_POSITION.x) / 2} ${Math.min(position.y, HUB_POSITION.y) - 48} ${position.x} ${position.y}`;
         return (
-          <path
-            key={member.agent_id}
-            className="zg-flow-line"
+          <g
+            key={id}
+            className="zg-flow-link"
             data-kind={kind}
-            data-agent-id={member.agent_id}
-            d={`M 0 0 Q ${midX} ${midY} ${position.x} ${position.y}`}
-          />
+            data-participating={participating || undefined}
+            data-agent-id={id}
+            data-returning={returning || undefined}
+          >
+            <path className="zg-flow-line" d={d} />
+            {(dispatching || returning) && (
+              <path
+                key={returning ? "return" : "dispatch"}
+                className={`zg-flow-particle ${returning ? "zg-flow-particle--return" : "zg-flow-particle--send"}`}
+                pathLength="100"
+                d={d}
+              />
+            )}
+          </g>
         );
       })}
     </svg>

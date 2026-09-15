@@ -164,6 +164,7 @@ export default function MissionCockpit({ mission, onMissionChange, onBack }: Mis
         <div className="flex min-w-0 flex-col gap-3">
           <SpatialAgentStage
             mission={mission}
+            animationKey={`${mission.id}:${mission.phase}`}
             liveRuns={liveRuns}
             selectedAgentId={selectedAgentId}
             onSelectAgent={handleSelectAgent}

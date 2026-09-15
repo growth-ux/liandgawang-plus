@@ -1,0 +1,551 @@
+/* 统一设计坐标：角色、底座、连线和视差共用 1040 × 720 的画布。 */
+.zg-spatial-stage {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  border-radius: 24px;
+  background:
+    radial-gradient(ellipse at 50% 48%, #1b263c 0, transparent 65%),
+    var(--color-rice-deep);
+}
+.zg-stage-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 20px 24px 0;
+}
+.zg-stage-heading {
+  min-width: 0;
+}
+.zg-stage-title {
+  margin: 0;
+  color: var(--color-ink);
+  font-size: 14px;
+  font-weight: 600;
+}
+.zg-stage-subtitle {
+  margin: 6px 0 0;
+  color: var(--color-ink-soft);
+  font-size: 11px;
+  line-height: 1.7;
+}
+.zg-stage-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  font-size: 10px;
+  color: var(--color-ink-soft);
+}
+.zg-stage-stats span {
+  white-space: nowrap;
+}
+.zg-stage-stats strong {
+  color: var(--color-tech);
+  font-weight: 500;
+}
+.zg-stage-stats [data-alert] strong {
+  color: #fbbf24;
+}
+.zg-stage-viewport {
+  position: relative;
+  width: 100%;
+}
+.zg-stage-canvas {
+  position: absolute;
+  left: 50%;
+  width: 1040px;
+  height: 720px;
+  transform: translateX(-50%) scale(var(--stage-scale));
+  transform-origin: top center;
+}
+.zg-stage-scene {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform: translate(var(--parallax-x, 0px), var(--parallax-y, 0px));
+  transition: transform 180ms ease-out;
+}
+.zg-stage-backdrop,
+.zg-flow-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.zg-flow-svg {
+  z-index: 1;
+  overflow: visible;
+}
+.zg-flow-link {
+  color: #8795a8;
+}
+.zg-flow-link[data-participating] {
+  color: var(--color-tech);
+}
+.zg-flow-link[data-kind="completed"] .zg-flow-particle--return {
+  color: #4ade80;
+}
+.zg-flow-link[data-kind="conflict"] .zg-flow-particle--return {
+  color: #fbbf24;
+}
+.zg-flow-line,
+.zg-flow-particle {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+}
+.zg-flow-line {
+  stroke-width: 1.5;
+  stroke-dasharray: 3 8;
+  opacity: 0.55;
+}
+.zg-flow-link[data-participating] .zg-flow-line {
+  stroke-width: 1.8;
+  stroke-dasharray: 7 9;
+  opacity: 0.85;
+  animation: zg-ip-flow 2.6s linear infinite;
+}
+@keyframes zg-ip-flow {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -64px; }
+}
+.zg-flow-particle {
+  stroke-width: 2.8;
+  stroke-dasharray: 4 96;
+  filter: drop-shadow(0 0 4px currentColor);
+}
+.zg-flow-particle--send {
+  animation: zg-ip-send 1s 0.2s linear both;
+}
+.zg-flow-particle--return {
+  animation: zg-ip-return 1.2s linear both;
+}
+.zg-stage-ambient {
+  animation: zg-stage-breathe 6s ease-in-out infinite;
+}
+.zg-ip-base-ring {
+  animation: zg-ip-ring-breathe 5s ease-in-out infinite;
+}
+.zg-ip-beacon-outer {
+  filter: drop-shadow(0 0 7px currentColor);
+}
+.zg-ip-beacon-core {
+  filter: drop-shadow(0 0 5px currentColor);
+}
+.zg-ip-feedback {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  animation: zg-ip-feedback 0.85s ease-out both;
+  filter: drop-shadow(0 0 4px currentColor);
+}
+.zg-ip-feedback[data-feedback="return"] { color: #4ade80; }
+.zg-ip-feedback[data-feedback="conflict"] { color: #fbbf24; }
+.zg-agent-pod .zg-ip-feedback[data-feedback="dispatch"] {
+  animation-delay: 1.1s;
+}
+.zg-stage-hub .zg-ip-feedback[data-feedback="return"],
+.zg-stage-hub .zg-ip-feedback[data-feedback="conflict"] {
+  animation-delay: 1.05s;
+}
+@keyframes zg-ip-feedback {
+  0% { transform: scale(0.65); opacity: 0; }
+  20% { opacity: 0.85; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
+.zg-stage-hub .zg-ip-base-ring {
+  animation-delay: -1.2s;
+}
+.zg-agent-pod[data-status="running"] .zg-ip-base-ring {
+  animation-duration: 3s;
+  stroke-opacity: 1;
+}
+@keyframes zg-ip-ring-breathe {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+@keyframes zg-stage-breathe {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 1; }
+}
+@keyframes zg-ip-send {
+  0% { stroke-dashoffset: 0; opacity: 0; }
+  10%, 85% { opacity: 1; }
+  100% { stroke-dashoffset: -100; opacity: 0; }
+}
+@keyframes zg-ip-return {
+  from {
+    stroke-dashoffset: -100;
+    opacity: 0;
+  }
+  8%,
+  85% {
+    opacity: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+.zg-agent-pod,
+.zg-stage-hub {
+  position: absolute;
+  top: var(--y);
+  left: var(--x);
+  z-index: var(--depth);
+  width: 220px;
+  transform: translateX(-50%);
+  text-align: center;
+  color: var(--color-tech);
+}
+.zg-agent-pod {
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+  border-radius: 14px;
+  -webkit-tap-highlight-color: transparent;
+}
+.zg-agent-pod[data-status="standby"],
+.zg-agent-pod[data-status="pending"] {
+  color: #7e8da3;
+}
+.zg-agent-pod[data-status="completed"] {
+  color: #4ade80;
+}
+.zg-agent-pod[data-status="completed_with_objection"] {
+  color: #fbbf24;
+}
+.zg-agent-pod[data-status="failed"] {
+  color: #f87171;
+}
+.zg-ip-figure {
+  position: relative;
+  display: block;
+  height: 0;
+}
+.zg-ip-pedestal {
+  color: var(--color-tech);
+  pointer-events: none;
+  position: absolute;
+  left: 50%;
+  top: -42px;
+  width: 220px;
+  height: 94px;
+  transform: translateX(-50%);
+  overflow: visible;
+}
+.zg-ip-pedestal--central {
+  color: var(--color-brand);
+}
+.zg-ip-portrait {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  display: block;
+  width: 168px;
+  height: 216px;
+  transform: translateX(-50%);
+  transform-origin: 50% 100%;
+  transition: scale 220ms ease, filter 220ms ease;
+}
+.zg-ip-pose {
+  position: absolute;
+  inset: 0;
+  display: block;
+  transform-origin: 50% 100%;
+}
+.zg-ip-portrait img {
+  display: block;
+  position: absolute;
+  bottom: -9px;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+  filter: drop-shadow(0 7px 8px #0004);
+  user-select: none;
+}
+.zg-ip-portrait[data-agent-id="liang"] img {
+  bottom: -13px;
+}
+.zg-ip-portrait[data-agent-id="zhan"] img {
+  bottom: -13px;
+}
+.zg-ip-portrait[data-agent-id="qian"] img {
+  bottom: -6px;
+}
+.zg-ip-portrait[data-agent-id="suan"] img {
+  bottom: -6px;
+}
+.zg-ip-portrait[data-flip] img {
+  transform: scaleX(-1);
+}
+.zg-agent-pod[data-depth="back"] .zg-ip-figure {
+  transform: scale(0.88);
+}
+.zg-agent-pod:not([data-participating]) .zg-ip-portrait {
+  opacity: 0.85;
+  filter: saturate(0.85);
+}
+.zg-agent-pod[data-status="pending"] .zg-ip-portrait {
+  opacity: 0.78;
+}
+.zg-ip-portrait {
+  --sway-angle: 1.6deg;
+  --bob-distance: -8px;
+  animation: zg-ip-bob 3.4s ease-in-out infinite;
+  animation-delay: var(--motion-delay, 0s);
+}
+.zg-ip-pose {
+  animation: zg-ip-sway 5.2s ease-in-out infinite;
+  animation-delay: calc(var(--motion-delay, 0s) * 1.7);
+}
+.zg-agent-pod[data-status="running"] .zg-ip-portrait,
+.zg-stage-hub[data-processing] .zg-ip-portrait {
+  --sway-angle: 1.8deg;
+  --bob-distance: -10px;
+}
+.zg-agent-pod[data-agent-id="zhan"] .zg-ip-portrait {
+  --motion-delay: -0.6s;
+}
+.zg-agent-pod[data-agent-id="yun"] .zg-ip-portrait {
+  --motion-delay: -1.8s;
+}
+.zg-agent-pod[data-agent-id="liang"] .zg-ip-portrait {
+  --motion-delay: -1.2s;
+}
+.zg-agent-pod[data-agent-id="qian"] .zg-ip-portrait {
+  --motion-delay: -3s;
+}
+.zg-agent-pod[data-agent-id="an"] .zg-ip-portrait {
+  --motion-delay: -3.6s;
+}
+.zg-agent-pod[data-agent-id="suan"] .zg-ip-portrait {
+  --motion-delay: -2.4s;
+}
+@keyframes zg-ip-bob {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(var(--bob-distance)); }
+}
+@keyframes zg-ip-sway {
+  0%, 100% { transform: rotate(calc(var(--sway-angle) * -1)); }
+  50% { transform: rotate(var(--sway-angle)); }
+}
+.zg-agent-pod[data-feedback="dispatch"] .zg-ip-pose {
+  animation:
+    zg-ip-sway 5.2s calc(var(--motion-delay, 0s) * 1.7) ease-in-out infinite,
+    zg-ip-acknowledge 0.9s 1.1s ease-in-out both;
+}
+.zg-agent-pod[data-feedback="conflict"] .zg-ip-pose {
+  animation:
+    zg-ip-sway 5.2s calc(var(--motion-delay, 0s) * 1.7) ease-in-out infinite,
+    zg-ip-acknowledge 0.9s ease-in-out both;
+}
+@keyframes zg-ip-acknowledge {
+  0%, 100% { rotate: 0deg; }
+  40% { rotate: -1.8deg; }
+}
+.zg-agent-pod[data-status="running"] .zg-ip-beacon-core {
+  animation: zg-ip-ring-breathe 1.8s ease-in-out infinite;
+}
+@media (hover: hover) and (pointer: fine) {
+  .zg-agent-pod:not(:disabled):hover .zg-ip-portrait {
+    scale: 1.025;
+    filter: brightness(1.1);
+  }
+}
+.zg-agent-pod:focus-visible .zg-ip-portrait {
+  scale: 1.025;
+  filter: brightness(1.1);
+}
+.zg-agent-pod:focus-visible {
+  outline: 2px solid var(--color-tech);
+  outline-offset: 5px;
+}
+.zg-pod-caption {
+  display: block;
+  margin-top: 24px;
+  padding: 7px 8px 6px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: radial-gradient(ellipse, #0b1425c9, #0b142500);
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+}
+.zg-pod-heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  line-height: 20px;
+}
+.zg-pod-heading strong {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+.zg-pod-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.zg-pod-status-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.zg-agent-pod:disabled {
+  cursor: default;
+}
+.zg-agent-pod:not(:disabled):hover .zg-pod-caption,
+.zg-agent-pod[data-active="true"] .zg-pod-caption {
+  background: #132238e8;
+  border-color: currentColor;
+}
+.zg-agent-pod:not(:disabled):hover .zg-ip-base-ring,
+.zg-agent-pod[data-active="true"] .zg-ip-base-ring {
+  stroke-width: 1.4;
+  stroke-opacity: 1;
+}
+.zg-stage-hub {
+  width: 258px;
+  color: var(--color-tech);
+}
+.zg-stage-hub .zg-ip-portrait {
+  width: 186px;
+  height: 252px;
+}
+.zg-stage-hub .zg-ip-portrait img {
+  bottom: -4px;
+}
+.zg-hub-caption {
+  margin-top: 30px;
+  padding: 0 8px;
+}
+.zg-hub-caption strong {
+  color: var(--color-brand-deep);
+  font-size: 17px;
+  font-weight: 600;
+}
+.zg-hub-caption p {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  margin-top: 7px;
+  color: #aab8cd;
+  font-size: 13px;
+  line-height: 20px;
+}
+.zg-ip-fallback {
+  position: absolute;
+  inset: 35% 15% 8%;
+  display: grid;
+  place-content: center;
+  border: 1px solid currentColor;
+  border-radius: 38% 38% 24% 24%;
+  background: #17253b;
+  color: var(--color-ink);
+  font-size: 17px;
+}
+/* 根据舞台实际容器宽度收敛布局，不依赖页面宽度猜测可用空间。 */
+.zg-spatial-stage[data-layout="grid"] .zg-stage-meta {
+  padding: 18px 16px 0;
+}
+.zg-spatial-stage[data-layout="grid"] .zg-stage-canvas {
+  position: static;
+  width: 100%;
+  height: auto;
+  transform: none;
+}
+.zg-spatial-stage[data-layout="grid"] .zg-stage-scene {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px 12px;
+  height: auto;
+  padding: 26px 14px 20px;
+  transform: none;
+}
+.zg-spatial-stage[data-layout="grid"] .zg-stage-backdrop,
+.zg-spatial-stage[data-layout="grid"] .zg-flow-svg {
+  display: none;
+}
+.zg-spatial-stage[data-layout="grid"] .zg-agent-pod,
+.zg-spatial-stage[data-layout="grid"] .zg-stage-hub {
+  position: relative;
+  top: auto;
+  left: auto;
+  width: auto;
+  min-width: 0;
+  transform: none;
+  z-index: auto;
+}
+.zg-spatial-stage[data-layout="grid"] .zg-stage-hub {
+  grid-column: 1 / -1;
+}
+.zg-spatial-stage[data-layout="grid"] .zg-ip-figure {
+  height: 150px;
+  transform: none;
+}
+.zg-spatial-stage[data-layout="grid"] .zg-ip-portrait {
+  width: 122px;
+  height: 156px;
+}
+.zg-spatial-stage[data-layout="grid"] .zg-ip-pedestal {
+  top: auto;
+  bottom: -52px;
+  transform: translateX(-50%) scale(0.78);
+}
+.zg-spatial-stage[data-layout="grid"] .zg-pod-caption {
+  margin-top: 27px;
+  padding-inline: 4px;
+}
+.zg-spatial-stage[data-layout="grid"] .zg-pod-heading {
+  gap: 3px 6px;
+}
+.zg-spatial-stage[data-layout="grid"] .zg-pod-heading strong {
+  font-size: 14px;
+}
+.zg-spatial-stage[data-layout="grid"] .zg-pod-status {
+  font-size: 11px;
+}
+.zg-spatial-stage[data-layout="grid"] .zg-stage-hub .zg-ip-figure {
+  height: 188px;
+}
+.zg-spatial-stage[data-layout="grid"] .zg-stage-hub .zg-ip-portrait {
+  height: 194px;
+  width: 145px;
+}
+.zg-spatial-stage[data-layout="grid"] .zg-hub-caption {
+  margin-top: 35px;
+}
+.zg-spatial-stage[data-paused] *,
+.zg-spatial-stage[data-paused] *::before,
+.zg-spatial-stage[data-paused] *::after {
+  animation-play-state: paused !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .zg-spatial-stage *,
+  .zg-spatial-stage *::before,
+  .zg-spatial-stage *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .zg-flow-particle {
+    display: none;
+  }
+  .zg-stage-scene {
+    transform: none;
+  }
+}
