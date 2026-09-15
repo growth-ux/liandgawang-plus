@@ -1,0 +1,73 @@
+web/src/features/zhanggui/MissionCockpit.tsx
+  s_d8bdcb7b94098a::t_5d4e95902af0e8 167
+web/src/features/zhanggui/AgentFlowSvg.tsx
+  s_d8bdcb7b94098a::t_ce6fcb11c28b68 3-5,32,34,40,51,56,61,71,80
+  s_d8bdcb7b94098a::t_97f5cb3ae9c8eb 53-54,67
+  s_d8bdcb7b94098a::t_e3c4d2d409d58a 41,48,60,72,75
+  s_d8bdcb7b94098a::t_3ba792a7d1af61 52,69
+  s_d8bdcb7b94098a::t_3e8f6c0e90ac8b 7-12,14-19,26-30,44-47,49,57-59,63-65,68,70,73-74,76-79
+web/src/features/zhanggui/AgentPod.tsx
+  s_d8bdcb7b94098a::t_e3c4d2d409d58a 4,17,38,54,65
+  s_d8bdcb7b94098a::t_ce6fcb11c28b68 3,9-10,68
+  s_d8bdcb7b94098a::t_3e8f6c0e90ac8b 30-31,40-45,50-51,53,55-58,62,64,66-67,69,71-73
+web/src/features/zhanggui/purchase.css
+  s_d8bdcb7b94098a::t_5d4e95902af0e8 1238,1281
+  s_d8bdcb7b94098a::t_a33028e00381b3 1287,1295,1298-1305
+web/src/features/zhanggui/PurchaseCockpit.tsx
+  s_d8bdcb7b94098a::t_3e8f6c0e90ac8b 78-107
+  s_d8bdcb7b94098a::t_5d4e95902af0e8 1
+  s_d8bdcb7b94098a::t_a33028e00381b3 137-140
+web/src/features/zhanggui/zhanggui.css
+  s_d8bdcb7b94098a::t_5d4e95902af0e8 525-526,529-531,535
+web/src/features/zhanggui/StageBackdrop.tsx
+  s_d8bdcb7b94098a::t_3e8f6c0e90ac8b 7-11,13-34,36-43,45-102,104,106-113,115-124,136-140,142,151,154-155,165
+  s_d8bdcb7b94098a::t_ce6fcb11c28b68 1-6,12,35,103,105,114,125-128,135,178-180
+  s_d8bdcb7b94098a::t_e3c4d2d409d58a 129-134,166-177
+  s_d8bdcb7b94098a::t_fb2288870ed92f 147,149-150,159
+  s_d8bdcb7b94098a::t_1135aba26d8de0 141,143-146,148,152-153,156-158,160-164
+  s_d8bdcb7b94098a::t_3ce2b69fe4c781 44
+web/src/features/zhanggui/SpatialAgentStage.tsx
+  s_d8bdcb7b94098a::t_3e8f6c0e90ac8b 1-12,48-49,54-62,65-69,87-92,103-122,126-129,132-133,135-141,145-146,159-162,169,181-185,188-201,203-209,211-218,221-232,247-249,253,259-267,279-284,286-289,292-294,297-309,311-316,318-331,333-339
+  s_d8bdcb7b94098a::t_e3c4d2d409d58a 14,35,63,131,134,142,147-155,158,163-168,170,173-177,233-241,295-296,310,332
+  s_d8bdcb7b94098a::t_b0d22bd7fd40aa 15-16,18,30-32,36,51-53,64,70-72,75-86,93-100,123-125,130,143-144,156-157,171-172,178-180,186-187,202,210,219-220,290-291,317,340
+web/src/features/zhanggui/IpPortrait.tsx
+  s_d8bdcb7b94098a::t_cdcd119357f8be 21,32
+  s_d8bdcb7b94098a::t_ce6fcb11c28b68 1-4,12-15,33-35
+  s_d8bdcb7b94098a::t_e505877dbb8d4c 22-31
+  s_d8bdcb7b94098a::t_3e8f6c0e90ac8b 5-11,16-20
+docs/superpowers/specs/2026-09-15-zhanggui-ip-stage-design.md
+  s_d8bdcb7b94098a::t_54828e38e5a56b 1-4,6-87
+  s_d8bdcb7b94098a::t_fae3c26145872a 5
+docs/superpowers/plans/2026-09-15-zhanggui-ip-stage.md
+  s_d8bdcb7b94098a::t_cba308c77562b7 1-36,41-47,55-57
+  s_d8bdcb7b94098a::t_fae3c26145872a 37-40,48-54,58-62
+web/src/features/zhanggui/ip-stage.css
+  s_d8bdcb7b94098a::t_4bad4d0d2678a1 233
+  s_d8bdcb7b94098a::t_3ba792a7d1af61 83-84,101-104,108
+  s_d8bdcb7b94098a::t_bb9dd1e70123a6 107,109-113
+  s_d8bdcb7b94098a::t_3e8f6c0e90ac8b 7-82,86-87,89-90,92-100,114-119,123-124,165,178-231,234-240,244-252,255,262-291,294-296,307-309,318,322,327-328,360,365-371,373-416,418-431,433-461,463-537,539-550
+  s_d8bdcb7b94098a::t_97f5cb3ae9c8eb 85,88,91,105
+  s_d8bdcb7b94098a::t_be57b9b173f8e3 106
+  s_d8bdcb7b94098a::t_1135aba26d8de0 132-137,417
+  s_d8bdcb7b94098a::t_fbb2f1b470d684 299-306,310-311,314,317,320,323,326,329-333,335-337,340-342,345-347
+  s_d8bdcb7b94098a::t_fb2288870ed92f 130,160,163,166-169,232,241-243,372,432
+  s_d8bdcb7b94098a::t_5d4e95902af0e8 1-6,462,538,551
+  s_d8bdcb7b94098a::t_3ce2b69fe4c781 122,125-129,131,159,161-162,164,170-173,292-293,297-298,312-313,315-316
+  s_d8bdcb7b94098a::t_cdcd119357f8be 120-121,138-158,174-177,253-254,256-261,319,321,324-325,334,338-339,343-344,348-359,361-364
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "ae67ad73f757c1d7bd3e74923b6a17b502aad36c",
+  "prompts": {},
+  "sessions": {
+    "s_d8bdcb7b94098a": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0a40a-cb9e-7210-abb4-38f79ff9258e",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    }
+  }
+}
