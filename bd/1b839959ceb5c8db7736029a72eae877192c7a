@@ -1,0 +1,50 @@
+web/public/images/agents/ip/README.md
+  s_f444787fd3eb7c::t_c99ded3c395b14 1-25
+web/src/pages/Home.tsx
+  s_bcbea0a79b23aa::t_3a4a38a500063a 26
+  s_89f7bb03494659::t_3bee2213e1a10b 25
+web/src/features/zhanggui/SpatialAgentStage.tsx
+  s_bcbea0a79b23aa::t_f753783fac21ad 311-315
+web/src/data/agents.ts
+  s_bcbea0a79b23aa::t_7c17ac960c0427 58
+  s_f444787fd3eb7c::t_60d47d9ffedc27 35,88,103,118,133,148
+  s_89f7bb03494659::t_3bee2213e1a10b 73
+web/src/features/zhanggui/IpPortrait.tsx
+  s_f444787fd3eb7c::t_60d47d9ffedc27 4
+  s_bcbea0a79b23aa::t_f753783fac21ad 8,12,16
+product-design/assets/generated/zhan-balanced-v2.prompt.md
+  s_89f7bb03494659::t_3bee2213e1a10b 6
+  s_89f7bb03494659::t_830dc97f1c1c80 1-5,7-18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "bd1b839959ceb5c8db7736029a72eae877192c7a",
+  "prompts": {},
+  "sessions": {
+    "s_89f7bb03494659": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0a58c-d901-7a13-8eb1-3d9819d0545b",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    },
+    "s_bcbea0a79b23aa": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0a582-9c60-7cd0-87b2-8b958411db4c",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    },
+    "s_f444787fd3eb7c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0a2b0-f3ec-7990-97f4-5b660152d64c",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    }
+  }
+}
