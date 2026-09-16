@@ -15,6 +15,7 @@ export interface AgentPodProps {
   standbyLabel?: string;
   disabled?: boolean;
   feedback?: StageFeedback;
+  actionLabel?: string;
 }
 const STATUS_TEXT: Record<string, string> = {
   pending: "待启动",
@@ -36,6 +37,7 @@ export default function AgentPod({
   standbyLabel,
   disabled,
   feedback,
+  actionLabel,
 }: AgentPodProps) {
   const status = participating
     ? (effectiveStatus ?? run?.status ?? "pending")
@@ -59,10 +61,13 @@ export default function AgentPod({
       onClick={onClick}
       disabled={disabled}
       aria-pressed={active}
-      aria-label={`${agent.name}，${statusText}${disabled ? "" : "，查看专业结果"}`}
+      aria-label={`${agent.name}，${statusText}${disabled ? "" : `，${actionLabel ?? "查看专业结果"}`}`}
+      aria-haspopup={actionLabel ? "dialog" : undefined}
     >
       <span className="zg-ip-figure">
-        <IpPedestal feedback={feedback ? { [agent.agent_id]: feedback } : undefined} />
+        <IpPedestal
+          feedback={feedback ? { [agent.agent_id]: feedback } : undefined}
+        />
         <IpPortrait agentId={agent.agent_id} name={agent.name} />
       </span>
       <span className="zg-pod-caption">
@@ -73,6 +78,11 @@ export default function AgentPod({
             {statusText}
           </span>
         </span>
+        {actionLabel && (
+          <span className="zg-pod-action">
+            {actionLabel} <span aria-hidden="true">↗</span>
+          </span>
+        )}
       </span>
     </button>
   );

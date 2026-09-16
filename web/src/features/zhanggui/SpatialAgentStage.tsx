@@ -30,6 +30,9 @@ export interface SpatialAgentStageProps {
   /** 任务或阶段身份变化时，建立新的状态基线，不播放历史回传。 */
   animationKey?: string | number;
   visible?: boolean;
+  onSelectHub?(): void;
+  hubAction?: string;
+  agentActions?: Record<string, string>;
 }
 
 const FEEDBACK_DURATION = 2200;
@@ -47,6 +50,9 @@ export default function SpatialAgentStage({
   purchaseMode,
   animationKey = "stage",
   visible = true,
+  onSelectHub,
+  hubAction,
+  agentActions,
 }: SpatialAgentStageProps) {
   const stageRef = useRef<HTMLElement>(null);
   const sceneRef = useRef<HTMLDivElement>(null);
@@ -68,7 +74,8 @@ export default function SpatialAgentStage({
     statuses: Record<string, StageStatus>;
   } | null>(null);
   const narrow = width < 720;
-  const scale = Math.min(width / STAGE_VIEW.width, 1.2);
+  // 场景是核心内容，按可用宽度缩放，不受首屏剩余高度限制。
+  const scale = Math.min(width / STAGE_VIEW.width, 0.8);
   const animationEnabled = visible && pageVisible && !reducedMotion;
 
   useEffect(() => {
@@ -147,7 +154,8 @@ export default function SpatialAgentStage({
         const cue: StageFeedback | undefined =
           status === "running" && old.statuses[id] !== "running"
             ? "dispatch"
-            : status === "completed_with_objection" && old.statuses[id] !== status
+            : status === "completed_with_objection" &&
+                old.statuses[id] !== status
               ? "conflict"
               : old.statuses[id] === "running" && completed
                 ? "return"
@@ -217,6 +225,7 @@ export default function SpatialAgentStage({
       `${((event.clientY - box.top) / box.height - 0.5) * 4}px`,
     );
   }
+  const Hub = onSelectHub ? "button" : "div";
   const selectedMembers = members.filter((member) => member.selected);
   const completedCount = selectedMembers.filter((member) =>
     ["completed", "completed_with_objection"].includes(
@@ -230,9 +239,8 @@ export default function SpatialAgentStage({
       : mission.status === "running"
         ? "正在汇总各专业结果…"
         : "等待任务推进");
-  const visibleFeedback = animationEnabled && previous.current?.key === animationKey
-    ? feedback
-    : {};
+  const visibleFeedback =
+    animationEnabled && previous.current?.key === animationKey ? feedback : {};
   const returningAgentIds = Object.keys(visibleFeedback).filter(
     (id) => visibleFeedback[id] !== "dispatch",
   );
@@ -295,8 +303,13 @@ export default function SpatialAgentStage({
               returningAgentIds={returningAgentIds}
               dispatchingAgentIds={dispatchingAgentIds}
             />
-            <div
+            <Hub
               className="zg-stage-hub"
+              type={onSelectHub ? "button" : undefined}
+              onClick={onSelectHub}
+              aria-label={onSelectHub ? `粮掌柜，${hubAction}` : undefined}
+              aria-haspopup={onSelectHub ? "dialog" : undefined}
+              data-interactive={Boolean(onSelectHub)}
               data-processing={mission.status === "running" || undefined}
               style={
                 {
@@ -314,11 +327,18 @@ export default function SpatialAgentStage({
                   image="/images/agents/liangdawang-plus-collaboration-duo-v1.png?v=zhanggui-tall-v2"
                 />
               </span>
-              <div className="zg-hub-caption">
+              <span className="zg-hub-caption">
                 <strong>{hubLabel ?? "粮掌柜 · 中央编排"}</strong>
-                <p title={centralSummary}>{centralSummary}</p>
-              </div>
-            </div>
+                <span className="zg-hub-summary" title={centralSummary}>
+                  {centralSummary}
+                </span>
+                {hubAction && (
+                  <span className="zg-pod-action">
+                    {hubAction} <span aria-hidden="true">↗</span>
+                  </span>
+                )}
+              </span>
+            </Hub>
             {members.map((member) => (
               <AgentPod
                 key={member.agent_id}
@@ -339,6 +359,9 @@ export default function SpatialAgentStage({
                 onClick={() => onSelectAgent(member.agent_id)}
                 standbyLabel={purchaseMode ? "本步待命" : "待命"}
                 disabled={purchaseMode && !member.selected}
+                actionLabel={
+                  member.selected ? agentActions?.[member.agent_id] : undefined
+                }
               />
             ))}
           </div>

@@ -16,6 +16,8 @@ import {
   type PurchaseNeed,
 } from "./purchaseModel";
 import PurchaseCockpit from "./PurchaseCockpit";
+import PurchaseDrawer from "./PurchaseDrawer";
+import { purchaseInteraction } from "./purchaseInteraction";
 import PurchaseMarket, { DecisionRecord } from "./PurchaseMarket";
 import { assessPurchaseMarket } from "./marketAssessment";
 import "./zhanggui.css";
@@ -99,6 +101,8 @@ export default function PurchaseWorkbench() {
     purchases.find((item) => item.id === searchParams.get("purchase")) ?? null;
   const [inspecting, setInspecting] = useState<number | null>(null);
   const [history, setHistory] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerAgent, setDrawerAgent] = useState("da");
   const [checking, setChecking] = useState<number | null>(null);
   const [saveError, setSaveError] = useState("");
   const [need, setNeed] = useState<PurchaseNeed>(EMPTY_NEED);
@@ -139,6 +143,15 @@ export default function PurchaseWorkbench() {
   useEffect(() => {
     setChecking(null);
   }, [stage]);
+
+  useEffect(() => {
+    setDrawerAgent(purchaseInteraction(purchase, stage).owner);
+  }, [stage, purchase?.id, purchase?.ordered]);
+
+  function openDrawer(agentId: string) {
+    setDrawerAgent(agentId);
+    setDrawerOpen(true);
+  }
 
   function update(patch: Partial<Purchase>) {
     if (!purchase) return;
@@ -199,7 +212,7 @@ export default function PurchaseWorkbench() {
   }
 
   return (
-    <div className="pw-page">
+    <div className="pw-page pw-avatar-workbench">
       <header className="pw-header">
         <div className="pw-brand">
           <span className="pw-brand-mark">掌</span>
@@ -209,7 +222,13 @@ export default function PurchaseWorkbench() {
           </div>
         </div>
         <div className="pw-header-actions">
-          <Button secondary onClick={() => setHistory(!history)}>
+          <Button
+            secondary
+            onClick={() => {
+              setHistory(!history);
+              setChecking(null);
+            }}
+          >
             {history
               ? "返回工作台"
               : `采购记录${purchases.length ? ` · ${purchases.length}` : ""}`}
@@ -342,187 +361,216 @@ export default function PurchaseWorkbench() {
             need={need}
             stage={stage}
             checking={checking}
-            advice={adviceFor(stage, purchase)}
+            reviewing={inspecting !== null}
+            selectedAgent={drawerOpen ? drawerAgent : null}
+            onOpen={openDrawer}
           />
-          {purchase?.originMission && (
-            <details className="pw-origin-results">
-              <summary>
-                本笔采购沿用原方案 {purchase.originMission.mission_code} ·
-                查看小二分析依据
-              </summary>
-              {purchase.originMission.agent_runs
-                .filter((run) => run.output_snapshot)
-                .map((run) => (
-                  <article key={run.agent_id}>
-                    <strong>{run.participation_reason}</strong>
-                    <p>{run.output_snapshot?.summary}</p>
-                  </article>
-                ))}
-            </details>
-          )}
-          <div className="pw-grid">
-            <main
-              className="pw-panel pw-main"
-              id="purchase-step-content"
-              tabIndex={-1}
-              key={`${purchase?.id ?? "new"}-${stage}`}
-            >
-              <div className="pw-section-heading">
-                <p className="pw-eyebrow">
-                  {String(stage + 1).padStart(2, "0")} /{" "}
-                  {PURCHASE_STAGES[stage]}
-                </p>
-                <h2>{STAGE_COPY[stage][0]}</h2>
-                <p>{STAGE_COPY[stage][1]}</p>
-              </div>
-              {inspecting !== null && (
-                <Info>
-                  正在回看已完成的步骤。
-                  <button
-                    type="button"
-                    className="pw-text-button"
-                    onClick={() => setInspecting(null)}
-                  >
-                    返回当前办理阶段 →
-                  </button>
-                </Info>
-              )}
-              {stage === 0 &&
-                (readonly && purchase ? (
-                  <NeedSummary need={purchase.need} />
-                ) : (
-                  <>
-                    {purchase?.marketDecision && (
-                      <>
-                        <DecisionRecord decision={purchase.marketDecision} />
-                        <Info>
-                          请重新确认采购条件，下一步将按本次需求重新研判行情。
-                        </Info>
-                      </>
-                    )}
-                    <NeedForm need={purchase?.need ?? need} onStart={start} />
-                  </>
-                ))}
-              {stage === 1 && purchase && (
-                <PurchaseMarket
-                  purchase={purchase}
-                  need={
-                    inspecting !== null && purchase.marketDecision
-                      ? purchase.marketDecision.assessedNeed
-                      : purchase.need
-                  }
-                  readonly={readonly}
-                  onDecide={decideMarket}
-                />
-              )}
-              {stage === 2 && purchase && (
-                <Qualification
-                  purchase={purchase}
-                  readonly={readonly}
-                  update={update}
-                  onNext={() => advance()}
-                  onProgress={setChecking}
-                />
-              )}
-              {stage === 3 && purchase && (
-                <Sources
-                  purchase={purchase}
-                  readonly={readonly}
-                  update={update}
-                  onNext={() => advance({ payee: totals!.source.name })}
-                />
-              )}
-              {stage === 4 && purchase && (
-                <Transport
-                  purchase={purchase}
-                  readonly={readonly}
-                  update={update}
-                  onNext={() => advance()}
-                />
-              )}
-              {stage === 5 && purchase && (
-                <Order
-                  purchase={purchase}
-                  inspecting={inspecting !== null}
-                  update={update}
-                  onRevise={() => update({ stage: 3, reviewed: false })}
-                  onReceived={() => advance({ received: true, learned: true })}
-                />
-              )}
-              {stage === 6 && purchase && (
-                <Review
-                  purchase={purchase}
-                  onAgain={() => {
-                    setNeed(purchase.need);
-                    setSearchParams({});
-                    setInspecting(null);
-                  }}
-                />
-              )}
-            </main>
-            <aside className="pw-sidebar">
-              {totals && purchase && purchase.stage >= 4 && (
-                <section className="pw-side-section">
-                  <p className="pw-eyebrow">本笔采购账单</p>
-                  <dl className="pw-bill">
-                    <div>
-                      <dt>粮款</dt>
-                      <dd>¥ {formatMoney(totals.goods)}</dd>
-                    </div>
-                    <div>
-                      <dt>
-                        {purchase.transportId === "pickup"
-                          ? "自提运费估算"
-                          : "物流费用"}
-                      </dt>
-                      <dd>¥ {formatMoney(totals.logistics)}</dd>
-                    </div>
-                    {totals.additional > 0 && (
-                      <div>
-                        <dt>装卸、损耗等方案费用</dt>
-                        <dd>¥ {formatMoney(totals.additional)}</dd>
-                      </div>
-                    )}
-                    <div className="pw-bill-total">
-                      <dt>预计总成本</dt>
-                      <dd>¥ {formatMoney(totals.total)}</dd>
-                    </div>
-                  </dl>
-                  <p className="pw-muted">
-                    到厂 {formatMoney(totals.unit)} 元/吨 · 预计 {totals.days}{" "}
-                    天到货
-                  </p>
-                </section>
-              )}
-              <section className="pw-side-section">
-                <div className="pw-section-top">
-                  <p className="pw-eyebrow">企业经验 · 主动引用</p>
-                  <Link to="/knowledge">知识大脑 ↗</Link>
-                </div>
-                {references.length ? (
-                  references.map((item) => (
-                    <article className="pw-memory" key={item.id}>
-                      <span className="pw-tag">同品种 · 同到货区域</span>
-                      <p>{purchaseMemory(item)}</p>
-                      <small>来源：{item.id} · 算小二复盘</small>
+          <PurchaseDrawer
+            open={drawerOpen}
+            agentId={drawerAgent}
+            purchase={purchase}
+            need={need}
+            stage={stage}
+            checking={checking}
+            reviewing={inspecting !== null}
+            onClose={() => setDrawerOpen(false)}
+            onSelectAgent={setDrawerAgent}
+          >
+            {purchase?.originMission && (
+              <details className="pw-origin-results">
+                <summary>
+                  本笔采购沿用原方案 {purchase.originMission.mission_code} ·
+                  查看小二分析依据
+                </summary>
+                {purchase.originMission.agent_runs
+                  .filter((run) => run.output_snapshot)
+                  .map((run) => (
+                    <article key={run.agent_id}>
+                      <strong>{run.participation_reason}</strong>
+                      <p>{run.output_snapshot?.summary}</p>
                     </article>
-                  ))
-                ) : (
-                  <p className="pw-muted">
-                    本次尚无同区域、同品种的已完成采购经验。收货后，算小二会提炼本笔采购的成本与方案记录，供后续小二引用。
+                  ))}
+              </details>
+            )}
+            <div className="pw-grid">
+              <section
+                className="pw-panel pw-main"
+                id="purchase-step-content"
+                tabIndex={-1}
+                key={`${purchase?.id ?? "new"}-${stage}`}
+              >
+                <div className="pw-section-heading">
+                  <p className="pw-eyebrow">
+                    {String(stage + 1).padStart(2, "0")} /{" "}
+                    {PURCHASE_STAGES[stage]}
                   </p>
+                  <h2>{STAGE_COPY[stage][0]}</h2>
+                  <p>{STAGE_COPY[stage][1]}</p>
+                </div>
+                {inspecting !== null && (
+                  <Info>
+                    正在回看已完成的步骤。
+                    <button
+                      type="button"
+                      className="pw-text-button"
+                      onClick={() => setInspecting(null)}
+                    >
+                      返回当前办理阶段 →
+                    </button>
+                  </Info>
+                )}
+                {stage === 0 &&
+                  (readonly && purchase ? (
+                    <NeedSummary need={purchase.need} />
+                  ) : (
+                    <>
+                      {purchase?.marketDecision && (
+                        <>
+                          <DecisionRecord decision={purchase.marketDecision} />
+                          <Info>
+                            请重新确认采购条件，下一步将按本次需求重新研判行情。
+                          </Info>
+                        </>
+                      )}
+                      <NeedForm need={purchase?.need ?? need} onStart={start} />
+                    </>
+                  ))}
+                {stage === 1 && purchase && (
+                  <PurchaseMarket
+                    purchase={purchase}
+                    need={
+                      inspecting !== null && purchase.marketDecision
+                        ? purchase.marketDecision.assessedNeed
+                        : purchase.need
+                    }
+                    readonly={readonly}
+                    onDecide={decideMarket}
+                  />
+                )}
+                {stage === 2 && purchase && (
+                  <Qualification
+                    purchase={purchase}
+                    readonly={readonly}
+                    update={update}
+                    onNext={() => advance()}
+                    onProgress={setChecking}
+                  />
+                )}
+                {stage === 3 && purchase && (
+                  <Sources
+                    purchase={purchase}
+                    readonly={readonly}
+                    update={update}
+                    onNext={() => advance({ payee: totals!.source.name })}
+                  />
+                )}
+                {stage === 4 && purchase && (
+                  <Transport
+                    purchase={purchase}
+                    readonly={readonly}
+                    update={update}
+                    onNext={() => advance()}
+                  />
+                )}
+                {stage === 5 && purchase && (
+                  <Order
+                    purchase={purchase}
+                    inspecting={inspecting !== null}
+                    update={update}
+                    onRevise={() => update({ stage: 3, reviewed: false })}
+                    onReceived={() =>
+                      advance({ received: true, learned: true })
+                    }
+                  />
+                )}
+                {stage === 6 && purchase && (
+                  <Review
+                    purchase={purchase}
+                    onAgain={() => {
+                      setNeed(purchase.need);
+                      setSearchParams({});
+                      setInspecting(null);
+                    }}
+                  />
                 )}
               </section>
-              <div className="pw-assurance">
-                <span>◎</span>
-                <p>
-                  每一步有结果，关键节点有确认。
-                  <br />
-                  从一次买粮，积累下一次的经验。
-                </p>
-              </div>
-            </aside>
-          </div>
+              <details className="pw-drawer-support">
+                <summary>采购建议、账单与企业经验</summary>
+                <aside className="pw-sidebar">
+                  <section className="pw-step-guidance">
+                    <p className="pw-eyebrow">粮掌柜建议</p>
+                    <h3>{PURCHASE_STAGES[stage]}</h3>
+                    <p>{adviceFor(stage, purchase)}</p>
+                    <small>
+                      {inspecting !== null
+                        ? "正在回看历史阶段，当前内容只读"
+                        : "小二提供依据，关键决策由你确认"}
+                    </small>
+                  </section>
+                  {totals && purchase && purchase.stage >= 4 && (
+                    <section className="pw-side-section">
+                      <p className="pw-eyebrow">本笔采购账单</p>
+                      <dl className="pw-bill">
+                        <div>
+                          <dt>粮款</dt>
+                          <dd>¥ {formatMoney(totals.goods)}</dd>
+                        </div>
+                        <div>
+                          <dt>
+                            {purchase.transportId === "pickup"
+                              ? "自提运费估算"
+                              : "物流费用"}
+                          </dt>
+                          <dd>¥ {formatMoney(totals.logistics)}</dd>
+                        </div>
+                        {totals.additional > 0 && (
+                          <div>
+                            <dt>装卸、损耗等方案费用</dt>
+                            <dd>¥ {formatMoney(totals.additional)}</dd>
+                          </div>
+                        )}
+                        <div className="pw-bill-total">
+                          <dt>预计总成本</dt>
+                          <dd>¥ {formatMoney(totals.total)}</dd>
+                        </div>
+                      </dl>
+                      <p className="pw-muted">
+                        到厂 {formatMoney(totals.unit)} 元/吨 · 预计{" "}
+                        {totals.days} 天到货
+                      </p>
+                    </section>
+                  )}
+                  <section className="pw-side-section">
+                    <div className="pw-section-top">
+                      <p className="pw-eyebrow">企业经验 · 主动引用</p>
+                      <Link to="/knowledge">知识大脑 ↗</Link>
+                    </div>
+                    {references.length ? (
+                      references.map((item) => (
+                        <article className="pw-memory" key={item.id}>
+                          <span className="pw-tag">同品种 · 同到货区域</span>
+                          <p>{purchaseMemory(item)}</p>
+                          <small>来源：{item.id} · 算小二复盘</small>
+                        </article>
+                      ))
+                    ) : (
+                      <p className="pw-muted">
+                        本次尚无同区域、同品种的已完成采购经验。收货后，算小二会提炼本笔采购的成本与方案记录，供后续小二引用。
+                      </p>
+                    )}
+                  </section>
+                  <div className="pw-assurance">
+                    <span>◎</span>
+                    <p>
+                      每一步有结果，关键节点有确认。
+                      <br />
+                      从一次买粮，积累下一次的经验。
+                    </p>
+                  </div>
+                </aside>
+              </details>
+            </div>
+          </PurchaseDrawer>
         </>
       )}
     </div>

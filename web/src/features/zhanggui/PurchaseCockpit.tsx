@@ -1,196 +1,115 @@
-import { useEffect, useState } from "react";
 import SpatialAgentStage from "./SpatialAgentStage";
-import AgentResultDrawer from "./AgentResultDrawer";
-import {
-  purchaseCollaboration,
-  purchaseStageRoles,
-} from "./purchaseCollaboration";
+import { getAgent } from "../../data/agents";
+import { purchaseCollaboration } from "./purchaseCollaboration";
+import { purchaseInteraction } from "./purchaseInteraction";
 import {
   PURCHASE_STAGES,
   type Purchase,
   type PurchaseNeed,
 } from "./purchaseModel";
 
+/** 数字人是本步业务入口，舞台下方不再铺业务表单。 */
 export default function PurchaseCockpit({
   purchase,
   need,
   stage,
   checking,
-  advice,
+  reviewing = false,
+  selectedAgent,
+  onOpen,
 }: {
   purchase: Purchase | null;
   need: PurchaseNeed;
   stage: number;
   checking: number | null;
-  advice: string;
+  reviewing?: boolean;
+  selectedAgent: string | null;
+  onOpen(agentId: string): void;
 }) {
-  const [selected, setSelected] = useState<string | null>(null);
-  const [expanded, setExpanded] = useState(true);
   const mission = purchaseCollaboration(purchase, need, stage, checking);
-  const run =
-    mission.agent_runs.find((item) => item.agent_id === selected) ?? null;
-  const roles = purchaseStageRoles(purchase, stage);
-  const active = mission.team.filter((item) => item.selected);
-  const demandStatus =
-    purchase && purchase.stage > 0
-      ? "采购需求已确认"
-      : purchase?.marketDecision
-        ? "请调整并重新确认采购需求"
-        : "请描述并确认采购需求";
+  const { owner, action, entries, roles } = purchaseInteraction(
+    purchase,
+    stage,
+    reviewing,
+  );
   const blocked = mission.conflicts.length > 0;
-  useEffect(() => {
-    setSelected(null);
-    setExpanded(true);
-  }, [stage, purchase?.id, purchase?.ordered]);
-  useEffect(() => {
-    if (selected && !roles.members.includes(selected)) setSelected(null);
-  }, [selected, roles.members.join(",")]);
-  function openStep() {
-    const element = document.getElementById("purchase-step-content");
-    element?.scrollIntoView?.({
-      behavior: window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
-        ? "auto"
-        : "smooth",
-      block: "start",
-    });
-    element?.focus({ preventScroll: true });
-  }
+  const state = reviewing
+    ? "历史阶段 · 只读回看"
+    : checking !== null
+      ? "专业小二正在并行核验"
+      : blocked
+        ? mission.conflicts[0].title
+        : stage === 6 && purchase?.received
+          ? "采购已完成，经验已沉淀"
+          : stage === 0
+            ? "告诉我你想买什么粮，我来组织小二办理"
+            : stage === 1 && purchase?.marketDecision?.action === "watch"
+              ? "研判已保存，决定采购时可继续办理"
+              : stage === 5 && purchase?.ordered
+                ? "运小二跟进发运与到货，等待验收确认"
+                : roles.action;
+
   return (
-    <>
-      <section
-        className="pw-cockpit"
-        aria-label="采购协作驾驶舱"
-        data-stage={stage}
-      >
-        <div className="pw-cockpit-visual">
-          <div className="pw-cockpit-toolbar">
-            <span>
-              协作驾驶舱 <small>同一采购 · 进度与结果实时联动</small>
-            </span>
-            <button
-              type="button"
-              aria-expanded={expanded}
-              onClick={() => setExpanded(!expanded)}
-            >
-              {expanded ? "收起协作全景" : "展开协作全景"}
-            </button>
-          </div>
-          <div className={`pw-stage-frame${expanded ? "" : " is-collapsed"}`}>
-            <SpatialAgentStage
-              mission={mission}
-              animationKey={`${purchase?.id ?? "draft"}:${stage}:${Boolean(purchase?.ordered)}`}
-              visible={expanded}
-              selectedAgentId={selected}
-              onSelectAgent={setSelected}
-              purchaseMode
-              title={`${PURCHASE_STAGES[stage]} · ${stage === 0 ? "粮掌柜主理" : "专业协作"}`}
-              subtitle={
-                stage === 0
-                  ? "粮掌柜整理采购目标，确认后再安排专业小二"
-                  : "粮掌柜主理 · 点击本步协作小二查看依据"
-              }
-              hubLabel={`粮掌柜 · ${roles.steward}`}
-              hubSummary={
-                stage === 0
-                  ? demandStatus
-                  : checking !== null
-                    ? "正在并行核验交易条件"
-                    : stage === 1 &&
-                        purchase?.marketDecision?.action === "watch"
-                      ? "研判已保存 · 观望中"
-                      : blocked
-                        ? "发现阻塞，等待处理"
-                        : purchase?.received
-                          ? "采购闭环 · 经验已沉淀"
-                          : `${PURCHASE_STAGES[stage]} · 等待你的确认`
-              }
-            />
-          </div>
-          {!expanded && (
-            <div className="pw-cockpit-compact">
-              <span className="pw-compact-hub">掌</span>
-              {stage === 0 && (
-                <button type="button" onClick={openStep}>
-                  <strong>粮掌柜 · 需求确认</strong>
-                  <small>{demandStatus}</small>
-                  <span>核对需求 ↓</span>
-                </button>
-              )}
-              {active.map((member) => (
-                <button
-                  type="button"
-                  key={member.agent_id}
-                  onClick={() => setSelected(member.agent_id)}
-                >
-                  <strong>{member.name}</strong>
-                  <small>
-                    {mission.agent_runs.find(
-                      (item) => item.agent_id === member.agent_id,
-                    )?.output_snapshot?.summary ?? member.reason}
-                  </small>
-                  <span>查看结果 ↗</span>
-                </button>
-              ))}
-            </div>
-          )}
-          <div className="pw-cockpit-legend">
-            <span data-state="running">青色 · 办理中</span>
-            <span data-state="completed">绿色 · 已完成</span>
-            <span data-state="objection">琥珀 · 有异议</span>
-            <span data-state="failed">红色 · 结果缺失</span>
-            <span>灰色 · 本步待命</span>
-            <small>{purchase?.id ?? "确认需求后创建采购任务"}</small>
-          </div>
+    <section className="pw-agent-cockpit" aria-label="采购数字人驾驶舱">
+      <div className="pw-stage-task" data-blocked={blocked}>
+        <div className="pw-stage-task-copy">
+          <p className="pw-eyebrow">
+            {reviewing ? "正在回看" : "当前待办"} · {PURCHASE_STAGES[stage]}
+          </p>
+          <p role="status" aria-live="polite">
+            {state}
+          </p>
         </div>
-        <aside className="pw-mission-control" data-blocked={blocked}>
-          <span className="pw-control-state">
-            {checking !== null
-              ? "小二正在办理"
-              : blocked
-                ? "发现待处理事项"
-                : purchase?.received
-                  ? "采购已完成"
-                  : stage === 1 && purchase?.marketDecision?.action === "watch"
-                    ? "观望中 · 尚未启动交易"
-                    : "下一步由你确认"}
-          </span>
-          <p className="pw-eyebrow">粮掌柜 · 当前任务</p>
-          <h2>{PURCHASE_STAGES[stage]}</h2>
-          <p className="pw-control-advice">{advice}</p>
-          {blocked && (
-            <div className="pw-control-blockers" role="status">
-              {mission.conflicts.map((conflict) => (
-                <p key={conflict.agent_ids[0]}>{conflict.title}</p>
-              ))}
-            </div>
-          )}
-          <div className="pw-control-team">
-            <strong>粮掌柜 · {roles.steward}</strong>
-            <p>{roles.action}</p>
-            {active.length > 0 && (
-              <p>专业协作：{active.map((item) => item.name).join(" · ")}</p>
-            )}
-            <small>
-              {checking !== null
-                ? "核验进度会同步到节点与办理面板"
-                : "操作结果直接更新驾驶舱，无需切换任务"}
-            </small>
-          </div>
-          <button type="button" className="pw-button" onClick={openStep}>
-            {stage === 0
-              ? "填写采购需求"
-              : stage === 1
-                ? "查看行情与采购建议"
-                : stage === 6
-                  ? "查看成本与经验"
-                  : blocked
-                    ? "处理当前问题"
-                    : "办理当前步骤"}{" "}
-            ↓
-          </button>
-        </aside>
-      </section>
-      <AgentResultDrawer run={run} onClose={() => setSelected(null)} />
-    </>
+        <button
+          type="button"
+          className="pw-button"
+          onClick={() => onOpen(owner)}
+          aria-haspopup="dialog"
+        >
+          找{getAgent(owner)!.name} · {action} <span aria-hidden="true">↗</span>
+        </button>
+      </div>
+      <SpatialAgentStage
+        mission={mission}
+        animationKey={`${purchase?.id ?? "draft"}:${stage}:${Boolean(purchase?.ordered)}`}
+        selectedAgentId={selectedAgent}
+        onSelectAgent={onOpen}
+        onSelectHub={() => onOpen("da")}
+        agentActions={entries}
+        hubAction={
+          reviewing
+            ? "回看当前步骤"
+            : stage === 0
+              ? "开始办理采购"
+              : "继续办理当前步骤"
+        }
+        purchaseMode
+        title="点击数字人，直接办理"
+        subtitle="粮掌柜统筹全程 · 点选本步参与的小二，打开办理抽屉"
+        hubLabel={`粮掌柜 · ${roles.steward}`}
+        hubSummary={
+          stage === 0 ? "一句话说需求，小二协同办" : PURCHASE_STAGES[stage]
+        }
+      />
+      <div className="pw-stage-footer">
+        <span>
+          <i data-state="running" />
+          办理中
+        </span>
+        <span>
+          <i data-state="completed" />
+          已完成
+        </span>
+        <span>
+          <i data-state="objection" />
+          待处理
+        </span>
+        <span>
+          <i />
+          本步待命
+        </span>
+        <small>点数字人办事，点粮掌柜继续当前步骤</small>
+      </div>
+    </section>
   );
 }

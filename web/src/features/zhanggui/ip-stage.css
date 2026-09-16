@@ -429,6 +429,7 @@
   bottom: -4px;
 }
 .zg-hub-caption {
+  display: block;
   margin-top: 30px;
   padding: 0 8px;
 }
@@ -437,7 +438,7 @@
   font-size: 17px;
   font-weight: 600;
 }
-.zg-hub-caption p {
+.zg-hub-summary {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
