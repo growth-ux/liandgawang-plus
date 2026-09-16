@@ -16,6 +16,7 @@ export function purchaseInteraction(
     "yun",
     purchase?.ordered ? "yun" : "da",
     "suan",
+    "da",
   ][stage];
   const action = reviewing
     ? "回看本步办理"
@@ -26,7 +27,8 @@ export function purchaseInteraction(
         "选择粮源并点价",
         "选择提货方案",
         purchase?.ordered ? "查看履约进度" : "核验并确认下单",
-        "查看成本与经验",
+        "查看到厂核算",
+        "查看履约复盘",
       ][stage];
   const entries = Object.fromEntries(roles.members.map((id) => [id, action]));
   if (

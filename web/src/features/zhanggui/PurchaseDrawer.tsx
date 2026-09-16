@@ -50,15 +50,15 @@ export default function PurchaseDrawer({
   const run = mission.agent_runs.find((item) => item.agent_id === agentId);
   const output = run?.output_snapshot;
   const blocked = mission.conflicts.length > 0;
+  const showEvidenceAction = stage !== 3 && stage !== 7 && agentId !== "da";
   const status = reviewing
     ? "回看已完成阶段"
     : checking !== null
       ? "小二正在并行核验"
       : blocked
         ? "发现待处理事项"
-        : stage === 6 && purchase?.received
-          ? "采购完成 · 经验已沉淀"
-          : roles.action;
+        : roles.action;
+  const showStatusText = (stage !== 3 || blocked) && Boolean(status);
 
   useLayoutEffect(() => {
     const element = dialog.current;
@@ -103,7 +103,7 @@ export default function PurchaseDrawer({
           <div className="pw-drawer-title">
             <p className="pw-eyebrow">
               {reviewing ? "办理回看" : "正在办理"} ·{" "}
-              {String(stage + 1).padStart(2, "0")} / 07
+              {String(stage + 1).padStart(2, "0")} / 08
             </p>
             <h2 id="purchase-drawer-title">
               {agent.name}
@@ -128,7 +128,7 @@ export default function PurchaseDrawer({
             ×
           </button>
         </header>
-        <div className="pw-drawer-team" aria-label="当前协作团队">
+        {stage > 1 && <div className="pw-drawer-team" aria-label="当前协作团队">
           <button
             type="button"
             data-active={agentId === "da"}
@@ -158,15 +158,16 @@ export default function PurchaseDrawer({
               </button>
             );
           })}
-        </div>
-        <div
+        </div>}
+        {stage > 1 && (showStatusText || showEvidenceAction) && <div
           className="pw-drawer-status"
           data-blocked={blocked}
+          data-action-only={!showStatusText}
           role="status"
           aria-live="polite"
         >
-          <span>{status}</span>
-          {agentId !== "da" && (
+          {showStatusText && <span>{status}</span>}
+          {showEvidenceAction && (
             <button
               type="button"
               aria-expanded={evidence}
@@ -175,7 +176,7 @@ export default function PurchaseDrawer({
               {evidence ? "收起专业依据" : "专业依据"}
             </button>
           )}
-        </div>
+        </div>}
         <div className="pw-drawer-body" ref={body}>
           {evidence && (
             <section className="pw-drawer-evidence">

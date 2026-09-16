@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 
 from app.analysis.llm import extract_conditions, interpret_judgment
 from app.analysis.models import AnalysisRecord
+from app.analysis.purchase_advice import router as purchase_advice_router
 from app.analysis.rules import build_procurement_judgment, pick_baseline_spot
 from app.database import get_db
 from app.market import repository
@@ -16,6 +17,7 @@ from app.market.mock_seed import MOCK_DATASET_VERSION, MOCK_GENERATED_AT
 from app.market.routes import VARIETY_NAMES
 
 router = APIRouter(prefix="/api/analysis", tags=["analysis"])
+router.include_router(purchase_advice_router)
 
 RISK_PREFERENCES = {"稳健", "积极", "保守"}
 

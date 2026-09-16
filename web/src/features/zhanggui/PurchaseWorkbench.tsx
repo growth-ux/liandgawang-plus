@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import * as L from "leaflet";
+import "leaflet/dist/leaflet.css";
 import { parseNeed } from "../liang/parseNeed";
 import {
   PURCHASE_STAGES,
@@ -8,10 +10,13 @@ import {
   purchaseSources,
   formatMoney,
   newPurchase,
+  logisticsSearchResult,
   orderProblems,
   purchaseMemory,
+  purchaseSettlement,
   purchaseTotals,
   readPurchases,
+  sourceSearchResult,
   type Purchase,
   type PurchaseNeed,
 } from "./purchaseModel";
@@ -20,6 +25,8 @@ import PurchaseDrawer from "./PurchaseDrawer";
 import { purchaseInteraction } from "./purchaseInteraction";
 import PurchaseMarket, { DecisionRecord } from "./PurchaseMarket";
 import { assessPurchaseMarket } from "./marketAssessment";
+import Qualification from "./Qualification";
+import type { PurchaseAdvice } from "./purchaseAdvice";
 import "./zhanggui.css";
 import "./purchase.css";
 
@@ -32,30 +39,16 @@ const EMPTY_NEED: PurchaseNeed = {
   stockDays: 0,
 };
 const EXAMPLE =
-  "15天内采购200吨二等玉米到潍坊，到厂预算不超过2680元/吨，库存还能用7天";
+  "帮我采购 200 吨二等玉米送到潍坊，库存还能用15天，希望 10 天内到货，到厂价不超过 2680 元/吨。";
 const STAGE_COPY = [
-  [
-    "说清需求，剩下的交给粮掌柜",
-    "先确认品种、数量、到货地区和用粮安排，再研判相关行情。",
-  ],
-  [
-    "结合已确认需求，决定这笔粮怎么买",
-    "瞻小二研判市场，粮掌柜结合用粮安排给建议；采购时机由你确认。",
-  ],
-  [
-    "先把交易条件核验清楚",
-    "安小二与钱小二同步核验，缺什么补什么，进度不用重来。",
-  ],
-  [
-    "选一笔合适的粮，再确认价格",
-    "结合质量、库存与发运条件推荐；运输费用将在下一步一并核算。",
-  ],
-  ["这批粮，怎么到你手里？", "自提或配送都能办，费用和时效一起比较。"],
-  [
-    "核验无误，再放心下单",
-    "合同、收款主体、预算和交期逐项守护，确认后持续跟进履约。",
-  ],
-  ["这笔采购办完了，经验留下来", "算清本次成本，让下一次采购有据可依。"],
+  ["采购需求", ""],
+  ["行情研判", ""],
+  ["", ""],
+  ["", ""],
+  ["", ""],
+  ["", ""],
+  ["", ""],
+  ["", ""],
 ];
 
 function Button({
@@ -193,7 +186,7 @@ export default function PurchaseWorkbench() {
     }
   }
 
-  function decideMarket(action: "buy" | "adjust" | "watch") {
+  function decideMarket(action: "buy" | "adjust" | "watch", advice?: PurchaseAdvice) {
     if (!purchase || purchase.stage !== 1) return;
     const currentNeed = purchase.need;
     const assessment = assessPurchaseMarket(currentNeed);
@@ -202,7 +195,8 @@ export default function PurchaseWorkbench() {
       stage: action === "buy" ? 2 : action === "adjust" ? 0 : 1,
       marketDecision: {
         action,
-        summary: assessment.summary,
+        summary: advice ? `${advice.title}。${advice.reasoning}${advice.caution}` : assessment.summary,
+        advice,
         decidedAt: new Date().toISOString(),
         assessedNeed: { ...currentNeed },
         suggestedNeed: assessment.suggestedNeed,
@@ -280,8 +274,8 @@ export default function PurchaseWorkbench() {
                   </small>
                 </span>
                 <span className="pw-tag">
-                  {item.received
-                    ? "已完成 · 经验已沉淀"
+                  {item.learned
+                    ? "已完成"
                     : item.stage === 1 &&
                         item.marketDecision?.action === "watch"
                       ? "行情研判 · 观望中"
@@ -316,7 +310,8 @@ export default function PurchaseWorkbench() {
             {PURCHASE_STAGES.map((label, index) => {
               const done = Boolean(
                 purchase &&
-                (index < purchase.stage || purchase.received) &&
+                (index < purchase.stage ||
+                  (index === PURCHASE_STAGES.length - 1 && purchase.learned)) &&
                 (index !== 1 || Boolean(purchase.marketDecision)),
               );
               return (
@@ -399,14 +394,16 @@ export default function PurchaseWorkbench() {
                 tabIndex={-1}
                 key={`${purchase?.id ?? "new"}-${stage}`}
               >
-                <div className="pw-section-heading">
-                  <p className="pw-eyebrow">
-                    {String(stage + 1).padStart(2, "0")} /{" "}
-                    {PURCHASE_STAGES[stage]}
-                  </p>
-                  <h2>{STAGE_COPY[stage][0]}</h2>
-                  <p>{STAGE_COPY[stage][1]}</p>
-                </div>
+                {(STAGE_COPY[stage][0] || STAGE_COPY[stage][1]) && (
+                  <div className="pw-section-heading">
+                    <p className="pw-eyebrow">
+                      {String(stage + 1).padStart(2, "0")} /{" "}
+                      {PURCHASE_STAGES[stage]}
+                    </p>
+                    {STAGE_COPY[stage][0] && <h2>{STAGE_COPY[stage][0]}</h2>}
+                    {STAGE_COPY[stage][1] && <p>{STAGE_COPY[stage][1]}</p>}
+                  </div>
+                )}
                 {inspecting !== null && (
                   <Info>
                     正在回看已完成的步骤。
@@ -479,25 +476,33 @@ export default function PurchaseWorkbench() {
                     update={update}
                     onRevise={() => update({ stage: 3, reviewed: false })}
                     onReceived={() =>
-                      advance({ received: true, learned: true })
+                      advance({ received: true, learned: false })
                     }
                   />
                 )}
                 {stage === 6 && purchase && (
                   <Review
                     purchase={purchase}
-                    onAgain={() => {
-                      setNeed(purchase.need);
-                      setSearchParams({});
-                      setInspecting(null);
-                    }}
+                    phase="cost"
+                    onNext={inspecting === null ? () => advance({ learned: true }) : undefined}
                   />
                 )}
+                {stage === 7 && purchase && (
+                  <Review purchase={purchase} phase="knowledge" />
+                )}
               </section>
-              <details className="pw-drawer-support">
-                <summary>采购建议、账单与企业经验</summary>
+              {stage < 6 && (stage > 1 || references.length > 0) && <details className="pw-drawer-support">
+                <summary>
+                  {stage <= 1
+                    ? "相关采购经验"
+                    : stage === 3
+                      ? "企业经验"
+                      : stage === 5
+                        ? "采购账单与企业经验"
+                      : "采购建议、账单与企业经验"}
+                </summary>
                 <aside className="pw-sidebar">
-                  <section className="pw-step-guidance">
+                  {stage > 1 && stage !== 3 && stage !== 5 && <section className="pw-step-guidance">
                     <p className="pw-eyebrow">粮掌柜建议</p>
                     <h3>{PURCHASE_STAGES[stage]}</h3>
                     <p>{adviceFor(stage, purchase)}</p>
@@ -506,8 +511,8 @@ export default function PurchaseWorkbench() {
                         ? "正在回看历史阶段，当前内容只读"
                         : "小二提供依据，关键决策由你确认"}
                     </small>
-                  </section>
-                  {totals && purchase && purchase.stage >= 4 && (
+                  </section>}
+                  {stage > 1 && totals && purchase && purchase.stage >= 4 && (
                     <section className="pw-side-section">
                       <p className="pw-eyebrow">本笔采购账单</p>
                       <dl className="pw-bill">
@@ -518,10 +523,14 @@ export default function PurchaseWorkbench() {
                         <div>
                           <dt>
                             {purchase.transportId === "pickup"
-                              ? "自提运费估算"
+                              ? "自提运输费用"
                               : "物流费用"}
                           </dt>
-                          <dd>¥ {formatMoney(totals.logistics)}</dd>
+                          <dd>
+                            {purchase.transportId === "pickup"
+                              ? "采购方另行承担"
+                              : `¥ ${formatMoney(totals.logistics)}`}
+                          </dd>
                         </div>
                         {totals.additional > 0 && (
                           <div>
@@ -530,19 +539,24 @@ export default function PurchaseWorkbench() {
                           </div>
                         )}
                         <div className="pw-bill-total">
-                          <dt>预计总成本</dt>
+                          <dt>
+                            {purchase.transportId === "pickup"
+                              ? "平台应付金额"
+                              : "预计总成本"}
+                          </dt>
                           <dd>¥ {formatMoney(totals.total)}</dd>
                         </div>
                       </dl>
                       <p className="pw-muted">
-                        到厂 {formatMoney(totals.unit)} 元/吨 · 预计{" "}
-                        {totals.days} 天到货
+                        {purchase.transportId === "pickup"
+                          ? `粮款 ${formatMoney(totals.unit)} 元/吨 · 自提费用未计入`
+                          : `到厂 ${formatMoney(totals.unit)} 元/吨 · 预计 ${totals.days} 天到货`}
                       </p>
                     </section>
                   )}
                   <section className="pw-side-section">
                     <div className="pw-section-top">
-                      <p className="pw-eyebrow">企业经验 · 主动引用</p>
+                      <p className="pw-eyebrow">{stage <= 1 ? "相关采购经验" : "企业经验 · 主动引用"}</p>
                       <Link to="/knowledge">知识大脑 ↗</Link>
                     </div>
                     {references.length ? (
@@ -550,25 +564,25 @@ export default function PurchaseWorkbench() {
                         <article className="pw-memory" key={item.id}>
                           <span className="pw-tag">同品种 · 同到货区域</span>
                           <p>{purchaseMemory(item)}</p>
-                          <small>来源：{item.id} · 算小二复盘</small>
+                          <small>来源：{item.id} · 算小二成本基线</small>
                         </article>
                       ))
                     ) : (
                       <p className="pw-muted">
-                        本次尚无同区域、同品种的已完成采购经验。收货后，算小二会提炼本笔采购的成本与方案记录，供后续小二引用。
+                        暂无同区域、同品种的历史成本基线。
                       </p>
                     )}
                   </section>
-                  <div className="pw-assurance">
+                  {stage > 1 && stage !== 3 && <div className="pw-assurance">
                     <span>◎</span>
                     <p>
                       每一步有结果，关键节点有确认。
                       <br />
                       从一次买粮，积累下一次的经验。
                     </p>
-                  </div>
+                  </div>}
                 </aside>
-              </details>
+              </details>}
             </div>
           </PurchaseDrawer>
         </>
@@ -621,21 +635,40 @@ function NeedForm({
       : "",
   );
   const [notice, setNotice] = useState("");
-  const valid =
-    structured &&
-    !dirty &&
-    varietyConfirmed &&
-    need.destination === "山东省潍坊市" &&
-    need.quantity >= 1 &&
-    need.quantity <= 1200 &&
-    Number.isFinite(need.quantity) &&
-    need.budget > 0 &&
-    Number.isFinite(need.budget) &&
-    need.days >= 1 &&
-    Number.isInteger(need.days) &&
-    Number.isInteger(need.stockDays) &&
-    (need.stockDays ?? 0) >= 1 &&
-    (need.stockDays ?? 0) <= 365;
+  const errors = {
+    variety: varietyConfirmed ? "" : "请选择粮食品种",
+    destination: need.destination === "山东省潍坊市" ? "" : "请选择到货地区",
+    quantity: !need.quantity
+      ? "请填写采购数量"
+      : Number.isFinite(need.quantity) && need.quantity >= 1 && need.quantity <= 1200
+        ? "" : "采购数量需在 1–1,200 吨之间",
+    days: !need.days
+      ? "请填写到货期限"
+      : Number.isInteger(need.days) && need.days >= 1
+        ? "" : "到货天数需为正整数",
+    budget: !need.budget
+      ? "请填写到厂预算"
+      : Number.isFinite(need.budget) && need.budget > 0
+        ? "" : "预算需大于 0",
+    stockDays: !need.stockDays
+      ? "请填写库存可用天数"
+      : Number.isInteger(need.stockDays) && need.stockDays >= 1 && need.stockDays <= 365
+        ? "" : "库存天数需为 1–365 的整数",
+  };
+  const valid = structured && !dirty && !Object.values(errors).some(Boolean);
+  function fieldError(field: keyof typeof errors) {
+    return !dirty && errors[field] ? (
+      <span className="pw-field-error" id={`purchase-${field}-error`}>
+        {errors[field]}
+      </span>
+    ) : null;
+  }
+  function fieldAccessibility(field: keyof typeof errors) {
+    return {
+      "aria-invalid": !dirty && Boolean(errors[field]),
+      "aria-describedby": !dirty && errors[field] ? `purchase-${field}-error` : undefined,
+    };
+  }
   function parse() {
     const stock = text.match(/库存[^，。；;\n\d]{0,12}(\d+)\s*天/);
     // 库存天数与到货交期是两个条件，先分离库存片段再提取交期。
@@ -680,14 +713,12 @@ function NeedForm({
     setVarietyConfirmed(Boolean(result.variety));
     setStructured(true);
     setDirty(false);
-    setNotice(
-      "粮掌柜已整理采购条件，请核对下方表单；未提及的条件留空，请补充后确认。",
-    );
+    setNotice("");
   }
   return (
-    <>
+    <div className="pw-need-form">
       <label className="pw-input-label" htmlFor="purchase-request">
-        你想买什么粮？
+        描述需求
       </label>
       <div className="pw-request">
         <textarea
@@ -702,7 +733,6 @@ function NeedForm({
           placeholder={`例如：${EXAMPLE}`}
         />
         <div>
-          <span>品种、数量、交期、预算，一句话说清</span>
           <div className="pw-inline-actions">
             <Button
               secondary
@@ -714,7 +744,7 @@ function NeedForm({
             >
               填入示例
             </Button>
-            <Button onClick={parse}>整理采购需求</Button>
+            <Button onClick={parse}>{structured && dirty ? "重新整理" : "整理需求"}</Button>
           </div>
         </div>
       </div>
@@ -727,17 +757,17 @@ function NeedForm({
         <>
           {dirty && (
             <Info warning>
-              需求描述已修改，请先重新整理，避免按旧条件采购。
+              描述已修改，请重新整理。
             </Info>
           )}
           <div className="pw-section-top pw-form-heading">
-            <h3>确认采购条件</h3>
-            <span className="pw-tag">商城 · 区域现货采购</span>
+            <h3>采购条件</h3>
           </div>
           <div className="pw-fields">
             <label>
               粮食品种
               <select
+                {...fieldAccessibility("variety")}
                 value={varietyConfirmed ? need.variety : ""}
                 onChange={(e) => {
                   setVarietyConfirmed(Boolean(e.target.value));
@@ -753,10 +783,12 @@ function NeedForm({
                 <option>玉米</option>
                 <option>小麦</option>
               </select>
+              {fieldError("variety")}
             </label>
             <label>
               采购数量（吨）
               <input
+                {...fieldAccessibility("quantity")}
                 type="number"
                 min="1"
                 max="1200"
@@ -765,10 +797,12 @@ function NeedForm({
                   onChange({ ...need, quantity: Number(e.target.value) })
                 }
               />
+              {fieldError("quantity")}
             </label>
             <label>
               到货地区
               <select
+                {...fieldAccessibility("destination")}
                 value={need.destination}
                 onChange={(e) =>
                   onChange({ ...need, destination: e.target.value })
@@ -779,10 +813,12 @@ function NeedForm({
                 </option>
                 <option value="山东省潍坊市">山东省潍坊市</option>
               </select>
+              {fieldError("destination")}
             </label>
             <label>
               最晚到货（天内）
               <input
+                {...fieldAccessibility("days")}
                 type="number"
                 min="1"
                 step="1"
@@ -791,10 +827,12 @@ function NeedForm({
                   onChange({ ...need, days: Number(e.target.value) })
                 }
               />
+              {fieldError("days")}
             </label>
             <label>
               到厂预算上限（元/吨）
               <input
+                {...fieldAccessibility("budget")}
                 type="number"
                 min="1"
                 value={need.budget || ""}
@@ -802,10 +840,12 @@ function NeedForm({
                   onChange({ ...need, budget: Number(e.target.value) })
                 }
               />
+              {fieldError("budget")}
             </label>
             <label>
               库存可用天数
               <input
+                {...fieldAccessibility("stockDays")}
                 aria-label="库存可用天数"
                 type="number"
                 min="1"
@@ -816,6 +856,7 @@ function NeedForm({
                   onChange({ ...need, stockDays: Number(e.target.value) })
                 }
               />
+              {fieldError("stockDays")}
             </label>
             <div className="pw-static-field">
               <span>质量要求</span>
@@ -823,189 +864,18 @@ function NeedForm({
               <small>水分 ≤ 14% · 杂质 ≤ 1%</small>
             </div>
           </div>
-          {!valid && (
-            <Info warning>
-              请补全粮种、到货地区、数量、交期、预算与库存天数（1–365
-              天）。当前单笔区域采购支持 1–1,200 吨。
-            </Info>
-          )}
           <div className="pw-action-bar">
-            <p>确认后，瞻小二将结合到货地区、粮种和库存天数研判采购时机。</p>
             <Button onClick={() => onStart(need)} disabled={!valid}>
-              确认需求，研判行情 →
+              确认，查看行情
             </Button>
           </div>
         </>
       )}
-    </>
+    </div>
   );
 }
 
-function Qualification({
-  purchase,
-  readonly,
-  update,
-  onNext,
-  onProgress,
-}: {
-  purchase: Purchase;
-  readonly: boolean;
-  update(patch: Partial<Purchase>): void;
-  onNext(): void;
-  onProgress(value: number | null): void;
-}) {
-  const [checked, setChecked] = useState(purchase.qualified ? 6 : 0);
-  const [running, setRunning] = useState(false);
-  const timer = useRef<ReturnType<typeof setInterval> | null>(null);
-  const fundsAvailable =
-    purchase.need.quantity * purchase.need.budget * 0.1 <= 800000;
-  useEffect(
-    () => () => {
-      if (timer.current) clearInterval(timer.current);
-    },
-    [],
-  );
-  function check() {
-    if (running) return;
-    setRunning(true);
-    setChecked(0);
-    onProgress(0);
-    let count = 0;
-    timer.current = setInterval(() => {
-      count += 1;
-      setChecked(count);
-      onProgress(count);
-      if (count === 6) {
-        clearInterval(timer.current!);
-        timer.current = null;
-        setRunning(false);
-        update({
-          qualified: Boolean(purchase.documentName) && fundsAvailable,
-          qualificationChecked: true,
-        });
-        onProgress(null);
-      }
-    }, 230);
-  }
-  const checks = [
-    ["注册入驻", "企业档案已建立"],
-    ["营业执照", "企业名称与主体信息一致"],
-    ["经办人授权书", purchase.documentName || "缺少本次采购经办人授权书"],
-    ["风险预警", "当前企业无禁止交易记录"],
-    ["资金账户", "企业对公账户已关联"],
-    [
-      "保证金",
-      `可用额度 800,000 元；本单预留上限 ${formatMoney(purchase.need.quantity * purchase.need.budget * 0.1)} 元`,
-    ],
-  ];
-  return (
-    <>
-      <div className="pw-check-columns">
-        {[0, 1].map((column) => (
-          <section key={column}>
-            <h3>
-              {column === 0 ? "安小二 · 企业资质" : "钱小二 · 交易条件"}
-              <span className="pw-tag">并行核验</span>
-            </h3>
-            {checks
-              .slice(column * 3, column * 3 + 3)
-              .map(([label, description], i) => {
-                const index = column * 3 + i;
-                const finished = checked > i * 2 + column;
-                const missing =
-                  (index === 2 && !purchase.documentName) ||
-                  (index === 5 && !fundsAvailable);
-                return (
-                  <div className="pw-check-row" key={label}>
-                    <span
-                      className={`pw-check-icon ${finished ? (missing ? "is-warning" : "is-done") : ""}`}
-                    >
-                      {finished ? (missing ? "!" : "✓") : "·"}
-                    </span>
-                    <div>
-                      <strong>{label}</strong>
-                      <small>{description}</small>
-                    </div>
-                    <span>
-                      {finished
-                        ? missing
-                          ? "待补充"
-                          : "通过"
-                        : running
-                          ? "核验中"
-                          : "待核验"}
-                    </span>
-                  </div>
-                );
-              })}
-          </section>
-        ))}
-      </div>
-      {checked === 6 && !purchase.qualified && (
-        <Info warning>
-          {!fundsAvailable
-            ? "保证金预留上限超过账户可用额度，请新建采购并调整数量或预算。"
-            : "经办人授权书尚未核验。补充后重跑即可，已填写的采购需求会保留。"}
-        </Info>
-      )}
-      {!readonly && !purchase.qualified && (
-        <div className="pw-material">
-          <div>
-            <strong>补充经办人授权书</strong>
-            <p>
-              {purchase.documentName ||
-                "可使用企业已有资料，也可上传新的授权文件。"}
-            </p>
-          </div>
-          <div className="pw-inline-actions">
-            <Button
-              secondary
-              disabled={running}
-              onClick={() =>
-                update({ documentName: "企业档案 / 采购经办授权书.pdf" })
-              }
-            >
-              使用企业档案材料
-            </Button>
-            <label className="pw-file-button">
-              上传材料
-              <input
-                aria-label="上传经办人授权书"
-                type="file"
-                accept=".pdf,.jpg,.jpeg,.png"
-                disabled={running}
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) update({ documentName: file.name });
-                }}
-              />
-            </label>
-          </div>
-        </div>
-      )}
-      {!readonly && (
-        <div className="pw-action-bar">
-          <p>
-            {purchase.qualified
-              ? "6 项核验通过，可以选粮点价。"
-              : "核验通过后才能进入选粮点价。"}
-          </p>
-          {purchase.qualified ? (
-            <Button onClick={onNext}>核验通过，去选粮 →</Button>
-          ) : (
-            <Button onClick={check} disabled={running}>
-              {running
-                ? "小二正在并行核验…"
-                : checked
-                  ? "重新核验"
-                  : "开始并行核验"}
-            </Button>
-          )}
-        </div>
-      )}
-    </>
-  );
-}
+// Qualification 已提取到 ./Qualification.tsx
 
 function Sources({
   purchase,
@@ -1020,114 +890,401 @@ function Sources({
 }) {
   const sources = purchaseSources(purchase);
   const selected = purchaseTotals(purchase).source;
+  const search = sourceSearchResult(purchase.need);
+  const recommendedIndex = Math.max(
+    0,
+    sources.findIndex((source) => purchase.need.quantity <= source.stock),
+  );
+  const recommended = sources[recommendedIndex];
+  function evidenceFor(source: (typeof sources)[number], index: number) {
+    return (
+      source.evidence ?? {
+        quoteNo: purchase.originMission
+          ? `原任务 ${purchase.id}`
+          : `BJ-${source.id.toUpperCase()}-${String(index + 1).padStart(3, "0")}`,
+        updatedAt: purchase.originMission ? "随已确认方案带入" : "今日已更新",
+        priceBasis: purchase.originMission
+          ? "沿用原方案价格口径"
+          : "含税出库价",
+        stockCheckedAt: purchase.originMission ? "原方案确认时" : "今日已核验",
+        impurities: "以质检单为准",
+        bulkDensity: "以质检单为准",
+        moldyKernels: "以质检单为准",
+        inspectionReportNo: purchase.originMission
+          ? "原方案专业结果"
+          : "待查看质检单",
+        inspectedAt: "方案确认时",
+        fulfilledOrders: 0,
+        fulfillmentRate: "已核验",
+        disputes: 0,
+        benchmarkPrice: source.price,
+        benchmarkLow: source.price - 20,
+        benchmarkHigh: source.price + 30,
+        sampleSize: purchase.originMission ? 1 : 8,
+        risk: purchase.originMission
+          ? "当前粮源来自已确认方案，点价前请复核当前报价与可供数量。"
+          : "点价前需再次确认实时报价与可供数量。",
+      }
+    );
+  }
+
+  function selectSource(sourceId: string) {
+    update({
+      sourceId,
+      transportId: purchaseTransports(purchase)[0].id,
+      reviewed: false,
+    });
+  }
+
+  function rejectionDetail(
+    item: (typeof search.examples)[number],
+  ): string {
+    if (item.reason === "可供数量不足")
+      return `可供 ${formatMoney(item.record.stock)} 吨，低于本次 ${formatMoney(purchase.need.quantity)} 吨需求`;
+    if (item.reason === "报价未更新")
+      return "今日尚未更新报价，需供应方重新确认";
+    if (item.reason === "预计交期超限")
+      return `预计 ${item.record.leadDays} 天到货，超过 ${purchase.need.days} 天交期`;
+    return item.reason;
+  }
+
+  const recommendedEvidence = evidenceFor(recommended, recommendedIndex);
+  const leadDaysFor = (sourceId: string, fallbackIndex: number) =>
+    search.eligible.find((item) => item.id === sourceId)?.leadDays ??
+    Math.min(purchase.need.days, 3 + fallbackIndex);
+  const recommendedLeadDays = leadDaysFor(recommended.id, recommendedIndex);
+  const recommendedCoverage =
+    recommended.stock / Math.max(1, purchase.need.quantity);
+  const recommendedPriceDelta =
+    recommendedEvidence.benchmarkPrice - recommended.price;
+  const selectedIndex = Math.max(
+    0,
+    sources.findIndex((source) => source.id === selected.id),
+  );
+  const selectedEvidence = evidenceFor(selected, selectedIndex);
+  const benchmarkDelta = selected.price - selectedEvidence.benchmarkPrice;
+  const benchmarkPercent =
+    selectedEvidence.benchmarkPrice > 0
+      ? (benchmarkDelta / selectedEvidence.benchmarkPrice) * 100
+      : 0;
+  const range = Math.max(
+    1,
+    selectedEvidence.benchmarkHigh - selectedEvidence.benchmarkLow,
+  );
+  const selectedPosition = Math.min(
+    100,
+    Math.max(
+      0,
+      ((selected.price - selectedEvidence.benchmarkLow) / range) * 100,
+    ),
+  );
+
   return (
     <>
-      <Info>
-        粮小二已按二等{purchase.need.variety}、{purchase.need.quantity} 吨与
-        {purchase.need.destination}
-        到货区域整理候选粮源。选择后将继续比较完整到厂成本。
-      </Info>
-      <div className="pw-sources">
-        {sources.map((source, index) => (
+      <section className="pw-source-scope" aria-label="本次粮源匹配范围">
+        <div>
+          <span>采购条件</span>
+          <strong>
+            二等{purchase.need.variety} · {formatMoney(purchase.need.quantity)} 吨
+          </strong>
+          <small>
+            到货区域 {purchase.need.destination} · {purchase.need.days} 天内
+          </small>
+        </div>
+        <div className="pw-source-scope-result">
+          <span>{purchase.originMission ? "方案来源" : "数据来源"}</span>
+          <strong>
+            {purchase.originMission
+              ? "沿用原任务已确认粮源"
+              : search.channels
+                  .map((item) => `${item.channel} ${item.count}`)
+                  .join(" · ")}
+          </strong>
+          {purchase.originMission && <small>{purchase.id}</small>}
+        </div>
+      </section>
+
+      {!purchase.originMission && (
+        <section className="pw-source-funnel">
+          <div className="pw-source-funnel-heading">
+            <strong>筛选结果</strong>
+            <small>今日 10:20 更新</small>
+          </div>
+          <div
+            className="pw-source-funnel-flow"
+            aria-label={`${search.records.length} 个候选粮源，经准入筛选淘汰 ${search.rejected.length} 个，${search.eligible.length} 个合格粮源参与多维比选，最终推荐 ${Math.min(3, search.eligible.length)} 个`}
+          >
+            <div className="pw-source-funnel-node">
+              <span>候选粮源</span>
+              <strong>
+                {search.records.length}<small>个</small>
+              </strong>
+            </div>
+            <div className="pw-source-funnel-link">
+              <span>准入筛选</span>
+              <small>淘汰 {search.rejected.length} 个</small>
+              <i aria-hidden="true">→</i>
+            </div>
+            <div className="pw-source-funnel-node is-qualified">
+              <span>合格粮源</span>
+              <strong>
+                {search.eligible.length}<small>个</small>
+              </strong>
+            </div>
+            <div className="pw-source-funnel-link">
+              <span>多维比选</span>
+              <small>价 · 质 · 供 · 履 · 运</small>
+              <i aria-hidden="true">→</i>
+            </div>
+            <div className="pw-source-funnel-node is-ranked">
+              <span>推荐结果</span>
+              <strong>
+                {Math.min(3, search.eligible.length)}<small>个</small>
+              </strong>
+            </div>
+          </div>
+          <div className="pw-source-filter-chips" aria-label="硬性筛选条件">
+            <span>等级 二等及以上</span>
+            <span>可供 ≥ {formatMoney(purchase.need.quantity)} 吨</span>
+            <span>当日报价</span>
+            <span>交期 ≤ {purchase.need.days} 天</span>
+          </div>
+          <details className="pw-source-filter-details">
+            <summary>
+              筛选明细
+              <span>{search.rejected.length} 个未通过</span>
+            </summary>
+            <div className="pw-source-filter-body">
+              <div className="pw-source-reason-counts">
+                {search.reasons.map((item) => (
+                  <div key={item.reason}>
+                    <span>{item.reason}</span>
+                    <strong>{item.count}</strong>
+                  </div>
+                ))}
+              </div>
+              <div className="pw-source-rejected-examples">
+                <span>典型淘汰记录</span>
+                {search.examples.map((item) => (
+                  <div key={item.record.id}>
+                    <strong>{item.record.depot}</strong>
+                    <p>{rejectionDetail(item)}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </details>
+        </section>
+      )}
+
+      <section className="pw-source-featured" data-selected={recommended.id === selected.id}>
+        <div className="pw-source-featured-head">
+          <div>
+            <span className="pw-source-kicker">优先推荐</span>
+            <h3>{recommended.depot}</h3>
+            <p>{recommended.name}</p>
+          </div>
+          <div className="pw-source-rank-badge" aria-label="推荐序位第一">
+            <span>推荐序位</span>
+            <strong>01</strong>
+          </div>
+        </div>
+
+        <div className="pw-source-match-facts" aria-label="粮源匹配依据">
+          <div data-dimension="price">
+            <span>价格竞争力</span>
+            <strong>{formatMoney(recommended.price)} 元/吨</strong>
+            <small>
+              较近30日中位价{recommendedPriceDelta >= 0 ? "低" : "高"} {formatMoney(Math.abs(recommendedPriceDelta))} 元
+            </small>
+          </div>
+          <div data-dimension="quality">
+            <span>质量指标</span>
+            <strong>二等 · 水分 {recommended.moisture}</strong>
+            <small>杂质 {recommendedEvidence.impurities} · 容重 {recommendedEvidence.bulkDensity}</small>
+          </div>
+          <div data-dimension="supply">
+            <span>数量覆盖</span>
+            <strong>{recommendedCoverage.toFixed(1)} 倍</strong>
+            <small>可供 {formatMoney(recommended.stock)} 吨 · 需求 {formatMoney(purchase.need.quantity)} 吨</small>
+          </div>
+          <div data-dimension="fulfillment">
+            <span>履约记录</span>
+            <strong>{recommendedEvidence.fulfillmentRate}</strong>
+            <small>近12月 {recommendedEvidence.fulfilledOrders || "多"} 笔 · 争议 {recommendedEvidence.disputes} 笔</small>
+          </div>
+          <div data-dimension="delivery">
+            <span>交货响应</span>
+            <strong>预计 {recommendedLeadDays} 天</strong>
+            <small>支持 {purchase.need.destination} 区域发运</small>
+          </div>
+        </div>
+
+        <div className="pw-source-caution">
+          <span>关注</span>
+          <p>{recommendedEvidence.risk}</p>
+        </div>
+
+        <div className="pw-source-featured-foot">
+          <div>
+            <span>报价编号 {recommendedEvidence.quoteNo}</span>
+            <span>报价更新时间 {recommendedEvidence.updatedAt}</span>
+          </div>
           <button
             type="button"
-            className="pw-source"
-            data-selected={source.id === purchase.sourceId}
-            disabled={readonly || purchase.need.quantity > source.stock}
-            key={source.id}
-            onClick={() =>
-              update({
-                sourceId: source.id,
-                transportId: purchaseTransports(purchase)[0].id,
-                reviewed: false,
-              })
+            className="pw-source-select-button"
+            disabled={
+              readonly || purchase.need.quantity > recommended.stock
             }
-            aria-pressed={source.id === purchase.sourceId}
+            onClick={() => selectSource(recommended.id)}
           >
-            <div className="pw-section-top">
-              <span className="pw-tag">
-                {index === 0
-                  ? "粮小二优先建议"
-                  : index === 1
-                    ? "同级备选"
-                    : "本地补库"}
-              </span>
-              <span className="pw-radio">
-                {source.id === purchase.sourceId ? "●" : "○"}
-              </span>
-            </div>
-            <h3>{source.depot}</h3>
-            <p className="pw-source-name">{source.name}</p>
-            <div className="pw-price">
-              {formatMoney(source.price)}
+            {recommended.id === selected.id ? "✓ 已选择" : "选择此粮源"}
+          </button>
+        </div>
+      </section>
+
+      <section className="pw-source-compare">
+        <div className="pw-source-section-heading">
+          <h3>候选对比</h3>
+          <small>含税出库价 · 不含运输</small>
+        </div>
+        <div className="pw-source-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>粮库 / 供应方</th>
+                <th>推荐序位</th>
+                <th>出库价</th>
+                <th>质量</th>
+                <th>可供量</th>
+                <th>预计交货</th>
+                <th>履约率</th>
+                <th>报价更新时间</th>
+                <th><span className="sr-only">选择</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              {sources.map((source, index) => {
+                const evidence = evidenceFor(source, index);
+                const leadDays = leadDaysFor(source.id, index);
+                const unavailable = purchase.need.quantity > source.stock;
+                const isSelected = source.id === selected.id;
+                const eligibleRank = sources
+                  .filter((item) => item.stock >= purchase.need.quantity)
+                  .findIndex((item) => item.id === source.id);
+                return (
+                  <tr key={source.id} data-selected={isSelected} data-disabled={unavailable}>
+                    <td>
+                      <strong>{source.depot}</strong>
+                      <small>{source.name}</small>
+                    </td>
+                    <td>
+                      <strong className="pw-source-table-rank">
+                        {eligibleRank === 0 ? "优先" : eligibleRank > 0 ? `备选 ${eligibleRank}` : "—"}
+                      </strong>
+                      <small>{eligibleRank >= 0 ? `第 ${eligibleRank + 1} 位` : "数量不足"}</small>
+                    </td>
+                    <td>
+                      <strong>{formatMoney(source.price)}</strong>
+                      <small>元/吨</small>
+                    </td>
+                    <td>
+                      <strong>二等 · {source.moisture}</strong>
+                      <small>杂质 {evidence.impurities}</small>
+                    </td>
+                    <td>
+                      <strong>{formatMoney(source.stock)} 吨</strong>
+                      <small>{evidence.stockCheckedAt}</small>
+                    </td>
+                    <td>
+                      <strong>{leadDays} 天</strong>
+                      <small>满足 {purchase.need.days} 天交期</small>
+                    </td>
+                    <td>
+                      <strong>{evidence.fulfillmentRate}</strong>
+                      <small>争议 {evidence.disputes} 笔</small>
+                    </td>
+                    <td>
+                      <strong>{evidence.updatedAt}</strong>
+                      <small>{evidence.quoteNo}</small>
+                    </td>
+                    <td>
+                      <button
+                        type="button"
+                        className="pw-source-row-select"
+                        aria-label={`选择${source.depot}`}
+                        aria-pressed={isSelected}
+                        disabled={readonly || unavailable}
+                        onClick={() => selectSource(source.id)}
+                      >
+                        {unavailable ? "数量不足" : isSelected ? "已选" : "选择"}
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {!purchase.originMission && (
+        <section className="pw-source-benchmark">
+          <div className="pw-source-section-heading">
+            <h3>近30日成交基准</h3>
+            <small>
+              同区域 · 二等{purchase.need.variety} · {selectedEvidence.sampleSize} 笔
+            </small>
+          </div>
+          <div className="pw-benchmark-body">
+            <div className="pw-benchmark-median">
+              <span>成交中位价</span>
+              <strong>{formatMoney(selectedEvidence.benchmarkPrice)}</strong>
               <small>元/吨</small>
             </div>
-            <p className="pw-muted">出库报价 · 不含运输</p>
-            <dl>
-              <div>
-                <dt>等级 / 水分</dt>
-                <dd>二等 / {source.moisture}</dd>
+            <div className="pw-benchmark-range">
+              <div className="pw-benchmark-track">
+                <i style={{ left: `${selectedPosition}%` }} />
               </div>
               <div>
-                <dt>可供数量</dt>
-                <dd>{formatMoney(source.stock)} 吨</dd>
+                <span>{formatMoney(selectedEvidence.benchmarkLow)}</span>
+                <span>可比成交区间</span>
+                <span>{formatMoney(selectedEvidence.benchmarkHigh)}</span>
               </div>
-            </dl>
-            <p className="pw-source-reason">
-              {purchase.need.quantity > source.stock
-                ? "可供数量不足，暂不可选"
-                : source.reason}
-            </p>
-          </button>
-        ))}
-      </div>
-      {!purchase.originMission && (
-        <details className="pw-details">
-          <summary>查看同区域历史成交参考</summary>
-          <div className="pw-table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>成交时间</th>
-                  <th>品种等级</th>
-                  <th>数量</th>
-                  <th>出库单价</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>前一交易日</td>
-                  <td>二等{purchase.need.variety}</td>
-                  <td>180 吨</td>
-                  <td>{formatMoney(sources[0].price + 10)} 元/吨</td>
-                </tr>
-                <tr>
-                  <td>前三个交易日</td>
-                  <td>二等{purchase.need.variety}</td>
-                  <td>260 吨</td>
-                  <td>{formatMoney(sources[0].price + 20)} 元/吨</td>
-                </tr>
-              </tbody>
-            </table>
+            </div>
+            <div className={`pw-benchmark-delta${benchmarkDelta <= 0 ? " is-good" : " is-high"}`}>
+              <span>当前所选</span>
+              <strong>
+                {benchmarkDelta <= 0 ? "低" : "高"} {formatMoney(Math.abs(benchmarkDelta))} 元/吨
+              </strong>
+              <small>{Math.abs(benchmarkPercent).toFixed(1)}% · {selectedEvidence.sampleSize} 笔样本</small>
+            </div>
           </div>
-          <p className="pw-muted">
-            历史成交用于辅助判断，不代表当前可成交价格。
+          <p className="pw-benchmark-note">
+            参考价不等于当前成交价。
           </p>
-        </details>
+        </section>
       )}
+
       {!readonly && (
-        <div className="pw-action-bar">
-          <p>
-            已选 {selected.depot} · {purchase.need.quantity} 吨<br />
-            <strong>
-              粮款 ¥ {formatMoney(selected.price * purchase.need.quantity)}
-            </strong>
-          </p>
+        <div className="pw-source-confirm">
+          <div className="pw-source-confirm-main">
+            <span>本次点价</span>
+            <strong>{selected.depot} · {formatMoney(purchase.need.quantity)} 吨</strong>
+            <small>
+              报价 {selectedEvidence.quoteNo} · 更新于 {selectedEvidence.updatedAt}
+            </small>
+          </div>
+          <div className="pw-source-confirm-amount">
+            <span>粮款合计</span>
+            <strong>¥ {formatMoney(selected.price * purchase.need.quantity)}</strong>
+            <small>{formatMoney(selected.price)} 元/吨 · 不含运输</small>
+          </div>
           <Button
             disabled={purchase.need.quantity > selected.stock}
             onClick={onNext}
           >
-            确认点价，安排提货 →
+            确认本次点价 →
           </Button>
         </div>
       )}
@@ -1148,18 +1305,80 @@ function Transport({
 }) {
   const totals = purchaseTotals(purchase);
   const pickup = purchase.transportId === "pickup";
+  const allOptions = purchaseTransports(purchase);
+  const logisticsSearch = logisticsSearchResult(purchase);
   const options = purchaseTransports(purchase).filter(
     (item) =>
       item.mode === (pickup ? "pickup" : "delivery") &&
-      !(purchase.sourceId === "weifang" && item.id === "combined"),
+      !(purchase.sourceId === "weifang" && item.id === "combined") &&
+      (pickup ||
+        Boolean(purchase.originMission) ||
+        logisticsSearch.responded.some(
+          (candidate) =>
+            candidate.mode === (item.id === "combined" ? "combined" : "road"),
+        )),
   );
-  const feasible =
-    totals.days <= purchase.need.days && totals.unit <= purchase.need.budget;
+  const onTime = totals.days <= purchase.need.days;
+  const withinBudget = totals.unit <= purchase.need.budget;
+  const feasible = onTime && withinBudget;
+  const selectedCapacity = totals.transport.loadCapacity ?? 30;
+  const selectedLoadUnit = totals.transport.loadUnit ?? "车次";
+  const selectedLoads = Math.ceil(
+    purchase.need.quantity / Math.max(1, selectedCapacity),
+  );
+  const roadOption = options.find((option) => option.id === "road");
+  const roadLogistics = roadOption
+    ? purchaseTotals({ ...purchase, transportId: roadOption.id }).logistics
+    : 0;
+  const assessedOptions = options
+    .filter((option) => option.mode === "delivery")
+    .map((option) => {
+      const cost = purchaseTotals({ ...purchase, transportId: option.id });
+      const responseCount = logisticsSearch.responded.filter(
+        (candidate) =>
+          candidate.mode === (option.id === "combined" ? "combined" : "road"),
+      ).length;
+      const bufferDays = Math.max(0, purchase.need.days - cost.days);
+      const historicalOnTime = Number.parseFloat(option.onTimeRate ?? "95");
+      const predictedOnTime = Math.round(
+        Math.min(
+          99,
+          Math.max(
+            80,
+            historicalOnTime + Math.min(bufferDays, 4) * 0.25 -
+              (option.id === "combined" ? 0.8 : 0),
+          ),
+        ),
+      );
+      const savings = Math.max(0, roadLogistics - cost.logistics);
+      return {
+        option,
+        cost,
+        responseCount,
+        bufferDays,
+        predictedOnTime,
+        savings,
+        weatherRisk: "低",
+        cargoRisk: option.id === "combined" ? "中低" : "低",
+        costDeviation: option.id === "combined" ? "±5%" : "±3%",
+        reason:
+          option.id === "combined"
+            ? `预计节省 ${formatMoney(savings)} 元运输费用，保留 ${bufferDays} 天交期余量`
+            : `直达无中转，${responseCount} 家承运商响应，预计 ${cost.days} 天到货`,
+      };
+    });
+  const recommendedAssessment =
+    assessedOptions.find(
+      (item) =>
+        item.option.id === "combined" &&
+        item.bufferDays >= 2 &&
+        item.savings > 0,
+    ) ?? assessedOptions.find((item) => item.option.id === "road") ?? assessedOptions[0];
   return (
     <>
       {purchase.originMission && (
         <Info>
-          运输方式、运价与时效沿用本任务已确认的运小二结果。如需更换运输方式，请回到原方案重新研判。
+          本任务已锁定运输方案；如需更换方式，请回到原方案重新研判。
         </Info>
       )}
       <div className="pw-segment" aria-label="提货方式">
@@ -1169,12 +1388,13 @@ function Transport({
           disabled={readonly}
           onClick={() =>
             update({
-              transportId: purchaseTransports(purchase)[0].id,
+              transportId: allOptions[0].id,
               reviewed: false,
             })
           }
         >
-          安排配送<span>运小二找运力，送到工厂</span>
+          <strong>平台配送</strong>
+          <span>{allOptions.filter((item) => item.mode === "delivery").length} 个可用方案</span>
         </button>
         <button
           type="button"
@@ -1182,53 +1402,261 @@ function Transport({
           disabled={readonly || Boolean(purchase.originMission)}
           onClick={() => update({ transportId: "pickup", reviewed: false })}
         >
-          自行提货<span>自主安排车辆，预约到库</span>
+          <strong>自行提货</strong>
+          <span>自备车辆到库装运</span>
         </button>
       </div>
-      <div className="pw-route">
-        <span>{totals.source.depot}</span>
-        <div>
-          <small>{pickup ? "自提运输" : "区域粮食运输"}</small>
-          <span>────────→</span>
+      <div className="pw-route" aria-label="运输线路">
+        <div className="pw-route-endpoint">
+          <span>起运库点</span>
+          <strong>{totals.source.depot}</strong>
         </div>
-        <span>{purchase.need.destination}</span>
+        <div className="pw-route-line">
+          <small>{formatMoney(purchase.need.quantity)} 吨 · {totals.transport.label}</small>
+          <i aria-hidden="true" />
+          <span>{pickup ? "计划" : "预计"} {totals.days} 天</span>
+        </div>
+        <div className="pw-route-endpoint is-destination">
+          <span>收货区域</span>
+          <strong>{purchase.need.destination}</strong>
+        </div>
       </div>
+      {!pickup && !purchase.originMission && (
+        <section className="pw-source-funnel pw-logistics-funnel">
+          <div className="pw-source-funnel-heading">
+            <strong>运力匹配</strong>
+            <small>今日 10:35 更新</small>
+          </div>
+          <div
+            className="pw-source-funnel-flow"
+            aria-label={`${logisticsSearch.records.length} 个候选运力，经资质、线路、运力和交期筛选，收到 ${logisticsSearch.responded.length} 个有效报价，形成 ${options.length} 个运输方案`}
+          >
+            <div className="pw-source-funnel-node">
+              <span>候选运力</span>
+              <strong>{logisticsSearch.records.length}<small>个</small></strong>
+            </div>
+            <div className="pw-source-funnel-link">
+              <span>准入筛选</span>
+              <small>淘汰 {logisticsSearch.records.length - logisticsSearch.qualified.length} 个</small>
+              <i aria-hidden="true">→</i>
+            </div>
+            <div className="pw-source-funnel-node is-qualified">
+              <span>有效报价</span>
+              <strong>{logisticsSearch.responded.length}<small>个</small></strong>
+            </div>
+            <div className="pw-source-funnel-link">
+              <span>智能匹配</span>
+              <small>价 · 时 · 运力 · 风险</small>
+              <i aria-hidden="true">→</i>
+            </div>
+            <div className="pw-source-funnel-node is-ranked">
+              <span>可选方案</span>
+              <strong>{options.length}<small>个</small></strong>
+            </div>
+          </div>
+          <div className="pw-source-filter-chips" aria-label="运力准入条件">
+            <span>承运商经营范围</span>
+            <span>车辆与司机资质</span>
+            <span>散粮运输适配</span>
+            <span>线路覆盖</span>
+            <span>运力与交期</span>
+            <span>当日报价</span>
+          </div>
+          <details className="pw-source-filter-details">
+            <summary>
+              筛选明细
+              <span>
+                {logisticsSearch.qualified.length} 个准入 · {logisticsSearch.responded.length} 个完成报价
+              </span>
+            </summary>
+            <div className="pw-logistics-filter-body">
+              {logisticsSearch.reasons.map((item) => (
+                <div key={item.reason}>
+                  <span>{item.reason}</span>
+                  <strong>{item.count}</strong>
+                </div>
+              ))}
+              <div>
+                <span>准入后未完成当日报价</span>
+                <strong>{logisticsSearch.qualified.length - logisticsSearch.responded.length}</strong>
+              </div>
+            </div>
+          </details>
+        </section>
+      )}
+      {!pickup && !purchase.originMission && recommendedAssessment && (
+        <section className="pw-transport-assessment">
+          <div className="pw-transport-assessment-head">
+            <div>
+              <span>AI 动态研判</span>
+              <h3>建议采用{recommendedAssessment.option.label}</h3>
+              <p>{recommendedAssessment.reason}</p>
+            </div>
+            <button
+              type="button"
+              disabled={readonly || purchase.transportId === recommendedAssessment.option.id}
+              onClick={() =>
+                update({
+                  transportId: recommendedAssessment.option.id,
+                  reviewed: false,
+                })
+              }
+            >
+              {purchase.transportId === recommendedAssessment.option.id
+                ? "已采用建议"
+                : "采用建议方案"}
+            </button>
+          </div>
+          <div className="pw-transport-assessment-metrics">
+            <div>
+              <span>准时到货预测</span>
+              <strong>{recommendedAssessment.predictedOnTime}%</strong>
+              <small>历史履约 + 交期余量</small>
+            </div>
+            <div>
+              <span>天气路况风险</span>
+              <strong data-risk="low">{recommendedAssessment.weatherRisk}</strong>
+              <small>未来72小时无高影响预警</small>
+            </div>
+            <div>
+              <span>粮食货损风险</span>
+              <strong data-risk={recommendedAssessment.cargoRisk === "低" ? "low" : "medium"}>
+                {recommendedAssessment.cargoRisk}
+              </strong>
+              <small>{recommendedAssessment.option.id === "combined" ? "含一次中转" : "直达无中转"}</small>
+            </div>
+            <div>
+              <span>成本偏差风险</span>
+              <strong>{recommendedAssessment.costDeviation}</strong>
+              <small>依据当前报价口径估算</small>
+            </div>
+            <div>
+              <span>备用承运能力</span>
+              <strong>{Math.max(0, recommendedAssessment.responseCount - 1)} 家</strong>
+              <small>可用于异常补充调度</small>
+            </div>
+          </div>
+          <div className="pw-transport-assessment-foot">
+            <span>研判依据</span>
+            <p>平台同类运单、当前询价响应、交期余量及公路气象预警</p>
+            <small>今日 10:40 更新 · 发运前持续复核</small>
+          </div>
+        </section>
+      )}
       <div className="pw-transport-options">
-        {options.map((option) => {
+        {options.map((option, index) => {
           const cost = purchaseTotals({ ...purchase, transportId: option.id });
+          const optionPickup = option.id === "pickup";
+          const loadCapacity = option.loadCapacity ?? 30;
+          const loadUnit = option.loadUnit ?? "车次";
+          const loads = Math.ceil(
+            purchase.need.quantity / Math.max(1, loadCapacity),
+          );
+          const selected = purchase.transportId === option.id;
+          const responseCount = logisticsSearch.responded.filter(
+            (candidate) =>
+              candidate.mode === (option.id === "combined" ? "combined" : "road"),
+          ).length;
+          const assessment = assessedOptions.find(
+            (item) => item.option.id === option.id,
+          );
+          const recommended = recommendedAssessment?.option.id === option.id;
           return (
             <button
               type="button"
               key={option.id}
               className="pw-transport-option"
-              data-selected={purchase.transportId === option.id}
-              aria-pressed={purchase.transportId === option.id}
+              data-selected={selected}
+              data-recommended={recommended}
+              aria-pressed={selected}
               disabled={readonly}
               onClick={() =>
                 update({ transportId: option.id, reviewed: false })
               }
             >
-              <div className="pw-section-top">
-                <h3>{option.label}</h3>
-                <span className="pw-radio">
-                  {purchase.transportId === option.id ? "●" : "○"}
-                </span>
+              <div className="pw-transport-option-head">
+                <div>
+                  <span>运输方案 {String(index + 1).padStart(2, "0")}</span>
+                  <h3>{option.label}</h3>
+                </div>
+                <b>
+                  {selected && recommended
+                    ? "已选 · AI建议"
+                    : selected
+                      ? "已选择"
+                      : recommended
+                        ? "AI建议"
+                        : "选择"}
+                </b>
               </div>
-              <p>{option.description}</p>
-              <div className="pw-transport-numbers">
-                <strong>
-                  {cost.freight}
-                  <small>元/吨</small>
-                </strong>
-                <strong>
-                  {cost.days}
-                  <small>天到货</small>
-                </strong>
-                <strong>
-                  {formatMoney(cost.unit)}
-                  <small>元/吨到厂</small>
-                </strong>
+              {assessment && (
+                <div className="pw-transport-match-reason">
+                  <span>智能匹配</span>
+                  <p>{assessment.reason}</p>
+                </div>
+              )}
+              <div className="pw-transport-metrics">
+                <div>
+                  <span>{optionPickup ? "平台运费" : "运输单价"}</span>
+                  <strong>
+                    {optionPickup ? "不计费" : cost.freight}
+                    {!optionPickup && <small>元/吨</small>}
+                  </strong>
+                </div>
+                <div>
+                  <span>运输费用</span>
+                  <strong>{optionPickup ? "另行承担" : `¥ ${formatMoney(cost.logistics)}`}</strong>
+                </div>
+                <div>
+                  <span>{optionPickup ? "粮款单价" : "到厂单价"}</span>
+                  <strong>{formatMoney(cost.unit)}<small>元/吨</small></strong>
+                </div>
+                <div>
+                  <span>{optionPickup ? "计划周期" : "预计到货"}</span>
+                  <strong>{cost.days}<small>天</small></strong>
+                </div>
               </div>
+              <dl className="pw-transport-facts">
+                <div>
+                  <dt>运力安排</dt>
+                  <dd>{loads} {loadUnit} · {loadCapacity} 吨/{loadUnit}</dd>
+                </div>
+                <div>
+                  <dt>调度响应</dt>
+                  <dd>{option.dispatchWindow ?? "按实际运力确认"}</dd>
+                </div>
+                {!optionPickup && (
+                  <>
+                    <div>
+                      <dt>询价响应</dt>
+                      <dd>{responseCount} 家承运商完成当日报价</dd>
+                    </div>
+                    <div>
+                      <dt>历史履约</dt>
+                      <dd>近12月 {option.completedOrders ?? "—"} 单 · 准时率 {option.onTimeRate ?? "待核验"}</dd>
+                    </div>
+                    <div>
+                      <dt>合规核验</dt>
+                      <dd>{option.complianceNote ?? "派车后核验车辆与司机资质"}</dd>
+                    </div>
+                    <div>
+                      <dt>承运保障</dt>
+                      <dd>{option.protectionNote ?? "以运输合同约定为准"}</dd>
+                    </div>
+                  </>
+                )}
+                <div>
+                  <dt>费用口径</dt>
+                  <dd>{option.priceBasis ?? "以确认方案为准"}</dd>
+                </div>
+                <div>
+                  <dt>{optionPickup ? "平台报价" : "报价更新"}</dt>
+                  <dd>
+                    {option.quoteNo ? `${option.quoteNo} · ` : ""}
+                    {option.quoteUpdatedAt ?? "原方案确认时"}
+                  </dd>
+                </div>
+              </dl>
               {cost.days > purchase.need.days && (
                 <span className="pw-danger">超过本次交期</span>
               )}
@@ -1238,27 +1666,25 @@ function Transport({
       </div>
       {pickup && (
         <div className="pw-pickup-guide">
-          <h3>瞻小二 × 运小二 · 到库提货建议</h3>
+          <h3>自提执行清单</h3>
           <dl>
             <div>
-              <dt>车型与车次</dt>
+              <dt>车辆计划</dt>
               <dd>
-                按合规净载 30 吨规划，约{" "}
-                {Math.ceil(purchase.need.quantity / 30)}{" "}
-                车次；装车前复核车辆核载
+                {selectedLoads} {selectedLoadUnit} · 按 {selectedCapacity} 吨/{selectedLoadUnit}规划，装车前复核车辆核载
               </dd>
             </div>
             <div>
-              <dt>粮库营业时间</dt>
-              <dd>08:30–17:30，出发前联系库区确认</dd>
+              <dt>预约装车</dt>
+              <dd>库区作业时间 08:30–17:30，车辆到库前确认装车窗口</dd>
             </div>
             <div>
-              <dt>错峰预约</dt>
-              <dd>建议 09:00–11:00 分批到库，预留排队时间</dd>
+              <dt>随车材料</dt>
+              <dd>携带提货单、车辆及司机信息，按库区要求办理入场</dd>
             </div>
             <div>
-              <dt>天气与防护</dt>
-              <dd>出发前复核降雨预警，配备防雨篷布，装卸时注意防潮</dd>
+              <dt>货物防护</dt>
+              <dd>检查车厢清洁和防雨篷布，装卸及运输途中注意防潮</dd>
             </div>
           </dl>
         </div>
@@ -1272,11 +1698,20 @@ function Transport({
       )}
       {!readonly && (
         <div className="pw-action-bar">
-          <p>
-            预计总成本 <strong>¥ {formatMoney(totals.total)}</strong>
-            <br />
-            含粮款与{pickup ? "自组织运费估算" : "物流报价"}
-          </p>
+          <div className="pw-transport-summary">
+            <span>{pickup ? "本次平台应付粮款" : "预计到厂总成本"}</span>
+            <strong>¥ {formatMoney(totals.total)}</strong>
+            <small>
+              {pickup
+                ? `粮款 ${formatMoney(totals.unit)} 元/吨 · 自提运输费用未计入`
+                : `到厂 ${formatMoney(totals.unit)} 元/吨 · 运输费 ¥ ${formatMoney(totals.logistics)}`}
+            </small>
+            <div>
+              <b data-ok={withinBudget}>{withinBudget ? (pickup ? "粮款未超预算" : "预算内") : "超预算"}</b>
+              {pickup && <b data-ok="pending">自提费用另行核算</b>}
+              <b data-ok={onTime}>{onTime ? `满足 ${purchase.need.days} 天交期` : "超过交期"}</b>
+            </div>
+          </div>
           <div className="pw-inline-actions">
             <Button
               secondary
@@ -1311,11 +1746,23 @@ function Order({
   const checked = Boolean(purchase.reviewed || purchase.reviewAttempted);
   const problems = orderProblems(purchase);
   const canOrder = purchase.reviewed && problems.length === 0;
+  const fulfillmentStatus = purchase.received
+    ? "已签收入库"
+    : ["待装车发运", "运输中", "待到货验收"][purchase.deliveryStep];
+  const nextFulfillmentAction =
+    purchase.deliveryStep === 0
+      ? "确认已装车发运"
+      : purchase.deliveryStep === 1
+        ? "确认已到货"
+        : "验收通过，确认收货";
   return (
     <>
-      <div className="pw-contract">
-        <div className="pw-section-top">
-          <h3>{purchase.ordered ? "采购订单" : "订单与合同要点"}</h3>
+      <section className="pw-order-card">
+        <div className="pw-order-card-head">
+          <div>
+            <span>{purchase.ordered ? "采购订单" : "订单确认"}</span>
+            <strong>{purchase.id}</strong>
+          </div>
           <span className="pw-tag">
             {purchase.received
               ? "已签收"
@@ -1324,7 +1771,7 @@ function Order({
                 : "待确认"}
           </span>
         </div>
-        <dl className="pw-need-summary">
+        <dl className="pw-order-facts">
           <div>
             <dt>合同卖方</dt>
             <dd>{totals.source.name}</dd>
@@ -1336,72 +1783,76 @@ function Order({
             </dd>
           </div>
           <div>
-            <dt>履约方式</dt>
+            <dt>交付方式</dt>
             <dd>
               {totals.transport.label} · {totals.days} 天到货
             </dd>
           </div>
           <div>
-            <dt>
-              {purchase.transportId === "pickup"
-                ? "应付粮款 / 另计自提运费"
-                : "订单金额（含物流）"}
-            </dt>
-            <dd>
-              ¥{" "}
-              {formatMoney(
-                purchase.transportId === "pickup" ? totals.goods : totals.total,
-              )}
-            </dd>
+            <dt>收货区域</dt>
+            <dd>{purchase.need.destination}</dd>
+          </div>
+          <div>
+            <dt>质量约定</dt>
+            <dd>二等及以上 · 水分 ≤ 14% · 杂质 ≤ 1%</dd>
+          </div>
+          <div className="is-amount">
+            <dt>{purchase.transportId === "pickup" ? "平台应付金额" : "订单金额"}</dt>
+            <dd>¥ {formatMoney(totals.total)}</dd>
+            {purchase.transportId === "pickup" && <small>自提运输费用另计</small>}
           </div>
         </dl>
-        <p className="pw-muted">
-          质量约定：二等及以上，水分 ≤ 14%，杂质 ≤
-          1%；到货验收异常需复核后再确认收货。
-        </p>
-      </div>
+      </section>
       {!purchase.ordered && (
         <>
-          <label className="pw-input-label" htmlFor="purchase-payee">
-            对公收款主体
-          </label>
-          <input
-            id="purchase-payee"
-            className="pw-wide-input"
-            value={purchase.payee}
-            disabled={inspecting}
-            onChange={(e) => {
-              update({
-                payee: e.target.value,
-                reviewed: false,
-                reviewAttempted: false,
-              });
-            }}
-          />
-          <p className="pw-muted">安小二将核对收款主体与合同卖方是否一致。</p>
-          {!checked && (
-            <Info>
-              下单前需核验合同主体、资金、预算、交期与库存。点击“核验交易”，通过后即可确认下单。
-            </Info>
-          )}
-          {checked && (
-            <div role="status">
-              {problems.length ? (
-                <Info warning>
-                  <strong>交易已拦截</strong>
+          <section className="pw-order-verification">
+            <div className="pw-order-verification-head">
+              <h3>交易核验</h3>
+              <span data-state={!checked ? "pending" : problems.length ? "blocked" : "passed"}>
+                {!checked ? "待核验" : problems.length ? "已拦截" : "已通过"}
+              </span>
+            </div>
+            <label htmlFor="purchase-payee">
+              <span>对公收款主体</span>
+              <small>应与合同卖方一致</small>
+            </label>
+            <input
+              id="purchase-payee"
+              className="pw-wide-input"
+              value={purchase.payee}
+              disabled={inspecting}
+              onChange={(e) => {
+                update({
+                  payee: e.target.value,
+                  reviewed: false,
+                  reviewAttempted: false,
+                });
+              }}
+            />
+            {checked && (
+              <div className="pw-order-verification-result" role="status">
+                {problems.length ? (
                   <ul>
                     {problems.map((problem) => (
                       <li key={problem}>{problem}</li>
                     ))}
                   </ul>
-                </Info>
-              ) : (
-                <Info>
-                  ✓ 合同主体、企业资质、预算、交期与库存核验通过，可以确认下单。
-                </Info>
-              )}
-            </div>
-          )}
+                ) : (
+                  <div className="pw-order-checks">
+                    {[
+                      "主体一致",
+                      "企业资质",
+                      "资金可用",
+                      "预算符合",
+                      "交期与库存",
+                    ].map((item) => (
+                      <span key={item}>✓ {item}</span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </section>
           {!inspecting && (
             <div className="pw-action-bar">
               <Button secondary onClick={onRevise}>
@@ -1431,11 +1882,7 @@ function Order({
                     }}
                   >
                     确认下单 · ¥{" "}
-                    {formatMoney(
-                      purchase.transportId === "pickup"
-                        ? totals.goods
-                        : totals.total,
-                    )}
+                    {formatMoney(totals.total)}
                   </Button>
                 )}
               </div>
@@ -1445,7 +1892,13 @@ function Order({
       )}
       {purchase.ordered && (
         <section className="pw-fulfillment">
-          <h3>运小二 · 交付跟进</h3>
+          <div className="pw-fulfillment-head">
+            <div>
+              <span>履约进度</span>
+              <h3>{fulfillmentStatus}</h3>
+            </div>
+            <small>{purchase.id}</small>
+          </div>
           <div className="pw-delivery-rail">
             {["订单已确认", "已装车发运", "已到货待验收", "已签收入库"].map(
               (label, i) => (
@@ -1463,33 +1916,34 @@ function Order({
               ),
             )}
           </div>
-          <Info>
-            {purchase.received
-              ? "采购已完成，成本复盘和交易经验已生成。"
-              : purchase.deliveryStep === 0
-                ? "订单已生成，正在按确认方案安排库区出货。"
-                : purchase.deliveryStep === 1
-                  ? "粮食已发运，运小二跟进运输与到货安排。"
-                  : "粮食已到厂，请完成数量和质量验收后确认收货。"}
-          </Info>
+          <div className="pw-fulfillment-meta">
+            <div>
+              <span>交付方式</span>
+              <strong>{totals.transport.label}</strong>
+            </div>
+            <div>
+              <span>计划周期</span>
+              <strong>{totals.days} 天</strong>
+            </div>
+            <div>
+              <span>收货区域</span>
+              <strong>{purchase.need.destination}</strong>
+            </div>
+          </div>
+          {purchase.transportId !== "pickup" && purchase.deliveryStep > 0 && (
+            <TransitTracking purchase={purchase} />
+          )}
           {!inspecting && !purchase.received && (
-            <div className="pw-action-bar">
-              <p>
-                采购单号 {purchase.id}
-                <br />
-                计划到货 {totals.days} 天 · 到货地 {purchase.need.destination}
-              </p>
-              {purchase.deliveryStep < 2 ? (
-                <Button
-                  onClick={() =>
-                    update({ deliveryStep: purchase.deliveryStep + 1 })
-                  }
-                >
-                  更新履约进度 →
-                </Button>
-              ) : (
-                <Button onClick={onReceived}>验收通过，确认收货 →</Button>
-              )}
+            <div className="pw-action-bar pw-fulfillment-action">
+              <Button
+                onClick={() =>
+                  purchase.deliveryStep < 2
+                    ? update({ deliveryStep: purchase.deliveryStep + 1 })
+                    : onReceived()
+                }
+              >
+                {nextFulfillmentAction} →
+              </Button>
             </div>
           )}
         </section>
@@ -1498,97 +1952,656 @@ function Order({
   );
 }
 
+function TransitTracking({ purchase }: { purchase: Purchase }) {
+  const totals = purchaseTotals(purchase);
+  const arrived = purchase.deliveryStep >= 2;
+  const combined = purchase.transportId === "combined";
+  const mapElement = useRef<HTMLDivElement>(null);
+  const progress = arrived ? 1 : combined ? 0.54 : 0.64;
+  const loadCount = Math.ceil(purchase.need.quantity / (combined ? 60 : 30));
+  const [remainingKm, setRemainingKm] = useState(arrived ? 0 : combined ? 128 : 55);
+  const trackingNumber = `YT-${purchase.id.replace(/\D/g, "").slice(-8) || "0916028"}`;
+  const location = arrived
+    ? purchase.need.destination
+    : combined
+      ? "济南铁路货运中心 · 在途"
+      : totals.source.depot.includes("日照")
+        ? "G1511 日兰高速 · 沂水段"
+        : totals.source.depot.includes("潍坊")
+          ? "G20 青银高速 · 淄博段"
+          : "G20 青银高速 · 潍坊段";
+  const carrier = combined ? "济铁物流 · 鲁中专线" : "鲁粮运输 · 散粮专线";
+  const transportCode = combined ? "班列 78426" : "鲁B·7K29 / 鲁B·Q89挂";
+  const speed = arrived ? 0 : combined ? 74 : 62;
+  const events = combined
+    ? [
+        ["08:40", "配载完成", `${purchase.need.quantity} 吨 · 配载清单已核`],
+        ["09:10", "运单关联", `${trackingNumber} · 班列 78426`],
+        ["10:05", "驶离货运站", "电子围栏自动记录"],
+        [arrived ? "次日 10:18" : "14:26", arrived ? "到达收货地" : "班列定位正常", arrived ? "已进入收货围栏" : "北斗定位 · 无异常停留"],
+      ]
+    : [
+        ["09:12", "装车完成", "当前车辆 · 装车照片 6 张"],
+        ["09:26", "地磅出库", "净重 30.18 吨 · 磅单已核"],
+        ["10:03", "驶离粮库", "电子围栏自动记录"],
+        [arrived ? "次日 10:18" : "14:26", arrived ? "到达收货地" : "车辆定位正常", arrived ? "已进入收货围栏" : "车载 GPS · 无异常停留"],
+      ];
+
+  useEffect(() => {
+    const element = mapElement.current;
+    if (!element) return;
+
+    const coordinates: Record<string, [number, number]> = {
+      青岛: [36.103, 120.294],
+      日照: [35.416, 119.526],
+      潍坊: [36.706, 119.161],
+      济南: [36.651, 117.12],
+      淄博: [36.813, 118.055],
+      临沂: [35.105, 118.356],
+      德州: [37.436, 116.359],
+      东营: [37.434, 118.674],
+      泰安: [36.2, 117.087],
+      烟台: [37.464, 121.448],
+    };
+    const resolvePoint = (label: string, fallback: [number, number]) => {
+      const key = Object.keys(coordinates).find((name) => label.includes(name));
+      return key ? coordinates[key] : fallback;
+    };
+    const origin = resolvePoint(totals.source.depot, [36.103, 120.294]);
+    let destination = resolvePoint(purchase.need.destination, [36.651, 117.12]);
+    if (
+      Math.abs(origin[0] - destination[0]) < 0.04 &&
+      Math.abs(origin[1] - destination[1]) < 0.04
+    ) {
+      destination = [destination[0] - 0.09, destination[1] + 0.12];
+    }
+    const latitudeDelta = destination[0] - origin[0];
+    const longitudeDelta = destination[1] - origin[1];
+    const distance = Math.max(Math.hypot(latitudeDelta, longitudeDelta), 0.01);
+    const bend = Math.min(Math.max(distance * (combined ? 0.13 : 0.09), 0.035), 0.16);
+    const control: [number, number] = [
+      (origin[0] + destination[0]) / 2 - (longitudeDelta / distance) * bend,
+      (origin[1] + destination[1]) / 2 + (latitudeDelta / distance) * bend,
+    ];
+    const route: [number, number][] = Array.from({ length: 33 }, (_, index) => {
+      const t = index / 32;
+      const remaining = 1 - t;
+      return [
+        remaining * remaining * origin[0] + 2 * remaining * t * control[0] + t * t * destination[0],
+        remaining * remaining * origin[1] + 2 * remaining * t * control[1] + t * t * destination[1],
+      ];
+    });
+    const map = L.map(element, {
+      zoomControl: false,
+      attributionControl: true,
+      scrollWheelZoom: true,
+    });
+
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 18,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    }).addTo(map);
+    L.circle(origin, {
+      radius: 4200,
+      color: "#67cfc0",
+      weight: 1,
+      opacity: 0.65,
+      fillColor: "#46b9aa",
+      fillOpacity: 0.06,
+      dashArray: "4 6",
+      interactive: false,
+    }).addTo(map);
+    L.circle(destination, {
+      radius: 4200,
+      color: "#e1ad68",
+      weight: 1,
+      opacity: 0.65,
+      fillColor: "#d49b55",
+      fillOpacity: 0.06,
+      dashArray: "4 6",
+      interactive: false,
+    }).addTo(map);
+
+    const routeStyle = { lineCap: "round", lineJoin: "round", interactive: false } as const;
+    const routeLayers = L.layerGroup().addTo(map);
+    const drawRoute = (points: [number, number][], distanceKm?: number) => {
+      routeLayers.clearLayers();
+      const currentIndex = Math.round(progress * (points.length - 1));
+      const current = points[currentIndex];
+      const completedRoute = points.slice(0, currentIndex + 1);
+      if (distanceKm !== undefined)
+        setRemainingKm(arrived ? 0 : Math.max(1, Math.round(distanceKm * (1 - progress))));
+
+      L.polyline(points, {
+        ...routeStyle,
+        color: "#06131c",
+        weight: 8,
+        opacity: 0.8,
+      }).addTo(routeLayers);
+      L.polyline(points, {
+        ...routeStyle,
+        color: "#9aabb2",
+        weight: 2,
+        opacity: 0.52,
+      }).addTo(routeLayers);
+      L.polyline(completedRoute, {
+        ...routeStyle,
+        className: "pw-map-route-glow",
+        color: "#36c9b6",
+        weight: 8,
+        opacity: 0.16,
+      }).addTo(routeLayers);
+      L.polyline(completedRoute, {
+        ...routeStyle,
+        className: "pw-map-route-live",
+        color: "#54ddca",
+        weight: 3.5,
+        opacity: 0.96,
+      }).addTo(routeLayers);
+
+      const sampleEvery = Math.max(1, Math.floor(completedRoute.length / 9));
+      completedRoute.forEach((point, index) => {
+        if (index === 0 || index === completedRoute.length - 1 || index % sampleEvery !== 0) return;
+        L.circleMarker(point, {
+          radius: 2,
+          color: "#8ce9dc",
+          weight: 1,
+          fillColor: "#54ddca",
+          fillOpacity: 0.95,
+          interactive: false,
+        }).addTo(routeLayers);
+      });
+
+      const previous = points[Math.max(0, currentIndex - 1)];
+      const bearing = Math.atan2(current[1] - previous[1], current[0] - previous[0]) * (180 / Math.PI);
+      const vehicleIcon = L.divIcon({
+        className: "pw-map-icon-shell",
+        html: `<span class="pw-map-vehicle${arrived ? " is-arrived" : ""}" style="transform:rotate(${bearing}deg)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 20 21 12 17 4 21Z" /></svg></span>`,
+        iconSize: [28, 28],
+        iconAnchor: [14, 14],
+      });
+      L.marker(arrived ? destination : current, { icon: vehicleIcon })
+        .addTo(routeLayers)
+        .bindPopup(`<strong>${arrived ? "已到达收货地" : location}</strong><br/>${transportCode}<br/>车载北斗/GPS · 2 分钟前`);
+    };
+
+    drawRoute(route);
+
+    const pointIcon = (kind: "origin" | "destination") =>
+      L.divIcon({
+        className: "pw-map-icon-shell",
+        html: `<span class="pw-map-point is-${kind}"></span>`,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9],
+      });
+    L.marker(origin, { icon: pointIcon("origin") })
+      .addTo(map)
+      .bindTooltip(totals.source.depot, {
+        permanent: true,
+        direction: "top",
+        offset: [0, -8],
+        className: "pw-map-tooltip",
+      });
+    L.marker(destination, { icon: pointIcon("destination") })
+      .addTo(map)
+      .bindTooltip(purchase.need.destination, {
+        permanent: true,
+        direction: "top",
+        offset: [0, -8],
+        className: "pw-map-tooltip is-destination",
+      });
+    L.control.zoom({ position: "bottomleft" }).addTo(map);
+    map.fitBounds(L.latLngBounds([origin, destination]), {
+      paddingTopLeft: [48, 62],
+      paddingBottomRight: [48, 48],
+      maxZoom: 9,
+    });
+
+    let disposed = false;
+    if (!combined) {
+      const routeUrl = `https://router.project-osrm.org/route/v1/driving/${origin[1]},${origin[0]};${destination[1]},${destination[0]}?overview=full&geometries=geojson`;
+      void fetch(routeUrl)
+        .then((response) => {
+          if (!response.ok) throw new Error("route unavailable");
+          return response.json() as Promise<{
+            code: string;
+            routes?: Array<{
+              distance: number;
+              geometry: { coordinates: Array<[number, number]> };
+            }>;
+          }>;
+        })
+        .then((data) => {
+          const result = data.routes?.[0];
+          if (disposed || data.code !== "Ok" || !result) return;
+          const roadRoute = result.geometry.coordinates.map(
+            ([longitude, latitude]) => [latitude, longitude] as [number, number],
+          );
+          drawRoute(roadRoute, result.distance / 1000);
+          map.fitBounds(L.latLngBounds(roadRoute), {
+            paddingTopLeft: [48, 62],
+            paddingBottomRight: [48, 48],
+            maxZoom: 9,
+          });
+        })
+        .catch(() => undefined);
+    }
+
+    const observer = new ResizeObserver(() => map.invalidateSize());
+    observer.observe(element);
+    return () => {
+      disposed = true;
+      observer.disconnect();
+      map.remove();
+    };
+  }, [arrived, combined, location, progress, purchase.need.destination, totals.source.depot, transportCode]);
+
+  return (
+    <section className="pw-transit-tracking" aria-label="运输轨迹">
+      <div className="pw-transit-head">
+        <div>
+          <span>在途跟踪 · 当前查看 1 / {loadCount}</span>
+          <h4>
+            {totals.source.depot} <i>→</i> {purchase.need.destination}
+          </h4>
+        </div>
+        <div className="pw-transit-state">
+          <small>{arrived ? "实际到达 次日 10:18" : "预计到达 明日 10:30"}</small>
+          <b data-arrived={arrived}>{arrived ? "已到达" : "运输正常"}</b>
+        </div>
+      </div>
+      <div className="pw-transit-layout">
+        <div className="pw-transit-map">
+          <div
+            ref={mapElement}
+            className="pw-transit-map-canvas"
+            aria-label={`${totals.source.depot}至${purchase.need.destination}实时运输地图`}
+          />
+          <div className="pw-transit-map-legend" aria-label="路线图例">
+            <span data-kind="planned">计划路线</span>
+            <span data-kind="actual">实际轨迹</span>
+          </div>
+        </div>
+        <aside className="pw-transit-panel">
+          <div className="pw-transit-current">
+            <span>当前定位</span>
+            <strong>{location}</strong>
+            <small>车载北斗 / GPS · 2 分钟前</small>
+          </div>
+          <div className="pw-transit-metrics">
+            <div>
+              <span>速度</span>
+              <strong>{speed}<small> km/h</small></strong>
+            </div>
+            <div>
+              <span>剩余</span>
+              <strong>{remainingKm}<small> km</small></strong>
+            </div>
+            <div>
+              <span>进度</span>
+              <strong>{Math.round(progress * 100)}<small> %</small></strong>
+            </div>
+          </div>
+          <dl className="pw-transit-data">
+            <div>
+              <dt>{combined ? "班列" : "车辆"}</dt>
+              <dd>{transportCode}</dd>
+            </div>
+            <div>
+              <dt>承运方</dt>
+              <dd>{carrier}</dd>
+            </div>
+            <div>
+              <dt>运输单号</dt>
+              <dd>{trackingNumber}</dd>
+            </div>
+          </dl>
+          <div className="pw-transit-flags">
+            <span>✓ 无偏航</span>
+            <span>✓ 无异常停留</span>
+          </div>
+          {!arrived && (
+            <div className="pw-transit-judgment">
+              <span>运输研判</span>
+              <strong>预计按时到达</strong>
+              <small>轨迹、车速与停留时长正常</small>
+            </div>
+          )}
+        </aside>
+      </div>
+      <section className="pw-transit-events">
+        <div>
+          <h5>运输事件</h5>
+          <span>节点数据自动留痕</span>
+        </div>
+        <ol>
+          {events.map(([time, title, evidence], index) => (
+            <li key={`${time}-${title}`} data-latest={index === events.length - 1}>
+              <time>{time}</time>
+              <strong>{title}</strong>
+              <small>{evidence}</small>
+            </li>
+          ))}
+        </ol>
+      </section>
+    </section>
+  );
+}
+
 function Review({
   purchase,
-  onAgain,
+  phase,
+  onNext,
 }: {
   purchase: Purchase;
-  onAgain(): void;
+  phase: "cost" | "knowledge";
+  onNext?: () => void;
 }) {
-  const totals = purchaseTotals(purchase);
-  const roadCost = purchaseTotals({
-    ...purchase,
-    transportId: purchase.originMission ? purchase.transportId : "road",
-  });
-  const difference = roadCost.logistics - totals.logistics;
+  const settlement = purchaseSettlement(purchase);
+  const actualUnit = settlement.landedUnit ?? settlement.baseUnit;
+  const variancePerTon = purchase.need.budget - actualUnit;
+  const varianceTotal = variancePerTon * settlement.receivedQuantity;
+  const recordCode = purchase.id.replace(/[^A-Z0-9]/gi, "").slice(-8).toUpperCase();
+  const qualityResult = `二等 · 水分 ${settlement.source.moisture} · 杂质 ${settlement.source.evidence?.impurities ?? "≤1%"}`;
+  const deliveredOnTime = settlement.days <= purchase.need.days;
+  const lossWithinAllowance = settlement.lossRate <= settlement.lossAllowanceRate;
+  const hasRiskFinding = !deliveredOnTime || !lossWithinAllowance;
+  const costRows = [
+    ["粮款", settlement.source.price, settlement.goods],
+    ["运输结算", settlement.freight, settlement.logistics],
+    ["装卸与中转", settlement.handlingPerTon, settlement.handling],
+    ["运输保险", settlement.insurancePerTon, settlement.insurance],
+    ...(settlement.other > 0
+      ? [["其他到厂费用", settlement.otherPerTon, settlement.other] as [string, number, number]]
+      : []),
+  ] as [string, number, number][];
+  const evidence = [
+    ["出库磅单", `CK-${recordCode}`],
+    ["入库磅单", `RK-${recordCode}`],
+    ["运输结算单", `YF-${recordCode}`],
+    ["入库质检单", `ZJ-${recordCode}`],
+  ];
+  const knowledgeChanges = [
+    {
+      type: "企业事实",
+      tone: "fact",
+      status: purchase.need.destination.includes("潍坊") ? "已引用" : "无新增",
+      title: purchase.need.destination.includes("潍坊")
+        ? "潍坊工厂为主要到货点"
+        : "本次未形成新的企业长期事实",
+      detail: purchase.need.destination.includes("潍坊")
+        ? "方案继续按潍坊到厂成本统一比较"
+        : "单笔订单到货地不直接升级为企业事实",
+    },
+    {
+      type: "经营偏好",
+      tone: "preference",
+      status: "已验证",
+      title:
+        (purchase.need.stockDays ?? 0) <= 7
+          ? "安全库存低于七天时优先保供"
+          : "正常库存优先比较综合到厂成本",
+      detail: deliveredOnTime
+        ? `本次选择${settlement.transport.label}并按期到货`
+        : `本次实际交付超出约定 ${settlement.days - purchase.need.days} 天`,
+    },
+    {
+      type: "决策经验",
+      tone: "decision",
+      status: settlement.isComplete ? "新增 1 条" : "待补齐",
+      title: `${settlement.source.depot} + ${settlement.transport.label}`,
+      detail: settlement.isComplete
+        ? `合格入库吨成本 ${formatMoney(actualUnit)} 元 · 损耗 ${(settlement.lossRate * 100).toFixed(2)}%`
+        : "补录自提费用后生成完整成本经验",
+    },
+    {
+      type: "风险规则",
+      tone: "risk",
+      status: hasRiskFinding ? "新增 1 条" : "无新增",
+      title: !deliveredOnTime
+        ? "相似交期下需提高运输时效约束"
+        : !lossWithinAllowance
+          ? "相似线路需加强损耗与承运责任约束"
+          : "本次未发生延误、毁约或超限损耗",
+      detail: hasRiskFinding
+        ? "后续匹配时自动提醒，并影响相关合作方推荐"
+        : "不为正常履约强行生成风险规则",
+    },
+  ];
+  const formatWeight = (value: number) =>
+    value.toLocaleString("zh-CN", {
+      minimumFractionDigits: value % 1 === 0 ? 0 : 2,
+      maximumFractionDigits: 2,
+    });
   return (
     <>
-      <div className="pw-complete">
-        <span>✓</span>
-        <div>
-          <h3>
-            {purchase.need.quantity} 吨{purchase.need.variety}已签收入库
-          </h3>
-          <p>采购单 {purchase.id} · 本次办理闭环</p>
+      {phase === "cost" ? (
+        <>
+      <section className="pw-settlement-sheet">
+        <header className="pw-settlement-head">
+          <div>
+            <span>算小二 · 到厂核算</span>
+            <h3>到厂成本核算</h3>
+            <small>{purchase.id} · {settlement.source.depot} → {purchase.need.destination}</small>
+          </div>
+          <b data-complete={settlement.isComplete}>
+            {settlement.isComplete ? "成本口径完整" : "待补自提费用"}
+          </b>
+        </header>
+
+        <div className="pw-settlement-overview">
+          <article className="pw-settlement-primary">
+            <span>{settlement.isComplete ? "实际合格入库吨成本" : "平台已核算吨成本"}</span>
+            <strong>
+              <small>¥</small> {formatMoney(actualUnit)}
+              <em>元/吨</em>
+            </strong>
+            <p>
+              {settlement.isComplete
+                ? `到厂总成本 ÷ ${formatWeight(settlement.receivedQuantity)} 吨合格入库量`
+                : "仅含粮款，自提运输、装卸和损耗费用未计入"}
+            </p>
+          </article>
+          <div className="pw-settlement-kpis">
+            <article>
+              <span>{settlement.isComplete ? "到厂总成本" : "平台结算金额"}</span>
+              <strong>¥ {formatMoney(settlement.settledTotal)}</strong>
+              <small>{settlement.isComplete ? "已完成交易对账" : "不含采购方自提费用"}</small>
+            </article>
+            <article>
+              <span>合格入库</span>
+              <strong>{formatWeight(settlement.receivedQuantity)} <i>吨</i></strong>
+              <small>{qualityResult}</small>
+            </article>
+            <article>
+              <span>{settlement.isComplete ? "预算差异" : "成本状态"}</span>
+              <strong data-tone={!settlement.isComplete ? "muted" : variancePerTon >= 0 ? "positive" : "negative"}>
+                {settlement.isComplete
+                  ? `${variancePerTon >= 0 ? "−" : "+"} ¥ ${formatMoney(Math.abs(variancePerTon))}`
+                  : "待补齐"}
+                {settlement.isComplete && <i>元/吨</i>}
+              </strong>
+              <small>
+                {settlement.isComplete
+                  ? `相对预算 ${formatMoney(purchase.need.budget)} 元/吨 · ${variancePerTon >= 0 ? "结余" : "超支"} ¥ ${formatMoney(Math.abs(varianceTotal))}`
+                  : "补录自提结算后生成完整到厂成本"}
+              </small>
+            </article>
+          </div>
         </div>
-      </div>
-      <div className="pw-review-metrics">
-        <div>
-          <span>采购粮款</span>
-          <strong>¥ {formatMoney(totals.goods)}</strong>
+      </section>
+
+      <section className="pw-settlement-ledger">
+        <div className="pw-review-section-head">
+          <div>
+            <span>成本构成</span>
+            <h3>结算明细</h3>
+          </div>
+          <small>统一折算为元/吨</small>
         </div>
-        <div>
-          <span>
-            {purchase.transportId === "pickup"
-              ? "自提运费估算"
-              : "方案物流费用"}
-          </span>
-          <strong>¥ {formatMoney(totals.logistics)}</strong>
+        <div className="pw-settlement-ledger-body">
+          <div className="pw-settlement-cost-table" role="table" aria-label="到厂成本结算明细">
+            <div className="pw-settlement-cost-head" role="row">
+              <span>项目</span><span>计价单价</span><span>结算金额</span>
+            </div>
+            {costRows.map(([label, unit, amount]) => (
+              <div role="row" key={label}>
+                <strong>{label}</strong>
+                <span>{formatMoney(unit)} 元/吨</span>
+                <b>¥ {formatMoney(amount)}</b>
+              </div>
+            ))}
+            <div className="pw-settlement-cost-total" role="row">
+              <strong>结算合计</strong>
+              <span>{formatMoney(settlement.baseUnit)} 元/出库吨</span>
+              <b>¥ {formatMoney(settlement.settledTotal)}</b>
+            </div>
+          </div>
+          <aside className="pw-settlement-adjustments">
+            <h4>结算调整</h4>
+            <dl>
+              <div><dt>质量扣价</dt><dd>¥ 0.00</dd><small>入库质量达标</small></div>
+              <div><dt>承运赔付</dt><dd>¥ 0.00</dd><small>损耗未超合同允差</small></div>
+              <div><dt>异常费用</dt><dd>¥ 0.00</dd><small>无压车、滞箱记录</small></div>
+              <div data-accent="true">
+                <dt>损耗摊增</dt>
+                <dd>{settlement.lossImpactPerTon === null ? "待核算" : `+ ¥ ${formatMoney(settlement.lossImpactPerTon)} / 吨`}</dd>
+                <small>不新增付款，计入实际入库吨成本</small>
+              </div>
+            </dl>
+          </aside>
         </div>
-        <div>
-          <span>订单口径到厂成本</span>
-          <strong>
-            {formatMoney(totals.unit)} <small>元/吨</small>
-          </strong>
+      </section>
+
+      <section className="pw-settlement-loss">
+        <div className="pw-review-section-head">
+          <div>
+            <span>数量与损耗</span>
+            <h3>损耗核算及归责</h3>
+          </div>
+          <small>{settlement.settlementBasis}</small>
         </div>
-      </div>
-      <div className="pw-pickup-guide">
-        <h3>算小二 · 成本复盘</h3>
-        <p>
-          本次按点价粮款与运输方案计算，总成本为{" "}
-          <strong>¥ {formatMoney(totals.total)}</strong>。较预算上限留有{" "}
-          <strong>
-            ¥{" "}
-            {formatMoney(
-              (purchase.need.budget - totals.unit) * purchase.need.quantity,
-            )}
-          </strong>{" "}
-          空间。
-        </p>
-        <p>
-          {difference > 0
-            ? `相比同粮源公路直达方案，所选运输方式预计减少 ${formatMoney(difference)} 元运输费用。`
-            : purchase.originMission
-              ? "本次沿用原驾驶舱已确认的运输组合，未重复计算方案节约。"
-              : "本次选择公路直达，以减少中转、保障到货时效；未计入额外的运输节约。"}
-        </p>
-        {totals.additional > 0 && (
-          <p>
-            另含装卸、损耗等原方案费用 ¥ {formatMoney(totals.additional)}
-            ，已计入到厂总成本。
-          </p>
-        )}
-        <small>
-          预算余量不等于实际节约。以上按确认订单与方案口径计算，最终成本以实际结算单为准。
-        </small>
-      </div>
-      <div className="pw-learned">
-        <div className="pw-section-top">
-          <h3>企业知识大脑 · 已沉淀 1 条采购经验</h3>
-          <span className="pw-tag">下次主动引用</span>
+        <div className="pw-settlement-loss-grid">
+          <div><span>出库净重</span><strong>{formatWeight(settlement.shippedQuantity)} 吨</strong><small>出库磅单</small></div>
+          <div><span>入库净重</span><strong>{formatWeight(settlement.receivedQuantity)} 吨</strong><small>入库磅单</small></div>
+          <div><span>运输损耗</span><strong>{formatWeight(settlement.lossQuantity)} 吨</strong><small>{(settlement.lossRate * 100).toFixed(2)}%</small></div>
+          <div><span>合同允差</span><strong>≤ {(settlement.lossAllowanceRate * 100).toFixed(2)}%</strong><small>{settlement.lossResponsibility}</small></div>
         </div>
-        <p>{purchaseMemory(purchase)}</p>
-        <small>
-          来源：{purchase.id} · 算小二复盘 → 粮掌柜共享 ·
-          单笔交易经验，使用前复核
-        </small>
-      </div>
-      <div className="pw-action-bar">
-        <Link to="/knowledge" className="pw-text-button">
-          到企业知识大脑查看 →
-        </Link>
-        <Button onClick={onAgain}>沿用需求，再买一笔 →</Button>
-      </div>
+        <div className="pw-settlement-loss-result">
+          <b>{(settlement.lossRate * 100).toFixed(2)}%</b>
+          <span>≤</span>
+          <b>{(settlement.lossAllowanceRate * 100).toFixed(2)}%</b>
+          <strong>允差内</strong>
+          <small>损耗已计入实际合格入库吨成本</small>
+        </div>
+      </section>
+
+        </>
+      ) : (
+        <>
+      <section className="pw-settlement-sheet pw-review-retro-summary">
+        <header className="pw-settlement-head">
+          <div>
+            <span>粮掌柜 × 安小二</span>
+            <h3>履约复盘</h3>
+            <small>{purchase.id} · {settlement.source.depot} → {purchase.need.destination}</small>
+          </div>
+          <b data-complete={!hasRiskFinding}>
+            {hasRiskFinding ? "异常已归档" : "履约正常"}
+          </b>
+        </header>
+        <div className="pw-review-retro-strip">
+          <div><span>供应结果</span><strong>质量验收达标</strong></div>
+          <div><span>运输结果</span><strong>{settlement.days} 天到货 · 损耗 {(settlement.lossRate * 100).toFixed(2)}%</strong></div>
+          <div><span>知识变更</span><strong>{knowledgeChanges.filter((item) => item.status.includes("新增")).length} 条新增</strong></div>
+        </div>
+      </section>
+
+      <section className="pw-review-performance">
+        <div className="pw-review-section-head">
+          <div>
+            <span>履约评价</span>
+            <h3>供应、运输与交易结果</h3>
+          </div>
+          <small>按客观履约记录评价</small>
+        </div>
+        <div className="pw-review-performance-grid">
+          <article>
+            <div><span>供应方履约</span><b data-state="success">正常</b></div>
+            <strong>{settlement.source.name}</strong>
+            <small>供货完成 · {qualityResult}</small>
+          </article>
+          <article>
+            <div><span>运输履约</span><b data-state={deliveredOnTime && lossWithinAllowance ? "success" : "warning"}>{deliveredOnTime && lossWithinAllowance ? "正常" : "需关注"}</b></div>
+            <strong>{settlement.transport.label} · {settlement.days} 天</strong>
+            <small>运输损耗 {(settlement.lossRate * 100).toFixed(2)}% · 合同允差 {(settlement.lossAllowanceRate * 100).toFixed(2)}%</small>
+          </article>
+          <article>
+            <div><span>交易结果</span><b data-state={hasRiskFinding ? "warning" : "success"}>{hasRiskFinding ? "异常已记录" : "无争议"}</b></div>
+            <strong>质量扣价 ¥ 0 · 承运赔付 ¥ 0</strong>
+            <small>{hasRiskFinding ? "异常结论已进入知识变更" : "无毁约、无异常费用记录"}</small>
+          </article>
+        </div>
+      </section>
+
+      <section className="pw-review-knowledge">
+        <div className="pw-review-section-head">
+          <div>
+            <span>企业知识库</span>
+            <h3>本次知识变更</h3>
+          </div>
+          <small>{knowledgeChanges.filter((item) => item.status.includes("新增")).length} 条新增</small>
+        </div>
+        <div className="pw-review-knowledge-list">
+          {knowledgeChanges.map((item) => (
+            <article key={item.type} data-tone={item.tone}>
+              <span>{item.type}</span>
+              <div>
+                <strong>{item.title}</strong>
+                <small>{item.detail}</small>
+              </div>
+              <b>{item.status}</b>
+            </article>
+          ))}
+        </div>
+      </section>
+
+        </>
+      )}
+
+      {phase === "cost" && (
+        <section className="pw-settlement-evidence">
+          <div className="pw-review-section-head">
+            <div>
+              <span>核算依据</span>
+              <h3>四单已关联</h3>
+            </div>
+            <small>数据口径可追溯</small>
+          </div>
+          <div className="pw-settlement-evidence-row">
+            {evidence.map(([type, id]) => (
+              <div key={type}>
+                <i>✓</i>
+                <span>{type}</span>
+                <strong>{id}</strong>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {phase === "cost" ? (
+        onNext && (
+          <div className="pw-action-bar pw-review-next">
+            <Button onClick={onNext}>确认核算结果 →</Button>
+          </div>
+        )
+      ) : (
+        <div className="pw-review-complete">
+          <span className="pw-button" role="status">本次采购已完成</span>
+        </div>
+      )}
+
     </>
   );
 }
@@ -1609,13 +2622,12 @@ function adviceFor(stage: number, purchase: Purchase | null): string {
     purchase.qualified
       ? "企业资质与交易条件均已通过，下一步可以选粮。"
       : "把资质审核和资金核验一起办。经办人授权书缺失时，补充企业档案材料即可重新核验。",
-    purchase.originMission
-      ? `已带入原方案中的${totals.source.name}与点价结果，继续核对库存、质量及交易条件。`
-      : "优先比较青岛港粮源，库存可以覆盖当前需求。点价前确认质量和数量，下一步将把运费加入，比较完整到厂成本。",
-    `当前${totals.transport.label}预计${totals.days}天到货，到厂${totals.unit}元/吨。${purchase.originMission ? "运输与成本口径沿用本任务已确认的专业结果。" : purchase.need.days >= 6 && purchase.sourceId !== "weifang" ? "交期允许时可对比铁公联运，兼顾费用与中转时间。" : "优先关注短交期与到货保障。"}`,
-    purchase.ordered
-      ? "订单已确认，我会继续跟进发运与交付。到货验收通过后再确认收货，随后生成采购复盘。"
-      : "先核对卖方与收款主体，再复核到厂预算、交期和库存。任何一项不符合，都不会放行下单。",
-    "本次采购经验已经留下。下一笔相同品种、相同到货区域的需求，会主动带入这次方案供你参考；价格与库存仍会重新核对。",
+    "",
+    purchase.transportId === "pickup"
+      ? `当前选择自行提货，平台仅核算 ${totals.unit} 元/吨粮款，自提运输费用需另行确认。`
+      : `当前${totals.transport.label}预计${totals.days}天到货，到厂${totals.unit}元/吨。${purchase.originMission ? "运输与成本口径沿用本任务已确认的专业结果。" : purchase.need.days >= 6 && purchase.sourceId !== "weifang" ? "交期允许时可对比铁公联运，兼顾费用与中转时间。" : "优先关注短交期与到货保障。"}`,
+    "",
+    "",
+    "",
   ][stage];
 }

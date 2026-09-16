@@ -158,7 +158,7 @@ export default function MissionCockpit({ mission, onMissionChange, onBack }: Mis
 
       <MissionRail phase={mission.phase} status={mission.status} mission={mission} />
 
-      {mission.status === "completed" && <section className="my-4 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-tech/30 bg-tech/5 px-5 py-4"><div><h2 className="text-sm font-medium text-tech">方案已确认，继续同一笔采购</h2><p className="mt-1 text-xs text-ink-soft">带入本任务需求、已选粮源、运输与成本结果，继续准入核验、下单履约和复盘。</p>{purchaseError && <p role="alert" className="mt-2 text-xs text-amber-300">{purchaseError}</p>}</div><button type="button" className="rounded-lg bg-brand px-5 py-3 text-sm text-slate-950" onClick={continuePurchase}>继续办理采购 →</button></section>}
+      {mission.status === "completed" && <section className="my-4 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-tech/30 bg-tech/5 px-5 py-4"><div><h2 className="text-sm font-medium text-tech">方案已确认，继续同一笔采购</h2><p className="mt-1 text-xs leading-6 text-ink-soft">带入本任务需求、已选粮源、运输与成本结果，继续准入核验、下单履约、到厂核算和履约复盘。</p>{purchaseError && <p role="alert" className="mt-2 text-xs text-amber-300">{purchaseError}</p>}</div><button type="button" className="rounded-lg bg-brand px-5 py-3 text-sm text-slate-950" onClick={continuePurchase}>继续办理采购 →</button></section>}
 
       <div className="zg-cockpit-grid">
         <div className="flex min-w-0 flex-col gap-3">

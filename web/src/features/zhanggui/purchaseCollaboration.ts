@@ -1,13 +1,15 @@
 import { assessPurchaseMarket } from "./marketAssessment";
 import { agents } from "../../data/agents";
 import {
+  formatMoney,
   orderProblems,
-  purchaseMemory,
+  purchaseSettlement,
   purchaseTotals,
   PURCHASE_STAGES,
   type Purchase,
   type PurchaseNeed,
 } from "./purchaseModel";
+import { ACCOUNT_FROZEN, ACCOUNT_TOTAL } from "./qualificationData";
 import type { AgentResult, AgentRun, CollaborationSnapshot } from "./types";
 
 /** 粮掌柜始终主理采购，小二按当前业务动作参与。 */
@@ -31,7 +33,7 @@ export function purchaseStageRoles(purchase: Purchase | null, stage: number) {
     {
       members: ["liang", "zhan"],
       steward: "选粮决策",
-      action: "汇总候选粮源与价格参考，向你确认粮源和点价。",
+      action: "",
     },
     {
       members:
@@ -45,17 +47,22 @@ export function purchaseStageRoles(purchase: Purchase | null, stage: number) {
       ? {
           members: ["yun"],
           steward: "履约跟进",
-          action: "跟进发运与到货，等待你验收确认后归档采购。",
+          action: "",
         }
       : {
           members: ["an", "qian", "suan"],
           steward: "下单确认",
-          action: "汇总合同、资金与成本核验，处理阻塞后向你确认下单。",
-        },
+          action: "",
+    },
     {
       members: ["suan"],
-      steward: "经验归档",
-      action: "汇总采购复盘，归档本次经验，供各小二后续引用。",
+      steward: "到厂核算",
+      action: "",
+    },
+    {
+      members: ["an"],
+      steward: "履约复盘",
+      action: "",
     },
   ];
   return stages[stage];
@@ -66,7 +73,7 @@ const TASKS: Record<string, string> = {
   an: "企业资质与合同安全",
   qian: "账户与资金条件核验",
   yun: "运输方案与交付跟进",
-  suan: "到厂成本与采购复盘",
+  suan: "实际到厂成本与损耗核算",
 };
 
 /** 节点、连线、抽屉均从当前采购状态计算，不另建一套节点状态机。 */
@@ -152,8 +159,8 @@ export function purchaseCollaboration(
       {
         行情决策: market
           ? {
-              buy: "按建议采购",
-              adjust: "调整采购计划",
+              buy: "继续采购",
+              adjust: "调整需求",
               watch: "暂时观望",
               inherited: "沿用原方案研判",
             }[market.action]
@@ -171,7 +178,7 @@ export function purchaseCollaboration(
         ? ["经办人授权书缺失，补充材料后重新核验。"]
         : [];
     const fundProblems =
-      checked && goal.quantity * goal.budget * 0.1 > 800000
+      checked && goal.quantity * goal.budget * 0.1 > ACCOUNT_TOTAL - ACCOUNT_FROZEN
         ? ["保证金预留超过账户可用额度，请调整采购计划。"]
         : [];
     result(
@@ -194,7 +201,7 @@ export function purchaseCollaboration(
           : "待启动资金账户与保证金核验。",
       {
         预留保证金: `${goal.quantity * goal.budget * 0.1} 元`,
-        可用额度: "800000 元",
+        可用额度: `${formatMoney(ACCOUNT_TOTAL - ACCOUNT_FROZEN)} 元`,
       },
       fundProblems,
       checking !== null && checking < 6,
@@ -222,7 +229,7 @@ export function purchaseCollaboration(
   if (purchase && totals && stage === 3) {
     result(
       "zhan",
-      `所选${totals.source.depot}报价 ${totals.source.price} 元/吨，点价前需复核报价有效性，结合区域参考判断。`,
+      `${totals.source.depot}当前报价 ${totals.source.price} 元/吨，含税出库、不含运输。`,
       {
         当前粮源报价: `${totals.source.price} 元/吨`,
         参考口径: purchase.originMission
@@ -280,12 +287,12 @@ export function purchaseCollaboration(
       });
     result(
       "qian",
-      `本笔预计预留保证金 ${goal.quantity * goal.budget * 0.1} 元，账户可用额度 800000 元；以交易核验结果确认资金条件。`,
+      `本笔预计预留保证金 ${goal.quantity * goal.budget * 0.1} 元，账户可用额度 ${formatMoney(ACCOUNT_TOTAL - ACCOUNT_FROZEN)} 元；以交易核验结果确认资金条件。`,
       {
         预留保证金: `${goal.quantity * goal.budget * 0.1} 元`,
         订单总额: `${totals.total} 元`,
       },
-      purchase.reviewAttempted && goal.quantity * goal.budget * 0.1 > 800000
+      purchase.reviewAttempted && goal.quantity * goal.budget * 0.1 > ACCOUNT_TOTAL - ACCOUNT_FROZEN
         ? ["保证金预留超过账户可用额度，请调整采购计划。"]
         : [],
     );
@@ -302,10 +309,33 @@ export function purchaseCollaboration(
       );
   }
   if (purchase && stage === 6) {
-    result("suan", purchaseMemory(purchase), {
-      经验来源: purchase.id,
-      结算口径: "按确认订单与运输方案测算，最终以实际结算为准",
+    const settlement = purchaseSettlement(purchase);
+    result("suan", settlement.isComplete
+      ? `实际合格入库吨成本 ${formatMoney(settlement.landedUnit!)} 元，损耗 ${(settlement.lossRate * 100).toFixed(2)}%，结算凭证已关联。`
+      : "粮款已核对，自提运输、装卸与损耗费用待补录。", {
+      来源订单: purchase.id,
+      结算总额: `${formatMoney(settlement.settledTotal)} 元`,
+      合格入库: `${formatMoney(settlement.receivedQuantity)} 吨`,
+      成本口径: settlement.isComplete ? "总成本 ÷ 实际合格入库量" : "仅含平台粮款",
     });
+  }
+  if (purchase && stage === 7) {
+    const settlement = purchaseSettlement(purchase);
+    const delayed = settlement.days > goal.days;
+    const excessiveLoss = settlement.lossRate > settlement.lossAllowanceRate;
+    result(
+      "an",
+      delayed || excessiveLoss
+        ? "本次履约发现异常，责任结论已形成风险规则并归档。"
+        : "供应、运输与验收记录已复核，本次未形成新增风险规则。",
+      {
+        交付时效: delayed ? `超出约定 ${settlement.days - goal.days} 天` : "按期交付",
+        运输损耗: `${(settlement.lossRate * 100).toFixed(2)}%`,
+        合同允差: `${(settlement.lossAllowanceRate * 100).toFixed(2)}%`,
+        风险规则: delayed || excessiveLoss ? "新增 1 条" : "无新增",
+      },
+      delayed || excessiveLoss ? ["本次履约异常已进入后续合作提醒。"] : [],
+    );
   }
 
   const team = agents

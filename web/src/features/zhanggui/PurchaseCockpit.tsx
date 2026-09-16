@@ -39,15 +39,12 @@ export default function PurchaseCockpit({
       ? "专业小二正在并行核验"
       : blocked
         ? mission.conflicts[0].title
-        : stage === 6 && purchase?.received
-          ? "采购已完成，经验已沉淀"
-          : stage === 0
-            ? "告诉我你想买什么粮，我来组织小二办理"
-            : stage === 1 && purchase?.marketDecision?.action === "watch"
-              ? "研判已保存，决定采购时可继续办理"
-              : stage === 5 && purchase?.ordered
-                ? "运小二跟进发运与到货，等待验收确认"
-                : roles.action;
+        : stage === 0
+          ? "告诉我你想买什么粮，我来组织小二办理"
+          : stage === 1 && purchase?.marketDecision?.action === "watch"
+            ? "研判已保存，决定采购时可继续办理"
+            : roles.action;
+  const showState = (stage !== 3 || blocked) && Boolean(state);
 
   return (
     <section className="pw-agent-cockpit" aria-label="采购数字人驾驶舱">
@@ -56,9 +53,11 @@ export default function PurchaseCockpit({
           <p className="pw-eyebrow">
             {reviewing ? "正在回看" : "当前待办"} · {PURCHASE_STAGES[stage]}
           </p>
-          <p role="status" aria-live="polite">
-            {state}
-          </p>
+          {showState && (
+            <p role="status" aria-live="polite">
+              {state}
+            </p>
+          )}
         </div>
         <button
           type="button"

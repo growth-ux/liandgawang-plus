@@ -150,6 +150,13 @@ export function purchaseFromMission(mission: MissionSnapshot): Purchase {
         description:
           mission.agent_runs.find((run) => run.agent_id === "yun")
             ?.output_snapshot?.summary ?? "沿用运小二运输结果",
+        loadCapacity: 30,
+        loadUnit: "车次",
+        dispatchWindow: "沿用原方案调度安排",
+        priceBasis: "沿用原方案运输费用口径",
+        quoteUpdatedAt: mission.updated_at
+          ? mission.updated_at.replace("T", " ").slice(0, 16)
+          : "原方案确认时",
       },
     ],
     additionalCostPerTon: Math.round((delivered - price - freight) * 100) / 100,
