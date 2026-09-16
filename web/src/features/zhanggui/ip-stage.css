@@ -1,5 +1,6 @@
 /* 统一设计坐标：角色、底座、连线和视差共用 1040 × 720 的画布。 */
 .zg-spatial-stage {
+  --zg-flow-cycle-duration: 3s;
   min-width: 0;
   overflow: hidden;
   border: 1px solid var(--color-line);
@@ -123,6 +124,19 @@
 .zg-flow-particle--return {
   animation: zg-ip-return 1.2s linear both;
 }
+.zg-flow-particle--continuous-send,
+.zg-flow-particle--continuous-return {
+  stroke-width: 2.2;
+  stroke-dasharray: 3 97;
+  opacity: 0;
+}
+.zg-flow-particle--continuous-send {
+  animation: zg-ip-continuous-send var(--zg-flow-cycle-duration) linear infinite;
+}
+.zg-flow-particle--continuous-return {
+  color: #6fd7b0;
+  animation: zg-ip-continuous-return var(--zg-flow-cycle-duration) linear infinite;
+}
 .zg-stage-ambient {
   animation: zg-stage-breathe 6s ease-in-out infinite;
 }
@@ -151,9 +165,31 @@
 .zg-stage-hub .zg-ip-feedback[data-feedback="conflict"] {
   animation-delay: 1.05s;
 }
+.zg-ip-feedback--cycle {
+  animation: zg-ip-feedback-cycle var(--zg-flow-cycle-duration) ease-out infinite;
+  animation-fill-mode: both;
+}
+.zg-stage-hub .zg-ip-feedback--cycle[data-feedback="dispatch"] {
+  animation-delay: 0s;
+}
+.zg-agent-pod .zg-ip-feedback--cycle[data-feedback="dispatch"] {
+  animation-delay: 0.54s;
+}
+.zg-agent-pod .zg-ip-feedback--cycle[data-feedback="return"] {
+  animation-delay: 1s;
+}
+.zg-stage-hub .zg-ip-feedback--cycle[data-feedback="return"] {
+  animation-delay: 1.54s;
+}
 @keyframes zg-ip-feedback {
   0% { transform: scale(0.65); opacity: 0; }
   20% { opacity: 0.85; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
+@keyframes zg-ip-feedback-cycle {
+  0% { transform: scale(0.65); opacity: 0; }
+  4% { opacity: 0.78; }
+  18% { transform: scale(1.4); opacity: 0; }
   100% { transform: scale(1.4); opacity: 0; }
 }
 .zg-stage-hub .zg-ip-base-ring {
@@ -186,6 +222,37 @@
     opacity: 1;
   }
   to {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+@keyframes zg-ip-continuous-send {
+  0% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+  4%,
+  27% {
+    opacity: 0.88;
+  }
+  31%,
+  100% {
+    stroke-dashoffset: -100;
+    opacity: 0;
+  }
+}
+@keyframes zg-ip-continuous-return {
+  0%,
+  49% {
+    stroke-dashoffset: -100;
+    opacity: 0;
+  }
+  52%,
+  77% {
+    opacity: 0.78;
+  }
+  81%,
+  100% {
     stroke-dashoffset: 0;
     opacity: 0;
   }
@@ -336,6 +403,11 @@
   0%, 100% { transform: rotate(calc(var(--sway-angle) * -1)); }
   50% { transform: rotate(var(--sway-angle)); }
 }
+.zg-agent-pod[data-continuous-flow] .zg-ip-pose {
+  animation:
+    zg-ip-sway 5.2s calc(var(--motion-delay, 0s) * 1.7) ease-in-out infinite,
+    zg-ip-acknowledge-cycle var(--zg-flow-cycle-duration) linear infinite;
+}
 .zg-agent-pod[data-feedback="dispatch"] .zg-ip-pose {
   animation:
     zg-ip-sway 5.2s calc(var(--motion-delay, 0s) * 1.7) ease-in-out infinite,
@@ -349,6 +421,11 @@
 @keyframes zg-ip-acknowledge {
   0%, 100% { rotate: 0deg; }
   40% { rotate: -1.8deg; }
+}
+@keyframes zg-ip-acknowledge-cycle {
+  0%, 25%, 38%, 100% { rotate: 0deg; }
+  29% { rotate: -1.8deg; }
+  34% { rotate: 0.8deg; }
 }
 .zg-agent-pod[data-status="running"] .zg-ip-beacon-core {
   animation: zg-ip-ring-breathe 1.8s ease-in-out infinite;

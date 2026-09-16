@@ -42,7 +42,7 @@ const EXAMPLE =
   "帮我采购 200 吨二等玉米送到潍坊，库存还能用15天，希望 10 天内到货，到厂价不超过 2680 元/吨。";
 const STAGE_COPY = [
   ["采购需求", ""],
-  ["行情研判", ""],
+  ["", ""],
   ["", ""],
   ["", ""],
   ["", ""],
@@ -97,6 +97,12 @@ export default function PurchaseWorkbench() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [drawerAgent, setDrawerAgent] = useState("da");
   const [checking, setChecking] = useState<number | null>(null);
+  const [agentActivityCue, setAgentActivityCue] = useState<{
+    key: number;
+    agentIds: string[];
+  } | null>(null);
+  const [startingMarketReview, setStartingMarketReview] = useState(false);
+  const marketReviewTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [saveError, setSaveError] = useState("");
   const [need, setNeed] = useState<PurchaseNeed>(EMPTY_NEED);
   const stage = inspecting ?? purchase?.stage ?? 0;
@@ -135,15 +141,46 @@ export default function PurchaseWorkbench() {
 
   useEffect(() => {
     setChecking(null);
+    setAgentActivityCue(null);
   }, [stage]);
 
   useEffect(() => {
     setDrawerAgent(purchaseInteraction(purchase, stage).owner);
   }, [stage, purchase?.id, purchase?.ordered]);
 
+  useEffect(
+    () => () => {
+      if (marketReviewTimer.current) clearTimeout(marketReviewTimer.current);
+    },
+    [],
+  );
+
+  function cueAgentActivity(agentId: string) {
+    // 交易准入使用真实核验进度驱动舞台，不叠加入口反馈。
+    if (inspecting !== null || stage === 2) return;
+    const members = purchaseInteraction(purchase, stage).roles.members;
+    const agentIds =
+      agentId === "da"
+        ? members
+        : members.includes(agentId)
+          ? [agentId]
+          : [];
+    if (agentIds.length === 0) return;
+    setAgentActivityCue((current) => ({
+      key: (current?.key ?? 0) + 1,
+      agentIds,
+    }));
+  }
+
   function openDrawer(agentId: string) {
     setDrawerAgent(agentId);
     setDrawerOpen(true);
+    cueAgentActivity(agentId);
+  }
+
+  function selectDrawerAgent(agentId: string) {
+    setDrawerAgent(agentId);
+    cueAgentActivity(agentId);
   }
 
   function update(patch: Partial<Purchase>) {
@@ -171,19 +208,29 @@ export default function PurchaseWorkbench() {
     setInspecting(null);
   }
   function start(confirmedNeed: PurchaseNeed) {
-    if (purchase && purchase.stage !== 0) return;
-    if (purchase) {
-      update({
-        need: { ...confirmedNeed },
-        stage: 1,
-        marketDecision: undefined,
-      });
-      setInspecting(null);
-    } else {
-      const item = { ...newPurchase({ ...confirmedNeed }), stage: 1 };
-      setPurchases((items) => [item, ...items]);
-      open(item);
-    }
+    if (startingMarketReview || (purchase && purchase.stage !== 0)) return;
+    if (marketReviewTimer.current) clearTimeout(marketReviewTimer.current);
+    setStartingMarketReview(true);
+    setAgentActivityCue((current) => ({
+      key: (current?.key ?? 0) + 1,
+      agentIds: ["zhan"],
+    }));
+    marketReviewTimer.current = setTimeout(() => {
+      if (purchase) {
+        update({
+          need: { ...confirmedNeed },
+          stage: 1,
+          marketDecision: undefined,
+        });
+        setInspecting(null);
+      } else {
+        const item = { ...newPurchase({ ...confirmedNeed }), stage: 1 };
+        setPurchases((items) => [item, ...items]);
+        open(item);
+      }
+      setStartingMarketReview(false);
+      marketReviewTimer.current = null;
+    }, 2500);
   }
 
   function decideMarket(action: "buy" | "adjust" | "watch", advice?: PurchaseAdvice) {
@@ -358,6 +405,7 @@ export default function PurchaseWorkbench() {
             checking={checking}
             reviewing={inspecting !== null}
             selectedAgent={drawerOpen ? drawerAgent : null}
+            activityCue={agentActivityCue}
             onOpen={openDrawer}
           />
           <PurchaseDrawer
@@ -369,7 +417,7 @@ export default function PurchaseWorkbench() {
             checking={checking}
             reviewing={inspecting !== null}
             onClose={() => setDrawerOpen(false)}
-            onSelectAgent={setDrawerAgent}
+            onSelectAgent={selectDrawerAgent}
           >
             {purchase?.originMission && (
               <details className="pw-origin-results">
@@ -429,7 +477,11 @@ export default function PurchaseWorkbench() {
                           </Info>
                         </>
                       )}
-                      <NeedForm need={purchase?.need ?? need} onStart={start} />
+                      <NeedForm
+                        need={purchase?.need ?? need}
+                        starting={startingMarketReview}
+                        onStart={start}
+                      />
                     </>
                   ))}
                 {stage === 1 && purchase && (
@@ -488,7 +540,11 @@ export default function PurchaseWorkbench() {
                   />
                 )}
                 {stage === 7 && purchase && (
-                  <Review purchase={purchase} phase="knowledge" />
+                  <Review
+                    purchase={purchase}
+                    phase="knowledge"
+                    onClose={() => setDrawerOpen(false)}
+                  />
                 )}
               </section>
               {stage < 6 && (stage > 1 || references.length > 0) && <details className="pw-drawer-support">
@@ -618,9 +674,11 @@ function NeedSummary({ need }: { need: PurchaseNeed }) {
 
 function NeedForm({
   need: initialNeed,
+  starting,
   onStart,
 }: {
   need: PurchaseNeed;
+  starting: boolean;
   onStart(value: PurchaseNeed): void;
 }) {
   const [need, onChange] = useState<PurchaseNeed>({ ...initialNeed });
@@ -865,8 +923,11 @@ function NeedForm({
             </div>
           </div>
           <div className="pw-action-bar">
-            <Button onClick={() => onStart(need)} disabled={!valid}>
-              确认，查看行情
+            <Button
+              onClick={() => onStart(need)}
+              disabled={!valid || starting}
+            >
+              {starting ? "正在研判行情…" : "确认，查看行情"}
             </Button>
           </div>
         </>
@@ -876,6 +937,206 @@ function NeedForm({
 }
 
 // Qualification 已提取到 ./Qualification.tsx
+
+type AiMatchingKind = "source" | "logistics";
+type AiMatchingStatus = "idle" | "analyzing" | "ready";
+
+const AI_MATCHING_COPY: Record<
+  AiMatchingKind,
+  {
+    team: string;
+    title: string;
+    description: string;
+    action: string;
+    readyTitle: string;
+    phases: Array<{ title: string; detail: string }>;
+  }
+> = {
+  source: {
+    team: "粮小二 + 瞻小二 + 企业知识库",
+    title: "启动粮源智能匹配",
+    description:
+      "系统先按准入规则筛选粮源，再由AI结合价格、质量与履约经验完成综合研判。",
+    action: "开始智能匹配",
+    readyTitle: "粮源智能匹配已完成",
+    phases: [
+      {
+        title: "理解采购意图",
+        detail: "拆解品种、数量、预算、交期和质量约束",
+      },
+      {
+        title: "召回企业经验",
+        detail: "查找同品种、同区域的采购与履约经验",
+      },
+      {
+        title: "检索并筛选粮源",
+        detail: "核验可供量、报价时效、质量和交货能力",
+      },
+      {
+        title: "多目标排序",
+        detail: "平衡价格、质量、供应稳定性与交付风险",
+      },
+    ],
+  },
+  logistics: {
+    team: "运小二 + 算小二 + 企业知识库",
+    title: "启动物流智能匹配",
+    description:
+      "系统先按资质、线路和运力规则筛选，再由AI综合优化成本、时效与履约风险。",
+    action: "开始智能匹配",
+    readyTitle: "物流智能匹配已完成",
+    phases: [
+      {
+        title: "计算发运需求",
+        detail: "根据吨位、装载量和交期拆解车次与节奏",
+      },
+      {
+        title: "检索可用运力",
+        detail: "核验承运资质、线路覆盖、车辆适配与当日报价",
+      },
+      {
+        title: "预测履约风险",
+        detail: "结合历史准时率、交期余量和货损风险研判",
+      },
+      {
+        title: "生成调度方案",
+        detail: "输出综合最优方案、备选运力和异常处置余量",
+      },
+    ],
+  },
+};
+
+function AiMatchingGate({
+  kind,
+  readonly,
+  bypass = false,
+  resultSummary,
+  resultMeta,
+  children,
+}: {
+  kind: AiMatchingKind;
+  readonly: boolean;
+  bypass?: boolean;
+  resultSummary: string;
+  resultMeta: string;
+  children: ReactNode;
+}) {
+  const copy = AI_MATCHING_COPY[kind];
+  const [status, setStatus] = useState<AiMatchingStatus>(
+    readonly ? "ready" : "idle",
+  );
+  const [activePhase, setActivePhase] = useState(-1);
+
+  useEffect(() => {
+    if (readonly) setStatus("ready");
+  }, [readonly]);
+
+  useEffect(() => {
+    if (status !== "analyzing") return;
+    const phaseTimers = copy.phases.map((_, index) =>
+      setTimeout(() => setActivePhase(index), 260 + index * 620),
+    );
+    const readyTimer = setTimeout(() => {
+      setActivePhase(copy.phases.length - 1);
+      setStatus("ready");
+    }, 260 + copy.phases.length * 620);
+    return () => {
+      phaseTimers.forEach(clearTimeout);
+      clearTimeout(readyTimer);
+    };
+  }, [copy.phases, status]);
+
+  if (bypass) return <>{children}</>;
+
+  return (
+    <>
+      <section
+        className="pw-ai-match-gate"
+        data-status={status}
+        aria-live="polite"
+      >
+        <div className="pw-ai-match-head">
+          <div>
+            <span>{copy.team}</span>
+            <h3>
+              {status === "ready" ? copy.readyTitle : copy.title}
+            </h3>
+            <p>
+              {status === "ready" ? resultSummary : copy.description}
+            </p>
+          </div>
+          {status === "idle" && (
+            <button
+              type="button"
+              onClick={() => {
+                setActivePhase(-1);
+                setStatus("analyzing");
+              }}
+            >
+              {copy.action}
+            </button>
+          )}
+          {status === "analyzing" && (
+            <strong className="pw-ai-match-state">智能匹配中</strong>
+          )}
+          {status === "ready" && (
+            <strong className="pw-ai-match-state is-ready">待你确认</strong>
+          )}
+        </div>
+
+        {status === "idle" && (
+          <div className="pw-ai-match-brief">
+            <div>
+              <span>决策方式</span>
+              <strong>规则筛选 + AI综合研判</strong>
+            </div>
+            <div>
+              <span>经验支持</span>
+              <strong>主动引用企业办事记录</strong>
+            </div>
+            <div>
+              <span>输出结果</span>
+              <strong>推荐、备选与风险依据</strong>
+            </div>
+          </div>
+        )}
+
+        {status === "analyzing" && (
+          <ol className="pw-ai-match-phases" aria-label="智能匹配进度">
+            {copy.phases.map((phase, index) => {
+              const phaseState =
+                index < activePhase
+                  ? "done"
+                  : index === activePhase
+                    ? "active"
+                    : "pending";
+              return (
+                <li key={phase.title} data-state={phaseState}>
+                  <i aria-hidden="true">
+                    {phaseState === "done" ? "✓" : index + 1}
+                  </i>
+                  <span>
+                    <strong>{phase.title}</strong>
+                    <small>{phase.detail}</small>
+                  </span>
+                </li>
+              );
+            })}
+          </ol>
+        )}
+
+        {status === "ready" && (
+          <div className="pw-ai-match-result">
+            <span>智能匹配结论</span>
+            <strong>{resultMeta}</strong>
+            <small>结果不会自动生效，请检查依据后确认方案</small>
+          </div>
+        )}
+      </section>
+      {status === "ready" && children}
+    </>
+  );
+}
 
 function Sources({
   purchase,
@@ -980,7 +1241,14 @@ function Sources({
   );
 
   return (
-    <>
+    <AiMatchingGate
+      kind="source"
+      readonly={readonly}
+      bypass={Boolean(purchase.originMission)}
+      resultSummary={`已检索 ${search.records.length} 个候选粮源，筛出 ${search.eligible.length} 个合格粮源，并完成价格、质量、供给、履约和交付综合比选。`}
+      resultMeta={`优先推荐 ${recommended.depot}，另保留 ${Math.max(0, Math.min(2, search.eligible.length - 1))} 个备选`}
+    >
+      <>
       <section className="pw-source-scope" aria-label="本次粮源匹配范围">
         <div>
           <span>采购条件</span>
@@ -1288,7 +1556,8 @@ function Sources({
           </Button>
         </div>
       )}
-    </>
+      </>
+    </AiMatchingGate>
   );
 }
 
@@ -1421,6 +1690,18 @@ function Transport({
           <strong>{purchase.need.destination}</strong>
         </div>
       </div>
+      <AiMatchingGate
+        kind="logistics"
+        readonly={readonly}
+        bypass={pickup || Boolean(purchase.originMission)}
+        resultSummary={`已核验 ${logisticsSearch.records.length} 个候选运力，收到 ${logisticsSearch.responded.length} 个有效报价，并形成 ${options.length} 个可执行运输方案。`}
+        resultMeta={
+          recommendedAssessment
+            ? `综合最优为${recommendedAssessment.option.label}，预计 ${recommendedAssessment.cost.days} 天到货`
+            : `已生成 ${options.length} 个可选运输方案`
+        }
+      >
+        <>
       {!pickup && !purchase.originMission && (
         <section className="pw-source-funnel pw-logistics-funnel">
           <div className="pw-source-funnel-heading">
@@ -1725,6 +2006,8 @@ function Transport({
           </div>
         </div>
       )}
+        </>
+      </AiMatchingGate>
     </>
   );
 }
@@ -2292,10 +2575,12 @@ function Review({
   purchase,
   phase,
   onNext,
+  onClose,
 }: {
   purchase: Purchase;
   phase: "cost" | "knowledge";
   onNext?: () => void;
+  onClose?: () => void;
 }) {
   const settlement = purchaseSettlement(purchase);
   const actualUnit = settlement.landedUnit ?? settlement.baseUnit;
@@ -2598,7 +2883,7 @@ function Review({
         )
       ) : (
         <div className="pw-review-complete">
-          <span className="pw-button" role="status">本次采购已完成</span>
+          <Button onClick={() => onClose?.()}>本次采购已完成</Button>
         </div>
       )}
 

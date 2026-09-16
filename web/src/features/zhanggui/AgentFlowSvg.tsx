@@ -22,8 +22,12 @@ export function resolveLinkKind(
   mission: CollaborationSnapshot,
   agentId: string,
   liveStatus?: AgentRun["status"],
+  participatingOverride?: boolean,
 ): LinkKind {
-  if (!mission.team.find((item) => item.agent_id === agentId)?.selected)
+  if (
+    participatingOverride !== true &&
+    !mission.team.find((item) => item.agent_id === agentId)?.selected
+  )
     return "standby";
   const status =
     liveStatus ??
@@ -39,6 +43,9 @@ export interface AgentFlowSvgProps {
   liveRuns?: Record<string, AgentRun["status"]>;
   returningAgentIds?: string[];
   dispatchingAgentIds?: string[];
+  activityAgentIds?: string[];
+  /** 当前步骤参与者与粮掌柜之间持续传递协作信号。 */
+  continuousFlow?: boolean;
 }
 
 export default function AgentFlowSvg({
@@ -46,14 +53,23 @@ export default function AgentFlowSvg({
   liveRuns,
   returningAgentIds = [],
   dispatchingAgentIds = [],
+  activityAgentIds = [],
+  continuousFlow = false,
 }: AgentFlowSvgProps) {
   return (
     <svg className="zg-flow-svg" viewBox="0 0 1040 720" aria-hidden="true">
       {Object.entries(AGENT_POSITIONS).map(([id, position]) => {
-        const participating = mission.team.some(
-          (member) => member.agent_id === id && member.selected,
+        const participating =
+          activityAgentIds.includes(id) ||
+          mission.team.some(
+            (member) => member.agent_id === id && member.selected,
+          );
+        const kind = resolveLinkKind(
+          mission,
+          id,
+          liveRuns?.[id],
+          participating,
         );
-        const kind = resolveLinkKind(mission, id, liveRuns?.[id]);
         const returning =
           returningAgentIds.includes(id) &&
           (kind === "completed" || kind === "conflict");
@@ -69,6 +85,20 @@ export default function AgentFlowSvg({
             data-returning={returning || undefined}
           >
             <path className="zg-flow-line" d={d} />
+            {continuousFlow && participating && (
+              <>
+                <path
+                  className="zg-flow-particle zg-flow-particle--continuous-send"
+                  pathLength="100"
+                  d={d}
+                />
+                <path
+                  className="zg-flow-particle zg-flow-particle--continuous-return"
+                  pathLength="100"
+                  d={d}
+                />
+              </>
+            )}
             {(dispatching || returning) && (
               <path
                 key={returning ? "return" : "dispatch"}

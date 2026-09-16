@@ -128,9 +128,14 @@ export default function StageBackdrop() {
 
 export type StageFeedback = "dispatch" | "return" | "conflict";
 
-export function IpPedestal({ central = false, feedback = {} }: {
+export function IpPedestal({
+  central = false,
+  feedback = {},
+  continuousFlow = false,
+}: {
   central?: boolean;
   feedback?: Record<string, StageFeedback>;
+  continuousFlow?: boolean;
 }) {
   return (
     <svg
@@ -175,6 +180,28 @@ export function IpPedestal({ central = false, feedback = {} }: {
           strokeWidth="2"
         />
       ))}
+      {continuousFlow && (
+        <>
+          <ellipse
+            className="zg-ip-feedback zg-ip-feedback--cycle"
+            data-feedback="dispatch"
+            rx={central ? 60 : 40}
+            ry={central ? 17 : 11}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          />
+          <ellipse
+            className="zg-ip-feedback zg-ip-feedback--cycle"
+            data-feedback="return"
+            rx={central ? 60 : 40}
+            ry={central ? 17 : 11}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          />
+        </>
+      )}
     </svg>
   );
 }

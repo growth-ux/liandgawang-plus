@@ -16,6 +16,7 @@ export default function PurchaseCockpit({
   checking,
   reviewing = false,
   selectedAgent,
+  activityCue,
   onOpen,
 }: {
   purchase: Purchase | null;
@@ -24,6 +25,7 @@ export default function PurchaseCockpit({
   checking: number | null;
   reviewing?: boolean;
   selectedAgent: string | null;
+  activityCue?: { key: number; agentIds: string[] } | null;
   onOpen(agentId: string): void;
 }) {
   const mission = purchaseCollaboration(purchase, need, stage, checking);
@@ -72,6 +74,7 @@ export default function PurchaseCockpit({
         mission={mission}
         animationKey={`${purchase?.id ?? "draft"}:${stage}:${Boolean(purchase?.ordered)}`}
         selectedAgentId={selectedAgent}
+        activityCue={activityCue}
         onSelectAgent={onOpen}
         onSelectHub={() => onOpen("da")}
         agentActions={entries}

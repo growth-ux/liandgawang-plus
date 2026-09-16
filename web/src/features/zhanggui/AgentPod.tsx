@@ -16,6 +16,7 @@ export interface AgentPodProps {
   disabled?: boolean;
   feedback?: StageFeedback;
   actionLabel?: string;
+  continuousFlow?: boolean;
 }
 const STATUS_TEXT: Record<string, string> = {
   pending: "待启动",
@@ -38,6 +39,7 @@ export default function AgentPod({
   disabled,
   feedback,
   actionLabel,
+  continuousFlow = false,
 }: AgentPodProps) {
   const status = participating
     ? (effectiveStatus ?? run?.status ?? "pending")
@@ -55,6 +57,7 @@ export default function AgentPod({
       data-status={status}
       data-feedback={feedback}
       data-participating={participating || undefined}
+      data-continuous-flow={continuousFlow || undefined}
       style={
         { "--x": `${x}px`, "--y": `${y}px`, "--depth": y } as CSSProperties
       }
@@ -67,6 +70,7 @@ export default function AgentPod({
       <span className="zg-ip-figure">
         <IpPedestal
           feedback={feedback ? { [agent.agent_id]: feedback } : undefined}
+          continuousFlow={continuousFlow}
         />
         <IpPortrait agentId={agent.agent_id} name={agent.name} />
       </span>

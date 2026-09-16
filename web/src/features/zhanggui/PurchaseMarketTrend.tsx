@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import * as echarts from "echarts";
 import { fetchMarketOverview, fetchPriceSeries } from "../zhan/api";
 import type { PricePoint, PriceSeriesResponse, SpotPrice } from "../zhan/types";
@@ -140,8 +140,16 @@ export default function PurchaseMarketTrend({ variety, asOf, onContextChange }: 
     } : "loading");
   }, [error, series, period, onContextChange]);
 
-  const points = series ? trendWindow(series.points, period) : [];
-  const prices = points.map((point) => Number(point.price));
+  // 研判结果回写会触发父组件重渲染。保持 points 引用稳定，
+  // 避免 TrendChart 的 effect 误判数据变化并重新初始化 ECharts。
+  const points = useMemo(
+    () => (series ? trendWindow(series.points, period) : []),
+    [series, period],
+  );
+  const prices = useMemo(
+    () => points.map((point) => Number(point.price)),
+    [points],
+  );
   const latest = prices[prices.length - 1] ?? 0;
   const change = latest - (prices[0] ?? 0);
   const percent = prices[0] ? change / prices[0] * 100 : 0;

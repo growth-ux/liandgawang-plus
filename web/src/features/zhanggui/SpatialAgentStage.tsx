@@ -33,6 +33,8 @@ export interface SpatialAgentStageProps {
   onSelectHub?(): void;
   hubAction?: string;
   agentActions?: Record<string, string>;
+  /** 用户打开本步办理入口时，仅播放一次调度/回传反馈，不改写业务状态。 */
+  activityCue?: { key: number; agentIds: string[] } | null;
 }
 
 const FEEDBACK_DURATION = 2200;
@@ -53,6 +55,7 @@ export default function SpatialAgentStage({
   onSelectHub,
   hubAction,
   agentActions,
+  activityCue,
 }: SpatialAgentStageProps) {
   const stageRef = useRef<HTMLElement>(null);
   const sceneRef = useRef<HTMLDivElement>(null);
@@ -67,7 +70,12 @@ export default function SpatialAgentStage({
     () => window.matchMedia("(hover: hover) and (pointer: fine)").matches,
   );
   const [feedback, setFeedback] = useState<Record<string, StageFeedback>>({});
+  const [activity, setActivity] = useState<{
+    agentIds: string[];
+    phase: "dispatch" | "return";
+  } | null>(null);
   const timers = useRef(new Map<string, ReturnType<typeof setTimeout>>());
+  const activityTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const previous = useRef<{
     key: string | number;
     enabled: boolean;
@@ -197,9 +205,30 @@ export default function SpatialAgentStage({
     () => () => {
       timers.current.forEach(clearTimeout);
       timers.current.clear();
+      activityTimers.current.forEach(clearTimeout);
     },
     [],
   );
+  useEffect(() => {
+    activityTimers.current.forEach(clearTimeout);
+    activityTimers.current = [];
+    setActivity(null);
+    if (!activityCue || !animationEnabled || activityCue.agentIds.length === 0)
+      return;
+    setActivity({ agentIds: activityCue.agentIds, phase: "dispatch" });
+    activityTimers.current.push(
+      setTimeout(
+        () =>
+          setActivity({ agentIds: activityCue.agentIds, phase: "return" }),
+        1100,
+      ),
+      setTimeout(() => setActivity(null), 2400),
+    );
+    return () => {
+      activityTimers.current.forEach(clearTimeout);
+      activityTimers.current = [];
+    };
+  }, [activityCue?.key, animationEnabled]);
   const resetParallax = () => {
     sceneRef.current?.style.setProperty("--parallax-x", "0px");
     sceneRef.current?.style.setProperty("--parallax-y", "0px");
@@ -239,14 +268,30 @@ export default function SpatialAgentStage({
       : mission.status === "running"
         ? "正在汇总各专业结果…"
         : "等待任务推进");
-  const visibleFeedback =
-    animationEnabled && previous.current?.key === animationKey ? feedback : {};
+  const activityFeedback = Object.fromEntries(
+    (activity?.agentIds ?? []).map((id) => [id, activity!.phase]),
+  ) as Record<string, StageFeedback>;
+  const visibleFeedback = animationEnabled
+    ? {
+        ...(previous.current?.key === animationKey ? feedback : {}),
+        ...activityFeedback,
+      }
+    : {};
   const returningAgentIds = Object.keys(visibleFeedback).filter(
     (id) => visibleFeedback[id] !== "dispatch",
   );
   const dispatchingAgentIds = Object.keys(visibleFeedback).filter(
     (id) => visibleFeedback[id] === "dispatch",
   );
+  const visualLiveRuns = { ...liveRuns };
+  for (const id of activity?.agentIds ?? []) {
+    visualLiveRuns[id] =
+      activity?.phase === "dispatch"
+        ? "running"
+        : statuses[id] === "completed_with_objection"
+          ? "completed_with_objection"
+          : "completed";
+  }
 
   return (
     <section
@@ -299,9 +344,11 @@ export default function SpatialAgentStage({
             <StageBackdrop />
             <AgentFlowSvg
               mission={mission}
-              liveRuns={liveRuns}
+              liveRuns={visualLiveRuns}
               returningAgentIds={returningAgentIds}
               dispatchingAgentIds={dispatchingAgentIds}
+              activityAgentIds={activity?.agentIds}
+              continuousFlow={Boolean(purchaseMode)}
             />
             <Hub
               className="zg-stage-hub"
@@ -310,7 +357,11 @@ export default function SpatialAgentStage({
               aria-label={onSelectHub ? `粮掌柜，${hubAction}` : undefined}
               aria-haspopup={onSelectHub ? "dialog" : undefined}
               data-interactive={Boolean(onSelectHub)}
-              data-processing={mission.status === "running" || undefined}
+              data-processing={
+                mission.status === "running" ||
+                activity?.phase === "dispatch" ||
+                undefined
+              }
               style={
                 {
                   "--x": `${HUB_POSITION.x}px`,
@@ -320,7 +371,13 @@ export default function SpatialAgentStage({
               }
             >
               <span className="zg-ip-figure">
-                <IpPedestal central feedback={visibleFeedback} />
+                <IpPedestal
+                  central
+                  feedback={visibleFeedback}
+                  continuousFlow={
+                    Boolean(purchaseMode) && selectedMembers.length > 0
+                  }
+                />
                 <IpPortrait
                   agentId="da"
                   name="商务男与粮掌柜协作"
@@ -347,20 +404,36 @@ export default function SpatialAgentStage({
                   (run) => run.agent_id === member.agent_id,
                 )}
                 effectiveStatus={
-                  statuses[member.agent_id] === "standby"
+                  activity?.agentIds.includes(member.agent_id)
+                    ? activity.phase === "dispatch"
+                      ? "running"
+                      : "completed"
+                    : statuses[member.agent_id] === "standby"
                     ? undefined
                     : (statuses[member.agent_id] as AgentRun["status"])
                 }
-                participating={member.selected}
+                participating={
+                  member.selected ||
+                  Boolean(activity?.agentIds.includes(member.agent_id))
+                }
                 active={selectedAgentId === member.agent_id}
                 feedback={visibleFeedback[member.agent_id]}
                 x={AGENT_POSITIONS[member.agent_id].x}
                 y={AGENT_POSITIONS[member.agent_id].y}
                 onClick={() => onSelectAgent(member.agent_id)}
                 standbyLabel={purchaseMode ? "本步待命" : "待命"}
-                disabled={purchaseMode && !member.selected}
+                disabled={
+                  purchaseMode &&
+                  !member.selected &&
+                  !activity?.agentIds.includes(member.agent_id)
+                }
                 actionLabel={
                   member.selected ? agentActions?.[member.agent_id] : undefined
+                }
+                continuousFlow={
+                  Boolean(purchaseMode) &&
+                  (member.selected ||
+                    Boolean(activity?.agentIds.includes(member.agent_id)))
                 }
               />
             ))}
