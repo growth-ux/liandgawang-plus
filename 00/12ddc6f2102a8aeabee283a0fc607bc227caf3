@@ -1,0 +1,18 @@
+.gitignore
+  h_f75b2dd43abf29 13
+.idea/liangdawang-plus.iml
+  h_f75b2dd43abf29 5
+web/src/data/agents.ts
+  h_f75b2dd43abf29 88,133
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "0012ddc6f2102a8aeabee283a0fc607bc227caf3",
+  "prompts": {},
+  "humans": {
+    "h_f75b2dd43abf29": {
+      "author": "weiyu.1024 <1360055716@qq.com>"
+    }
+  }
+}
