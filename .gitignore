@@ -10,3 +10,4 @@ docs/ppt-work
 tmp/
 output/
 output/*.pptx
+.tmp/
