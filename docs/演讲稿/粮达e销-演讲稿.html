@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>粮达e销 · 面向粮食产业的多智能体协作平台</title>
+
+<!-- 字体：Chakra Petch（拉丁/数字·科技棱角感） + Noto Sans SC（中文正文） -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+<style>
+/* ===========================================================
+   主题变量 —— 改这里即可换整套配色 / 字号 / 节奏
+   品牌延续：深空蓝底 + 青 / 蓝 / 金三色点缀（金与 IP 橙呼应）
+   =========================================================== */
+:root{
+  /* 科技青蓝 · 浅色演示主题：白蓝底 + 青/蓝主色，暖橙仅作掌柜层级点缀 */
+  --bg:#F2F8FC;
+  --bg2:#E8F2F9;
+  --panel:rgba(255,255,255,.82);
+  --panel-2:rgba(255,255,255,.6);
+  --line:rgba(23,111,175,.16);
+  --line-strong:rgba(23,111,175,.34);
+  --cyan:#0891B2;
+  --cyan-deep:#0E7490;
+  --blue:#1668DC;
+  --gold:#D98A1F;
+  --rose:#E5484D;
+  --txt:#0B2540;
+  --sub:#446283;
+  --dim:#7C95AC;
+
+  --font-cn:'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
+  --font-latin:'Chakra Petch','Noto Sans SC',sans-serif;
+
+  /* 舞台内尺寸（按 1920×1080 设计） */
+  --pad-x:88px;
+  --ease-out-expo:cubic-bezier(.16,1,.3,1);
+  --dur:.65s;
+
+  --stage-bg:#D7E3EC;
+  --slide-bg:var(--bg);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+/* ===========================================================
+   viewport-base.css —— 固定 16:9 舞台强制基础样式（全文内嵌）
+   =========================================================== */
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    background: var(--stage-bg, #000);
+}
+.deck-viewport {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    background: var(--stage-bg, #000);
+}
+.deck-stage {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    transform-origin: 0 0;
+    background: var(--slide-bg, #fff);
+}
+.slide {
+    position: absolute;
+    inset: 0;
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    display: block;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    background: var(--slide-bg, #fff);
+}
+.slide.active,
+.slide.visible {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 1;
+}
+img,
+video,
+canvas,
+svg {
+    max-width: 100%;
+    max-height: 100%;
+}
+.deck-controls {
+    position: fixed;
+    left: 50%;
+    bottom: 22px;
+    transform: translateX(-50%);
+    z-index: 1000;
+}
+@media print {
+    html,
+    body {
+        width: 1920px;
+        height: auto;
+        overflow: visible;
+        background: #fff;
+    }
+    .deck-viewport {
+        position: static;
+        overflow: visible;
+        background: #fff;
+    }
+    .deck-stage {
+        position: static;
+        width: auto;
+        height: auto;
+        transform: none !important;
+        background: none;
+    }
+    .slide {
+        position: relative;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        width: 1920px;
+        height: 1080px;
+        break-after: page;
+        page-break-after: always;
+    }
+    .slide:last-child {
+        break-after: auto;
+        page-break-after: auto;
+    }
+    .deck-controls {
+        display: none !important;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.2s !important;
+    }
+}
+/* ============ viewport-base.css 结束 ============ */
+
+/* ===========================================================
+   幻灯片公共底：多层渐变氛围 + 网格 + 暗角
+   =========================================================== */
+.slide{
+  font-family:var(--font-cn);
+  color:var(--txt);
+  background:
+    radial-gradient(1000px 560px at 84% -12%, rgba(22,104,220,.10), transparent 62%),
+    radial-gradient(880px 520px at 6% 112%, rgba(8,145,178,.10), transparent 62%),
+    linear-gradient(160deg, #FBFDFF 0%, var(--bg) 55%, #E3EEF6 100%);
+}
+/* 细网格，中心淡出 */
+.slide::before{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
+  background-image:
+    linear-gradient(rgba(21,101,160,.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(21,101,160,.07) 1px, transparent 1px);
+  background-size:48px 48px;
+  -webkit-mask-image:radial-gradient(1000px 640px at 50% 42%, #000 28%, transparent 100%);
+          mask-image:radial-gradient(1000px 640px at 50% 42%, #000 28%, transparent 100%);
+}
+/* 顶部一条极细的科技扫光 */
+.slide::after{
+  content:"";position:absolute;left:0;right:0;top:0;height:2px;z-index:0;
+  background:linear-gradient(90deg,transparent,rgba(8,145,178,.6) 30%,rgba(22,104,220,.5) 62%,transparent);
+  opacity:.9;
+}
+
+/* ===========================================================
+   通用组件：页眉 / 页脚 / 揭示动画
+   =========================================================== */
+.head{
+  position:relative;z-index:2;
+  display:flex;align-items:flex-end;justify-content:space-between;
+  padding:64px var(--pad-x) 0;
+}
+.head-l{display:flex;flex-direction:column;gap:14px;}
+.kicker{
+  display:inline-flex;align-items:center;gap:12px;
+  font-family:var(--font-latin);font-size:17px;font-weight:600;
+  letter-spacing:.34em;color:var(--cyan);text-transform:uppercase;
+}
+.kicker::before{content:"";width:40px;height:2px;background:linear-gradient(90deg,var(--cyan),transparent);}
+.kicker b{color:var(--gold);font-weight:700;}
+.head-title{font-size:52px;font-weight:900;letter-spacing:.02em;line-height:1.2;}
+.head-title em{
+  font-style:normal;
+  background:linear-gradient(92deg,var(--cyan),#2E8FE0 58%,var(--blue));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.head-no{
+  font-family:var(--font-latin);font-size:96px;font-weight:700;line-height:.9;
+  color:transparent;-webkit-text-stroke:1.6px rgba(22,104,220,.26);
+}
+.foot{
+  position:absolute;left:var(--pad-x);right:var(--pad-x);bottom:30px;z-index:5;
+  display:flex;align-items:center;justify-content:space-between;
+  font-family:var(--font-latin);font-size:14px;letter-spacing:.22em;color:var(--dim);
+}
+.foot .brand{display:flex;align-items:center;gap:10px;font-weight:600;}
+.foot .brand i{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px rgba(8,145,178,.6);}
+.foot .cn{font-family:var(--font-cn);letter-spacing:.3em;}
+
+/* 揭示动画：进入页面后按序浮起 */
+.reveal{opacity:0;transform:translateY(34px);
+  transition:opacity var(--dur) var(--ease-out-expo),transform var(--dur) var(--ease-out-expo);}
+.slide.visible .reveal{opacity:1;transform:translateY(0);}
+.slide.visible .reveal:nth-child(1){transition-delay:.08s;}
+.slide.visible .reveal:nth-child(2){transition-delay:.20s;}
+.slide.visible .reveal:nth-child(3){transition-delay:.32s;}
+.slide.visible .reveal:nth-child(4){transition-delay:.44s;}
+.slide.visible .reveal:nth-child(5){transition-delay:.56s;}
+.slide.visible .reveal:nth-child(6){transition-delay:.68s;}
+
+/* 卡片基类 */
+.card{
+  position:relative;overflow:hidden;border-radius:18px;
+  background:var(--panel);border:1px solid var(--line);
+  backdrop-filter:blur(6px);
+  box-shadow:0 12px 34px rgba(13,60,110,.08);
+}
+.card::after{
+  content:"";position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(22,104,220,.35),transparent);
+}
+
+/* ===========================================================
+   S1 封面
+   =========================================================== */
+.cover{display:flex;align-items:center;padding:0 var(--pad-x);}
+.cover-left{position:relative;z-index:3;flex:1 1 56%;display:flex;flex-direction:column;align-items:flex-start;}
+.cover-badge{
+  display:inline-flex;align-items:center;gap:14px;padding:12px 26px;border-radius:999px;
+  border:1px solid rgba(8,145,178,.4);background:rgba(8,145,178,.08);
+  color:var(--cyan-deep);font-size:17px;letter-spacing:.3em;font-weight:700;
+}
+.cover-badge i{width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px rgba(217,138,31,.55);}
+.cover h1{
+  margin:34px 0 10px;font-size:152px;font-weight:900;letter-spacing:.05em;line-height:1.04;
+  background:linear-gradient(180deg,#0C2B4E 18%,#145DA0 62%,#0E86A8 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:0 0 60px rgba(22,104,220,.16);
+}
+.cover h1 span{
+  font-family:var(--font-latin);font-weight:700;
+  background:linear-gradient(180deg,#12A5C6,#0E7490);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.cover-sub{font-size:34px;font-weight:500;color:#35597E;letter-spacing:.2em;}
+.cover-chips{display:flex;gap:18px;margin-top:52px;}
+.cover-chips span{
+  padding:14px 26px;border-radius:12px;font-size:19px;letter-spacing:.1em;color:#123B63;
+  background:rgba(255,255,255,.72);border:1px solid var(--line);
+  display:inline-flex;align-items:center;gap:12px;
+  box-shadow:0 8px 22px rgba(13,60,110,.07);
+}
+.cover-chips span b{color:var(--cyan-deep);font-weight:900;}
+.cover-chips span::before{content:"";width:8px;height:8px;transform:rotate(45deg);background:var(--cyan);box-shadow:0 0 8px rgba(8,145,178,.55);}
+.cover-meta{margin-top:64px;font-size:18px;color:var(--sub);letter-spacing:.28em;display:flex;align-items:center;gap:20px;}
+.cover-meta i{width:44px;height:1px;background:linear-gradient(90deg,var(--gold),transparent);}
+
+/* 封面右侧：掌柜 IP 立于光环基座 */
+.cover-right{position:relative;z-index:2;flex:1 1 44%;height:100%;display:flex;align-items:center;justify-content:center;}
+.orbit{position:absolute;width:860px;height:860px;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;}
+.orbit i{position:absolute;inset:0;border:1px solid rgba(22,104,220,.16);border-radius:50%;}
+.orbit i:nth-child(2){inset:96px;border-color:rgba(22,104,220,.11);}
+.orbit i:nth-child(3){inset:196px;border-color:rgba(217,138,31,.2);}
+.orbit .spin{position:absolute;inset:0;animation:spin 26s linear infinite;}
+.orbit .spin b{position:absolute;width:10px;height:10px;border-radius:50%;background:var(--cyan);box-shadow:0 0 14px 3px rgba(8,145,178,.5);top:-5px;left:50%;}
+.orbit .spin.rev{animation:spin 34s linear infinite reverse;}
+.orbit .spin.rev b{background:var(--blue);box-shadow:0 0 14px 3px rgba(22,104,220,.45);}
+@keyframes spin{to{transform:rotate(360deg);}}
+.ip-stage{position:relative;width:520px;height:760px;display:flex;align-items:flex-end;justify-content:center;}
+.ip-stage .halo{
+  position:absolute;left:50%;bottom:26px;transform:translateX(-50%);
+  width:420px;height:120px;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(8,145,178,.26),rgba(8,145,178,.06) 62%,transparent 78%);
+  filter:blur(2px);
+}
+.ip-stage .ring{
+  position:absolute;left:50%;bottom:44px;transform:translateX(-50%);
+  width:360px;height:74px;border-radius:50%;
+  border:1.5px solid rgba(8,145,178,.45);
+  box-shadow:0 0 22px rgba(8,145,178,.18) inset,0 0 22px rgba(8,145,178,.2);
+}
+.ip-stage .ring::after{
+  content:"";position:absolute;inset:14px 34px;border-radius:50%;
+  border:1px dashed rgba(217,138,31,.45);
+}
+.ip-stage img{position:relative;z-index:2;height:700px;object-fit:contain;
+  filter:drop-shadow(0 24px 40px rgba(13,60,110,.28)) drop-shadow(0 0 30px rgba(22,104,220,.16));
+  animation:hover-float 6.5s ease-in-out infinite;}
+@keyframes hover-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+.ip-tag{
+  position:absolute;z-index:3;right:-6px;top:150px;
+  padding:10px 20px;border-radius:10px;font-size:17px;letter-spacing:.16em;font-weight:700;
+  color:#FFFFFF;background:linear-gradient(92deg,#12A5C6,#1668DC);
+  box-shadow:0 8px 22px rgba(22,104,220,.3);
+}
+
+/* 封面背景麦穗水印 */
+.wheat-mark{position:absolute;right:120px;bottom:60px;z-index:1;opacity:.1;pointer-events:none;}
+
+/* ===========================================================
+   S2 场景需求与痛点：痛点 → 能力枢纽 → e销方案 三行对照流
+   =========================================================== */
+.s2-body{position:relative;z-index:2;padding:32px var(--pad-x) 0;display:flex;flex-direction:column;gap:22px;height:calc(1080px - 236px - 96px);}
+.ctx-band{
+  display:flex;align-items:center;gap:26px;padding:20px 30px;border-radius:14px;
+  border:1px solid rgba(8,145,178,.32);
+  background:linear-gradient(92deg,rgba(8,145,178,.10),rgba(255,255,255,.66) 55%);
+}
+.ctx-band .lab{
+  flex:none;font-size:17px;font-weight:900;letter-spacing:.24em;color:var(--cyan-deep);
+  padding-right:26px;border-right:1px solid rgba(8,145,178,.3);
+}
+.ctx-band p{font-size:21px;line-height:1.5;color:#274664;letter-spacing:.04em;}
+.ctx-band p b{color:var(--cyan-deep);font-weight:700;}
+
+.flow{flex:1;display:flex;flex-direction:column;gap:18px;min-height:0;}
+/* 列头：左痛点 / 右方案，与 PPT 三栏对应 */
+.flow-head{display:grid;grid-template-columns:1fr 400px 1fr;}
+.flow-head .fh{font-size:26px;font-weight:900;letter-spacing:.3em;text-align:center;}
+.flow-head .fh-l{color:var(--rose);}
+.flow-head .fh-r{color:var(--blue);}
+.flow-rows{position:relative;flex:1;display:flex;flex-direction:column;gap:20px;min-height:0;}
+/* 中部虚线舱：包裹三枚能力胶囊，呼应 PPT 的虚线容器 */
+.flow-rows::before{
+  content:"";position:absolute;left:50%;top:-10px;bottom:-10px;width:300px;
+  transform:translateX(-50%);border:1.5px dashed rgba(22,104,220,.34);border-radius:22px;
+  pointer-events:none;
+}
+.frow{flex:1;display:grid;grid-template-columns:1fr 400px 1fr;align-items:stretch;min-height:0;}
+.pain{padding:18px 28px;display:flex;align-items:center;border-radius:16px;
+  border:1px solid var(--line);background:var(--panel);}
+.pain::before{content:"";position:absolute;left:0;top:20px;bottom:20px;width:3px;border-radius:3px;
+  background:linear-gradient(180deg,var(--rose),transparent);}
+/* 行尾描边幽灵序号 */
+.pain .ghost{position:absolute;right:18px;top:50%;transform:translateY(-50%);z-index:0;pointer-events:none;
+  font-family:var(--font-latin);font-size:104px;font-weight:700;line-height:1;
+  color:transparent;-webkit-text-stroke:1.4px rgba(229,72,77,.15);}
+.pain p{position:relative;z-index:1;padding-right:110px;
+  font-size:22px;line-height:1.55;letter-spacing:.03em;color:#33506E;}
+/* 能力枢纽：胶囊居中，两侧虚线接出舱外 */
+.hub{position:relative;display:flex;align-items:center;justify-content:center;}
+.hub::before,.hub::after{content:"";position:absolute;top:50%;border-top:2px dashed rgba(22,104,220,.38);}
+.hub::before{left:0;right:calc(50% + 150px);}
+.hub::after{left:calc(50% + 150px);right:0;}
+.hub .pill{position:relative;padding:15px 34px;border-radius:999px;
+  font-size:25px;font-weight:900;letter-spacing:.14em;color:#fff;
+  background:linear-gradient(100deg,var(--blue),var(--cyan-deep));
+  box-shadow:0 10px 24px rgba(22,104,220,.3),inset 0 1px 0 rgba(255,255,255,.35);}
+.fix{padding:18px 30px;display:flex;align-items:center;border-radius:16px;
+  border:1px solid rgba(8,145,178,.3);
+  background:linear-gradient(92deg,rgba(8,145,178,.10),rgba(255,255,255,.75));}
+.fix p{font-size:22px;line-height:1.55;letter-spacing:.03em;color:#0B4C5C;}
+.fix p b{color:var(--cyan-deep);font-weight:900;}
+.s2-sum{text-align:center;font-size:22px;letter-spacing:.12em;color:#274664;}
+.s2-sum b{color:var(--blue);font-weight:900;}
+
+/* ===========================================================
+   S3 认识 AI 团队
+   =========================================================== */
+.s3-body{position:relative;z-index:2;padding:30px var(--pad-x) 0;display:flex;gap:26px;height:calc(1080px - 236px - 150px);}
+.boss{flex:none;width:470px;padding:26px;display:flex;flex-direction:column;align-items:center;
+  border:1px solid rgba(217,138,31,.45);
+  background:linear-gradient(180deg,rgba(217,138,31,.10),rgba(255,255,255,.8) 46%);}
+.boss .ph{position:relative;width:100%;height:392px;display:flex;align-items:flex-end;justify-content:center;}
+.boss .ph::before{content:"";position:absolute;left:50%;bottom:6px;transform:translateX(-50%);
+  width:280px;height:64px;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(217,138,31,.26),transparent 74%);}
+.boss .ph img{position:relative;height:372px;object-fit:contain;
+  filter:drop-shadow(0 18px 30px rgba(13,60,110,.25)) drop-shadow(0 0 22px rgba(217,138,31,.18));
+  animation:hover-float 7s ease-in-out infinite;}
+.boss .role{position:absolute;top:10px;left:10px;padding:7px 16px;border-radius:8px;
+  font-size:15px;font-weight:900;letter-spacing:.2em;color:#3A2405;
+  background:linear-gradient(92deg,#F0B45C,#F3D08C);}
+.boss h3{margin-top:14px;font-size:38px;font-weight:900;letter-spacing:.14em;
+  background:linear-gradient(92deg,#8A5A12,var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.boss .duty{margin-top:12px;display:flex;flex-wrap:wrap;justify-content:center;gap:10px;}
+.boss .duty span{padding:8px 12px;border-radius:8px;font-size:15px;letter-spacing:.06em;color:#8A5A12;
+  background:rgba(217,138,31,.1);border:1px solid rgba(217,138,31,.35);}
+.boss .note{margin-top:14px;font-size:15px;line-height:1.6;color:var(--sub);text-align:center;letter-spacing:.04em;}
+
+.crew{flex:1;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:22px;min-height:0;}
+.xiaoer{padding:20px 22px;display:flex;align-items:center;gap:20px;border-radius:16px;
+  border:1px solid var(--line);background:var(--panel);transition:transform .3s var(--ease-out-expo),border-color .3s;}
+.xiaoer:hover{transform:translateY(-6px);border-color:var(--line-strong);}
+.xiaoer .ph{flex:none;width:158px;height:238px;border-radius:12px;overflow:hidden;position:relative;
+  background:linear-gradient(180deg,#CFE7F3,#EAF6FB);
+  border:1px solid rgba(8,145,178,.25);}
+.xiaoer .ph::after{content:"";position:absolute;inset:auto 0 0 0;height:46%;
+  background:linear-gradient(180deg,transparent,rgba(14,116,144,.16));}
+/* 放大裁切到上半身，形象更醒目 */
+.xiaoer .ph img{width:100%;height:100%;object-fit:contain;
+  transform:scale(1.62);transform-origin:50% 24%;
+  filter:drop-shadow(0 10px 18px rgba(13,60,110,.22));}
+.xiaoer .info{display:flex;flex-direction:column;gap:8px;min-width:0;}
+.xiaoer h4{font-size:27px;font-weight:900;letter-spacing:.1em;color:#0B2540;}
+.xiaoer .job{font-size:19px;font-weight:700;letter-spacing:.12em;color:var(--cyan-deep);}
+.xiaoer p{font-size:15px;line-height:1.55;color:#52708C;}
+.xiaoer .idx{position:absolute;top:14px;right:18px;font-family:var(--font-latin);
+  font-size:15px;font-weight:700;letter-spacing:.2em;color:#9AB4C9;}
+
+.kb-band{
+  position:absolute;left:var(--pad-x);right:var(--pad-x);bottom:88px;z-index:3;
+  display:flex;align-items:center;gap:24px;padding:18px 30px;border-radius:14px;
+  border:1px solid rgba(8,145,178,.35);
+  background:linear-gradient(92deg,rgba(8,145,178,.10),rgba(255,255,255,.72) 60%);
+}
+.kb-band .lab{flex:none;display:flex;align-items:center;gap:12px;
+  font-size:19px;font-weight:900;letter-spacing:.18em;color:var(--cyan-deep);
+  padding-right:24px;border-right:1px solid rgba(8,145,178,.3);}
+.kb-band .lab i{width:9px;height:9px;transform:rotate(45deg);background:var(--cyan);box-shadow:0 0 10px rgba(8,145,178,.5);}
+.kb-band p{font-size:18px;letter-spacing:.06em;color:#274664;line-height:1.5;}
+.kb-band p b{color:#C77E14;font-weight:700;}
+
+/* ===========================================================
+   舞台外控件：进度点 + 页码（不属于幻灯片设计系统）
+   =========================================================== */
+.deck-controls{display:flex;align-items:center;gap:18px;
+  padding:10px 20px;border-radius:999px;
+  background:rgba(255,255,255,.85);border:1px solid rgba(23,111,175,.22);
+  backdrop-filter:blur(8px);box-shadow:0 8px 24px rgba(13,60,110,.12);}
+.deck-controls .dot{width:9px;height:9px;border-radius:50%;border:0;cursor:pointer;
+  background:rgba(22,104,220,.25);transition:all .3s;padding:0;}
+.deck-controls .dot.on{background:var(--cyan);box-shadow:0 0 10px rgba(8,145,178,.6);transform:scale(1.25);}
+.deck-controls .pg{font-family:var(--font-latin);font-size:14px;letter-spacing:.2em;color:var(--sub);}
+.deck-controls .pg b{color:var(--txt);}
+
+/* ===========================================================
+   行内编辑（草稿后默认附带）：悬停左上角或按 E 进入
+   =========================================================== */
+.edit-hotzone{position:fixed;top:0;left:0;width:80px;height:80px;z-index:10000;cursor:pointer;}
+.edit-toggle{
+  position:fixed;top:16px;left:16px;z-index:10001;
+  width:46px;height:46px;border-radius:12px;border:1px solid rgba(23,111,175,.3);
+  background:rgba(255,255,255,.9);color:var(--cyan-deep);font-size:20px;cursor:pointer;
+  opacity:0;pointer-events:none;transition:opacity .3s ease,background .3s;
+}
+.edit-toggle.show,.edit-toggle.active{opacity:1;pointer-events:auto;}
+.edit-toggle.active{background:var(--cyan);color:#fff;}
+body.editing .slide{outline:1px dashed rgba(8,145,178,.35);outline-offset:-8px;}
+.edit-hint{
+  position:fixed;top:16px;left:74px;z-index:10001;display:none;
+  padding:10px 18px;border-radius:10px;font-size:14px;letter-spacing:.08em;
+  background:rgba(255,255,255,.94);border:1px solid rgba(8,145,178,.4);color:var(--cyan-deep);}
+body.editing .edit-hint{display:block;}
+</style>
+</head>
+<body>
+
+<!-- 麦穗符号：粮食产业印记，全站复用 -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="wheat" viewBox="0 0 64 96">
+    <path d="M32 94V26" stroke="currentColor" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <path d="M32 30c-10-2-16-10-16-20 10 2 16 10 16 20Zm0 0c10-2 16-10 16-20-10 2-16 10-16 20Zm0 18c-10-2-16-10-16-20 10 2 16 10 16 20Zm0 0c10-2 16-10 16-20-10 2-16 10-16 20Zm0 18c-10-2-16-10-16-20 10 2 16 10 16 20Zm0 0c10-2 16-10 16-20-10 2-16 10-16 20Z" fill="currentColor"/>
+    <path d="M32 26c-4-8-2-16 0-22 2 6 4 14 0 22Z" fill="currentColor"/>
+  </symbol>
+</svg>
+
+<div class="deck-viewport">
+<main class="deck-stage" id="deckStage">
+
+  <!-- ============ S1 封面 ============ -->
+  <section class="slide cover active visible" aria-label="封面">
+    <svg class="wheat-mark" width="300" height="450" style="color:#1668DC"><use href="#wheat"/></svg>
+
+    <div class="cover-left">
+      <div class="cover-badge reveal"><i></i>AI 竞赛汇报 · 多智能体协作</div>
+      <h1 class="reveal">粮达 <span>e</span> 销</h1>
+      <div class="cover-sub reveal">面向粮食产业的多智能体协作平台</div>
+      <div class="cover-chips reveal">
+        <span><b>掌柜</b>统筹</span>
+        <span><b>六小二</b>协同</span>
+        <span><b>企业知识大脑</b>底座</span>
+      </div>
+      <div class="cover-meta reveal"><i></i>汇报团队：粮达e销&ensp;·&ensp;2026 年 9 月</div>
+    </div>
+
+    <div class="cover-right">
+      <div class="orbit">
+        <i></i><i></i><i></i>
+        <div class="spin"><b></b></div>
+        <div class="spin rev"><b></b></div>
+      </div>
+      <div class="ip-stage reveal">
+        <div class="halo"></div>
+        <div class="ring"></div>
+        <img src="assets/da.png" alt="粮掌柜 IP 形象">
+        <div class="ip-tag">粮掌柜 · 协同中枢</div>
+      </div>
+    </div>
+
+    <div class="foot">
+      <div class="brand"><i></i>LIANGDA E-XIAO</div>
+      <div class="cn">让专业能力进入每一次业务</div>
+    </div>
+  </section>
+
+  <!-- ============ S2 场景需求与痛点 ============ -->
+  <section class="slide" aria-label="场景需求与痛点">
+    <header class="head">
+      <div class="head-l">
+        <div class="kicker"><b>02</b>&nbsp;场景需求与痛点</div>
+        <h2 class="head-title">构建智能决策层，让智能化在<em>业务侧落地</em></h2>
+      </div>
+      <div class="head-no">02</div>
+    </header>
+
+    <div class="s2-body">
+      <div class="ctx-band reveal">
+        <div class="lab">产业背景</div>
+        <p>围绕<b>“一号工程”</b>与供应链升级，以粮达网为载体——让数据支撑经营、资源服务客户、经验持续增值。</p>
+      </div>
+
+      <div class="flow">
+        <div class="flow-head reveal">
+          <div class="fh fh-l">实际痛点</div>
+          <div class="fh fh-m"></div>
+          <div class="fh fh-r">粮达e销</div>
+        </div>
+
+        <div class="flow-rows">
+          <div class="frow reveal">
+            <div class="pain card">
+              <div class="ghost">01</div>
+              <p>入驻、准入、签章和交易流程分散，端到端体验不顺畅</p>
+            </div>
+            <div class="hub"><span class="pill">交易协同</span></div>
+            <div class="fix card">
+              <p><b>AI 驱动</b>的一站式交易服务</p>
+            </div>
+          </div>
+
+          <div class="frow reveal">
+            <div class="pain card">
+              <div class="ghost">02</div>
+              <p>供需信息不对称，合适粮源难匹配，优质粮源价值难识别</p>
+            </div>
+            <div class="hub"><span class="pill">供需连接</span></div>
+            <div class="fix card">
+              <p>基于客户画像、用途、品质、交期和成本的<b>智能匹配</b></p>
+            </div>
+          </div>
+
+          <div class="frow reveal">
+            <div class="pain card">
+              <div class="ghost">03</div>
+              <p>客户、交易、物流和履约数据分散，难以沉淀持续认知</p>
+            </div>
+            <div class="hub"><span class="pill">企业记忆</span></div>
+            <div class="fix card">
+              <p>自动沉淀<b>画像、经验和风险规则</b></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="s2-sum reveal">粮达e销构建智能决策层 —— 让<b>“一号工程”</b>的智能化在业务侧落地</div>
+    </div>
+
+    <div class="foot">
+      <div class="brand"><i></i>LIANGDA E-XIAO</div>
+      <div class="cn">场景需求与痛点</div>
+    </div>
+  </section>
+
+  <!-- ============ S3 认识 AI 团队 ============ -->
+  <section class="slide" aria-label="认识 AI 团队">
+    <header class="head">
+      <div class="head-l">
+        <div class="kicker"><b>03</b>&nbsp;认识 AI 团队</div>
+        <h2 class="head-title">掌柜与六位小二：<em>能单干、会协作</em>的专业 AI 团队</h2>
+      </div>
+      <div class="head-no">03</div>
+    </header>
+
+    <div class="s3-body">
+      <!-- 掌柜 -->
+      <div class="boss card reveal">
+        <div class="ph">
+          <div class="role">协同中枢</div>
+          <img src="assets/da.png" alt="粮掌柜">
+        </div>
+        <h3>粮掌柜</h3>
+        <div class="duty">
+          <span>理解目标</span><span>组建团队</span><span>组织办理</span><span>汇总决策</span>
+        </div>
+        <div class="note">把一句话目标拆成协作任务，统筹六位小二并行办理、冲突识别、综合出方案。</div>
+      </div>
+
+      <!-- 六位小二 -->
+      <div class="crew">
+        <div class="xiaoer card reveal">
+          <div class="idx">A1</div>
+          <div class="ph"><img src="assets/zhan.png" alt="瞻小二"></div>
+          <div class="info"><h4>瞻小二</h4><div class="job">看行情</div><p>价格走势 · 区域价差 · 采购时机研判</p></div>
+        </div>
+        <div class="xiaoer card reveal">
+          <div class="idx">A2</div>
+          <div class="ph"><img src="assets/liang.png" alt="粮小二"></div>
+          <div class="info"><h4>粮小二</h4><div class="job">找粮源</div><p>硬条件过滤 · 候选比对 · 供需匹配</p></div>
+        </div>
+        <div class="xiaoer card reveal">
+          <div class="idx">A3</div>
+          <div class="ph"><img src="assets/yun.png" alt="运小二"></div>
+          <div class="info"><h4>运小二</h4><div class="job">找物流</div><p>线路筛选 · 运价比较 · 方案排序</p></div>
+        </div>
+        <div class="xiaoer card reveal">
+          <div class="idx">A4</div>
+          <div class="ph"><img src="assets/suan.png" alt="算小二"></div>
+          <div class="info"><h4>算小二</h4><div class="job">算成本</div><p>到厂成本 · 盈亏模拟 · 成本比较</p></div>
+        </div>
+        <div class="xiaoer card reveal">
+          <div class="idx">A5</div>
+          <div class="ph"><img src="assets/qian.png" alt="钱小二"></div>
+          <div class="info"><h4>钱小二</h4><div class="job">找资金</div><p>需求抽取 · 资金产品匹配与说明</p></div>
+        </div>
+        <div class="xiaoer card reveal">
+          <div class="idx">A6</div>
+          <div class="ph"><img src="assets/an.png" alt="安小二"></div>
+          <div class="info"><h4>安小二</h4><div class="job">查风险</div><p>风险分级 · 证据核验 · 独立审核</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 企业知识大脑底座 -->
+    <div class="kb-band reveal">
+      <div class="lab"><i></i>企业知识大脑</div>
+      <p>企业事实 · 经营偏好 · 决策经验 · 风险规则 —— <b>共享复用</b>；每位小二可单独办事，也可交给掌柜组织协作，越用越聪明。</p>
+    </div>
+
+    <div class="foot">
+      <div class="brand"><i></i>LIANGDA E-XIAO</div>
+      <div class="cn">认识 AI 团队</div>
+    </div>
+  </section>
+
+</main>
+</div>
+
+<!-- 舞台外控件 -->
+<nav class="deck-controls" aria-label="幻灯片导航">
+  <button class="dot on" data-go="0" aria-label="第 1 页"></button>
+  <button class="dot" data-go="1" aria-label="第 2 页"></button>
+  <button class="dot" data-go="2" aria-label="第 3 页"></button>
+  <span class="pg"><b id="pgNow">1</b> / <span id="pgAll">3</span></span>
+</nav>
+
+<!-- 行内编辑控件 -->
+<div class="edit-hotzone" title="进入编辑模式"></div>
+<button class="edit-toggle" id="editToggle" title="编辑模式 (E)">✎</button>
+<div class="edit-hint">编辑模式：点击文字直接改 · Ctrl+S 导出 HTML · 改动自动存本地</div>
+
+<script>
+/* ===========================================================
+   幻灯片控制器：固定舞台缩放 + 键鼠触导航
+   =========================================================== */
+class SlidePresentation{
+  constructor(){
+    this.stage=document.getElementById('deckStage');
+    this.slides=[...document.querySelectorAll('.slide')];
+    this.dots=[...document.querySelectorAll('.deck-controls .dot')];
+    this.pgNow=document.getElementById('pgNow');
+    document.getElementById('pgAll').textContent=this.slides.length;
+    this.current=0;
+    this.setupStageScale();
+    this.setupKeyboardNav();
+    this.setupTouchNav();
+    this.setupWheelNav();
+    this.setupDots();
+    /* 支持 #2 这类深链直达某页 */
+    const h=parseInt(location.hash.slice(1),10);
+    this.showSlide(isNaN(h)?0:h-1);
+    window.addEventListener('hashchange',()=>{
+      const k=parseInt(location.hash.slice(1),10);
+      if(!isNaN(k))this.showSlide(k-1);
+    });
+  }
+  /* 整台等比缩放，居中留黑边，绝不重排内容 */
+  setupStageScale(){
+    const fit=()=>{
+      const f=Math.min(window.innerWidth/1920,window.innerHeight/1080);
+      const x=(window.innerWidth-1920*f)/2, y=(window.innerHeight-1080*f)/2;
+      this.stage.style.transform=`translate(${x}px,${y}px) scale(${f})`;
+    };
+    fit();window.addEventListener('resize',fit);
+  }
+  setupKeyboardNav(){
+    document.addEventListener('keydown',e=>{
+      if(e.target.getAttribute && e.target.getAttribute('contenteditable'))return;
+      switch(e.key){
+        case 'ArrowRight':case 'ArrowDown':case ' ':case 'PageDown':e.preventDefault();this.next();break;
+        case 'ArrowLeft':case 'ArrowUp':case 'PageUp':e.preventDefault();this.prev();break;
+        case 'Home':this.showSlide(0);break;
+        case 'End':this.showSlide(this.slides.length-1);break;
+      }
+    });
+  }
+  setupTouchNav(){
+    let x0=null,y0=null;
+    document.addEventListener('touchstart',e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY;},{passive:true});
+    document.addEventListener('touchend',e=>{
+      if(x0===null)return;
+      const dx=e.changedTouches[0].clientX-x0, dy=e.changedTouches[0].clientY-y0;
+      if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)) dx<0?this.next():this.prev();
+      x0=y0=null;
+    },{passive:true});
+  }
+  setupWheelNav(){
+    let lock=0;
+    document.addEventListener('wheel',e=>{
+      const now=Date.now();
+      if(now-lock<650||Math.abs(e.deltaY)<24)return;
+      lock=now; e.deltaY>0?this.next():this.prev();
+    },{passive:true});
+  }
+  setupDots(){this.dots.forEach(d=>d.addEventListener('click',()=>this.showSlide(+d.dataset.go)));}
+  showSlide(i){
+    this.current=Math.max(0,Math.min(i,this.slides.length-1));
+    this.slides.forEach((s,k)=>{
+      s.classList.toggle('active',k===this.current);
+      s.classList.toggle('visible',k===this.current);
+    });
+    this.dots.forEach((d,k)=>d.classList.toggle('on',k===this.current));
+    this.pgNow.textContent=this.current+1;
+    try{history.replaceState(null,'','#'+(this.current+1));}catch(e){}
+  }
+  next(){this.showSlide(this.current+1);}
+  prev(){this.showSlide(this.current-1);}
+}
+
+/* ===========================================================
+   行内编辑：designMode 全文可编辑 + localStorage 自动保存 + Ctrl+S 导出
+   =========================================================== */
+class InlineEditor{
+  constructor(deck){
+    this.deck=deck;this.isActive=false;
+    this.key='ldex-deck-v2';
+    this.toggle=document.getElementById('editToggle');
+    this.restore();
+    this.bindUI();
+  }
+  bindUI(){
+    const hz=document.querySelector('.edit-hotzone');
+    let t=null;
+    const show=()=>{clearTimeout(t);this.toggle.classList.add('show');};
+    const hide=()=>{t=setTimeout(()=>{if(!this.isActive)this.toggle.classList.remove('show');},400);};
+    hz.addEventListener('mouseenter',show);hz.addEventListener('mouseleave',hide);
+    hz.addEventListener('click',()=>this.toggleEditMode());
+    this.toggle.addEventListener('mouseenter',()=>clearTimeout(t));
+    this.toggle.addEventListener('mouseleave',hide);
+    this.toggle.addEventListener('click',()=>this.toggleEditMode());
+    document.addEventListener('keydown',e=>{
+      if((e.key==='e'||e.key==='E')&&!e.target.getAttribute('contenteditable')&&!e.metaKey&&!e.ctrlKey)this.toggleEditMode();
+      if((e.metaKey||e.ctrlKey)&&e.key==='s'&&this.isActive){e.preventDefault();this.exportFile();}
+    });
+    /* 编辑内容防抖自动存本地 */
+    let s=null;
+    document.getElementById('deckStage').addEventListener('input',()=>{
+      clearTimeout(s);s=setTimeout(()=>this.save(),600);
+    });
+  }
+  toggleEditMode(){
+    this.isActive=!this.isActive;
+    document.designMode=this.isActive?'on':'off';
+    document.body.classList.toggle('editing',this.isActive);
+    this.toggle.classList.toggle('active',this.isActive);
+    if(this.isActive)this.toggle.classList.add('show');
+    else{this.save();this.toggle.classList.remove('show');}
+  }
+  save(){
+    try{localStorage.setItem(this.key,document.getElementById('deckStage').innerHTML);}catch(e){}
+  }
+  restore(){
+    try{
+      const html=localStorage.getItem(this.key);
+      if(html){
+        document.getElementById('deckStage').innerHTML=html;
+        this.deck.slides=[...document.querySelectorAll('.slide')];
+        this.deck.dots.forEach((d,k)=>d.classList.toggle('on',k===this.deck.current));
+      }
+    }catch(e){}
+  }
+  exportFile(){
+    const blob=new Blob(['<!DOCTYPE html>\n'+document.documentElement.outerHTML],{type:'text/html'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download='粮达e销-演讲稿-v2.html';
+    a.click();URL.revokeObjectURL(a.href);
+  }
+}
+
+const deck=new SlidePresentation();
+const editor=new InlineEditor(deck);
+</script>
+</body>
+</html>
