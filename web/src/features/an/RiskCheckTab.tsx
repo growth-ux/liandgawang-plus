@@ -226,7 +226,7 @@ export default function RiskCheckTab({
           </div>
 
           <aside className="space-y-4">
-            <div className="relative overflow-hidden rounded-2xl border border-emerald-400/20 bg-[linear-gradient(145deg,rgba(52,211,153,0.09),rgba(19,28,54,0.7))] p-4">
+            <div className="risk-ai-surface relative overflow-hidden rounded-2xl border border-emerald-400/20 p-4">
               {summaryLoading && <span className="an-scan-line pointer-events-none absolute inset-x-0 top-0 h-px bg-emerald-300 shadow-[0_0_18px_3px_rgba(52,211,153,0.55)]" />}
               <div className="flex items-center gap-2">
                 <span className="flex h-7 w-7 items-center justify-center rounded-lg border border-emerald-400/25 bg-emerald-400/10 text-xs text-emerald-300">安</span>

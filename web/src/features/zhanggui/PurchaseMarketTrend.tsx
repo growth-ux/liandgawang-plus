@@ -5,6 +5,7 @@ import type { PricePoint, PriceSeriesResponse, SpotPrice } from "../zhan/types";
 import { formatMoney } from "./purchaseModel";
 import MarketRegionSelect from "./MarketRegionSelect";
 import type { MarketSelection } from "./purchaseAdvice";
+import { readThemePalette, useTheme, type ThemePalette } from "../../theme/ThemeContext";
 
 export function trendWindow(points: PricePoint[], days: number) {
   const latest = points[points.length - 1];
@@ -15,7 +16,7 @@ export function trendWindow(points: PricePoint[], days: number) {
   return points.filter((point) => point.observed_date >= start);
 }
 
-export function priceTrendOption(points: PricePoint[]): echarts.EChartsOption {
+export function priceTrendOption(points: PricePoint[], palette: ThemePalette = readThemePalette()): echarts.EChartsOption {
   return {
     animationDuration: 350,
     grid: { left: 56, right: 28, top: 30, bottom: 36 },
@@ -23,26 +24,26 @@ export function priceTrendOption(points: PricePoint[]): echarts.EChartsOption {
       trigger: "axis",
       renderMode: "richText",
       confine: true,
-      backgroundColor: "#142238",
-      borderColor: "#345371",
-      textStyle: { color: "#e6f2fa" },
+      backgroundColor: palette.surface,
+      borderColor: palette.line,
+      textStyle: { color: palette.text },
       valueFormatter: (value) => `${formatMoney(Number(value))} 元/吨`,
     },
     xAxis: {
       type: "category",
       data: points.map((point) => point.observed_date),
       boundaryGap: false,
-      axisLine: { lineStyle: { color: "#304761" } },
+      axisLine: { lineStyle: { color: palette.line } },
       axisTick: { show: false },
-      axisLabel: { color: "#9eb2c9", fontSize: 12, formatter: (date: string) => date.slice(5).replace("-", "/") },
+      axisLabel: { color: palette.muted, fontSize: 12, formatter: (date: string) => date.slice(5).replace("-", "/") },
     },
     yAxis: {
       type: "value",
       scale: true,
       name: "元/吨",
-      nameTextStyle: { color: "#9eb2c9", padding: [0, 0, 0, 20] },
-      axisLabel: { color: "#9eb2c9", fontSize: 12 },
-      splitLine: { lineStyle: { color: "#6b95b621", type: "dashed" } },
+      nameTextStyle: { color: palette.muted, padding: [0, 0, 0, 20] },
+      axisLabel: { color: palette.muted, fontSize: 12 },
+      splitLine: { lineStyle: { color: palette.grid, type: "dashed" } },
     },
     series: [{
       name: "成交价",
@@ -51,11 +52,11 @@ export function priceTrendOption(points: PricePoint[]): echarts.EChartsOption {
       showSymbol: points.length <= 7,
       symbol: "circle",
       symbolSize: 6,
-      lineStyle: { color: "#57d4de", width: 3 },
-      itemStyle: { color: "#57d4de", borderColor: "#102033", borderWidth: 2 },
+      lineStyle: { color: palette.tech, width: 3 },
+      itemStyle: { color: palette.tech, borderColor: palette.surface, borderWidth: 2 },
       areaStyle: {
         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-          { offset: 0, color: "#39bdcf40" },
+          { offset: 0, color: palette.techArea },
           { offset: 1, color: "#39bdcf02" },
         ]),
       },
@@ -69,6 +70,7 @@ export function priceTrendOption(points: PricePoint[]): echarts.EChartsOption {
 }
 
 function TrendChart({ points }: { points: PricePoint[] }) {
+  const { theme } = useTheme();
   const container = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const element = container.current;
@@ -78,14 +80,14 @@ function TrendChart({ points }: { points: PricePoint[] }) {
       if (!element.clientWidth || !element.clientHeight) return;
       if (!chart) {
         chart = echarts.init(element);
-        chart.setOption(priceTrendOption(points));
+        chart.setOption(priceTrendOption(points, readThemePalette()));
       } else chart.resize();
     };
     const observer = new ResizeObserver(resize);
     observer.observe(element);
     resize();
     return () => { observer.disconnect(); chart?.dispose(); };
-  }, [points]);
+  }, [points, theme]);
   return <div ref={container} className="pw-price-chart" role="img" aria-label={`${points[0]?.observed_date}至${points[points.length - 1]?.observed_date}价格走势，末日${points[points.length - 1]?.price}元/吨`} />;
 }
 

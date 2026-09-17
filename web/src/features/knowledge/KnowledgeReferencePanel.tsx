@@ -5,7 +5,7 @@ const AGENTS: Record<string, string> = { zhanggui: "粮掌柜", suan: "算小二
 export default function KnowledgeReferencePanel({ references, effect, onReject, rejecting }: { references: KnowledgeReference[]; effect?: string; onReject?: () => void; rejecting?: boolean }) {
   if (references.length === 0) return null;
   return (
-    <section className="relative overflow-hidden rounded-2xl border border-tech/20 bg-[linear-gradient(135deg,rgba(34,211,238,0.07),rgba(15,23,42,0.5))] p-5">
+    <section className="knowledge-reference-surface relative overflow-hidden rounded-2xl border border-tech/20 p-5">
       <div className="absolute -right-10 -top-10 h-28 w-28 rounded-full border border-tech/10" />
       <div className="flex items-start justify-between gap-4">
         <div><p className="text-[10px] uppercase tracking-[0.22em] text-tech/70">Enterprise memory</p><h3 className="mt-1 text-sm font-semibold text-tech">本次主动引用 {references.length} 条企业知识</h3></div>
@@ -25,4 +25,3 @@ export default function KnowledgeReferencePanel({ references, effect, onReject, 
     </section>
   );
 }
-

@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import ThemePicker from "./ThemePicker";
 
 const navItems = [
   { to: "/", label: "粮掌柜", end: true },
@@ -8,11 +9,11 @@ const navItems = [
 
 export default function TopNav() {
   return (
-    <header className="sticky top-0 z-40 h-16 border-b border-line bg-panel">
+    <header className="app-top-nav sticky top-0 z-40 h-16 border-b border-line bg-panel">
       <div className="relative mx-auto flex h-full max-w-[1440px] items-center justify-between px-6">
         {/* 品牌标识，点击返回首页 */}
         <NavLink to="/" className="flex items-center gap-2.5">
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-brand to-brand-deep text-lg font-semibold text-white shadow-[0_0_14px_rgba(238,123,31,0.45)]">
+          <span className="app-brand-mark flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-brand to-brand-deep text-lg font-semibold text-white shadow-[0_0_14px_rgba(238,123,31,0.45)]">
             粮
           </span>
           <span className="text-lg font-semibold tracking-wide">
@@ -42,6 +43,7 @@ export default function TopNav() {
 
         {/* 右侧：消息与头像（竞赛演示用占位） */}
         <div className="flex items-center gap-3">
+          <ThemePicker />
           <button
             type="button"
             aria-label="消息"

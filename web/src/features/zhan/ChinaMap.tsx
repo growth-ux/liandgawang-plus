@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import * as echarts from "echarts";
 import type { SpotPrice } from "./types";
 import { fmtInt, shortName } from "./format";
+import { readThemePalette, useTheme, type ThemePalette } from "../../theme/ThemeContext";
 
 let chinaRegistered = false;
 
@@ -11,7 +12,7 @@ function chgColor(change: string): string {
   return n > 0 ? "#f87171" : n < 0 ? "#34d399" : "#93a1b8";
 }
 
-function buildOption(spots: SpotPrice[]) {
+function buildOption(spots: SpotPrice[], palette: ThemePalette) {
   const data = spots.map((s) => ({
     name: s.region_name,
     short: shortName(s.region_name),
@@ -28,9 +29,9 @@ function buildOption(spots: SpotPrice[]) {
     backgroundColor: "transparent",
     tooltip: {
       trigger: "item",
-      backgroundColor: "#131c36",
-      borderColor: "rgba(148,163,184,0.3)",
-      textStyle: { color: "#e9eef7", fontSize: 12 },
+      backgroundColor: palette.surface,
+      borderColor: palette.line,
+      textStyle: { color: palette.text, fontSize: 12 },
       formatter: (p: any) => {
         const d = p.data;
         const n = Number(d.change);
@@ -52,13 +53,13 @@ function buildOption(spots: SpotPrice[]) {
       scaleLimit: { min: 1, max: 3 },
       label: { show: false },
       itemStyle: {
-        areaColor: "rgba(148,163,184,0.08)",
-        borderColor: "rgba(148,163,184,0.32)",
+        areaColor: palette.mapArea,
+        borderColor: palette.line,
         borderWidth: 0.8,
       },
       emphasis: {
-        itemStyle: { areaColor: "rgba(34,211,238,0.16)" },
-        label: { show: true, color: "#e9eef7", fontSize: 11 },
+        itemStyle: { areaColor: palette.mapEmphasis },
+        label: { show: true, color: palette.text, fontSize: 11 },
       },
     },
     series: [
@@ -71,14 +72,14 @@ function buildOption(spots: SpotPrice[]) {
           Math.min(17, 9 + Math.abs(Number(p.data.change)) * 4),
         itemStyle: {
           color: (p: any) => chgColor(p.data.change),
-          borderColor: "#0b1220",
+          borderColor: palette.surface,
           borderWidth: 1,
         },
         label: {
           show: true,
           position: "top",
           distance: 6,
-          color: "#e9eef7",
+          color: palette.text,
           fontSize: 11,
           lineHeight: 15,
           formatter: (p: any) => `${p.data.short}\n${p.data.price}`,
@@ -89,6 +90,7 @@ function buildOption(spots: SpotPrice[]) {
 }
 
 export default function ChinaMap({ spots }: { spots: SpotPrice[] }) {
+  const { theme } = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<echarts.ECharts | null>(null);
 
@@ -110,7 +112,7 @@ export default function ChinaMap({ spots }: { spots: SpotPrice[] }) {
     const chart = chartRef.current;
     if (!chart) return;
     if (chinaRegistered) {
-      chart.setOption(buildOption(spots));
+      chart.setOption(buildOption(spots, readThemePalette()));
       return;
     }
     fetch("/geojson/china.json")
@@ -118,12 +120,12 @@ export default function ChinaMap({ spots }: { spots: SpotPrice[] }) {
       .then((geoJson) => {
         echarts.registerMap("china", geoJson);
         chinaRegistered = true;
-        chart.setOption(buildOption(spots));
+        chart.setOption(buildOption(spots, readThemePalette()));
       })
       .catch(() => {
         // 地图数据加载失败：不阻断页面，右侧指数表仍可用
       });
-  }, [spots]);
+  }, [spots, theme]);
 
   return (
     <div className="rounded-xl border border-line bg-panel p-5">

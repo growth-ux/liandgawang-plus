@@ -146,7 +146,7 @@ function RouteScreen({ className }: { className?: string }) {
         d="M45 24 c-5.8 0 -9.6 4.2 -9.6 9.3 c0 6.9 9.6 16.7 9.6 16.7 c0 0 9.6 -9.8 9.6 -16.7 c0 -5.1 -3.8 -9.3 -9.6 -9.3 z"
         fill={O} stroke="#ffd9ae" strokeWidth="1.2" strokeLinejoin="round"
       />
-      <circle cx="45" cy="33" r="3.4" fill="#0b1220" />
+      <circle cx="45" cy="33" r="3.4" fill="var(--color-rice)" />
       {/* 路线 B 备选（绕弯复杂）：细实线 + 慢行光点 */}
       <path d={routeB} fill="none" stroke={O} strokeWidth="1.4" opacity="0.55" strokeLinecap="round" />
       <circle r="1.5" fill={O} opacity="0.6">
@@ -298,23 +298,23 @@ export default function HoloProp({ holo, delay = 0 }: { holo?: Holo; delay?: num
         style={{ animationDelay: `${delay}s` }}
       >
         {/* 方案对比小牌：A/B 到厂成本，A 为推荐方案 */}
-        <div className="absolute left-[-21%] top-[9%] rounded border border-brand/60 bg-[#0a1428]/70 px-2 py-1 font-mono text-[10px] leading-[1.6] shadow-[0_0_12px_rgba(238,123,31,0.3)]">
+        <div className="absolute left-[-21%] top-[9%] rounded border border-brand/60 bg-rice/80 px-2 py-1 font-mono text-[10px] leading-[1.6] shadow-[0_0_12px_rgba(238,123,31,0.3)]">
           <div className="text-brand-deep">
             方案A ¥2,354/吨 <span className="text-emerald-300">✓</span>
           </div>
           <div className="text-ink-soft opacity-55">方案B ¥2,412/吨</div>
         </div>
-        <span className="ld-blink absolute right-[4%] top-[22%] rounded border border-brand/60 bg-[#0a1428]/70 px-1.5 py-0.5 font-mono text-[10px] text-brand-deep shadow-[0_0_12px_rgba(238,123,31,0.3)]">
+        <span className="ld-blink absolute right-[4%] top-[22%] rounded border border-brand/60 bg-rice/80 px-1.5 py-0.5 font-mono text-[10px] text-brand-deep shadow-[0_0_12px_rgba(238,123,31,0.3)]">
           运费 ↑12%
         </span>
         <span
-          className="ld-blink absolute left-[10%] top-[46%] rounded border border-brand/60 bg-[#0a1428]/70 px-1.5 py-0.5 font-mono text-[10px] text-brand-deep shadow-[0_0_12px_rgba(238,123,31,0.3)]"
+          className="ld-blink absolute left-[10%] top-[46%] rounded border border-brand/60 bg-rice/80 px-1.5 py-0.5 font-mono text-[10px] text-brand-deep shadow-[0_0_12px_rgba(238,123,31,0.3)]"
           style={{ animationDelay: "-1.3s" }}
         >
           水杂 ↓6%
         </span>
         <span
-          className="ld-blink absolute bottom-[16%] right-[12%] rounded border border-brand/60 bg-[#0a1428]/70 px-1.5 py-0.5 font-mono text-[10px] text-brand-deep shadow-[0_0_12px_rgba(238,123,31,0.3)]"
+          className="ld-blink absolute bottom-[16%] right-[12%] rounded border border-brand/60 bg-rice/80 px-1.5 py-0.5 font-mono text-[10px] text-brand-deep shadow-[0_0_12px_rgba(238,123,31,0.3)]"
           style={{ animationDelay: "-2.2s" }}
         >
           到厂 ¥2,354/吨

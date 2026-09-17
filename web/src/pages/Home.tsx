@@ -15,7 +15,7 @@ function AgentActor({ agent, index }: { agent: Agent; index: number }) {
       style={{ left: `${x}%`, top: `${y}%`, height: `${size}%`, zIndex: Math.round(y) }}
     >
       {/* 地面投影固定于脚下；业务节点圆环由 FieldBackground 放在对应角色脚下 */}
-      <span className="pointer-events-none absolute bottom-[-2%] left-1/2 h-[6%] w-[78%] -translate-x-1/2 rounded-[50%] bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.66),rgba(0,0,0,0)_70%)]" />
+      <span className="ld-agent-ground pointer-events-none absolute bottom-[-2%] left-1/2 h-[6%] w-[78%] -translate-x-1/2 rounded-[50%] bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.66),rgba(0,0,0,0)_70%)]" />
       {/* 浮动 + 摇摆两层动画叠加，相位错开 */}
       <div className="ld-bob relative h-full" style={{ animationDelay: `${index * -0.6}s` }}>
         <div className="ld-sway h-full" style={{ animationDelay: `${index * -1.3}s` }}>
@@ -31,7 +31,7 @@ function AgentActor({ agent, index }: { agent: Agent; index: number }) {
         {/* 全息道具：跟随浮动但不跟随摇摆，相位按角色错开 */}
         <HoloProp holo={agent.holo} delay={index * -0.9} />
         {/* 名称气泡：像场景标注而非功能卡；详情只在悬停时显现 */}
-        <span className="absolute left-1/2 top-[-4%] flex w-52 -translate-x-1/2 -translate-y-full flex-col items-center gap-0.5 rounded-full border border-tech/20 bg-[#0a1428]/80 px-3 py-1.5 text-center shadow-[0_7px_20px_rgba(0,0,0,0.45)] backdrop-blur-sm transition-all duration-300 group-hover:scale-105 group-hover:border-brand/70 group-hover:bg-[#101d37]/95 group-hover:shadow-[0_0_22px_rgba(238,123,31,0.25)]">
+        <span className="ld-agent-label absolute left-1/2 top-[-4%] flex w-52 -translate-x-1/2 -translate-y-full flex-col items-center gap-0.5 rounded-full border border-tech/20 px-3 py-1.5 text-center backdrop-blur-sm transition-all duration-300 group-hover:scale-105 group-hover:border-brand/70">
           <span className="whitespace-nowrap text-xs font-semibold tracking-wide text-ink group-hover:text-brand-deep">
             {agent.name}｜{agent.action}
           </span>
@@ -50,7 +50,7 @@ export default function Home() {
   const sorted = [...agents].sort((a, b) => a.pos.y - b.pos.y);
 
   return (
-    <div className="relative h-[calc(100vh-4rem)] w-full overflow-hidden bg-rice">
+    <div className="ld-home-stage relative h-[calc(100vh-4rem)] w-full overflow-hidden bg-rice">
       {/* 16:9 舞台，宽屏下自动居中留白 */}
       <div className="absolute inset-0 m-auto aspect-video max-h-full max-w-full">
         <FieldBackground />

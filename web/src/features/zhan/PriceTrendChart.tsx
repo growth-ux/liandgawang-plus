@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import * as echarts from "echarts";
 import type { PricePoint } from "./types";
 import { fmtDate, fmtInt } from "./format";
+import { readThemePalette, useTheme, type ThemePalette } from "../../theme/ThemeContext";
 
 const DEFAULT_WINDOW_DAYS = 90; // 默认显示最近 90 天，滚轮/拖拽可拉长到全量 2 年
 const MIN_WINDOW_DAYS = 30; // 最小缩放窗口（天）
@@ -12,7 +13,7 @@ interface ChartSpot {
   remark: string;
 }
 
-function buildOption(points: PricePoint[], spot: ChartSpot) {
+function buildOption(points: PricePoint[], spot: ChartSpot, palette: ThemePalette) {
   const startPct =
     points.length > DEFAULT_WINDOW_DAYS
       ? (1 - DEFAULT_WINDOW_DAYS / points.length) * 100
@@ -21,9 +22,9 @@ function buildOption(points: PricePoint[], spot: ChartSpot) {
     backgroundColor: "transparent",
     tooltip: {
       trigger: "axis",
-      backgroundColor: "#131c36",
-      borderColor: "rgba(148,163,184,0.3)",
-      textStyle: { color: "#e9eef7", fontSize: 12 },
+      backgroundColor: palette.surface,
+      borderColor: palette.line,
+      textStyle: { color: palette.text, fontSize: 12 },
       formatter: (params: any) => {
         const idx = params[0].dataIndex;
         const date = points[idx].observed_date;
@@ -39,16 +40,16 @@ function buildOption(points: PricePoint[], spot: ChartSpot) {
       type: "category",
       data: points.map((p) => fmtDate(p.observed_date)),
       boundaryGap: false,
-      axisLine: { lineStyle: { color: "rgba(148,163,184,0.25)" } },
+      axisLine: { lineStyle: { color: palette.line } },
       axisTick: { show: false },
-      axisLabel: { color: "#93a1b8", fontSize: 11 },
+      axisLabel: { color: palette.muted, fontSize: 11 },
     },
     yAxis: {
       type: "value",
       scale: true,
-      axisLabel: { color: "#93a1b8", fontSize: 11 },
+      axisLabel: { color: palette.muted, fontSize: 11 },
       splitLine: {
-        lineStyle: { color: "rgba(148,163,184,0.12)", type: "dashed" },
+        lineStyle: { color: palette.grid, type: "dashed" },
       },
     },
     dataZoom: [
@@ -67,11 +68,11 @@ function buildOption(points: PricePoint[], spot: ChartSpot) {
         end: 100,
         height: 20,
         bottom: 8,
-        borderColor: "rgba(148,163,184,0.25)",
-        backgroundColor: "rgba(19,28,54,0.35)",
-        fillerColor: "rgba(34,211,238,0.15)",
-        handleStyle: { color: "#22d3ee" },
-        textStyle: { color: "#93a1b8", fontSize: 10 },
+        borderColor: palette.line,
+        backgroundColor: palette.surfaceMuted,
+        fillerColor: palette.techArea,
+        handleStyle: { color: palette.tech },
+        textStyle: { color: palette.muted, fontSize: 10 },
       },
     ],
     series: [
@@ -82,8 +83,8 @@ function buildOption(points: PricePoint[], spot: ChartSpot) {
         showSymbol: false,
         symbol: "circle",
         symbolSize: 5,
-        lineStyle: { color: "#22d3ee", width: 2 },
-        itemStyle: { color: "#22d3ee" },
+        lineStyle: { color: palette.tech, width: 2 },
+        itemStyle: { color: palette.tech },
         areaStyle: {
           color: {
             type: "linear",
@@ -92,7 +93,7 @@ function buildOption(points: PricePoint[], spot: ChartSpot) {
             x2: 0,
             y2: 1,
             colorStops: [
-              { offset: 0, color: "rgba(34,211,238,0.25)" },
+              { offset: 0, color: palette.techArea },
               { offset: 1, color: "rgba(34,211,238,0.0)" },
             ],
           },
@@ -109,6 +110,7 @@ export default function PriceTrendChart({
   points: PricePoint[];
   spot: ChartSpot;
 }) {
+  const { theme } = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<echarts.ECharts | null>(null);
 
@@ -129,8 +131,8 @@ export default function PriceTrendChart({
   useEffect(() => {
     const chart = chartRef.current;
     if (!chart) return;
-    chart.setOption(buildOption(points, spot), true);
-  }, [points, spot]);
+    chart.setOption(buildOption(points, spot, readThemePalette()), true);
+  }, [points, spot, theme]);
 
   return (
     <div>

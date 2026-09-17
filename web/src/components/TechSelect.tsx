@@ -119,7 +119,7 @@ export default function TechSelect({
           id={menuId}
           role="listbox"
           aria-label={label}
-          className="ld-select-menu absolute left-0 right-0 top-full z-[70] mt-2 overflow-hidden rounded-2xl border border-tech/20 bg-[#101a31]/95 p-1.5 shadow-[0_18px_48px_rgba(0,0,0,0.48),0_0_0_1px_rgba(255,255,255,0.02)] backdrop-blur-xl"
+          className="ld-select-menu ld-tech-select-menu absolute left-0 right-0 top-full z-[70] mt-2 overflow-hidden rounded-2xl border border-tech/20 p-1.5 backdrop-blur-xl"
         >
           <div className="flex items-center justify-between px-2.5 pb-1.5 pt-1 text-[10px] tracking-[0.12em] text-ink-soft/70">
             <span>选择{label}</span>

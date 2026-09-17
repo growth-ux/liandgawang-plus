@@ -78,7 +78,7 @@ export default function ReviewRecordsTab({ records, onRecheck }: { records: Revi
         </div>
       </section>
 
-      <aside className="h-fit rounded-2xl border border-emerald-400/20 bg-[linear-gradient(160deg,rgba(52,211,153,0.08),rgba(19,28,54,0.75)_45%)] p-5 lg:sticky lg:top-6">
+      <aside className="risk-ai-surface risk-ai-surface-records h-fit rounded-2xl border border-emerald-400/20 p-5 lg:sticky lg:top-6">
         <div className="flex items-center justify-between">
           <span className="text-[10px] uppercase tracking-[0.2em] text-emerald-300/70">审核快照</span>
           <span className="font-mono text-[10px] text-ink-soft">{selected.id}</span>

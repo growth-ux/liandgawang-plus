@@ -15,8 +15,8 @@ export default function StageBackdrop() {
           <stop offset="1" stopColor="var(--color-brand)" stopOpacity="0" />
         </radialGradient>
         <linearGradient id={`${id}-deck`} x2="0" y2="1">
-          <stop stopColor="#23354e" stopOpacity=".75" />
-          <stop offset="1" stopColor="#0b1220" stopOpacity=".25" />
+          <stop stopColor="var(--stage-deck-top)" stopOpacity=".75" />
+          <stop offset="1" stopColor="var(--stage-deck-bottom)" stopOpacity=".25" />
         </linearGradient>
         <pattern
           id={`${id}-grid`}
@@ -50,7 +50,7 @@ export default function StageBackdrop() {
       />
       <path
         d="M65 441A455 191 0 0 0 975 441V461A455 191 0 0 1 65 461Z"
-        fill="#0a1423"
+        fill="var(--stage-deck-edge)"
         stroke="var(--color-brand)"
         strokeOpacity=".18"
       />

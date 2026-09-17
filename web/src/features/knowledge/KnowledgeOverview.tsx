@@ -18,7 +18,7 @@ export default function KnowledgeOverview({ data, loading, onSelectType, onOpenL
   ] as const;
   return (
     <div className="space-y-5">
-      <section className="grid overflow-hidden rounded-3xl border border-line bg-[radial-gradient(circle_at_12%_0%,rgba(34,211,238,0.10),transparent_32%),linear-gradient(135deg,rgba(16,29,52,0.96),rgba(13,20,37,0.92))] lg:grid-cols-[1.15fr_0.85fr]">
+      <section className="knowledge-overview-surface grid overflow-hidden rounded-3xl border border-line lg:grid-cols-[1.15fr_0.85fr]">
         <div className="relative p-7 lg:p-9"><div className="absolute left-0 top-8 h-16 w-0.5 bg-tech shadow-[0_0_14px_rgba(34,211,238,0.8)]" /><p className="font-mono text-[10px] uppercase tracking-[0.3em] text-tech/70">Knowledge pulse / live</p><h2 className="mt-4 max-w-xl text-2xl font-semibold leading-9">每完成一次办事，<br /><span className="text-tech">所有小二都更懂你的企业。</span></h2><p className="mt-4 max-w-lg text-sm leading-7 text-ink-soft">从已确认的采购、测算和风控结果中提炼选择逻辑；后续小二主动引用，并明确告诉你为什么适用、影响了什么。</p></div>
         <div className="grid grid-cols-2 border-t border-line lg:border-l lg:border-t-0">{metrics.map(([label, value, unit], index) => <div key={label} className={`p-5 ${index < 3 ? "border-b border-line" : ""} ${index % 2 === 0 ? "border-r border-line" : ""}`}><p className="text-[10px] text-ink-soft">{label}</p>{loading ? <div className="mt-3 h-8 w-20 animate-pulse rounded bg-white/5" /> : <p className="mt-2 font-mono text-2xl text-ink">{value ?? 0}<span className="ml-1 text-[10px] text-ink-soft">{unit}</span></p>}</div>)}</div>
       </section>
@@ -30,4 +30,3 @@ export default function KnowledgeOverview({ data, loading, onSelectType, onOpenL
     </div>
   );
 }
-
