@@ -194,7 +194,7 @@ export default function Qualification({
         ? {
             mark: "安",
             name: "安小二",
-            scope: "企业身份与授权材料",
+            scope: "注册入驻、企业资质与履约授信",
           }
         : {
             mark: "钱",
@@ -399,9 +399,9 @@ export default function Qualification({
         </div>
         <p className="pw-report-footer">
           {purchase.qualified
-            ? "企业资质与交易条件均符合要求，可进入选粮点价。"
+            ? "准入资质与交易条件均符合要求，可进入选粮点价。"
             : "请补充缺失材料或调整采购计划后重新核验。"}
-          <span>核验方：安小二（企业资质） · 钱小二（交易条件）</span>
+          <span>核验方：安小二（交易准入） · 钱小二（交易条件）</span>
         </p>
       </section>
     );
@@ -452,7 +452,7 @@ export default function Qualification({
         </div>
         <div className="pw-q-overview-copy">
           <strong>双小二并行核验</strong>
-          <p>企业资质与交易条件同步校验，结果可追溯、缺项可续办。</p>
+          <p>准入资质与交易条件同步校验，结果可追溯、缺项可续办。</p>
         </div>
         <div className="pw-q-overview-stats">
           <span>
@@ -463,7 +463,7 @@ export default function Qualification({
       </section>
 
       <div className="pw-check-columns">
-        {renderColumn("an", anState, "安小二 · 企业资质核验")}
+        {renderColumn("an", anState, "安小二 · 交易准入核验")}
         {renderColumn("qian", qianState, "钱小二 · 交易条件核验")}
       </div>
 
@@ -482,10 +482,10 @@ export default function Qualification({
       {!readonly && !purchase.qualified && (
         <div className="pw-material">
           <div>
-            <strong>补充经办人授权书</strong>
+            <strong>补充准入材料</strong>
             <p>
               {purchase.documentName ||
-                "可使用企业已有资料，也可上传新的授权文件。"}
+                "可使用企业已有档案，也可上传本次采购的经办人授权与资质文件。"}
             </p>
           </div>
           <div className="pw-inline-actions">
@@ -494,7 +494,7 @@ export default function Qualification({
               className="pw-button pw-button-secondary"
               disabled={running}
               onClick={() =>
-                update({ documentName: "企业档案 / 采购经办授权书.pdf" })
+                update({ documentName: "企业档案 / 准入资料包.pdf" })
               }
             >
               使用企业档案材料
@@ -502,7 +502,7 @@ export default function Qualification({
             <label className="pw-file-button">
               上传材料
               <input
-                aria-label="上传经办人授权书"
+                aria-label="上传准入材料"
                 type="file"
                 accept=".pdf,.jpg,.jpeg,.png"
                 disabled={running}

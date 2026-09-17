@@ -1863,11 +1863,11 @@
   position: relative;
   overflow: hidden;
   margin-top: 22px;
-  border: 1px solid #58c8d05c;
+  border: 1px solid #ee7b1f5c;
   border-radius: 12px;
   background:
-    linear-gradient(135deg, #0c202cf2 0%, #0b1724f7 48%, #081521 100%);
-  box-shadow: 0 18px 50px #02081047, inset 0 1px #65dbe31c;
+    linear-gradient(135deg, #1b2542f2 0%, #17203bf7 48%, #131c36 100%);
+  box-shadow: 0 18px 50px #02081047, inset 0 1px #f08a3c1c;
 }
 .pw-cost-trial::before {
   content: "";
@@ -1875,7 +1875,7 @@
   inset: 0;
   pointer-events: none;
   background:
-    linear-gradient(90deg, transparent 49.8%, #56c8d20e 50%, transparent 50.2%),
+    linear-gradient(90deg, transparent 49.8%, #ee7b1f0e 50%, transparent 50.2%),
     linear-gradient(#ffffff06 1px, transparent 1px);
   background-size: 84px 100%, 100% 38px;
   mask-image: linear-gradient(to bottom, #000 0, transparent 46%);
@@ -1889,7 +1889,7 @@
   gap: 16px;
   min-height: 104px;
   padding: 20px 22px;
-  border-bottom: 1px solid #58c8d033;
+  border-bottom: 1px solid #ee7b1f33;
 }
 .pw-cost-trial-agent {
   position: relative;
@@ -1897,13 +1897,13 @@
   width: 48px;
   height: 48px;
   place-items: center;
-  border: 1px solid #65dbe38a;
+  border: 1px solid #4ecad38a;
   border-radius: 50%;
-  background: radial-gradient(circle at 38% 30%, #194553, #0c1b27 68%);
-  color: #86e8ec;
+  background: radial-gradient(circle at 38% 30%, #163041, #1e2a4a 68%);
+  color: #7de1e2;
   font-family: "Noto Serif SC", serif;
   font-size: 20px;
-  box-shadow: 0 0 24px #56c8d224, inset 0 0 0 4px #090f16;
+  box-shadow: 0 0 24px #22d3ee24, inset 0 0 0 4px #17203b;
 }
 .pw-cost-trial-agent i {
   position: absolute;
@@ -1911,7 +1911,7 @@
   bottom: 2px;
   width: 10px;
   height: 10px;
-  border: 2px solid #12202b;
+  border: 2px solid #131c36;
   border-radius: 50%;
   background: #65d3b0;
   box-shadow: 0 0 10px #65d3b0;
@@ -1925,7 +1925,7 @@
   display: block;
 }
 .pw-cost-trial-title > span {
-  color: #64ccd5;
+  color: #f0954a;
   font-family: Consolas, "SF Mono", monospace;
   font-size: 10px;
   letter-spacing: 0.12em;
@@ -1946,7 +1946,7 @@
 .pw-cost-trial-current {
   min-width: 188px;
   padding-left: 20px;
-  border-left: 1px solid #58c8d038;
+  border-left: 1px solid #ee7b1f38;
 }
 .pw-cost-trial-current > span {
   color: #8198a8;
@@ -1954,7 +1954,7 @@
 }
 .pw-cost-trial-current > strong {
   margin-top: 3px;
-  color: #79e1e3;
+  color: #e0ebf1;
   font-family: Consolas, "SF Mono", monospace;
   font-size: 25px;
   font-weight: 600;
@@ -1975,17 +1975,17 @@
 .pw-cost-trial-add {
   min-width: 132px;
   padding: 10px 14px;
-  border: 1px solid #5ec7d059;
+  border: 1px solid #ee7b1f59;
   border-radius: 6px;
-  background: #4fc4ce12;
-  color: #79d8dc;
+  background: #ee7b1f12;
+  color: #f0a066;
   font-size: 12px;
   font-weight: 600;
   transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
 }
 .pw-cost-trial-add:hover:not(:disabled) {
-  border-color: #73dce399;
-  background: #4fc4ce24;
+  border-color: #f08a3c99;
+  background: #ee7b1f24;
   transform: translateY(-1px);
 }
 .pw-cost-trial-add:disabled {
@@ -1997,10 +1997,10 @@
   z-index: 1;
   margin: 18px 20px 0;
   padding: 18px;
-  border: 1px solid #65c7d338;
+  border: 1px solid #f08a3c38;
   border-radius: 8px;
-  background: #07131ecf;
-  box-shadow: inset 3px 0 #59c9d1a3;
+  background: #1e2a4acf;
+  box-shadow: inset 3px 0 #ee7b1fa3;
 }
 .pw-cost-composer-heading {
   display: flex;
@@ -2015,7 +2015,7 @@
   display: block;
 }
 .pw-cost-composer-heading div span {
-  color: #6ed5d8;
+  color: #f0a066;
   font-family: Consolas, "SF Mono", monospace;
   font-size: 10px;
   letter-spacing: 0.1em;
@@ -2055,7 +2055,7 @@
   height: 38px;
   border: 1px solid #668ba840;
   border-radius: 5px;
-  background: #0d1b28;
+  background: #26345a;
   color: #cbdbe2;
   font-size: 11px;
 }
@@ -2086,8 +2086,8 @@
 }
 .pw-cost-composer-grid select:focus,
 .pw-cost-input:focus-within {
-  border-color: #62cbd589;
-  box-shadow: 0 0 0 2px #62cbd512;
+  border-color: #f0954a89;
+  box-shadow: 0 0 0 2px #f0954a12;
 }
 .pw-cost-composer-actions {
   display: flex;
@@ -2104,10 +2104,10 @@
 .pw-cost-composer-actions button {
   flex: none;
   padding: 9px 20px;
-  border: 1px solid #5bced6;
+  border: 1px solid #f0954a;
   border-radius: 5px;
-  background: #52c5ce;
-  color: #07141d;
+  background: #ee7b1f;
+  color: #0b1220;
   font-size: 11px;
   font-weight: 700;
 }
@@ -2124,7 +2124,7 @@
   min-width: 0;
   border: 1px solid #607f9538;
   border-radius: 8px;
-  background: #081521cf;
+  background: #1e2a4acf;
 }
 .pw-cost-plan {
   position: relative;
@@ -2142,11 +2142,11 @@
   opacity: 0.65;
 }
 .pw-cost-plan[data-current="true"] {
-  border-color: #5fc8d45c;
-  background: linear-gradient(145deg, #0c202e, #081521 68%);
+  border-color: #ee7b1f5c;
+  background: linear-gradient(145deg, #26345a, #1e2a4a 68%);
 }
 .pw-cost-plan[data-current="true"]::before {
-  background: linear-gradient(90deg, #56c8d2, transparent 72%);
+  background: linear-gradient(90deg, #ee7b1f, transparent 72%);
 }
 .pw-cost-plan[data-recommended="true"] {
   border-color: #4daf885c;
@@ -2172,7 +2172,7 @@
   display: block;
 }
 .pw-cost-plan-head span {
-  color: #65bfc9;
+  color: #f0954a;
   font-family: Consolas, "SF Mono", monospace;
   font-size: 9px;
   letter-spacing: 0.08em;
@@ -2240,7 +2240,7 @@
 }
 .pw-cost-plan-price > strong {
   margin-top: 4px;
-  color: #79e1e3;
+  color: #e0ebf1;
   font-family: Consolas, "SF Mono", monospace;
   font-size: 25px;
   font-weight: 600;
@@ -2327,15 +2327,15 @@
   width: 100%;
   margin-top: 14px;
   padding: 8px 10px;
-  border: 1px solid #5ec7d071;
+  border: 1px solid #ee7b1f71;
   border-radius: 5px;
-  background: #4fc4ce12;
-  color: #79d8dc;
+  background: #ee7b1f12;
+  color: #f0a066;
   font-size: 10px;
   font-weight: 600;
 }
 .pw-cost-plan-adopt:hover {
-  background: #4fc4ce24;
+  background: #ee7b1f24;
 }
 .pw-cost-plan-empty {
   display: flex;
@@ -2349,17 +2349,17 @@
   transition: border-color 160ms ease, background 160ms ease;
 }
 .pw-cost-plan-empty:hover {
-  border-color: #69c8d15c;
-  background: #0a1a27d6;
+  border-color: #f0954a5c;
+  background: #26345ad6;
 }
 .pw-cost-plan-empty span {
   display: grid;
   width: 34px;
   height: 34px;
   place-items: center;
-  border: 1px solid #65bdc64a;
+  border: 1px solid #f0954a4a;
   border-radius: 50%;
-  color: #6fcbd1;
+  color: #f0954a;
   font-size: 17px;
 }
 .pw-cost-plan-empty strong {
@@ -2381,14 +2381,14 @@
   align-items: center;
   gap: 14px;
   padding: 12px 20px;
-  border-top: 1px solid #58c8d033;
-  background: #43b9c410;
+  border-top: 1px solid #ee7b1f33;
+  background: #ee7b1f10;
 }
 .pw-cost-insight > span {
   padding: 3px 7px;
-  border: 1px solid #58c8d045;
+  border: 1px solid #ee7b1f45;
   border-radius: 3px;
-  color: #72d8dc;
+  color: #f0a066;
   font-size: 9px;
   white-space: nowrap;
 }

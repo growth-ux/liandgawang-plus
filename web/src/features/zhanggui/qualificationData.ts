@@ -92,105 +92,115 @@ export interface CheckDef {
 }
 
 export const CHECK_ITEMS: CheckDef[] = [
-  /* ---- 安小二 · 企业资质 ---- */
+  /* ---- 安小二 · 交易准入 ---- */
   {
     id: "registration",
     label: "注册入驻",
     delay: 450,
     category: "an",
-    checkingText: "正在查询商户中心企业档案…",
-    evidence: () => ({
-      source: "粮达网商户中心",
-      lines: [
-        `企业编号：${ENTERPRISE.id}`,
-        `入驻时间：${ENTERPRISE.registeredAt}`,
-        `企业类型：粮食贸易 · 采购方`,
-      ],
+    checkingText: "正在校验入驻资料的完整性与真实性…",
+    evidence: (p) => ({
+      source: "粮达网商户中心 · 权威数据源比对",
+      lines: p.documentName
+        ? [
+            `企业编号：${ENTERPRISE.id}`,
+            `入驻时间：${ENTERPRISE.registeredAt}`,
+            `本次材料：${p.documentName}`,
+          ]
+        : [
+            `企业编号：${ENTERPRISE.id}`,
+            `入驻时间：${ENTERPRISE.registeredAt}`,
+            "未检测到本次采购的经办人授权及资质附件",
+            "请补充材料后重新核验",
+          ],
     }),
-    evaluate: () => ({
-      status: "passed",
-      label: "企业档案已建立",
-      evidence: {
-        source: "粮达网商户中心",
-        lines: [
-          `企业编号：${ENTERPRISE.id}`,
-          `入驻时间：${ENTERPRISE.registeredAt}`,
-          `企业类型：粮食贸易 · 采购方`,
-        ],
-      },
-    }),
-  },
-  {
-    id: "license",
-    label: "营业执照",
-    delay: 850,
-    category: "an",
-    checkingText: "正在比对国家企业信用信息公示系统…",
-    evidence: () => ({
-      source: "国家企业信用信息公示系统",
-      lines: [
-        `统一社会信用代码：${ENTERPRISE.creditCode}`,
-        `有效期至：${ENTERPRISE.licenseExpiry}`,
-        `经营状态：存续（在营、开业、在册）`,
-      ],
-    }),
-    evaluate: () => ({
-      status: "passed",
-      label: "企业名称与主体信息一致",
-      evidence: {
-        source: "国家企业信用信息公示系统",
-        lines: [
-          `统一社会信用代码：${ENTERPRISE.creditCode}`,
-          `有效期至：${ENTERPRISE.licenseExpiry}`,
-          `经营状态：存续（在营、开业、在册）`,
-          `数据比对时间：${new Date().toLocaleDateString("zh-CN")}`,
-        ],
-      },
-    }),
-  },
-  {
-    id: "document",
-    label: "经办人授权书",
-    delay: 1200,
-    category: "an",
-    checkingText: "正在检索企业档案库授权记录…",
-    evidence: (p) =>
-      p.documentName
-        ? {
-            source: "企业档案库",
-            lines: [
-              `材料名称：${p.documentName}`,
-              "授权范围：本笔粮食采购交易",
-              `上传时间：${new Date().toLocaleDateString("zh-CN")}`,
-            ],
-          }
-        : {
-            source: "企业档案库",
-            lines: ["未检测到有效的经办人授权书", "请上传本次采购的经办人授权文件"],
-          },
     evaluate: (p) =>
       p.documentName
         ? {
             status: "passed",
-            label: "经办人授权书已核验",
+            label: "入驻资料齐备，真实性比对通过",
             evidence: {
-              source: "企业档案库",
+              source: "粮达网商户中心 · 权威数据源比对",
               lines: [
-                `材料名称：${p.documentName}`,
-                "授权范围：本笔粮食采购交易",
-                `核验时间：${new Date().toLocaleDateString("zh-CN")}`,
+                `企业编号：${ENTERPRISE.id}`,
+                `入驻时间：${ENTERPRISE.registeredAt}`,
+                `本次材料：${p.documentName}`,
+                "材料完整性：营业执照、法人身份、经办人授权 3/3",
+                `真实性比对：与工商登记、法人身份核验源一致（${new Date().toLocaleDateString("zh-CN")}）`,
               ],
             },
           }
         : {
             status: "failed",
-            label: "缺少本次采购经办人授权书",
+            label: "入驻资料不完整，缺少本次采购的经办人授权附件",
             evidence: {
-              source: "企业档案库",
-              lines: ["未检测到有效的经办人授权书", "请上传本次采购的经办人授权文件"],
+              source: "粮达网商户中心 · 权威数据源比对",
+              lines: [
+                `企业编号：${ENTERPRISE.id}`,
+                `入驻时间：${ENTERPRISE.registeredAt}`,
+                "未检测到本次采购的经办人授权及资质附件",
+                "请补充材料后重新核验",
+              ],
             },
             note: "补充后重跑即可，已填写的采购需求会保留",
           },
+  },
+  {
+    id: "credit",
+    label: "企业资质",
+    delay: 850,
+    category: "an",
+    checkingText: "正在检索工商登记、司法与征信记录…",
+    evidence: () => ({
+      source: "国家企业信用信息公示系统 · 司法与征信数据",
+      lines: [
+        `统一社会信用代码：${ENTERPRISE.creditCode}`,
+        `资质有效期至：${ENTERPRISE.licenseExpiry}`,
+        "经营状态：存续（在营、开业、在册）",
+      ],
+    }),
+    evaluate: () => ({
+      status: "passed",
+      label: "工商与征信记录正常，近 36 个月无不良记录",
+      evidence: {
+        source: "国家企业信用信息公示系统 · 司法与征信数据",
+        lines: [
+          `统一社会信用代码：${ENTERPRISE.creditCode}`,
+          `资质有效期至：${ENTERPRISE.licenseExpiry}`,
+          "经营状态：存续（在营、开业、在册）",
+          "近 36 个月：无行政处罚、无经营异常、无被执行记录",
+          `查询时间：${new Date().toLocaleDateString("zh-CN")}`,
+        ],
+      },
+    }),
+  },
+  {
+    id: "fulfillment",
+    label: "履约授信",
+    delay: 1200,
+    category: "an",
+    checkingText: "正在复核平台过往订单与资金流水…",
+    evidence: () => ({
+      source: "平台交易信用库 · 订单结算流水",
+      lines: [
+        "近 12 个月订单：47 笔，结算 47 笔，完成率 100%",
+        "平均结算周期：T+3，无逾期结算",
+      ],
+    }),
+    evaluate: () => ({
+      status: "passed",
+      label: "过往订单与资金流水正常，履约授信充足",
+      evidence: {
+        source: "平台交易信用库 · 订单结算流水",
+        lines: [
+          "近 12 个月订单：47 笔，结算 47 笔，完成率 100%",
+          "平均结算周期：T+3，无逾期结算",
+          "资金审查：单笔金额与经营范围匹配，无异常拆分",
+          `履约授信结论：${CREDIT_SCORE.grade} 级（${CREDIT_SCORE.score} 分），本单授信额度充足`,
+          `查询时间：${new Date().toLocaleDateString("zh-CN")}`,
+        ],
+      },
+    }),
   },
 
   /* ---- 钱小二 · 交易条件 ---- */
