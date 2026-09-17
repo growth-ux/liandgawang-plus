@@ -21,6 +21,7 @@ export interface SpatialAgentStageProps {
   mission: CollaborationSnapshot;
   title?: string;
   subtitle?: string;
+  showHeading?: boolean;
   hubSummary?: string;
   hubLabel?: string;
   purchaseMode?: boolean;
@@ -47,6 +48,7 @@ export default function SpatialAgentStage({
   onSelectAgent,
   title,
   subtitle,
+  showHeading = true,
   hubSummary,
   hubLabel,
   purchaseMode,
@@ -301,13 +303,18 @@ export default function SpatialAgentStage({
       data-layout={narrow ? "grid" : "stage"}
       aria-label="粮掌柜 IP 协作舞台"
     >
-      <header className="zg-stage-meta">
-        <div className="zg-stage-heading">
-          <p className="zg-stage-title">{title ?? "粮掌柜 · 专业协作舞台"}</p>
-          <p className="zg-stage-subtitle">
-            {subtitle ?? "专业小二独立研判，粮掌柜汇总冲突与行动条件"}
-          </p>
-        </div>
+      <header
+        className="zg-stage-meta"
+        data-heading-hidden={!showHeading || undefined}
+      >
+        {showHeading && (
+          <div className="zg-stage-heading">
+            <p className="zg-stage-title">{title ?? "粮掌柜 · 专业协作舞台"}</p>
+            <p className="zg-stage-subtitle">
+              {subtitle ?? "专业小二独立研判，粮掌柜汇总冲突与行动条件"}
+            </p>
+          </div>
+        )}
         <div className="zg-stage-stats" aria-label="协作状态">
           <span>
             {purchaseMode && selectedMembers.length === 0 ? (

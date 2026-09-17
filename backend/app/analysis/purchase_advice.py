@@ -17,6 +17,7 @@ from app.analysis.llm import _config
 from app.database import get_db
 from app.knowledge import repository as knowledge
 from app.market import repository as market
+from app.market.mock_seed import MARKET_FACTS
 
 router = APIRouter()
 logger = logging.getLogger("zhan.purchase_advice")
@@ -39,10 +40,13 @@ class AdviceText(BaseModel):
     title: str = Field(min_length=1, max_length=48)
     reasoning: str = Field(min_length=1, max_length=360)
     caution: str = Field(min_length=1, max_length=180)
+    evidence: list[str] = Field(default_factory=list, max_length=4)
+    triggers: list[str] = Field(default_factory=list, max_length=3)
+    confidence: Literal["high", "medium", "low"] = "medium"
 
 
 SYSTEM_PROMPT = """你是粮食采购助手瞻小二。根据给定采购需求、当前选中地区和时段的行情、企业经验，独立提出本次采购建议。
-只输出 JSON：{"title":"简短行动结论","reasoning":"理由","caution":"风险或下一步需确认的事项"}，总计120至200个汉字。
+只输出 JSON：{"title":"简短行动结论","reasoning":"理由","caution":"风险或下一步需确认的事项","evidence":["2至4条关键依据"],"triggers":["1至3条改变建议的条件"],"confidence":"high或medium或low"}。
 规则：
 1. title明确建议当前该怎么做，不使用宣传口号；reasoning必须联系行情变化与本次库存、交期、预算，不复述全部字段。
 2. 只能使用输入事实，天数、涨跌和差额已经计算，不得编造报价、发运能力、采购比例、来源或未来涨跌保证。
@@ -50,6 +54,7 @@ SYSTEM_PROMPT = """你是粮食采购助手瞻小二。根据给定采购需求�
 4. 不同价格口径不能直接比较。到货价可对照到厂预算；收购价或出库价需要另计运费。没有运费不判断总成本一定达标。
 5. 保留行情实际日期，旧数据不能说成今日行情。若行情距请求日期超过7天，caution简短提示点价前更新报价。
 6. 不修改采购数量、交期、预算，不代替用户下单。没有证据就明确指出待核实的条件。
+7. evidence必须来自输入中的现货、期货基差、供给、需求或事件事实；triggers写明什么变化会改变当前建议。
 """
 
 
@@ -70,6 +75,7 @@ def build_context(req: PurchaseAdviceRequest, db: Session) -> dict:
     prices = [p.price for p in selected]
     first, latest = prices[0], prices[-1]
     variety = "玉米" if req.variety_code == "corn" else "小麦"
+    events = market.list_events(db, req.variety_code)
     tags = [variety, "山东"]
     experiences = knowledge.search_active_items(db, query=variety, tags=tags, limit=10)
     experiences = knowledge.rank_by_tags(experiences, tags)[:2]
@@ -91,6 +97,17 @@ def build_context(req: PurchaseAdviceRequest, db: Session) -> dict:
             "budget_minus_market_price": str(req.budget_price - latest),
             "daily_prices": [{"date": p.observed_date.isoformat(), "price": str(p.price)} for p in selected[-7:]],
         },
+        "market_facts": MARKET_FACTS.get(req.variety_code, {}),
+        "events": [
+            {
+                "title": row.title,
+                "summary": row.summary,
+                "direction": row.direction,
+                "strength": row.strength,
+                "duration_hint": row.duration_hint,
+            }
+            for row in events[:4]
+        ],
         "experiences": [{"id": row.id, "title": row.title, "content": row.content[:400],
                          "source": row.source_title, "applicable_context": row.applicable_context}
                         for row in experiences],
@@ -114,6 +131,7 @@ async def generate_advice(context: dict, api_key: str, base_url: str, model: str
 
 def fallback_advice(context: dict) -> AdviceText:
     need, prices = context["need"], context["market"]
+    facts = context.get("market_facts") or {}
     buffer = need["buffer_days"]
     if buffer <= 0:
         title = "先确认首批到货时间"
@@ -125,6 +143,16 @@ def fallback_advice(context: dict) -> AdviceText:
         title=title,
         reasoning=f"库存可用 {need['stock_days']} 天，计划 {need['deadline_days']} 天内到货。{timing}",
         caution=f"所选行情截至 {prices['end_date']}，需更新报价并核对运费后，再判断是否满足到厂预算。",
+        evidence=[
+            f"所选区域近 {prices['period_days']} 天价格变动 {prices['change']} 元/吨",
+            facts.get("supply", {}).get("headline", "供应节奏仍需核验"),
+            facts.get("demand", {}).get("headline", "下游需求仍需核验"),
+        ],
+        triggers=[
+            "若到货量与可售粮源明显增加，可放缓后续采购",
+            "若库存缓冲继续收窄，应优先锁定刚需数量",
+        ],
+        confidence="medium",
     )
 
 

@@ -17,6 +17,9 @@
   gap: 12px;
   padding: 20px 24px 0;
 }
+.zg-stage-meta[data-heading-hidden] {
+  justify-content: flex-end;
+}
 .zg-stage-heading {
   min-width: 0;
 }

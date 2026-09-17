@@ -54,6 +54,9 @@ def test_context_uses_selected_window_and_active_experience(setup_advice, db_ses
     assert Decimal(context['market']['change']) == 6
     assert len(context['market']['daily_prices']) == 7
     assert context['market']['price_basis'] == '到货价'
+    assert context['market_facts']['futures']['contract'] == 'C2611'
+    assert context['market_facts']['supply']['headline']
+    assert context['market_facts']['demand']['headline']
     assert [item['title'] for item in context['experiences']] == ['玉米补库经验']
     response = client.post('/api/analysis/purchase-advice', json={**req, 'period_days': 30})
     assert response.status_code == 200
@@ -86,7 +89,10 @@ def test_timeout_returns_explicit_rule_fallback(setup_advice, monkeypatch):
 def test_no_key_returns_honest_fallback(setup_advice, monkeypatch):
     client, req = setup_advice
     monkeypatch.setattr(advice, '_config', lambda: ('', '', ''))
-    assert client.post('/api/analysis/purchase-advice', json=req).json()['source'] == 'rule'
+    body = client.post('/api/analysis/purchase-advice', json=req).json()
+    assert body['source'] == 'rule'
+    assert len(body['evidence']) >= 3
+    assert body['triggers'] and body['confidence'] == 'medium'
 
 
 def test_lightweight_model_options(monkeypatch):

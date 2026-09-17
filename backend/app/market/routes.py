@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.market import repository
 from app.market.metrics import build_summary, compute_judgment, interpret_spot
-from app.market.mock_seed import MOCK_DATASET_VERSION, MOCK_GENERATED_AT, PRICE_DATE
+from app.market.mock_seed import MARKET_FACTS, MOCK_DATASET_VERSION, MOCK_GENERATED_AT, PRICE_DATE
 
 router = APIRouter(prefix="/api/market", tags=["market"])
 
@@ -70,6 +70,7 @@ def get_overview(variety_code: str = "corn", db: Session = Depends(get_db)):
             for s in spots
         ],
         "events": event_items,
+        "facts": MARKET_FACTS.get(variety_code),
         "judgment": judgment,
     }
 

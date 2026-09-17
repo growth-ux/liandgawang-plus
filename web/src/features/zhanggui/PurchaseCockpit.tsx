@@ -86,8 +86,7 @@ export default function PurchaseCockpit({
               : "继续办理当前步骤"
         }
         purchaseMode
-        title="点击数字人，直接办理"
-        subtitle="粮掌柜统筹全程 · 点选本步参与的小二，打开办理抽屉"
+        showHeading={false}
         hubLabel={`粮掌柜 · ${roles.steward}`}
         hubSummary={
           stage === 0 ? "一句话说需求，小二协同办" : PURCHASE_STAGES[stage]

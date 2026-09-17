@@ -23,6 +23,13 @@ export interface PurchaseNeed {
   stockDays?: number;
 }
 
+export interface PurchaseCostEstimate {
+  handlingPerTon: number;
+  insurancePerTon: number;
+  otherPerTon: number;
+  lossRatePct: number;
+}
+
 export interface MarketDecision {
   advice?: PurchaseAdvice;
   action: "buy" | "adjust" | "watch" | "inherited";
@@ -53,6 +60,7 @@ export interface Purchase {
   reviewAttempted?: boolean;
   originMission?: MissionSnapshot;
   additionalCostPerTon?: number;
+  costEstimateAssumptions?: PurchaseCostEstimate;
   sourceOptions?: GrainSource[];
   transportOptions?: TransportOption[];
 }

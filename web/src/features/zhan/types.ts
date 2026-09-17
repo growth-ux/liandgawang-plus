@@ -39,12 +39,101 @@ export interface MarketJudgment {
   watch_suggestions: string[];
 }
 
+export interface MarketFactMetric {
+  label: string;
+  value: string;
+  change: string;
+}
+
+export interface MarketFactEvent {
+  date: string;
+  category: string;
+  title: string;
+  summary: string;
+  regions: string[];
+  source: string;
+  source_url: string;
+}
+
+export interface FuturesPoint {
+  date: string;
+  close: number;
+  volume: number;
+}
+
+export interface BasisPoint {
+  date: string;
+  spot: number;
+  futures: number;
+  basis: number;
+}
+
+export interface MarketFactComparison {
+  title: string;
+  unit: string;
+  observed_at: string;
+  points: { label: string; current: number; previous: number; change: string }[];
+}
+
+export interface MarketFactRatio {
+  label: string;
+  min: number;
+  max: number;
+  display: string;
+  observed_at: string;
+}
+
+export interface MarketFactSection {
+  title: string;
+  observed_at: string;
+  items: MarketFactMetric[];
+}
+
+export interface MarketFacts {
+  futures: {
+    contract: string;
+    price: string;
+    change_pct: string;
+    metrics: MarketFactMetric[];
+    series?: FuturesPoint[];
+    basis_series?: BasisPoint[];
+    observed_at: string;
+    source: string;
+    source_url: string;
+    basis_source?: string;
+    basis_source_url?: string;
+  };
+  supply: {
+    headline: string;
+    summary: string;
+    metrics: MarketFactMetric[];
+    comparison?: MarketFactComparison;
+    observed_at: string;
+    source: string;
+    source_url: string;
+    sources?: { label: string; url: string }[];
+  };
+  demand: {
+    headline: string;
+    summary: string;
+    metrics: MarketFactMetric[];
+    sections?: MarketFactSection[];
+    ratios?: MarketFactRatio[];
+    observed_at: string;
+    source: string;
+    source_url: string;
+    sources?: { label: string; url: string }[];
+  };
+  events: MarketFactEvent[];
+}
+
 export interface MarketOverview {
   variety_code: string;
   variety_name: string;
   price_date: string;
   spots: SpotPrice[];
   events: MarketEvent[];
+  facts?: MarketFacts | null;
   judgment: MarketJudgment;
 }
 

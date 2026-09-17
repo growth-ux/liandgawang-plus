@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as echarts from "echarts";
 import { fetchMarketOverview, fetchPriceSeries } from "../zhan/api";
-import type { PricePoint, PriceSeriesResponse, SpotPrice } from "../zhan/types";
+import type { MarketOverview, PricePoint, PriceSeriesResponse, SpotPrice } from "../zhan/types";
 import { formatMoney } from "./purchaseModel";
 import MarketRegionSelect from "./MarketRegionSelect";
 import type { MarketSelection } from "./purchaseAdvice";
@@ -91,10 +91,11 @@ function TrendChart({ points }: { points: PricePoint[] }) {
   return <div ref={container} className="pw-price-chart" role="img" aria-label={`${points[0]?.observed_date}至${points[points.length - 1]?.observed_date}价格走势，末日${points[points.length - 1]?.price}元/吨`} />;
 }
 
-export default function PurchaseMarketTrend({ variety, asOf, onContextChange }: {
+export default function PurchaseMarketTrend({ variety, asOf, onContextChange, onOverviewChange }: {
   variety: "玉米" | "小麦";
   asOf?: string;
   onContextChange?(selection: MarketSelection): void;
+  onOverviewChange?(overview: MarketOverview | null): void;
 }) {
   const [spots, setSpots] = useState<SpotPrice[]>([]);
   const [spotCode, setSpotCode] = useState("");
@@ -107,8 +108,10 @@ export default function PurchaseMarketTrend({ variety, asOf, onContextChange }: 
   useEffect(() => {
     let cancelled = false;
     setSpots([]); setSpotCode(""); setSeries(null); setError("");
+    onOverviewChange?.(null);
     fetchMarketOverview(varietyCode).then((overview) => {
       if (cancelled) return;
+      onOverviewChange?.(overview);
       const regional = overview.spots.filter((spot) => spot.region_name.includes("山东"));
       if (!regional.length) { setError("暂无山东区域行情"); return; }
       setSpots(regional);
@@ -117,7 +120,7 @@ export default function PurchaseMarketTrend({ variety, asOf, onContextChange }: 
       setSpotCode(preferred.spot_code);
     }).catch(() => { if (!cancelled) setError("行情暂时无法加载"); });
     return () => { cancelled = true; };
-  }, [varietyCode, retry]);
+  }, [varietyCode, retry, onOverviewChange]);
 
   useEffect(() => {
     if (!spotCode) return;

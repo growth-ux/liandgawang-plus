@@ -22,6 +22,7 @@ import {
 } from "./purchaseModel";
 import PurchaseCockpit from "./PurchaseCockpit";
 import PurchaseDrawer from "./PurchaseDrawer";
+import CostTrialPanel from "./CostTrialPanel";
 import { purchaseInteraction } from "./purchaseInteraction";
 import PurchaseMarket, { DecisionRecord } from "./PurchaseMarket";
 import { assessPurchaseMarket } from "./marketAssessment";
@@ -186,7 +187,12 @@ export default function PurchaseWorkbench() {
   function update(patch: Partial<Purchase>) {
     if (!purchase) return;
     if (patch.sourceId !== undefined || patch.transportId !== undefined) {
-      patch = { ...patch, reviewed: false, reviewAttempted: false };
+      patch = {
+        ...patch,
+        reviewed: false,
+        reviewAttempted: false,
+        costEstimateAssumptions: patch.costEstimateAssumptions,
+      };
     }
     if (patch.documentName !== undefined) {
       patch = { ...patch, qualified: false, qualificationChecked: false };
@@ -1977,15 +1983,32 @@ function Transport({
             : "当前方案超过最晚交期，请切换更快的运输方式。"}
         </Info>
       )}
+      {!pickup && (
+        <CostTrialPanel
+          purchase={purchase}
+          readonly={readonly}
+          onAdopt={(sourceId, transportId, costEstimateAssumptions) =>
+            update({
+              sourceId,
+              transportId,
+              payee:
+                purchaseSources(purchase).find((source) => source.id === sourceId)
+                  ?.name ?? purchase.payee,
+              costEstimateAssumptions,
+              reviewed: false,
+            })
+          }
+        />
+      )}
       {!readonly && (
         <div className="pw-action-bar">
           <div className="pw-transport-summary">
-            <span>{pickup ? "本次平台应付粮款" : "预计到厂总成本"}</span>
+            <span>{pickup ? "本次平台应付粮款" : "当前待下单金额"}</span>
             <strong>¥ {formatMoney(totals.total)}</strong>
             <small>
               {pickup
                 ? `粮款 ${formatMoney(totals.unit)} 元/吨 · 自提运输费用未计入`
-                : `到厂 ${formatMoney(totals.unit)} 元/吨 · 运输费 ¥ ${formatMoney(totals.logistics)}`}
+                : `粮价 + 运费 ${formatMoney(totals.unit)} 元/吨 · 运输费 ¥ ${formatMoney(totals.logistics)}`}
             </small>
             <div>
               <b data-ok={withinBudget}>{withinBudget ? (pickup ? "粮款未超预算" : "预算内") : "超预算"}</b>

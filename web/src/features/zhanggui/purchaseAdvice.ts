@@ -13,5 +13,8 @@ export interface PurchaseAdvice {
   source: "qwen" | "rule";
   model: string | null;
   elapsed_ms: number;
+  evidence?: string[];
+  triggers?: string[];
+  confidence?: "high" | "medium" | "low";
   context?: MarketContext;
 }

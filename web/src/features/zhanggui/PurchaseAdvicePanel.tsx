@@ -36,7 +36,16 @@ export default function PurchaseAdvicePanel({ need, selection, readonly, savedAd
     const fallback = () => {
       const assessment = assessPurchaseMarket(need);
       publish({ title: assessment.title, reasoning: assessment.timing, caution: assessment.cost,
-        source: "rule", model: null, elapsed_ms: 0,
+        evidence: [
+          `库存可用 ${assessment.stockDays} 天，计划 ${need.days} 天内到货`,
+          `候选库点出库参考价 ${assessment.low}–${assessment.high} 元/吨`,
+          "当前建议尚未获得完整多源行情，需复核最新报价",
+        ],
+        triggers: [
+          "若库存缓冲继续收窄，应优先锁定刚需数量",
+          "若到货量明显增加，可放缓后续采购",
+        ],
+        confidence: "low", source: "rule", model: null, elapsed_ms: 0,
         ...(typeof selection === "object" ? { context: selection } : {}),
       });
     };
@@ -64,13 +73,30 @@ export default function PurchaseAdvicePanel({ need, selection, readonly, savedAd
   }, [requestKey, retry, readonly, onAdvice]);
 
   const advice = readonly ? savedAdvice : result?.key === requestKey ? result.advice : null;
+  const confidenceLabel = advice?.confidence === "high" ? "高"
+    : advice?.confidence === "low" ? "低" : "中";
   return (
     <section className="pw-market-judgment" aria-label="本次采购建议" aria-busy={!readonly && !advice}>
       <h3>本次采购建议</h3>
       {advice ? <>
-        <h4>{advice.title}</h4>
-        <p>{advice.reasoning}</p>
-        <p>{advice.caution}</p>
+        <div className="pw-market-judgment-title">
+          <h4>{advice.title}</h4>
+          <span data-confidence={advice.confidence ?? "medium"}>证据完整度 · {confidenceLabel}</span>
+        </div>
+        <p className="pw-market-judgment-reasoning">{advice.reasoning}</p>
+        <div className="pw-market-judgment-evidence">
+          <section>
+            <h5>关键依据</h5>
+            <ul>{(advice.evidence?.length ? advice.evidence : ["结合所选区域价格走势与本次采购约束生成建议。"])
+              .map((item) => <li key={item}>{item}</li>)}</ul>
+          </section>
+          <section>
+            <h5>改变建议的条件</h5>
+            <ul>{(advice.triggers?.length ? advice.triggers : [advice.caution])
+              .map((item) => <li key={item}>{item}</li>)}</ul>
+          </section>
+        </div>
+        <div className="pw-market-judgment-caution"><span>执行前确认</span><p>{advice.caution}</p></div>
         {!readonly && advice.source === "rule" && <div className="pw-advice-fallback" role="status">
           <span>AI 建议暂不可用，当前为采购条件核对结果。</span>
           {typeof selection === "object" && <button type="button" className="pw-text-button" onClick={() => setRetry((value) => value + 1)}>重新生成</button>}
