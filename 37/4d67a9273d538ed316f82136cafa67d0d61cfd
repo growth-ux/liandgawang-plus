@@ -1,0 +1,20 @@
+docs/演讲稿/粮达e销-演讲稿.html
+  s_890f7f111dd91f::t_d5022a21f9855c 411
+  s_890f7f111dd91f::t_13d0db244e40e8 312
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "374d67a9273d538ed316f82136cafa67d0d61cfd",
+  "prompts": {},
+  "sessions": {
+    "s_890f7f111dd91f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4badca8-4e53-4a12-9823-0e67c11e80ff",
+        "model": "qwen3.8-max"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    }
+  }
+}
