@@ -1,0 +1,43 @@
+docs/演讲稿/粮达e销-演讲稿.html
+  s_a1d01b324df697::t_02ec4e30239256 322
+  s_a1d01b324df697::t_d203931b565046 553
+  s_a1d01b324df697::t_3f7109ccff9c1c 1467-1470
+  s_a1d01b324df697::t_8468bcd7e3a932 1427
+  s_a1d01b324df697::t_fbe1295efaf831 1305,1311,1313,1315-1325
+  s_a1d01b324df697::t_e9de85225b9065 1520
+  s_a1d01b324df697::t_f21b51d3164e8a 300
+  h_f75b2dd43abf29 302
+  s_a1d01b324df697::t_1c1a1daf22900f 556
+  s_a1d01b324df697::t_f772f1b775e8d4 1455
+  s_a1d01b324df697::t_014cecad8d3357 558
+  s_a1d01b324df697::t_6568c1c2975c71 1525
+  s_a1d01b324df697::t_61b142c75396d4 2446
+  s_a1d01b324df697::t_26c6a09ecded52 349
+  s_a1d01b324df697::t_cd289ddcaddbee 1511
+  s_a1d01b324df697::t_7d1fc6cead7ca2 1441
+  s_a1d01b324df697::t_8cb82fb0c903f1 1497
+  s_a1d01b324df697::t_828297a8cd56cd 1478,1481-1484
+docs/演讲稿/assets/system-demo/99-备用素材/粮达e销-演讲稿-v1.html
+  s_a1d01b324df697::t_a474872bb26b6c 1-2551
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "8c1fd7771824c7ac06da5db20f8a45f8b995cb55",
+  "prompts": {},
+  "humans": {
+    "h_f75b2dd43abf29": {
+      "author": "weiyu.1024 <1360055716@qq.com>"
+    }
+  },
+  "sessions": {
+    "s_a1d01b324df697": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "11205654-dc18-47e5-81ec-6e73a2d374fa",
+        "model": "deepseek-flash"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    }
+  }
+}
