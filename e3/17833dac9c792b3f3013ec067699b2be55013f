@@ -1,0 +1,66 @@
+docs/演讲稿/粮达e销-演讲稿.html
+  s_9231400706f3ce::t_b3e6a507047373 2394
+  s_9231400706f3ce::t_577dac956ba4ba 912-913,922,930-931
+  s_12d75dc9cbd27a::t_ef8d0bedfe2d02 2121
+  s_9231400706f3ce::t_61c0a94ee16537 680
+  s_9231400706f3ce::t_a9ed38bbc1b2bb 687
+  s_02d7596f11b5e2::t_3003eec2d5d4b4 1985,2007,2045,2047,2055-2057,2060,2088-2090,2099
+  s_12d75dc9cbd27a::t_8a9c8b5885777a 2127
+  s_02d7596f11b5e2::t_d044d24261b515 778-779,789-791,802,806-810,814
+  s_9231400706f3ce::t_d9cb525c0d57fd 1006,1009-1011,1015,1019-1020,1023-1024,1026,1028,1030-1031,1035-1036,1039-1040
+  s_02d7596f11b5e2::t_1d481869d15cd7 720,727
+  s_9231400706f3ce::t_ae1e169c0fa94d 1045-1071
+  s_9231400706f3ce::t_1859fe58752f67 1033,1038
+  h_f75b2dd43abf29 2126
+  s_9231400706f3ce::t_f09a430a657ab1 2372
+  s_9231400706f3ce::t_f4f47b2185c0c5 2373
+  s_9231400706f3ce::t_2584e6cdc9fd25 1014
+  s_02d7596f11b5e2::t_ac7e1ea1a72412 718-719,721-726,728-760
+  s_9231400706f3ce::t_0734f38d9e27aa 897
+  s_9231400706f3ce::t_1e0c34a4f57d9e 2384
+  s_9231400706f3ce::t_24870f0a4a9e3b 2383,2385-2393,2395-2398
+  s_12d75dc9cbd27a::t_d863d0a0b43b70 1374,1378
+  s_9231400706f3ce::t_f4a4b1a70ab9a4 2001
+  s_9231400706f3ce::t_23df7042bbebf8 2245,2247-2249
+  s_9231400706f3ce::t_d20d012a678606 2423
+  s_02d7596f11b5e2::t_d2011d3dd2977a 715-717
+  s_9231400706f3ce::t_6f70d200fa7a16 1044
+  s_12d75dc9cbd27a::t_f95ba326b4e6fc 697-703,711-714,2525
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "e317833dac9c792b3f3013ec067699b2be55013f",
+  "prompts": {},
+  "humans": {
+    "h_f75b2dd43abf29": {
+      "author": "weiyu.1024 <1360055716@qq.com>"
+    }
+  },
+  "sessions": {
+    "s_02d7596f11b5e2": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0b466-b6c4-7652-8e7f-56ed4e537af9",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    },
+    "s_12d75dc9cbd27a": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0b480-f8bd-7411-8711-5d702b89a6c9",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    },
+    "s_9231400706f3ce": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4eeb05f2-fa0b-44d0-979c-125ee605cc74",
+        "model": "deepseek-flash"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    }
+  }
+}
