@@ -2623,29 +2623,25 @@ function Review({
     ["运输结算单", `YF-${recordCode}`],
     ["入库质检单", `ZJ-${recordCode}`],
   ];
+  const stockDays = purchase.need.stockDays ?? 0;
+  const stockingUp = stockDays <= 7;
+  const sourceEvidence = settlement.source.evidence;
   const knowledgeChanges = [
     {
       type: "企业事实",
       tone: "fact",
-      status: purchase.need.destination.includes("潍坊") ? "已引用" : "无新增",
-      title: purchase.need.destination.includes("潍坊")
-        ? "潍坊工厂为主要到货点"
-        : "本次未形成新的企业长期事实",
-      detail: purchase.need.destination.includes("潍坊")
-        ? "方案继续按潍坊到厂成本统一比较"
-        : "单笔订单到货地不直接升级为企业事实",
+      status: "已引用",
+      title: "饲料用玉米优先控制霉菌毒素",
+      detail: `本次到厂质检：霉变粒 ${sourceEvidence?.moldyKernels ?? "≤2%"} · 容重 ${sourceEvidence?.bulkDensity ?? "≥685 g/L"} · 水分 ${settlement.source.moisture}，均在企业内控线内，按二等入库`,
     },
     {
       type: "经营偏好",
       tone: "preference",
-      status: "已验证",
-      title:
-        (purchase.need.stockDays ?? 0) <= 7
-          ? "安全库存低于七天时优先保供"
-          : "正常库存优先比较综合到厂成本",
-      detail: deliveredOnTime
-        ? `本次选择${settlement.transport.label}并按期到货`
-        : `本次实际交付超出约定 ${settlement.days - purchase.need.days} 天`,
+      status: stockingUp ? "已触发保供" : "已校验",
+      title: "安全库存低于七天优先保供",
+      detail: stockingUp
+        ? `本次库存 ${stockDays} 天已触及红线，${settlement.transport.label} 优先保证按期到货`
+        : `本次库存 ${stockDays} 天未触红线，按综合到厂成本择源`,
     },
     {
       type: "决策经验",
@@ -2725,7 +2721,7 @@ function Review({
               </strong>
               <small>
                 {settlement.isComplete
-                  ? `相对预算 ${formatMoney(purchase.need.budget)} 元/吨 · ${variancePerTon >= 0 ? "结余" : "超支"} ¥ ${formatMoney(Math.abs(varianceTotal))}`
+                  ? `相对预算 ${formatMoney(purchase.need.budget)} 元/吨 · ${variancePerTon >= 0 ? "结余" : "超支"} ¥ ${formatMoney(Math.abs(varianceTotal))}`
                   : "补录自提结算后生成完整到厂成本"}
               </small>
             </article>

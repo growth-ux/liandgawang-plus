@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import ComposerSelect from "./ComposerSelect";
 import {
   formatMoney,
   purchaseSources,
@@ -265,29 +266,27 @@ export default function CostTrialPanel({
           <div className="pw-cost-composer-grid">
             <label>
               <span>自选粮源</span>
-              <select
+              <ComposerSelect
+                ariaLabel="自选粮源"
                 value={draftSourceId}
-                onChange={(event) => changeSource(event.target.value)}
-              >
-                {sources.map((source) => (
-                  <option key={source.id} value={source.id}>
-                    {source.depot} · {formatMoney(source.price)} 元/吨
-                  </option>
-                ))}
-              </select>
+                onChange={changeSource}
+                options={sources.map((source) => ({
+                  value: source.id,
+                  label: `${source.depot} · ${formatMoney(source.price)} 元/吨`,
+                }))}
+              />
             </label>
             <label>
               <span>自选物流</span>
-              <select
+              <ComposerSelect
+                ariaLabel="自选物流"
                 value={draftTransportId}
-                onChange={(event) => changeTransport(event.target.value)}
-              >
-                {availableDraftTransports.map((transport) => (
-                  <option key={transport.id} value={transport.id}>
-                    {transport.label} · {formatMoney(transport.price)} 元/吨
-                  </option>
-                ))}
-              </select>
+                onChange={changeTransport}
+                options={availableDraftTransports.map((transport) => ({
+                  value: transport.id,
+                  label: `${transport.label} · ${formatMoney(transport.price)} 元/吨`,
+                }))}
+              />
             </label>
             <label>
               <span>装卸中转</span>
