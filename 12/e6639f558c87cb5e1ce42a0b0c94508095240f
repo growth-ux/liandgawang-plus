@@ -1,0 +1,128 @@
+docs/客户画像.md
+  h_f75b2dd43abf29 1
+web/src/features/zhanggui/PurchaseWorkbench.tsx
+  s_125edfd76fd962::t_e94a85527fa10f 2706
+  s_125edfd76fd962::t_75facacd95332c 2792,2794,2796-2801
+  s_125edfd76fd962::t_5d1851d130ea10 2847
+  s_125edfd76fd962::t_e7d7135e16468f 2762-2766
+.frontend-slides/shot.mjs
+  s_125edfd76fd962::t_c86d732f42960b 63-72,100-104
+  s_125edfd76fd962::t_c4275d00eea15a 85,88-98
+  s_125edfd76fd962::t_e39b5aa4be1dfd 86-87
+  s_125edfd76fd962::t_77dd85030b847f 1-62,121-131
+  s_125edfd76fd962::t_32ec5e173a533a 73-84,99
+  s_125edfd76fd962::t_4f5deb9a4ee0af 105-120
+.frontend-slides/workbench.mjs
+  s_125edfd76fd962::t_eed1c6d396f125 14
+  s_125edfd76fd962::t_f428254d5c794e 1,3,5-13,15-50,52-58,62,112,135,139-141
+  s_125edfd76fd962::t_7b78399edb8f00 2,4,51,59-61,63-79,81-99,101-111,113-134,136-138
+  s_125edfd76fd962::t_cb9ff983760c45 80
+  s_125edfd76fd962::t_1b0b4fc8a687dd 100
+docs/演讲稿/粮达e销-演讲稿.html
+  s_125edfd76fd962::t_ef8790a7792642 1652
+  s_125edfd76fd962::t_1df14dd679f8e2 2131
+  s_125edfd76fd962::t_eb0ca45bc8b71f 1646
+  s_a521262f5a1ca8::t_f82623b9b3ad9d 1631
+  s_125edfd76fd962::t_382962ff130859 1688
+  s_a521262f5a1ca8::t_784ad52c4593d1 1592
+  s_125edfd76fd962::t_835ef35b7180c1 1884-1885
+  s_125edfd76fd962::t_f3fb85eb5e66d7 1654-1655
+  s_125edfd76fd962::t_243eee5eee51a9 1762-1763
+  s_125edfd76fd962::t_961496496624e2 1602
+  s_125edfd76fd962::t_f46b8e64d17218 1636
+  s_a521262f5a1ca8::t_f9737f4f39abaa 2495
+  s_a521262f5a1ca8::t_ce637ea2e2a947 189
+  s_125edfd76fd962::t_64f457b58f0e57 1129
+  s_125edfd76fd962::t_1ea3fa2aba04f4 1104-1112,1119
+  s_125edfd76fd962::t_abe93a0df75854 1131,1133,1137
+  s_125edfd76fd962::t_23edd2850c4996 1899-1900
+  h_f75b2dd43abf29 1356,1360,1370,1600,1604,1806
+  s_16efaaa2b1de75::t_c1e46c5f5254e3 539
+  s_125edfd76fd962::t_3b0c5b36a5e95f 1698
+  s_125edfd76fd962::t_204ed531aa258d 1833
+  s_125edfd76fd962::t_1c7e2a67b61f51 1200
+  s_125edfd76fd962::t_0acfd7570efd89 1846,1848,1852-1853,1855,1857,1859
+  s_125edfd76fd962::t_3743afa2d09cd9 1758
+  s_16efaaa2b1de75::t_620d258ba89a1d 543
+  s_125edfd76fd962::t_2197a8b2ec8bad 1118,1121-1128
+  s_125edfd76fd962::t_b1621499d1ebf1 1606
+  s_16efaaa2b1de75::t_a4a6e8c011ee93 664-669
+  s_125edfd76fd962::t_7a69dbbb773e3a 1113,1117
+  s_a521262f5a1ca8::t_d9f200034889e1 1681
+  s_125edfd76fd962::t_4fb60df3b3297f 1804-1805
+  s_125edfd76fd962::t_06710a45317744 1904-1905
+  s_125edfd76fd962::t_f44f130f729886 1130
+  s_125edfd76fd962::t_0e28976e93926b 1686,1690,1695,1697,1704
+  s_125edfd76fd962::t_732564a23555a5 1759,1764,1769
+  s_125edfd76fd962::t_ce437afc4f3071 1767-1768
+  s_125edfd76fd962::t_74b42d96c9b561 1699
+  s_a521262f5a1ca8::t_42d34adf93f402 1798
+  s_125edfd76fd962::t_5fb23fb0d16a1a 1687
+  s_125edfd76fd962::t_9a6123d9a780ab 1132,1134-1136
+  s_a521262f5a1ca8::t_98172e8c01a917 186-188,190-192,194-197
+  s_125edfd76fd962::t_48e205b3f95566 1114-1116,1120
+  s_125edfd76fd962::t_1f48a482003647 1598
+  s_125edfd76fd962::t_bb3c01199b5513 1692-1694
+  s_125edfd76fd962::t_2346071a13657b 1843
+  s_a521262f5a1ca8::t_3d4bb807c6c7f9 1835
+  s_a521262f5a1ca8::t_5e847d5d564cce 1878
+  s_16efaaa2b1de75::t_caa4ab3aacff6e 528
+  s_a521262f5a1ca8::t_ee3c106fc0430e 193,198-207
+  s_a521262f5a1ca8::t_f3553da6527386 1752
+  s_a521262f5a1ca8::t_126f842fbf8456 1725
+  s_125edfd76fd962::t_df20f2b0a93501 1756,1761,1766
+  s_125edfd76fd962::t_440637d3c5dd09 635-639,642-643
+  s_125edfd76fd962::t_91b7ba7c46895d 1218
+  s_125edfd76fd962::t_2d302f429d165c 1882,1887,1895,1897
+  s_125edfd76fd962::t_bc188ee9c1230b 1893
+  s_125edfd76fd962::t_8365d823f5fd5e 1647
+  s_125edfd76fd962::t_9e27f0f3110068 1691
+  s_125edfd76fd962::t_f505fc4b103851 1888
+  h_f75b2dd43abf29 1603
+web/src/features/zhanggui/purchaseModel.ts
+  s_125edfd76fd962::t_1e4fe79e7a9b9c 588,595-599
+  s_125edfd76fd962::t_4a85443327f971 651
+  s_125edfd76fd962::t_43f14bdac4726d 663-667
+  s_125edfd76fd962::t_632d244974dddb 647-650
+  s_125edfd76fd962::t_c87c6ced19b37f 633-634
+  s_125edfd76fd962::t_0dc2a3e62af415 630-632,635-637
+docs/演讲稿/assets/system-demo/99-备用素材/粮达e销-演讲稿-v1.html
+  h_f75b2dd43abf29 1301
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "12e6639f558c87cb5e1ce42a0b0c94508095240f",
+  "prompts": {},
+  "humans": {
+    "h_f75b2dd43abf29": {
+      "author": "weiyu.1024 <1360055716@qq.com>"
+    }
+  },
+  "sessions": {
+    "s_125edfd76fd962": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "775c0c0c-ad87-401b-9011-7c6744657f42",
+        "model": "deepseek-flash"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    },
+    "s_16efaaa2b1de75": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3f723ad7-f2d3-46d3-a2c6-2558ab233129",
+        "model": "deepseek-flash"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    },
+    "s_a521262f5a1ca8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48ec66e5-71ab-423c-b5d4-62c9bc10c4c3",
+        "model": "deepseek-flash"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    }
+  }
+}
