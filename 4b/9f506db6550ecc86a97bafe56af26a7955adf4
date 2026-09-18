@@ -1,0 +1,23 @@
+web/src/components/ThemePicker.tsx
+  s_27a717add8db5e::t_5aaa3f716a28f7 11,130
+web/src/theme/ThemeContext.tsx
+  s_27a717add8db5e::t_c5022c8c795b11 10-20,57,66
+web/src/theme/theme.css
+  s_27a717add8db5e::t_f313eafec53c74 334-357
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "4b9f506db6550ecc86a97bafe56af26a7955adf4",
+  "prompts": {},
+  "sessions": {
+    "s_27a717add8db5e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "31217648-ba3c-45e4-82ed-e63485c984a8",
+        "model": "unknown"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    }
+  }
+}
