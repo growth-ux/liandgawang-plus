@@ -589,16 +589,26 @@ body,
 :root .pw-fulfillment,
 :root .pw-transit-tracking,
 :root .pw-settlement-sheet,
+:root .pw-settlement-ledger,
+:root .pw-settlement-loss,
+:root .pw-settlement-evidence,
 :root .pw-review-closeout,
+:root .pw-review-performance,
+:root .pw-review-knowledge,
 :root .pw-source-featured,
 :root .pw-source-compare,
 :root .pw-source-benchmark,
 :root .pw-source-funnel,
+:root .pw-source-scope,
 :root .pw-transport-assessment,
 :root .pw-transport-option,
 :root .pw-market-overview,
 :root .pw-market-judgment,
 :root .pw-price-history,
+:root .pw-market-fact-card,
+:root .pw-futures-evidence,
+:root .pw-market-events,
+:root .pw-market-facts-loading,
 :root .pw-q-overview,
 :root .pw-check-columns .pw-q-column,
 :root .pw-verification-report,
@@ -640,6 +650,29 @@ body,
 :root .pw-review-performance-grid article {
   border-color: var(--color-line);
   background: var(--color-rice);
+}
+/* 统计格、KPI、履约评价卡与卡片同底，只留分隔线，避免深色主题下读成一片黑框。 */
+:root .pw-order-facts > div,
+:root .pw-settlement-kpis article,
+:root .pw-review-performance-grid article,
+:root .pw-settlement-adjustments,
+:root .pw-report-stats,
+:root .pw-q-overview-stats span,
+:root .pw-source-match-facts > div,
+:root .pw-source-key-metrics > div,
+:root .pw-transport-metrics > div,
+:root .pw-supply-comparison,
+:root .pw-demand-section,
+:root .pw-demand-ratios {
+  background: transparent;
+}
+/* 结算/复盘/订单的卡头比卡片提亮一档，不然深色主题下会在面板上压出一条更暗的横带。 */
+:root .pw-settlement-head,
+:root .pw-review-section-head,
+:root .pw-order-card-head,
+:root .pw-source-compare th {
+  border-bottom-color: var(--color-line);
+  background: color-mix(in srgb, var(--color-panel) 90%, var(--color-ink));
 }
 :root .pw-region-options,
 :root .pw-region-trigger {
@@ -699,6 +732,10 @@ body,
 :root[data-theme-mode="light"] .pw-market-overview,
 :root[data-theme-mode="light"] .pw-market-judgment,
 :root[data-theme-mode="light"] .pw-price-history,
+:root[data-theme-mode="light"] .pw-market-fact-card,
+:root[data-theme-mode="light"] .pw-futures-evidence,
+:root[data-theme-mode="light"] .pw-market-events,
+:root[data-theme-mode="light"] .pw-market-facts-loading,
 :root[data-theme-mode="light"] .pw-q-overview,
 :root[data-theme-mode="light"] .pw-check-columns .pw-q-column,
 :root[data-theme-mode="light"] .pw-verification-report,
@@ -766,6 +803,10 @@ body,
 :root[data-theme-mode="light"] .pw-review-performance-grid article {
   border-color: var(--color-line);
   background: var(--color-rice);
+}
+/* 结算明细行自带浅色字色，浅色主题下卡片变白后会被洗掉，这里跟随 ink-soft。 */
+:root[data-theme-mode="light"] .pw-settlement-cost-table > div:not(.pw-settlement-cost-head) {
+  color: var(--color-ink-soft);
 }
 :root[data-theme-mode="light"] .pw-check-state { background: var(--color-rice); border-color: var(--color-line); }
 :root[data-theme-mode="light"] .pw-check-row.is-passed .pw-check-state { background: #e8f7f0; color: #087855; }
