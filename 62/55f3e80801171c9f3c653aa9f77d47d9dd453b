@@ -1,0 +1,82 @@
+web/src/features/zhanggui/purchase.css
+  s_ccee152f419a44::t_92f5798af41880 1638
+  s_ccee152f419a44::t_66337180e5e8b4 2212
+  s_ccee152f419a44::t_69cc92d27285bb 2380
+  s_ccee152f419a44::t_16f2ee6f2ae732 977,987
+  s_ccee152f419a44::t_4bc2389fe340e2 777
+  s_ccee152f419a44::t_85dde887961622 1579
+  s_ccee152f419a44::t_b468874c85e382 1930
+  s_ccee152f419a44::t_fe3a08d78365b2 960
+  s_ccee152f419a44::t_73c99647c119fc 2185
+  s_ccee152f419a44::t_67ea43eebfc663 1796
+  s_ccee152f419a44::t_7bac42fb97e0dd 2177
+  s_ccee152f419a44::t_5f4f66f91cc92c 1599,1603
+  s_ccee152f419a44::t_9e0e34289ba582 839
+  s_ccee152f419a44::t_4f45544132dae1 1936,1943,1953,1959,1966
+  s_ccee152f419a44::t_6a66f537daa87a 2295-2297,2306-2309
+  s_ccee152f419a44::t_8be0ce78fbbe67 2261
+  s_ccee152f419a44::t_d90814714af93a 2046
+  s_ccee152f419a44::t_be071eaed29265 762
+  s_ccee152f419a44::t_50ca4dcede3ccc 1972
+  s_ccee152f419a44::t_dbb86ff28b348d 1617
+  s_ccee152f419a44::t_280eecff75dcb6 727,732,738
+  s_ccee152f419a44::t_ac7987ce7b1537 910,917,922,927,932
+  s_ccee152f419a44::t_7177a7c34d94a3 743
+  s_ccee152f419a44::t_2e37ee8f3ed078 1717,1722
+  s_ccee152f419a44::t_4563730c857a95 2408
+  s_ccee152f419a44::t_f7f8b27e025cd4 7202,7207
+  s_ccee152f419a44::t_e9e2db88f10fd2 882,887
+  s_ccee152f419a44::t_6acd7ea114c552 2118
+  s_ccee152f419a44::t_e232de77a82783 2313,2321,2335,2340
+  s_ccee152f419a44::t_9dc62745b92e73 7319,7324,7329
+  s_ccee152f419a44::t_98fdef25e98f89 2020,2026,2031
+  s_ccee152f419a44::t_5cb2b5ae20b1dc 1749
+  s_ccee152f419a44::t_ebbe165b24a9f9 2196
+  s_ccee152f419a44::t_51fec9d4fec6df 2374
+  s_ccee152f419a44::t_43ccc1e6591bc4 1831,1837,1842,1855
+  s_ccee152f419a44::t_5fe8b69a603ff7 1811,1815
+  s_ccee152f419a44::t_3a90d4fe45ce80 2055,2060
+  s_ccee152f419a44::t_c366c621f4e6e6 2398
+  s_ccee152f419a44::t_974d03bae7c23f 800,805,812,827
+  s_ccee152f419a44::t_520f2ae63a7595 2286,2291
+  s_ccee152f419a44::t_752ffbf74119d0 857
+  s_ccee152f419a44::t_ddb567cf2fd878 2085
+  s_ccee152f419a44::t_4fe459e598c207 2101,2106,2111
+  s_ccee152f419a44::t_982661f5892a76 2164
+  s_ccee152f419a44::t_6f167678a8f311 1674,1680,1683,1687
+  s_ccee152f419a44::t_dc4ed79c91e2df 1928
+  s_ccee152f419a44::t_f981520cb37d5c 2242,2248,2255
+  s_ccee152f419a44::t_0ed2de42f8946e 2325
+  s_ccee152f419a44::t_367e5160282c5e 2403
+  s_ccee152f419a44::t_4280c847b834a5 1766,1774,1778
+  s_ccee152f419a44::t_ca61cbb105b3a2 2181,2187-2190
+  s_ccee152f419a44::t_2766b8f419ff33 7163,7169
+AGENTS.md
+  s_daf1ab803c54a4::t_97e41504449cc9 17-18
+CLAUDE.md
+  s_daf1ab803c54a4::t_223139e8afdc08 17-18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "6255f3e80801171c9f3c653aa9f77d47d9dd453b",
+  "prompts": {},
+  "sessions": {
+    "s_ccee152f419a44": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f2be2c47-f005-4459-91cd-7a4e903f2ca3",
+        "model": "deepseek-flash"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    },
+    "s_daf1ab803c54a4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6dfbd390-a44b-4679-900f-d6b28cfd3130",
+        "model": "unknown"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    }
+  }
+}
