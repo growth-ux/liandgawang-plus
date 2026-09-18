@@ -1,0 +1,28 @@
+docs/演讲稿/粮达e销-演讲稿.html
+  s_4779420c14d280::t_f2b0f80f7505a4 2104
+  s_4779420c14d280::t_571c4c9530a238 1171,1228,1290,1436,1475,1524,1566,1593,1614,1635,1657,1683,1768,1840,1873,1935,2001,2074
+  h_f75b2dd43abf29 2092,2102
+  s_4779420c14d280::t_fd39158f300675 194
+  s_4779420c14d280::t_62db1e50e77466 1955
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "fe3ede20074c80b248761e52635bfcb988474885",
+  "prompts": {},
+  "humans": {
+    "h_f75b2dd43abf29": {
+      "author": "weiyu.1024 <1360055716@qq.com>"
+    }
+  },
+  "sessions": {
+    "s_4779420c14d280": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2ef73236-4d96-4ad2-8c07-72526eb37d45",
+        "model": "deepseek-flash"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    }
+  }
+}
