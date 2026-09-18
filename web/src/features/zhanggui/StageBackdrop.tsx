@@ -1,6 +1,6 @@
 import { useId } from "react";
 
-/** 无全息层的实体协作台：地面网格、分层台面与橙青刻度。 */
+/** 无全息层的实体协作台：分层台面与橙青刻度。 */
 export default function StageBackdrop() {
   const id = useId().replace(/:/g, "");
   return (
@@ -18,28 +18,7 @@ export default function StageBackdrop() {
           <stop stopColor="var(--stage-deck-top)" stopOpacity=".75" />
           <stop offset="1" stopColor="var(--stage-deck-bottom)" stopOpacity=".25" />
         </linearGradient>
-        <pattern
-          id={`${id}-grid`}
-          width="48"
-          height="24"
-          patternUnits="userSpaceOnUse"
-        >
-          <path
-            d="M0 12L24 0L48 12L24 24Z"
-            fill="none"
-            stroke="var(--color-tech)"
-            strokeWidth=".6"
-            opacity=".09"
-          />
-        </pattern>
       </defs>
-      <rect
-        x="20"
-        y="100"
-        width="1000"
-        height="560"
-        fill={`url(#${id}-grid)`}
-      />
       <ellipse
         className="zg-stage-ambient"
         cx="520"

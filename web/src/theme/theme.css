@@ -66,8 +66,6 @@
   --field-surface:
     radial-gradient(ellipse at 50% 58%, rgb(var(--color-brand-rgb) / 0.2), transparent 27%),
     radial-gradient(ellipse at 50% 24%, rgb(var(--color-tech-rgb) / 0.13), transparent 34%),
-    repeating-linear-gradient(45deg, rgb(var(--color-tech-rgb) / 0.045) 0 1px, transparent 1px 30px),
-    repeating-linear-gradient(-45deg, rgb(var(--color-tech-rgb) / 0.035) 0 1px, transparent 1px 30px),
     var(--color-rice);
   --field-vignette: radial-gradient(112% 92% at 50% 48%, transparent 48%, rgba(2, 6, 16, 0.72) 100%);
   --field-label: rgba(10, 22, 39, 0.96);
@@ -905,6 +903,11 @@ body,
   background-image:
     radial-gradient(circle at 82% -8%, rgb(var(--color-tech-rgb) / 0.1), transparent 30rem),
     linear-gradient(180deg, #111f36 0, var(--color-rice) 28rem);
+  /* 渐变按视口定位且不重复：否则这条只在顶部该出现一次的渐变，
+     会在内容溢出 body（index.css 里 body 是 height:100%）时被再画一遍，
+     页面中段凭空多出一道横贯整幅的亮带。 */
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   font-family: "HarmonyOS Sans SC", "MiSans", "PingFang SC", "Microsoft YaHei", sans-serif;
 }
 
@@ -979,9 +982,15 @@ body,
   font-size: 14px;
 }
 
+/*
+ * 舞台底栏：原本比驾驶舱面板亮一档，但真正显眼的接缝在它"上面"——
+ * 台面 .zg-spatial-stage 的渐变收到 #101d32，底栏却是 #182a46，
+ * 于是台面底部和底栏之间有一道台阶。取台面收尾色，让下半部分连成一片，
+ * 分隔交给顶部那条线。
+ */
 :root[data-theme="deep-space-presentation"] .pw-stage-footer {
   border-color: rgb(var(--color-tech-rgb) / 0.28);
-  background: #1d304c;
+  background: #101d32;
   color: #c5d3e2;
   font-size: 12px;
 }
@@ -1026,6 +1035,110 @@ body,
 :root[data-theme="deep-space-presentation"] .pw-agent-cockpit .zg-stage-subtitle {
   color: #c0cede;
   font-size: 12px;
+}
+
+/*
+ * 驾驶舱与多步骤条：录屏后还要投屏，画面要过两道压缩，
+ * 细笔画的小字最先糊掉。这里只提最小一批字号的绝对值和状态色明度，
+ * 不动底色——提底会压低对比度，反而更看不清。
+ */
+:root[data-theme="deep-space-presentation"] .pw-rail {
+  padding: 14px 16px;
+}
+
+:root[data-theme="deep-space-presentation"] .pw-step {
+  padding: 6px 12px;
+}
+
+:root[data-theme="deep-space-presentation"] .pw-step-number {
+  width: 32px;
+  height: 32px;
+  font-size: 13px;
+}
+
+:root[data-theme="deep-space-presentation"] .pw-step > span:last-child {
+  font-size: 13px;
+}
+
+:root[data-theme="deep-space-presentation"] .pw-step small {
+  margin-top: 4px;
+}
+
+/* 舞台右上角的协作统计，是画面里唯一量化"几个小二在协作"的口径。 */
+:root[data-theme="deep-space-presentation"] .zg-stage-stats {
+  font-size: 12px;
+  color: #c3d3e1;
+}
+
+:root[data-theme="deep-space-presentation"] .zg-pod-status {
+  font-size: 13px;
+}
+
+/* 只提待命态的状态色，沿用角色色系的运行/完成态保持原样。 */
+:root[data-theme="deep-space-presentation"] .zg-agent-pod[data-status="standby"] .zg-pod-status,
+:root[data-theme="deep-space-presentation"] .zg-agent-pod[data-status="pending"] .zg-pod-status {
+  color: #9fb0c4;
+}
+
+:root[data-theme="deep-space-presentation"] .zg-hub-summary {
+  color: #c2d0e0;
+  font-size: 14px;
+}
+
+/*
+ * 表单控件：purchase.css 里写死的 #0c1829 比讲解主题的面板（#223653）深一档多，
+ * 在面板上读成"黑框"。这里回落到比面板略深一档的合成色：输入区仍然内凹，
+ * 但边界改由主题描边界定，而不是靠"比周围黑"。
+ */
+:root[data-theme="deep-space-presentation"] :is(
+  .pw-request,
+  .pw-fields input,
+  .pw-fields select,
+  .pw-wide-input,
+  .pw-market-context :is(input, select)
+) {
+  background: color-mix(in srgb, var(--color-rice) 35%, var(--color-panel));
+  border-color: var(--color-line);
+}
+
+/* 步骤序号圆点与研判标题标签：同样是写死的深色，回落到面板上提一档。 */
+:root[data-theme="deep-space-presentation"] :is(
+  .pw-delivery-rail > div:not([data-done="true"]) > span,
+  .pw-market-judgment-title span
+) {
+  background: color-mix(in srgb, var(--color-tech) 8%, var(--color-panel));
+}
+
+/* 研判提示条保留"需要注意"的热色，但不再比面板暗一档。 */
+:root[data-theme="deep-space-presentation"] .pw-market-judgment-caution {
+  background: color-mix(in srgb, var(--color-brand) 9%, var(--color-panel));
+}
+
+/* 钱小二的编号方块写死成中性灰 #292d33，和其余角色同色系底不一致，单独读成灰框。 */
+:root[data-theme="deep-space-presentation"] .is-qian .pw-q-agent-mark {
+  background: color-mix(in srgb, var(--color-brand) 12%, var(--color-panel));
+}
+
+/*
+ * 抽屉底栏：theme.css:654 给它上了 var(--color-panel)，但讲解主题把 .pw-panel
+ * 压暗到 #182a46，子层反而比父层亮，浮出一条没有形状的通栏色带。
+ * 给它一个正常的卡片形（描边 + 圆角），层级关系就成立了。
+ */
+:root[data-theme="deep-space-presentation"] .pw-business-drawer .pw-action-bar {
+  margin-top: 24px;
+  padding: 16px 18px;
+  border: 1px solid var(--color-line);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--color-tech) 5%, var(--color-panel));
+}
+
+/*
+ * 核验项的序号方块：未启动时写死 #0a1624，在面板上读成黑框。
+ * 通过 / 注意 / 待补充三态各自带语义色，用 :not() 排除，不动它们。
+ */
+:root[data-theme="deep-space-presentation"]
+  .pw-check-row:not(.is-passed):not(.is-warning):not(.is-failed) .pw-check-state {
+  background: color-mix(in srgb, var(--color-tech) 8%, var(--color-panel));
 }
 
 /*
