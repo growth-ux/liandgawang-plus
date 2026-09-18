@@ -191,6 +191,7 @@ svg {
 .kicker::before{content:"";width:40px;height:2px;background:linear-gradient(90deg,var(--cyan),transparent);}
 .kicker b{color:var(--gold);font-weight:700;}
 .head-title{font-size:52px;font-weight:900;letter-spacing:.02em;line-height:1.2;}
+.head-title .chap-no{font-family:var(--font-latin);font-weight:800;margin-right:.3em;}
 .head-title em{
   font-style:normal;
   background:linear-gradient(92deg,var(--cyan),#2E8FE0 58%,var(--blue));
@@ -563,7 +564,6 @@ svg {
 .demo-slide::before{background-image:none;-webkit-mask-image:none;mask-image:none;}
 .demo-slide .foot{display:none;}
 .demo-slide .head{padding-top:54px;}
-.demo-slide .head-title{font-size:46px;line-height:1.25;}
 .demo-body{position:absolute;z-index:2;left:var(--pad-x);right:var(--pad-x);top:181px;bottom:96px;display:flex;flex-direction:column;gap:18px;}
 .demo-rail{list-style:none;display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:10px;flex:none;}
 .demo-rail li{height:56px;display:flex;align-items:center;justify-content:center;gap:11px;border:1px solid #D5E3EE;border-radius:9px;
@@ -1168,8 +1168,7 @@ body.editing .edit-hint{display:block;}
   <section class="slide" aria-label="场景需求与痛点">
     <header class="head">
       <div class="head-l">
-        <div class="kicker"><b>02</b>&nbsp;场景需求与痛点</div>
-        <h2 class="head-title">构建智能决策层，让智能化在<em>业务侧落地</em></h2>
+        <h2 class="head-title"><span class="chap-no">01</span>场景需求与痛点</h2>
       </div>
     </header>
 
@@ -1226,8 +1225,7 @@ body.editing .edit-hint{display:block;}
   <section class="slide" aria-label="认识 AI 团队">
     <header class="head">
       <div class="head-l">
-        <div class="kicker"><b>03</b>&nbsp;认识 AI 团队</div>
-        <h2 class="head-title">掌柜与六位小二：<em>能单干、会协作</em>的专业 AI 团队</h2>
+        <h2 class="head-title"><span class="chap-no">02</span>认识 AI 团队</h2>
       </div>
     </header>
 
@@ -1289,8 +1287,7 @@ body.editing .edit-hint{display:block;}
   <section class="slide" aria-label="核心功能·全链路协同">
     <header class="head">
       <div class="head-l">
-        <div class="kicker"><b>04</b>&nbsp;核心功能 · 全链路协同</div>
-        <h2 class="head-title">一句话发起，<em>八阶段协同</em>办结一笔交易</h2>
+        <h2 class="head-title"><span class="chap-no">03</span>核心功能 · 全链路协同</h2>
       </div>
     </header>
 
@@ -1436,7 +1433,7 @@ body.editing .edit-hint{display:block;}
 
   <!-- S5 实战演示 · 需求确认。口播：业务员先说清目标。粮掌柜整理采购条件，用户核对确认后，这笔采购正式进入协作流程。 -->
   <section class="slide demo-slide demand-slide" aria-label="实战演示·需求确认">
-    <header class="head"><div class="head-l"><div class="kicker"><b>05</b>&nbsp;实战演示 · 需求确认</div><h2 class="head-title">一句话需求，变成<em>可执行的采购任务</em></h2></div></header>
+    <header class="head"><div class="head-l"><h2 class="head-title"><span class="chap-no">04</span>实战演示 · 需求确认</h2></div></header>
     <div class="demo-body">
       <ol class="demo-rail" aria-label="采购流程进度"><li class="current" aria-current="step"><span>01</span>需求确认</li><li><span>02</span>行情研判</li><li><span>03</span>交易准入</li><li><span>04</span>选粮点价</li><li><span>05</span>运输成本</li><li><span>06</span>下单交付</li><li><span>07</span>到厂核算</li><li><span>08</span>履约复盘</li></ol>
       <div class="demo-main">
@@ -1475,7 +1472,7 @@ body.editing .edit-hint{display:block;}
 
   <!-- S6 实战演示 · 行情研判。口播：瞻小二先汇总五类可追溯的市场证据，再结合本单库存、交期和预算交叉研判，给出采购动作、依据与风险边界。 -->
   <section class="slide demo-slide demo-brief-slide" aria-label="实战演示·行情研判">
-    <header class="head"><div class="head-l"><div class="kicker"><b>06</b>&nbsp;实战演示 · 行情研判</div><h2 class="head-title">五类市场证据，判断<em>这一单现在怎么买</em></h2></div></header>
+    <header class="head"><div class="head-l"><h2 class="head-title"><span class="chap-no">04</span>实战演示 · 行情研判</h2></div></header>
     <div class="demo-body">
       <ol class="demo-rail" aria-label="采购流程进度"><li class="done"><span>✓</span>需求确认</li><li class="current" aria-current="step"><span>02</span>行情研判</li><li><span>03</span>交易准入</li><li><span>04</span>选粮点价</li><li><span>05</span>运输成本</li><li><span>06</span>下单交付</li><li><span>07</span>到厂核算</li><li><span>08</span>履约复盘</li></ol>
       <div class="demo-main">
@@ -1524,7 +1521,7 @@ body.editing .edit-hint{display:block;}
 
   <!-- S7 实战演示 · 交易准入。口播：一次准入要过六项核验，安小二和钱小二并行跑；缺入驻资料时一键补办、自动重跑，不用重填前面内容。 -->
   <section class="slide demo-slide demo-brief-slide" aria-label="实战演示·交易准入">
-    <header class="head"><div class="head-l"><div class="kicker"><b>07</b>&nbsp;实战演示 · 交易准入</div><h2 class="head-title">六项准入核验，<em>并行办完，缺项一键补</em></h2></div></header>
+    <header class="head"><div class="head-l"><h2 class="head-title"><span class="chap-no">04</span>实战演示 · 交易准入</h2></div></header>
     <div class="demo-body">
       <ol class="demo-rail" aria-label="采购流程进度"><li class="done"><span>✓</span>需求确认</li><li class="done"><span>✓</span>行情研判</li><li class="current" aria-current="step"><span>03</span>交易准入</li><li><span>04</span>选粮点价</li><li><span>05</span>运输成本</li><li><span>06</span>下单交付</li><li><span>07</span>到厂核算</li><li><span>08</span>履约复盘</li></ol>
       <div class="demo-main">
@@ -1566,7 +1563,7 @@ body.editing .edit-hint{display:block;}
 
   <!-- S8 实战演示 · 选粮点价。口播：粮源匹配分两层。第一层是硬条件——等级、可供量、报价时效、交期，按规则把不能做的先筛掉，26 个候选只剩 8 个，淘汰 18 个，每个都能点开看原因。第二层交给 AI，把价格、质量、供给、履约、交付五个维度放到同一口径比，排出主推和两个备选；价格不是拍脑袋，是比近 30 天中位价低 18 元。企业知识库还会召回同品种、同区域的历史采购经验参与排序，所以推荐有据可查。 -->
   <section class="slide demo-slide funnel-slide" aria-label="实战演示·选粮点价">
-    <header class="head"><div class="head-l"><div class="kicker"><b>08</b>&nbsp;实战演示 · 选粮点价</div><h2 class="head-title">合适粮源怎么找？<em>先筛条件，再比较价值</em></h2></div></header>
+    <header class="head"><div class="head-l"><h2 class="head-title"><span class="chap-no">04</span>实战演示 · 选粮点价</h2></div></header>
     <div class="demo-body"><ol class="demo-rail" aria-label="采购流程进度"><li class="done"><span>✓</span>需求确认</li><li class="done"><span>✓</span>行情研判</li><li class="done"><span>✓</span>交易准入</li><li class="current" aria-current="step"><span>04</span>选粮点价</li><li class=""><span>05</span>运输成本</li><li class=""><span>06</span>下单交付</li><li class=""><span>07</span>到厂核算</li><li class=""><span>08</span>履约复盘</li></ol><div class="demo-main">
       <section class="demo-band" aria-label="粮源筛选与比选过程">
         <div class="band-node"><span>候选粮源</span><strong>26<small>个</small></strong><p>平台在售 · 合作库点 · 历史供应商</p></div>
@@ -1593,7 +1590,7 @@ body.editing .edit-hint{display:block;}
 
   <!-- S9 实战演示 · 运输成本。口播：本单交期不紧，铁公联运可以节省三千四百元运费，同时留出四天余量。我们确认采用这一方案。 -->
   <section class="slide demo-slide" aria-label="实战演示·运输成本">
-    <header class="head"><div class="head-l"><div class="kicker"><b>09</b>&nbsp;实战演示 · 运输成本</div><h2 class="head-title">粮源选好了，<em>怎样运到更合适？</em></h2></div></header>
+    <header class="head"><div class="head-l"><h2 class="head-title"><span class="chap-no">04</span>实战演示 · 运输成本</h2></div></header>
     <div class="demo-body"><ol class="demo-rail" aria-label="采购流程进度"><li class="done"><span>✓</span>需求确认</li><li class="done"><span>✓</span>行情研判</li><li class="done"><span>✓</span>交易准入</li><li class="done"><span>✓</span>选粮点价</li><li class="current" aria-current="step"><span>05</span>运输成本</li><li class=""><span>06</span>下单交付</li><li class=""><span>07</span>到厂核算</li><li class=""><span>08</span>履约复盘</li></ol><div class="demo-main"><div class="shot-gallery" id="gallery-5" role="region" aria-roledescription="截图画廊" aria-label="运输成本操作截图" data-current-frame="0">
         <div class="gallery-heading"><strong>系统操作实录</strong><small>← → 切图 · ↑ ↓ 翻页</small></div>
         <div class="gallery-viewport" id="gallery-5-viewport">
@@ -1614,7 +1611,7 @@ body.editing .edit-hint{display:block;}
 
   <!-- S10 实战演示 · 下单交付。口播：掌柜将粮源和运输方案汇成订单，核验通过后仍由人确认。确认后继续跟进装车、到货与签收，同一订单进入核算。 -->
   <section class="slide demo-slide" aria-label="实战演示·下单交付">
-    <header class="head"><div class="head-l"><div class="kicker"><b>10</b>&nbsp;实战演示 · 下单交付</div><h2 class="head-title">方案变成订单，<em>关键决策由人确认</em></h2></div></header>
+    <header class="head"><div class="head-l"><h2 class="head-title"><span class="chap-no">04</span>实战演示 · 下单交付</h2></div></header>
     <div class="demo-body"><ol class="demo-rail" aria-label="采购流程进度"><li class="done"><span>✓</span>需求确认</li><li class="done"><span>✓</span>行情研判</li><li class="done"><span>✓</span>交易准入</li><li class="done"><span>✓</span>选粮点价</li><li class="done"><span>✓</span>运输成本</li><li class="current" aria-current="step"><span>06</span>下单交付</li><li class=""><span>07</span>到厂核算</li><li class=""><span>08</span>履约复盘</li></ol><div class="demo-main"><div class="shot-gallery" id="gallery-6" role="region" aria-roledescription="截图画廊" aria-label="下单交付操作截图" data-current-frame="0">
         <div class="gallery-heading"><strong>系统操作实录</strong><small>← → 切图 · ↑ ↓ 翻页</small></div>
         <div class="gallery-viewport" id="gallery-6-viewport">
@@ -1635,7 +1632,7 @@ body.editing .edit-hint{display:block;}
 
   <!-- S11 实战演示 · 到厂核算。口播：订单金额不是最终入库成本。计入装卸、保险以及损耗摊增后，实际每吨两千三百九十九元一角二分，核算结果有单据可追溯。 -->
   <section class="slide demo-slide" aria-label="实战演示·到厂核算">
-    <header class="head"><div class="head-l"><div class="kicker"><b>11</b>&nbsp;实战演示 · 到厂核算</div><h2 class="head-title">实际花了多少？<em>成本与损耗算到入库吨</em></h2></div></header>
+    <header class="head"><div class="head-l"><h2 class="head-title"><span class="chap-no">04</span>实战演示 · 到厂核算</h2></div></header>
     <div class="demo-body"><ol class="demo-rail" aria-label="采购流程进度"><li class="done"><span>✓</span>需求确认</li><li class="done"><span>✓</span>行情研判</li><li class="done"><span>✓</span>交易准入</li><li class="done"><span>✓</span>选粮点价</li><li class="done"><span>✓</span>运输成本</li><li class="done"><span>✓</span>下单交付</li><li class="current" aria-current="step"><span>07</span>到厂核算</li><li class=""><span>08</span>履约复盘</li></ol><div class="demo-main"><div class="shot-gallery" id="gallery-7" role="region" aria-roledescription="截图画廊" aria-label="到厂核算操作截图" data-current-frame="0">
         <div class="gallery-heading"><strong>系统操作实录</strong><small>← → 切图 · ↑ ↓ 翻页</small></div>
         <div class="gallery-viewport" id="gallery-7-viewport">
@@ -1657,7 +1654,7 @@ body.editing .edit-hint{display:block;}
 
   <!-- S12 实战演示 · 履约复盘。口播：同一笔交易沉淀出了成本、损耗和交付周期。新建一笔同品种、同到货区域的采购后，这条经验自动出现，并能追溯到原订单。 -->
   <section class="slide demo-slide" aria-label="实战演示·履约复盘">
-    <header class="head"><div class="head-l"><div class="kicker"><b>12</b>&nbsp;实战演示 · 履约复盘</div><h2 class="head-title">这笔交易的经验，<em>下一笔采购主动用上</em></h2></div></header>
+    <header class="head"><div class="head-l"><h2 class="head-title"><span class="chap-no">04</span>实战演示 · 履约复盘</h2></div></header>
     <div class="demo-body"><ol class="demo-rail" aria-label="采购流程进度"><li class="done"><span>✓</span>需求确认</li><li class="done"><span>✓</span>行情研判</li><li class="done"><span>✓</span>交易准入</li><li class="done"><span>✓</span>选粮点价</li><li class="done"><span>✓</span>运输成本</li><li class="done"><span>✓</span>下单交付</li><li class="done"><span>✓</span>到厂核算</li><li class="current" aria-current="step"><span>08</span>履约复盘</li></ol><div class="demo-main"><div class="shot-gallery" id="gallery-8" role="region" aria-roledescription="截图画廊" aria-label="履约复盘操作截图" data-current-frame="0">
         <div class="gallery-heading"><strong>系统操作实录</strong><small>← → 切图 · ↑ ↓ 翻页</small></div>
         <div class="gallery-viewport" id="gallery-8-viewport">
@@ -1683,8 +1680,7 @@ body.editing .edit-hint{display:block;}
   <section class="slide" aria-label="技术架构·平台分层">
     <header class="head">
       <div class="head-l">
-        <div class="kicker"><b>13</b>&nbsp;技术架构 · 平台分层</div>
-        <h2 class="head-title">五层平台 + 双闭环：<em>从服务对象到数据底座</em></h2>
+        <h2 class="head-title"><span class="chap-no">05</span>技术架构 · 平台分层</h2>
       </div>
     </header>
 
@@ -1769,8 +1765,7 @@ body.editing .edit-hint{display:block;}
   <section class="slide" aria-label="技术架构·技术栈全景">
     <header class="head">
       <div class="head-l">
-        <div class="kicker"><b>14</b>&nbsp;技术架构 · 技术栈全景</div>
-        <h2 class="head-title">六层技术栈：<em>可理解、可协作、可解释、可降级</em></h2>
+        <h2 class="head-title"><span class="chap-no">05</span>技术架构 · 技术栈全景</h2>
       </div>
     </header>
 
@@ -1842,8 +1837,7 @@ body.editing .edit-hint{display:block;}
   <section class="slide" aria-label="业务价值与成果">
     <header class="head">
       <div class="head-l">
-        <div class="kicker"><b>15</b>&nbsp;业务价值与成果</div>
-        <h2 class="head-title">四个维度，看<em>智能协同带来的经营变化</em></h2>
+        <h2 class="head-title"><span class="chap-no">06</span>业务价值与成果</h2>
       </div>
     </header>
 
@@ -1876,8 +1870,7 @@ body.editing .edit-hint{display:block;}
   <section class="slide" aria-label="创新亮点与竞品对标">
     <header class="head">
       <div class="head-l">
-        <div class="kicker"><b>16</b>&nbsp;创新亮点与竞品对标</div>
-        <h2 class="head-title">不只回答问题，而是<em>把一笔生意组织起来</em></h2>
+        <h2 class="head-title"><span class="chap-no">07</span>创新亮点与竞品对标</h2>
       </div>
     </header>
 
@@ -1939,8 +1932,7 @@ body.editing .edit-hint{display:block;}
   <section class="slide" aria-label="安全设计与合规管理">
     <header class="head">
       <div class="head-l">
-        <div class="kicker"><b>17</b>&nbsp;安全设计与合规管理</div>
-        <h2 class="head-title">让数据在授权范围内流动，让智能在<em>安全边界内协同</em></h2>
+        <h2 class="head-title"><span class="chap-no">08</span>安全设计与合规管理</h2>
       </div>
     </header>
 
@@ -1960,7 +1952,7 @@ body.editing .edit-hint{display:block;}
         <div class="secu-col">
           <div class="secu-head">
             <div class="secu-ico"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-            <h3>小二协同</h3><em>按需授权</em>
+            <h3>协同授权</h3><em>随任务收回</em>
           </div>
           <div class="secu-body">
           <div class="secu-item"><b>按任务限定访问</b><span>按组织、角色与任务授权<br>限制跨客户、跨任务访问</span></div>
@@ -2006,8 +1998,7 @@ body.editing .edit-hint{display:block;}
   <section class="slide" aria-label="团队介绍">
     <header class="head">
       <div class="head-l">
-        <div class="kicker"><b>18</b>&nbsp;团队介绍</div>
-        <h2 class="head-title">业务、AI、平台与体验<em>协同共创</em></h2>
+        <h2 class="head-title"><span class="chap-no">09</span>团队介绍</h2>
       </div>
     </header>
 
@@ -2080,8 +2071,7 @@ body.editing .edit-hint{display:block;}
   <section class="slide" aria-label="总结与展望">
     <header class="head">
       <div class="head-l">
-        <div class="kicker"><b>19</b>&nbsp;总结与展望</div>
-        <h2 class="head-title">从采购助手，走向<em>产业服务平台</em></h2>
+        <h2 class="head-title"><span class="chap-no">10</span>总结与展望</h2>
       </div>
     </header>
 
@@ -2099,7 +2089,7 @@ body.editing .edit-hint{display:block;}
             </div>
           </div>
           <div class="sum-col">
-            <div class="sh"><h3>AI 创新总结</h3><em>小二协作，经验共享复用</em></div>
+            <div class="sh"><h3>AI 创新总结</h3><em>多智能体小二协作，经验共享复用</em></div>
             <div class="sum-items">
             <div class="sum-item"><b>独立办事</b><span>各小二独立提供专业服务</span></div>
             <div class="sum-item"><b>目标协作</b><span>粮掌柜统筹目标、组织协同</span></div>
@@ -2109,9 +2099,9 @@ body.editing .edit-hint{display:block;}
         </div>
         <div class="sum-arrow"><span>→</span></div>
         <div class="sum-half">
-          <div class="sum-rub"><b>正在走向</b><i>NEXT</i></div>
+          <div class="sum-rub"><b>未来走向</b><i>NEXT</i></div>
           <div class="sum-col">
-            <div class="sh"><h3>近期落地重点</h3><em>真实试点，验证业务价值</em></div>
+            <div class="sh"><h3>短期落地重点</h3><em>真实试点，验证业务价值</em></div>
             <div class="sum-items">
             <div class="sum-item"><b>数据接入</b><span>接入客商、粮源等业务数据</span></div>
             <div class="sum-item"><b>业务试点</b><span>围绕真实采购需求开展</span></div>
