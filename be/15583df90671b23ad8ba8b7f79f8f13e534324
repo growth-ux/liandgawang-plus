@@ -1,0 +1,194 @@
+web/src/features/zhanggui/ComposerSelect.tsx
+  s_7bc37cb90459d5::t_a8dc5e02f14cac 1-112
+web/src/features/zhanggui/purchaseModel.ts
+  s_7bc37cb90459d5::t_786905afd37c6f 10
+web/src/features/zhanggui/purchase.css
+  s_8118ef3ec0f98f::t_e8e8028c8f00b5 5665
+  s_8118ef3ec0f98f::t_efdb4eea587e12 3386
+  s_8118ef3ec0f98f::t_46ceeb36cd2252 3644,3656,3678,3686
+  s_8118ef3ec0f98f::t_8eaeff1b9b77e5 3657,3664
+  s_8118ef3ec0f98f::t_cb7c8da37a20f7 7213-7216
+  s_8118ef3ec0f98f::t_8b3f78ceb0775b 3732,3740,3746
+  s_8118ef3ec0f98f::t_e9f9a59d6c9f25 3447,3456
+  s_8118ef3ec0f98f::t_8959f0ef2c0a8d 3473
+  s_8118ef3ec0f98f::t_1c23bde58308a5 3546,3551,3559
+  s_8118ef3ec0f98f::t_3c1326e12fc987 3353,3361
+  s_8118ef3ec0f98f::t_9b1abb0560cecb 3273,3286,3295
+  s_8118ef3ec0f98f::t_ade9bdbea60011 3888,3894,3900
+  s_8118ef3ec0f98f::t_63ec69ed2cdc87 3436
+  s_8118ef3ec0f98f::t_abd84eda2c5170 3679,3687
+  s_8118ef3ec0f98f::t_d8edead3121efe 3488,3494,3499
+  s_8118ef3ec0f98f::t_0d1ffbe2a4cb25 3733,3741,3748
+  s_7bc37cb90459d5::t_130268a37c0861 2184
+  s_8118ef3ec0f98f::t_e7fb0cf1d85848 5828
+  s_8118ef3ec0f98f::t_69bfe056f5f083 3408,3415
+  s_8118ef3ec0f98f::t_5b8b7fbc71a75a 3630,3636
+  s_8118ef3ec0f98f::t_6234e0836a0790 3417
+  s_8118ef3ec0f98f::t_b8d77a14a7cc51 3332
+  s_7bc37cb90459d5::t_56c6ee5fd00486 2063-2071,2073-2160
+  s_8118ef3ec0f98f::t_338403e5b37c63 3708
+  s_8118ef3ec0f98f::t_8c2095496a1d71 3035
+  s_8118ef3ec0f98f::t_3ce559703ab743 3619,3629,3635
+  s_7bc37cb90459d5::t_fcf91007a2dc3d 1999
+  s_8118ef3ec0f98f::t_408438e8efa497 3524,3530,3536
+  s_8118ef3ec0f98f::t_ee33efcff6b4fb 3565
+  s_8118ef3ec0f98f::t_2f28cfc265c325 3697
+  s_8118ef3ec0f98f::t_29a6b09d442401 1150-1151
+  s_8118ef3ec0f98f::t_1a8280227cf4a5 3165
+  s_7bc37cb90459d5::t_8a67bd23b4f3a4 3264-3265
+  s_8118ef3ec0f98f::t_56a045a64d7a97 45,140,154,252,267,275,288,292,329,346,396,406,462,487,492,508,544,551,559,625,630,645,694,1013,1028,1037,1043,1076,1111,1135,1148,1175,1209,1257,1273,1282,1296,1342,1357,1397,1418,1452,1472,1493,1533,2182,2517,2527,2556,2587,2606,2630,2646,2650,2666,2678,2691,2707,2718,2731,2750,2776,2781,2808,2829,2860,3048,3061,3079,3090,3109,3117,3133,3151,3155,3160,3174,3179,3221,3226,3232,3774,3787,3796,3834,3855,3862,3912,3918,3923,3932,3958,3965,3973,3985,4000,4021,5111,5121,5217,5232,5244,5300,5318,5333,5368,5379,5389,5737,5753,5785,5796,5811,5837,5852,5883,5927,5946,5981,6019,6045,6076,6090,6095,6143,6180,6193,6198,6254,6298,6336,6341,6449,6466,6539,6544,6564,6682,6689,6705,6760,6776,6798,6823,6830,6874,6884,6913,6928,6938,6990,7023,7037,7210,7328,7374,7400
+  s_8118ef3ec0f98f::t_108741e4c26b83 3592,3597,3603
+docs/演讲稿/粮达e销-演讲稿.html
+  s_e9b9eb59bba029::t_8e43a4c231cc9a 699,705-707,721,734-759,761-764,766-769
+  s_6be07ceb6d758f::t_e358eb38504960 1442
+  s_6be07ceb6d758f::t_8bfe966d9fc27a 1471,1473,1476-1479
+  s_e9b9eb59bba029::t_d928a07684f489 1605
+  s_40d91679c2c45f::t_77e36762b95253 1359,1364-1368,1370-1393
+  s_8c2201e7e355c2::t_bc6edc7949fcae 1345
+  s_6be07ceb6d758f::t_d35923cbe61657 1426,1428,1431-1434
+  s_40d91679c2c45f::t_036ee7846adf77 1318-1321,1323-1340,1342-1343,1346-1352
+  s_e9b9eb59bba029::t_c0f2936e3ca170 1400-1402
+  h_f75b2dd43abf29 1322,1344
+  s_d4db8002fd02f1::t_61583f42cef765 716
+  s_daf1ab803c54a4::t_a06c5ae179fb90 1356
+  s_e9b9eb59bba029::t_dffa5cbf2e504f 760
+  s_40d91679c2c45f::t_283558dc9d3644 1315-1317
+  s_d4db8002fd02f1::t_edde26a98856fe 1405-1407
+  s_6be07ceb6d758f::t_2fee946123836b 540
+  s_e9b9eb59bba029::t_94592a4233aec5 765
+  s_e9b9eb59bba029::t_7d6785679e77e7 1437
+  s_d4db8002fd02f1::t_711a690d552427 708-710,712-715,717-720
+  s_daf1ab803c54a4::t_185825336d3cac 1158,1198,1248,1290
+  s_6be07ceb6d758f::t_ef9c412a040cd9 1482-1483
+  s_40d91679c2c45f::t_6cece0ec02a18d 673-674,678-695
+  s_40d91679c2c45f::t_a7478cedce881a 1360-1363,1369,1396
+  s_d4db8002fd02f1::t_e8c8c306b9dc46 711
+  s_40d91679c2c45f::t_6536e1aef32b2c 666-667
+  s_daf1ab803c54a4::t_02826098bdaef2 1080
+  s_daf1ab803c54a4::t_5f3267bfbfc9f2 660-661,665,668,671,697
+  s_d4db8002fd02f1::t_744d8fa55b6d7f 722,724-733
+  s_e9b9eb59bba029::t_a9196e1435836b 1403,1410-1411,1415-1423,1425,1480
+  s_d4db8002fd02f1::t_e9f4ebe1ff5aa4 700-704
+  s_40d91679c2c45f::t_dfba055eb015e6 669-670
+  s_40d91679c2c45f::t_236c77cfe56a1d 662-664
+  s_d4db8002fd02f1::t_4ef36ea5527055 723
+  s_d4db8002fd02f1::t_c36ccc644b9804 1409,1412-1414
+  s_6be07ceb6d758f::t_ed39fe5e5679ed 1444-1455,1458-1470
+  s_6be07ceb6d758f::t_0c361c463f3dab 1441
+  s_d4db8002fd02f1::t_20374cd5e37ce0 1404,1408
+  s_6be07ceb6d758f::t_757b8c968e0abe 538-539,541-551
+  s_6be07ceb6d758f::t_226b5ced8313c5 1456-1457
+  s_40d91679c2c45f::t_225593cd54f756 1355
+  s_d4db8002fd02f1::t_5efe554d8cc194 1424
+  s_8c2201e7e355c2::t_f5081e19583112 1341
+  s_40d91679c2c45f::t_eeacf789915c14 672,675-677,696,698
+  s_e9b9eb59bba029::t_838951ecd47dd4 821,858,927,999,1154,1194,1244,1287
+web/src/theme/theme.css
+  s_7bc37cb90459d5::t_d4f71fd784a62e 667-668
+  s_8118ef3ec0f98f::t_3a8080ecd0d9b2 654,658-662
+  s_7bc37cb90459d5::t_49c510097dfd5a 655
+  s_a7cdd7373ddd4e::t_4f3aafadc2b8e4 735-738
+  s_a7cdd7373ddd4e::t_b2a42cf55ae4d6 663-666
+  s_8118ef3ec0f98f::t_8dd83321d9054e 602
+  s_8118ef3ec0f98f::t_64c5fa6ddec275 657
+  s_a7cdd7373ddd4e::t_ed32608adb2a73 608-611
+  s_8118ef3ec0f98f::t_ac97028e125f28 596-597
+  s_8118ef3ec0f98f::t_79753bde3cb906 669,671
+  s_8118ef3ec0f98f::t_7d4c2f2c85bc29 656
+  s_8118ef3ec0f98f::t_376b89595a761a 672-673
+  s_8118ef3ec0f98f::t_fcb0080223fb95 592-594
+  s_8118ef3ec0f98f::t_e24fc5d39608e5 807-810
+  s_8118ef3ec0f98f::t_c9cb258e7b9c16 670,674-676
+web/src/features/zhanggui/PurchaseWorkbench.tsx
+  s_7bc37cb90459d5::t_7ab587389cd758 2635
+  s_7bc37cb90459d5::t_cab575a8cc1a1f 2724
+  s_7bc37cb90459d5::t_3167ddbeca40a4 2626-2628,2633-2634,2640-2644
+web/src/features/zhanggui/CostTrialPanel.tsx
+  s_7bc37cb90459d5::t_22ad15ec8eaae7 269-270,272-277,281-282,284-289
+  s_7bc37cb90459d5::t_4863f772bc2db1 2
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "be15583df90671b23ad8ba8b7f79f8f13e534324",
+  "prompts": {},
+  "humans": {
+    "h_f75b2dd43abf29": {
+      "author": "weiyu.1024 <1360055716@qq.com>"
+    }
+  },
+  "sessions": {
+    "s_40d91679c2c45f": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0b240-f7f9-78f3-b410-6ed4aeca889d",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    },
+    "s_6be07ceb6d758f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "448657b4-b61b-474a-bf59-5f5b87cfe8ad",
+        "model": "deepseek-flash"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    },
+    "s_7bc37cb90459d5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "714c5ea4-a484-40d5-a38d-107c5341abf6",
+        "model": "deepseek-flash"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    },
+    "s_8118ef3ec0f98f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f114a1d5-6198-47cf-8507-b2a47ecd1a99",
+        "model": "deepseek-flash"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    },
+    "s_8c2201e7e355c2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0bca8e23-88f9-4f28-b953-ac4c57c47175",
+        "model": "deepseek-flash"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    },
+    "s_a7cdd7373ddd4e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "27c39c86-d3a6-4e22-80ae-bd3da2862bd5",
+        "model": "deepseek-flash"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    },
+    "s_d4db8002fd02f1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ec1da713-b587-4845-9544-45f75dcb2377",
+        "model": "deepseek-flash"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    },
+    "s_daf1ab803c54a4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6dfbd390-a44b-4679-900f-d6b28cfd3130",
+        "model": "unknown"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    },
+    "s_e9b9eb59bba029": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7e24a540-32f0-46da-b2b0-865964c6cd17",
+        "model": "unknown"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    }
+  }
+}
