@@ -8,7 +8,7 @@ import {
   type ThemeGroup,
 } from "../theme/ThemeContext";
 
-const themeGroups: ThemeGroup[] = ["featured", "projection", "warm", "fresh", "atmosphere"];
+const themeGroups: ThemeGroup[] = ["featured", "shortlist", "projection", "warm", "fresh", "atmosphere"];
 
 function PaletteIcon() {
   return (
@@ -127,7 +127,7 @@ export default function ThemePicker() {
           aria-label="选择界面主题"
         >
           <div className="border-b border-line bg-rice p-2.5 pb-0">
-            <div className="grid grid-cols-5 gap-1 rounded-xl bg-rice-deep p-1" role="tablist" aria-label="主题分类">
+            <div className="grid grid-cols-6 gap-1 rounded-xl bg-rice-deep p-1" role="tablist" aria-label="主题分类">
               {themeGroups.map((group) => {
                 const count = THEME_OPTIONS.filter((option) => option.group === group).length;
                 const active = group === activeGroup;

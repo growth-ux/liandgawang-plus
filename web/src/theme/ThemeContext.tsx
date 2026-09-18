@@ -4,13 +4,20 @@ export const THEME_OPTIONS = [
   { value: "deep-space-presentation", label: "深空橙·讲解", group: "featured", mode: "dark", preview: "#ff8a1f", swatches: ["#0c1526", "#223653", "#ff8a1f", "#62e5f7"] },
   { value: "presentation-cyan", label: "科技青蓝·演示", group: "featured", mode: "light", preview: "#176b75", swatches: ["#f3f6f7", "#ffffff", "#176b75", "#1687a0"] },
   { value: "deep-space", label: "深空橙", group: "featured", mode: "dark", preview: "#ee7b1f", swatches: ["#0b1220", "#131c36", "#ee7b1f", "#22d3ee"] },
-  { value: "cloud-sky", label: "云穹蓝", group: "featured", mode: "light", preview: "#0b7185", swatches: ["#f3f6fb", "#ffffff", "#b9540a", "#0b7185"] },
   { value: "black-gold", label: "曜石黑金", group: "featured", mode: "dark", preview: "#d4af37", swatches: ["#090806", "#1b170e", "#a16207", "#f0d98b"] },
   { value: "vivid-indigo", label: "活力靛蓝", group: "featured", mode: "light", preview: "#4338ca", swatches: ["#eef2ff", "#ffffff", "#4338ca", "#4338ca"] },
   { value: "mist-violet", label: "雾紫", group: "featured", mode: "light", preview: "#6d28d9", swatches: ["#f6f3ff", "#ffffff", "#6d28d9", "#6d28d9"] },
-  { value: "orbit-silver", label: "轨道银橙", group: "projection", mode: "light", preview: "#b84d0b", swatches: ["#edf1f5", "#ffffff", "#b84d0b", "#16697a"] },
-  { value: "command-white", label: "指挥舱白蓝", group: "projection", mode: "light", preview: "#b84d0b", swatches: ["#eff3f8", "#ffffff", "#b84d0b", "#164e79"] },
-  { value: "porcelain-blue", label: "瓷白蓝橙", group: "projection", mode: "light", preview: "#c2410c", swatches: ["#f5f8fa", "#ffffff", "#c2410c", "#075985"] },
+
+  { value: "cloud-sky", label: "云穹蓝", group: "shortlist", mode: "light", preview: "#0b7185", swatches: ["#f3f6fb", "#ffffff", "#b9540a", "#0b7185"] },
+  { value: "cobalt-frost", label: "钴蓝霜白", group: "shortlist", mode: "light", preview: "#2848a8", swatches: ["#eef3ff", "#ffffff", "#2848a8", "#0b7185"] },
+  { value: "command-white", label: "指挥舱白蓝", group: "shortlist", mode: "light", preview: "#b84d0b", swatches: ["#eff3f8", "#ffffff", "#b84d0b", "#164e79"] },
+  { value: "sea-salt", label: "海盐青", group: "shortlist", mode: "light", preview: "#0e7490", swatches: ["#eef9fb", "#fcfeff", "#0e7490", "#0e7490"] },
+  { value: "glacier", label: "冰川灰", group: "shortlist", mode: "light", preview: "#334155", swatches: ["#f4f7f9", "#ffffff", "#334155", "#0369a1"] },
+  { value: "porcelain-blue", label: "瓷白蓝橙", group: "shortlist", mode: "light", preview: "#c2410c", swatches: ["#f5f8fa", "#ffffff", "#c2410c", "#075985"] },
+  { value: "orbit-silver", label: "轨道银橙", group: "shortlist", mode: "light", preview: "#b84d0b", swatches: ["#edf1f5", "#ffffff", "#b84d0b", "#16697a"] },
+  { value: "apricot-cream", label: "暖杏奶白", group: "shortlist", mode: "light", preview: "#c2410c", swatches: ["#f7e6d3", "#fffbf5", "#c2410c", "#0f6e73"] },
+  { value: "butter-cream", label: "奶油麦黄", group: "shortlist", mode: "light", preview: "#a94716", swatches: ["#f6e3be", "#fffcf0", "#a94716", "#10646b"] },
+
   { value: "steel-mist", label: "钢雾青橙", group: "projection", mode: "light", preview: "#b84d0b", swatches: ["#eef3f3", "#ffffff", "#b84d0b", "#236b6b"] },
   { value: "solar-white", label: "曜日白", group: "projection", mode: "light", preview: "#a83d08", swatches: ["#f6f6f4", "#ffffff", "#a83d08", "#1f5d73"] },
 
@@ -26,8 +33,6 @@ export const THEME_OPTIONS = [
   { value: "wine-ivory", label: "酒红象牙", group: "projection", mode: "light", preview: "#8e2942", swatches: ["#faf3f4", "#fffdfd", "#8e2942", "#315f78"] },
 
   { value: "celadon", label: "青瓷绿", group: "fresh", mode: "light", preview: "#0f766e", swatches: ["#f0f8f3", "#fbfefc", "#0f766e", "#047857"] },
-  { value: "sea-salt", label: "海盐青", group: "fresh", mode: "light", preview: "#0e7490", swatches: ["#eef9fb", "#fcfeff", "#0e7490", "#0e7490"] },
-  { value: "glacier", label: "冰川灰", group: "fresh", mode: "light", preview: "#334155", swatches: ["#f4f7f9", "#ffffff", "#334155", "#0369a1"] },
   { value: "aurora-cyan", label: "极光青", group: "fresh", mode: "dark", preview: "#2dd4bf", swatches: ["#061416", "#0d292d", "#0f8f83", "#5eead4"] },
   { value: "jade-night", label: "墨玉绿", group: "fresh", mode: "dark", preview: "#22c55e", swatches: ["#07140e", "#112b1d", "#15803d", "#5eead4"] },
   { value: "pine-fog", label: "松雾绿", group: "projection", mode: "light", preview: "#276749", swatches: ["#eff5f1", "#fbfdfb", "#276749", "#187c82"] },
@@ -41,7 +46,6 @@ export const THEME_OPTIONS = [
   { value: "crimson-night", label: "赤焰红", group: "atmosphere", mode: "dark", preview: "#e11d48", swatches: ["#170911", "#311522", "#be123c", "#f9a8d4"] },
   { value: "graphite", label: "石墨银", group: "atmosphere", mode: "dark", preview: "#94a3b8", swatches: ["#101214", "#22272d", "#475569", "#cbd5e1"] },
   { value: "executive-navy", label: "商务藏蓝", group: "atmosphere", mode: "dark", preview: "#2563eb", swatches: ["#06101e", "#102640", "#1d4ed8", "#67e8f9"] },
-  { value: "cobalt-frost", label: "钴蓝霜白", group: "projection", mode: "light", preview: "#2848a8", swatches: ["#eef3ff", "#ffffff", "#2848a8", "#0b7185"] },
   { value: "lunar-paper", label: "月岩白", group: "projection", mode: "light", preview: "#8a4f1c", swatches: ["#f4f5f6", "#ffffff", "#8a4f1c", "#475569"] },
   { value: "plum-mist", label: "梅雾白", group: "projection", mode: "light", preview: "#8a3f6a", swatches: ["#f8f2f8", "#fffdfd", "#8a3f6a", "#416782"] },
   { value: "mars-sand", label: "火星浅沙", group: "projection", mode: "light", preview: "#a74428", swatches: ["#fbf1eb", "#fffdfb", "#a74428", "#526b78"] },
@@ -50,6 +54,7 @@ export const THEME_OPTIONS = [
 
 export const THEME_GROUP_LABELS = {
   featured: "网站精选",
+  shortlist: "投屏候选",
   projection: "投屏浅色",
   warm: "橙黄暖色",
   fresh: "清爽浅色",
@@ -58,6 +63,7 @@ export const THEME_GROUP_LABELS = {
 
 export const THEME_GROUP_DESCRIPTIONS = {
   featured: "兼顾品牌辨识与演示效果，深空橙·讲解版更适合现场投屏。",
+  shortlist: "为这轮 PPT 截图挑选的亮色短名单，冷色科技向与暖色奶白向各一组，可直接逐个对比。",
   projection: "专为 PPT 截图、会议室投影和现场讲解设计的高亮度浅色主题。",
   warm: "温暖、亲和且醒目，适合业务讲解和重点信息呈现。",
   fresh: "清透低压的色彩关系，适合长时间阅读与投屏展示。",
