@@ -40,7 +40,7 @@ export function purchaseStageRoles(purchase: Purchase | null, stage: number) {
         purchase?.transportId === "pickup"
           ? ["yun", "zhan", "suan"]
           : ["yun", "suan"],
-      steward: "提货协调",
+      steward: "运输协调",
       action: "汇总运输时效、提货条件与到厂成本，向你确认安排。",
     },
     purchase?.ordered
@@ -70,7 +70,7 @@ export function purchaseStageRoles(purchase: Purchase | null, stage: number) {
 const TASKS: Record<string, string> = {
   zhan: "行情研判与提货窗口",
   liang: "粮源寻采与候选比选",
-  an: "企业资质与合同安全",
+  an: "交易准入与履约授信",
   qian: "账户与资金条件核验",
   yun: "运输方案与交付跟进",
   suan: "实际到厂成本与损耗核算",
@@ -175,7 +175,7 @@ export function purchaseCollaboration(
     const checked = purchase.qualified || purchase.qualificationChecked;
     const anProblems =
       checked && !purchase.documentName
-        ? ["经办人授权书缺失，补充材料后重新核验。"]
+        ? ["入驻资料缺失，补充材料后重新核验。"]
         : [];
     const fundProblems =
       checked && goal.quantity * goal.budget * 0.1 > ACCOUNT_TOTAL - ACCOUNT_FROZEN
@@ -184,11 +184,11 @@ export function purchaseCollaboration(
     result(
       "an",
       checking !== null
-        ? "正在核验企业资质与经办人授权。"
+        ? "正在核验入驻资料、企业资质与履约授信。"
         : purchase.qualified
-          ? "企业资质及经办人授权核验通过。"
-          : (anProblems[0] ?? "待启动企业资质核验。"),
-      { 授权材料: purchase.documentName || "尚未补充" },
+          ? "入驻资料、企业资质与履约授信核验通过。"
+          : (anProblems[0] ?? "待启动交易准入核验。"),
+      { 准入材料: purchase.documentName || "尚未补充" },
       anProblems,
       checking !== null && checking < 5,
     );

@@ -7,7 +7,7 @@ export const PURCHASE_STAGES = [
   "行情研判",
   "交易准入",
   "选粮点价",
-  "提货安排",
+  "运输成本",
   "下单交付",
   "到厂核算",
   "履约复盘",
@@ -651,7 +651,7 @@ export function purchaseSettlement(purchase: Purchase) {
 export function orderProblems(purchase: Purchase): string[] {
   const { source, unit, days } = purchaseTotals(purchase);
   const problems: string[] = [];
-  if (!purchase.qualified) problems.push("企业资质或资金账户尚未完成核验");
+  if (!purchase.qualified) problems.push("交易准入或资金账户尚未完成核验");
   if (purchase.need.quantity * purchase.need.budget * 0.1 > ACCOUNT_TOTAL - ACCOUNT_FROZEN)
     problems.push("本笔保证金预留金额超过账户可用额度，请调整采购计划");
   if (purchase.payee.trim() !== source.name)

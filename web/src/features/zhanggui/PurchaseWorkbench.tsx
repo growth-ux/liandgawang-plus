@@ -1431,7 +1431,6 @@ function Sources({
                 <th>出库价</th>
                 <th>质量</th>
                 <th>可供量</th>
-                <th>预计交货</th>
                 <th>履约率</th>
                 <th>报价更新时间</th>
                 <th><span className="sr-only">选择</span></th>
@@ -1440,7 +1439,6 @@ function Sources({
             <tbody>
               {sources.map((source, index) => {
                 const evidence = evidenceFor(source, index);
-                const leadDays = leadDaysFor(source.id, index);
                 const unavailable = purchase.need.quantity > source.stock;
                 const isSelected = source.id === selected.id;
                 const eligibleRank = sources
@@ -1469,10 +1467,6 @@ function Sources({
                     <td>
                       <strong>{formatMoney(source.stock)} 吨</strong>
                       <small>{evidence.stockCheckedAt}</small>
-                    </td>
-                    <td>
-                      <strong>{leadDays} 天</strong>
-                      <small>满足 {purchase.need.days} 天交期</small>
                     </td>
                     <td>
                       <strong>{evidence.fulfillmentRate}</strong>
@@ -2929,7 +2923,7 @@ function adviceFor(stage: number, purchase: Purchase | null): string {
     `已按${purchase.need.quantity}吨二等${purchase.need.variety}、${purchase.need.days}天内到${purchase.need.destination}组织本次采购。`,
     purchase.qualified
       ? "企业资质与交易条件均已通过，下一步可以选粮。"
-      : "把资质审核和资金核验一起办。经办人授权书缺失时，补充企业档案材料即可重新核验。",
+      : "把交易准入和资金核验一起办。入驻资料缺失时，补充企业档案材料即可重新核验。",
     "",
     purchase.transportId === "pickup"
       ? `当前选择自行提货，平台仅核算 ${totals.unit} 元/吨粮款，自提运输费用需另行确认。`

@@ -1162,6 +1162,53 @@ body,
   background: #162d3a;
 }
 
+/*
+ * 运输成本与运力/粮源匹配：分拨节点、筛选标签等原先写死近黑色，
+ * 深色主题下会在面板上“挖洞”。统一并回面板色系，只用极轻的技术色提亮分层。
+ */
+:root .pw-segment,
+:root .pw-route,
+:root .pw-source-funnel-node,
+:root .pw-source-filter-chips span,
+:root .pw-source-reason-counts > div,
+:root .pw-logistics-filter-body > div,
+:root .pw-transport-match-reason,
+:root .pw-pickup-guide {
+  background: color-mix(in srgb, var(--color-tech) 6%, var(--color-panel));
+}
+
+:root .pw-transport-metrics > div,
+:root[data-theme-mode="light"] .pw-transport-metrics > div {
+  background: color-mix(in srgb, var(--color-tech) 6%, var(--color-panel));
+}
+
+:root .pw-segment button[aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--color-tech) 42%, var(--color-line));
+  background: color-mix(in srgb, var(--color-tech) 16%, var(--color-panel));
+  color: var(--color-ink);
+}
+
+/* 底色并入浅色面板后，原先依赖深底的浅灰说明文字需要回到语义色。 */
+:root[data-theme-mode="light"] .pw-source-funnel-node > span,
+:root[data-theme-mode="light"] .pw-source-filter-chips span,
+:root[data-theme-mode="light"] .pw-source-reason-counts span,
+:root[data-theme-mode="light"] .pw-logistics-filter-body span,
+:root[data-theme-mode="light"] .pw-source-filter-details summary > span,
+:root[data-theme-mode="light"] .pw-segment span,
+:root[data-theme-mode="light"] .pw-route-endpoint span,
+:root[data-theme-mode="light"] .pw-transport-metrics span {
+  color: var(--color-ink-soft);
+}
+
+:root[data-theme-mode="light"] .pw-source-reason-counts strong,
+:root[data-theme-mode="light"] .pw-logistics-filter-body strong {
+  color: var(--color-brand);
+}
+
+:root[data-theme-mode="light"] .pw-transport-match-reason span {
+  color: var(--color-tech);
+}
+
 @media (prefers-reduced-motion: reduce) {
   body,
   .app-top-nav,
