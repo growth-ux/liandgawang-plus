@@ -585,13 +585,18 @@ export function purchaseSettlement(purchase: Purchase) {
   const lossRate = isPickup
     ? 0.0012
     : totals.transport.id === "combined"
-      ? 0.0028
+      ? 0.006
       : purchase.sourceId === "weifang"
         ? 0.0008
         : 0.0018;
   const lossAllowanceRate = totals.transport.id === "combined" ? 0.004 : 0.003;
   const receivedQuantity = Math.round(quantity * (1 - lossRate) * 100) / 100;
   const lossQuantity = Math.round((quantity - receivedQuantity) * 100) / 100;
+  // 超出合同允差的损耗由承运方赔付；允差内的损耗仍由买方承担。
+  const allowanceQuantity = Math.round(quantity * lossAllowanceRate * 100) / 100;
+  const overAllowanceQuantity = isPickup
+    ? 0
+    : Math.round(Math.max(0, lossQuantity - allowanceQuantity) * 100) / 100;
 
   // 外部任务已携带的到厂附加费用优先沿用；普通采购按已确认的运输方式结算。
   const recordedAdditionalPerTon = purchase.additionalCostPerTon ?? 0;
@@ -622,8 +627,14 @@ export function purchaseSettlement(purchase: Purchase) {
   const other = otherPerTon * quantity;
   const settledTotal = totals.goods + totals.logistics + handling + insurance + other;
   const baseUnit = settledTotal / quantity;
-  const landedUnit = isPickup ? null : settledTotal / receivedQuantity;
-  const lossImpactPerTon = landedUnit === null ? null : landedUnit - baseUnit;
+  // 超允差损耗按到厂单价向承运方赔付，从到厂总成本中扣回。
+  const carrierCompensation = Math.round(overAllowanceQuantity * baseUnit * 100) / 100;
+  const compensationPerTon = receivedQuantity > 0 ? carrierCompensation / receivedQuantity : 0;
+  // 到厂总成本是扣回赔付后的净额；结算合计仍是各费用行之和。
+  const netTotal = Math.round((settledTotal - carrierCompensation) * 100) / 100;
+  // 损耗摊增只描述损耗本身的摊薄效应（不含赔付），赔付在结算调整里单列。
+  const lossImpactPerTon = isPickup ? null : settledTotal / receivedQuantity - baseUnit;
+  const landedUnit = isPickup ? null : (settledTotal - carrierCompensation) / receivedQuantity;
 
   return {
     ...totals,
@@ -633,6 +644,11 @@ export function purchaseSettlement(purchase: Purchase) {
     lossQuantity,
     lossRate,
     lossAllowanceRate,
+    allowanceQuantity,
+    overAllowanceQuantity,
+    carrierCompensation,
+    compensationPerTon,
+    netTotal,
     handlingPerTon,
     insurancePerTon,
     otherPerTon,
@@ -644,7 +660,11 @@ export function purchaseSettlement(purchase: Purchase) {
     landedUnit,
     lossImpactPerTon,
     settlementBasis: "出库净重结算",
-    lossResponsibility: isPickup ? "采购方自行承担" : "合同允差内由买方承担",
+    lossResponsibility: isPickup
+      ? "采购方自行承担"
+      : overAllowanceQuantity > 0
+        ? `超允差 ${overAllowanceQuantity} 吨 · 向承运方追赔`
+        : "合同允差内由买方承担",
   };
 }
 

@@ -183,6 +183,28 @@ svg {
   padding:64px var(--pad-x) 0;
 }
 .head-l{display:flex;flex-direction:column;gap:14px;}
+/* 实战演示页右上角「本步上场」：8 页固定同一位置，只摆本步参办的小二形象，不带名字和外框。
+   形象复用 S2 编队 / S4 链路图素材（1024×1536，不做圆形裁切），底部对齐让多个小二站成一排，
+   翻完演示连成一条接力线。 */
+.head-crew{display:flex;align-items:flex-end;gap:40px;padding-bottom:6px;}
+.head-crew .crew-item{width:44px;height:66px;object-fit:contain;filter:drop-shadow(0 5px 8px rgba(13,60,110,.2));
+  opacity:0;translate:52px 0;transition:opacity .46s ease,translate .58s cubic-bezier(.22,.9,.28,1);
+  animation:crew-idle 3.8s ease-in-out 1.05s infinite;}
+/* 走位进场：和 .reveal 同一套写法（默认态透明，.slide.visible 复位），来回翻页会重播。
+   X 位移用 translate 走 transition（错峰），纵向颠两步用 transform 走 animation，两个属性互不抢。 */
+.slide.visible .head-crew .crew-item{opacity:1;translate:0 0;animation:crew-step .92s ease-out,crew-idle 3.8s ease-in-out 1.05s infinite;}
+.slide.visible .head-crew .crew-item:nth-child(2){transition-delay:.15s;animation-delay:.15s,1.2s;}
+.slide.visible .head-crew .crew-item:nth-child(3){transition-delay:.3s;animation-delay:.3s,1.35s;}
+@keyframes crew-step{
+  0%,100%{transform:translateY(0);}
+  25%{transform:translateY(-5px);}
+  55%{transform:translateY(0);}
+  78%{transform:translateY(-3px);}
+}
+@keyframes crew-idle{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-6px);}
+}
 .kicker{
   display:inline-flex;align-items:center;gap:12px;
   font-family:var(--font-latin);font-size:17px;font-weight:600;
@@ -503,7 +525,7 @@ svg {
    S4 核心功能·全链路协同：八阶段横向时间线
    流程节点、协作角色与业务结果纵向对齐，呼应三类业务痛点
    =========================================================== */
-.s6-body{position:relative;z-index:2;padding:30px var(--pad-x) 0;display:flex;flex-direction:column;gap:26px;height:800px;}
+.s6-body{position:relative;z-index:2;padding:0 var(--pad-x);display:flex;flex-direction:column;justify-content:space-evenly;height:880px;}
 .s6-goal{display:flex;align-items:center;gap:24px;padding:18px 22px;border-radius:14px;
   border:1px solid rgba(8,145,178,.24);background:linear-gradient(92deg,rgba(8,145,178,.09),rgba(255,255,255,.8) 58%);}
 .s6-goal .goal-main{flex:1;display:flex;align-items:center;gap:18px;min-width:0;}
@@ -514,11 +536,11 @@ svg {
 .s6-goal .goal-facts span{padding:7px 12px;border-radius:8px;font-size:14px;font-weight:700;
   color:#123B63;background:rgba(255,255,255,.78);border:1px solid var(--line);}
 
-.chain-map{position:relative;flex:1;min-height:0;display:grid;grid-template-columns:repeat(8,minmax(0,1fr));grid-template-rows:minmax(0,1fr);gap:14px;}
+.chain-map{position:relative;flex:none;height:582px;min-height:0;display:grid;grid-template-columns:repeat(8,minmax(0,1fr));grid-template-rows:minmax(0,1fr);gap:14px;}
 .chain-map::before{content:"";position:absolute;left:6.25%;right:6.25%;top:21px;height:2px;
   background:linear-gradient(90deg,var(--cyan),#4A9DDE 70%,#DAAB60);}
 .stage-card{position:relative;min-width:0;min-height:0;display:flex;flex-direction:column;}
-.stage-stop{height:170px;flex:none;display:flex;flex-direction:column;align-items:center;text-align:center;}
+.stage-stop{height:198px;flex:none;display:flex;flex-direction:column;align-items:center;text-align:center;}
 .stage-number{flex:none;position:relative;display:grid;place-items:center;width:44px;height:44px;border-radius:50%;
   color:white;background:linear-gradient(145deg,#0899B4,#176ADD);border:4px solid #F2F8FC;
   box-shadow:0 3px 9px rgba(22,104,220,.16);font-family:var(--font-latin);font-size:18px;font-weight:700;}
@@ -610,15 +632,15 @@ svg {
 .knowledge-cell{min-width:0;padding:9px 9px 10px;border:1px solid #D8E7F1;border-radius:10px;background:rgba(255,255,255,.78);}
 .knowledge-cell>b{display:block;font-size:13px;font-weight:900;letter-spacing:.05em;color:#3C6480;}
 .knowledge-cell>span{display:inline-block;margin-top:5px;padding:2px 7px;border-radius:5px;font-size:11px;font-weight:700;background:#EDF3F8;color:#7893A8;}
-.knowledge-cell>p{margin-top:6px;font-size:12px;line-height:1.4;color:#8AA1B3;}
-.knowledge-cell.is-fact>b{color:#1B7A93;}
-.knowledge-cell.is-fact>span{background:#E2F2F6;color:#1B7A93;}
-.knowledge-cell.is-pref>b{color:#6360A8;}
-.knowledge-cell.is-pref>span{background:#EDECF7;color:#6360A8;}
+.knowledge-cell>p{margin-top:6px;font-size:12px;line-height:1.4;color:#607B90;}
+.knowledge-cell.is-fact>b{color:#0783A4;}
+.knowledge-cell.is-fact>span{background:#E4F4F8;color:#0783A4;}
+.knowledge-cell.is-pref>b{color:#1668DC;}
+.knowledge-cell.is-pref>span{background:#EAF1FD;color:#1668DC;}
 .knowledge-cell.is-exp>b{color:#16836E;}
 .knowledge-cell.is-exp>span{background:#E2F3EE;color:#16836E;}
-.knowledge-cell.is-risk>b{color:#A16D22;}
-.knowledge-cell.is-risk>span{background:#FBF0DD;color:#A16D22;}
+.knowledge-cell.is-risk>b{color:#A5691A;}
+.knowledge-cell.is-risk>span{background:#FBF0DD;color:#A5691A;}
 
 /* S5：需求确认采用“左讲解、右实录”。完整系统界面作为视觉主角，不再重复裁切同一截图。 */
 .demand-slide .demo-main{grid-template-columns:500px minmax(0,1fr);gap:34px;}
@@ -639,6 +661,12 @@ svg {
 .demo-step-outcome span{display:block;font-size:12px;font-weight:900;letter-spacing:.13em;color:#718A9F;}
 .demo-step-outcome strong{display:block;margin-top:5px;font-size:21px;color:#0E7490;}
 .demo-step-outcome p{margin-top:3px;font-size:14px;line-height:1.5;color:#647F94;}
+.demo-fact{display:flex;align-items:baseline;gap:10px;margin-top:10px;padding:9px 13px;border-radius:8px;background:#FDF1F2;border-left:3px solid #D95661;}
+.demo-fact b{font-family:var(--font-latin);font-size:26px;font-weight:900;line-height:1;color:#C7414D;letter-spacing:-.01em;}
+.demo-fact span{font-size:14px;font-weight:600;color:#8C5A60;}
+.demo-value-item.value .demo-fact{background:#EDF7F4;border-left-color:#16836E;}
+.demo-value-item.value .demo-fact b{color:#0F6E5C;}
+.demo-value-item.value .demo-fact span{color:#4E7A70;}
 .demand-shot{min-width:0;min-height:0;display:flex;flex-direction:column;overflow:hidden;border:1px solid #163B59;border-radius:14px;background:#0B1427;box-shadow:0 18px 42px #123F661C;}
 .demand-shot-head{height:47px;flex:none;display:flex;align-items:center;gap:10px;padding:0 18px;border-bottom:1px solid #26405D;background:#111D34;color:#DCE7F5;}
 .demand-shot-head::before{content:"";width:7px;height:7px;border-radius:50%;background:#22D3EE;box-shadow:0 0 9px #22D3EE99;}
@@ -1056,8 +1084,6 @@ body.editing .edit-hint{display:block;}
 .demo-brief-head b{color:#385D79;font-size:14px;font-weight:900;letter-spacing:.06em;}
 .demo-brief-head h3{color:#173E61;font-size:22px;font-weight:900;line-height:1.35;}
 .demo-brief-block>p{margin:10px 0 0 111px;color:#607B90;font-size:14px;line-height:1.65;}
-.demo-brief-tags{display:flex;flex-wrap:wrap;gap:9px;margin-left:111px;}
-.demo-brief-tags span{padding:5px 11px;border:1px solid #CFE2EC;border-radius:7px;background:#F4FAFD;color:#1E506F;font-size:13px;font-weight:700;}
 .demo-brief-outcome{flex:none;margin-top:16px;padding:14px 18px;border:1px solid #BFDCE8;border-left:4px solid var(--cyan);border-radius:9px;background:rgba(255,255,255,.68);}
 .demo-brief-outcome span{display:block;font-size:12px;font-weight:900;letter-spacing:.13em;color:#718A9F;}
 .demo-brief-outcome strong{display:block;margin-top:5px;font-size:19px;color:#0E7490;}
@@ -1075,6 +1101,40 @@ body.editing .edit-hint{display:block;}
 .market-formula i{color:#88A0B2;font-family:var(--font-latin);font-size:18px;font-style:normal;}
 .market-constraint-line{display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin:14px 0 0 111px;}
 .market-constraint-line span{padding:5px 11px;border:1px solid #CFE2EC;border-radius:7px;background:#F4FAFD;color:#1E506F;font-size:13px;font-weight:700;}
+/* 左栏语义色体系：痛点/风险=红、研判依据=蓝、AI 动作=青、用户价值=绿、人工确认=金。
+   S5 已用红/青/绿，这里把各演示页左栏统一成同一套语义色，避免整列同一个灰蓝。
+   加 data-accent 的分块才吃这套色，没加的分块保持原样。
+   demo-brief 的编号/标签是 span/b，order-mini-flow 是反过来的 b/span，所以两条选择器都写。 */
+[data-accent="risk"]{--tone:#D95661;--tone-soft:#FDF1F2;--tone-line:#F0D2D5;}
+[data-accent="basis"]{--tone:#1668DC;--tone-soft:#EDF3FD;--tone-line:#CFE0F4;}
+[data-accent="ai"]{--tone:#0783A4;--tone-soft:#EDF7FA;--tone-line:#C4E3EB;}
+[data-accent="value"]{--tone:#16836E;--tone-soft:#EDF7F4;--tone-line:#C6E6DD;}
+[data-accent="human"]{--tone:#A5691A;--tone-soft:#FDF3E2;--tone-line:#EFD3A6;}
+/* 编号做成实心色块，形成左栏自上而下的颜色节奏。
+   注意 S10/S5 的选择器必须带 li/.demo-value-label 提权：.order-mini-flow .step-meta b、
+   .demo-value-label b 写在更后面或权重相同，不提权会被压掉，编号就变成灰字压在色块上。 */
+[data-accent] .head-meta span,li[data-accent] .step-meta b,[data-accent] .demo-value-label b{display:inline-flex;align-items:center;justify-content:center;width:25px;height:25px;border-radius:8px;background:var(--tone);color:#fff;font-family:var(--font-latin);font-size:12px;font-weight:700;letter-spacing:.02em;}
+[data-accent] .head-meta b,li[data-accent] .step-meta span{color:var(--tone);}
+.demo-brief-block[data-accent]{border-top-color:var(--tone-line);}
+.order-mini-flow li[data-accent]{border-bottom-color:var(--tone-line);}
+.demo-value-item[data-accent]{border-top-color:var(--tone-line);}
+
+/* S6 行情研判：五类证据、本单约束、三种决策各自跟着本块色调走 */
+.market-evidence-grid{border-top-color:#CFE0F4;border-bottom-color:#CFE0F4;}
+.market-evidence{border-left-color:#D8E5F6;}
+.market-evidence b{color:#1668DC;}
+.market-formula strong{color:#0783A4;}
+.market-constraint-line span{border-color:#C4E3EB;background:#EDF7FA;color:#0B6A82;}
+.market-action-line{display:flex;gap:9px;margin-left:111px;}
+.market-action-line span{padding:5px 15px;border:1px solid #C6E6DD;border-radius:7px;background:#EDF7F4;color:#0F6E5C;font-size:13px;font-weight:900;letter-spacing:.04em;}
+
+/* 块内带色 chips。S7 用 .accent-list 分组带标签，S9 直接用 .accent-chips。 */
+.accent-list{display:grid;gap:8px;margin-left:111px;}
+.demo-brief-block>.accent-chips{margin-left:111px;}
+.accent-list-row{display:flex;align-items:center;gap:12px;}
+.accent-list-row>b{flex:none;width:64px;font-size:13px;font-weight:900;letter-spacing:.04em;color:#315A77;}
+.accent-chips{display:flex;flex-wrap:wrap;gap:7px;}
+.accent-chips span{padding:5px 11px;border:1px solid var(--tone-line);border-radius:7px;background:var(--tone-soft);color:var(--tone);font-size:13px;font-weight:700;}
 .demo-brief-gallery .gallery-frame{padding:0;}
 .demo-brief-gallery .gallery-frame>img,.demo-brief-gallery .gallery-frame>video{object-fit:contain;}
 
@@ -1128,11 +1188,6 @@ body.editing .edit-hint{display:block;}
 .order-slide .demo-rail li{height:48px;font-size:16px;}
 .order-media-layout{display:grid;grid-template-columns:520px minmax(0,1fr);gap:38px;flex:1;min-height:0;}
 .order-brief{min-width:0;min-height:0;display:flex;flex-direction:column;padding-top:3px;}
-.order-principle-compact{display:flex;align-items:center;gap:17px;padding:0 0 16px;border-bottom:1px solid #C8DDE9;}
-.order-principle-compact .portraits{height:66px;display:flex;align-items:center;flex:none;padding-right:15px;border-right:1px solid #C7DCE8;}
-.order-principle-compact .portraits img{width:44px;height:66px;object-fit:contain;filter:drop-shadow(0 4px 7px rgba(13,60,110,.15));}
-.order-principle-compact span{display:block;font-size:12px;font-weight:900;letter-spacing:.14em;color:#718A9F;margin-bottom:5px;}
-.order-principle-compact strong{display:block;font-size:20px;line-height:1.45;color:#0E7490;}
 .order-mini-flow{list-style:none;flex:1;min-height:0;display:grid;grid-template-rows:repeat(3,1fr);}
 .order-mini-flow li{display:grid;grid-template-columns:74px minmax(0,1fr);gap:18px;align-items:center;border-bottom:1px solid #D4E3EC;}
 .order-mini-flow li:last-child{border-bottom:0;}
@@ -1142,6 +1197,7 @@ body.editing .edit-hint{display:block;}
 .order-mini-flow h3{font-size:22px;line-height:1.35;color:#173E61;margin-bottom:6px;}
 .order-mini-flow p{font-size:14px;line-height:1.62;color:#607B90;}
 .order-mini-flow em{font-style:normal;font-weight:900;color:#0E7490;}
+.order-mini-flow .accent-chips{margin:2px 0 7px;}
 .order-brief .demo-brief-outcome{margin-top:10px;}
 .order-media-layout>.shot-gallery{min-height:0;}
 
@@ -1159,10 +1215,9 @@ body.editing .edit-hint{display:block;}
 /* 左：四项结算与算式；右：系统实录。录屏按 1372×714（1.92:1）出片，
    右侧视口 1176×611 与其比例对齐，视频可铺满不留黑边。 */
 .inv-layout{display:grid;grid-template-columns:530px minmax(0,1fr);gap:38px;flex:1;min-height:0;}
-.inv-layout>.inv-summary{min-height:0;justify-content:center;gap:18px;}
+.inv-layout>.inv-summary{min-height:0;justify-content:center;gap:8px;}
 .inv-layout>.shot-gallery{min-height:0;}
 .inv-layout .inv-head{flex-wrap:wrap;gap:5px 11px;}
-.inv-layout .inv-head>span{flex-basis:100%;margin-left:0;font-size:13px;}
 .inv-layout .inv-cells{grid-template-columns:minmax(0,1fr);gap:9px;}
 .inv-layout .inv-eq{flex-direction:column;align-items:stretch;gap:5px;}
 .inv-layout .inv-eq>i{align-self:center;}
@@ -1298,11 +1353,11 @@ body.editing .edit-hint{display:block;}
 
           <div class="frow reveal">
             <div class="pain card">
-              <p>供需信息不对称，合适粮源难匹配，优质粮源价值难识别</p>
+              <p>供需信息不对称，客户需求靠人工摸排，合适粮源和潜在客户难以及时匹配</p>
             </div>
             <div class="hub"><span class="pill">供需连接</span></div>
             <div class="fix card">
-              <p>按客户画像、用途、品质和交期等条件<b>精准匹配</b>粮源</p>
+              <p>融合价格、粮源与客户画像，识别购销商机并<b>精准匹配</b>供需</p>
             </div>
           </div>
 
@@ -1312,7 +1367,7 @@ body.editing .edit-hint{display:block;}
             </div>
             <div class="hub"><span class="pill">决策统筹</span></div>
             <div class="fix card">
-              <p>多小二<b>同口径比选</b>，输出可解释的采购方案</p>
+              <p>多智能体<b>同口径比选</b>，输出可解释的采购方案</p>
             </div>
           </div>
 
@@ -1528,38 +1583,27 @@ body.editing .edit-hint{display:block;}
         </article>
 
       </div>
-
-      <div class="s6-loop reveal">
-        <div class="loop-item">
-          <span class="loop-lab">协同主线</span>
-          <b><em>粮掌柜全程统筹</em> · 自动组队 · 并行办理 · 人工确认</b>
-        </div>
-        <div class="loop-item memory">
-          <span class="loop-lab">进化主线</span>
-          <b>履约结果 → <em>企业知识大脑</em> → 下一笔任务主动引用</b>
-        </div>
-      </div>
     </div>
 </section>
 
 
   <!-- S5 实战演示 · 需求确认。口播（中 · 约 40 秒）：业务员先说清目标。粮掌柜整理采购条件，用户核对确认后，这笔采购正式进入协作流程。 -->
   <section class="slide demo-slide demand-slide" aria-label="实战演示·需求确认">
-    <header class="head"><div class="head-l"><h2 class="head-title"><span class="chap-no">04</span>实战演示 · 需求确认</h2></div></header>
+    <header class="head"><div class="head-l"><h2 class="head-title"><span class="chap-no">04</span>实战演示 · 需求确认</h2></div><div class="head-crew"><img class="crew-item" src="assets/da.png" alt="粮掌柜"></div></header>
     <div class="demo-body">
       <ol class="demo-rail" aria-label="采购流程进度"><li class="current" aria-current="step"><span>01</span>需求确认</li><li><span>02</span>行情研判</li><li><span>03</span>交易准入</li><li><span>04</span>选粮点价</li><li><span>05</span>成本测算</li><li><span>06</span>下单交付</li><li><span>07</span>到厂核算</li><li><span>08</span>履约复盘</li></ol>
       <div class="demo-main">
         <aside class="demand-copy">
           <div class="demo-value-stack">
-            <article class="demo-value-item problem">
+            <article class="demo-value-item problem" data-accent="risk">
               <div class="demo-value-label"><b>01</b><span>使用痛点</span></div>
-              <div><h3>懂业务，不等于会填系统</h3><p>字段多、术语多，复杂表单常需要他人代操作。</p></div>
+              <div><h3>懂业务，不等于会填系统</h3><p>字段多、术语多，复杂表单需他人代操作。</p><div class="demo-fact"><b>68.8%</b><span>客户群体在 50 岁以上</span></div></div>
             </article>
-            <article class="demo-value-item action">
-              <div class="demo-value-label"><b>02</b><span>AI 如何解决</span></div>
-              <div><h3>日常语言，自动整理</h3><p>AI 识别 6 项关键条件，用户只需核对确认。</p></div>
+            <article class="demo-value-item action" data-accent="ai">
+              <div class="demo-value-label"><b>02</b><span>如何解决</span></div>
+              <div><h3>日常语言，自动整理</h3><p>AI 自动识别关键条件，用户只需核对确认。</p></div>
             </article>
-            <article class="demo-value-item value">
+            <article class="demo-value-item value" data-accent="value">
               <div class="demo-value-label"><b>03</b><span>用户价值</span></div>
               <div><h3>不学复杂操作，也能独立采购</h3><p>降低使用门槛，减少代操作和反复沟通。</p></div>
             </article>
@@ -1584,12 +1628,12 @@ body.editing .edit-hint{display:block;}
 
   <!-- S6 实战演示 · 行情研判。口播（详讲 · 约 60 秒）：瞻小二先汇总五类可追溯的市场证据，再结合本单库存、交期和预算交叉研判，给出采购动作、依据与风险边界。 -->
   <section class="slide demo-slide demo-brief-slide" aria-label="实战演示·行情研判">
-    <header class="head"><div class="head-l"><h2 class="head-title"><span class="chap-no">04</span>实战演示 · 行情研判</h2></div></header>
+    <header class="head"><div class="head-l"><h2 class="head-title"><span class="chap-no">04</span>实战演示 · 行情研判</h2></div><div class="head-crew"><img class="crew-item" src="assets/zhan.png" alt="瞻小二"></div></header>
     <div class="demo-body">
       <ol class="demo-rail" aria-label="采购流程进度"><li class="done"><span>✓</span>需求确认</li><li class="current" aria-current="step"><span>02</span>行情研判</li><li><span>03</span>交易准入</li><li><span>04</span>选粮点价</li><li><span>05</span>成本测算</li><li><span>06</span>下单交付</li><li><span>07</span>到厂核算</li><li><span>08</span>履约复盘</li></ol>
       <div class="demo-main">
         <aside class="demo-brief">
-          <section class="demo-brief-block">
+          <section class="demo-brief-block" data-accent="basis">
             <header class="demo-brief-head"><div class="head-meta"><span>01</span><b>研判依据</b></div><h3>五类证据，先还原市场</h3></header>
             <div class="market-evidence-grid">
               <div class="market-evidence"><b>现货行情</b><span>真实价格</span></div>
@@ -1599,15 +1643,16 @@ body.editing .edit-hint{display:block;}
               <div class="market-evidence"><b>关键事件</b><span>政策与天气</span></div>
             </div>
           </section>
-          <section class="demo-brief-block">
-            <header class="demo-brief-head"><div class="head-meta"><span>02</span><b>AI 怎么研判</b></div><h3>再放回这笔采购判断</h3></header>
+          <section class="demo-brief-block" data-accent="ai">
+            <header class="demo-brief-head"><div class="head-meta"><span>02</span><b>怎么研判</b></div><h3>再放回这笔采购判断</h3></header>
             <div class="market-formula"><span>市场证据</span><i>×</i><span>本单约束</span><i>→</i><strong>采购动作</strong></div>
             <div class="market-constraint-line"><span>库存 15 天</span><span>交期 10 天</span><span>预算 ≤ 2,680 元/吨</span></div>
             <p>交叉核对支持信号、反向风险与失效条件，不只给结论。</p>
           </section>
-          <section class="demo-brief-block">
+          <section class="demo-brief-block" data-accent="value">
             <header class="demo-brief-head"><div class="head-meta"><span>03</span><b>业务价值</b></div><h3>输出可解释的采购动作</h3></header>
-            <p>明确采购、调整或观望，并说明为什么这样做、什么情况下需要改变判断。</p>
+            <div class="market-action-line"><span>采购</span><span>调整</span><span>观望</span></div>
+            <p>明确动作，并说明为什么这样做、什么情况下需要改变判断。</p>
           </section>
           <div class="demo-brief-outcome">
             <span>本步产出</span>
@@ -1633,28 +1678,30 @@ body.editing .edit-hint{display:block;}
 
   <!-- S7 实战演示 · 交易准入。口播（中 · 约 45 秒）：一次准入要过六项核验，安小二和钱小二并行跑；缺入驻资料时一键补办、自动重跑，不用重填前面内容。 -->
   <section class="slide demo-slide demo-brief-slide" aria-label="实战演示·交易准入">
-    <header class="head"><div class="head-l"><h2 class="head-title"><span class="chap-no">04</span>实战演示 · 交易准入</h2></div></header>
+    <header class="head"><div class="head-l"><h2 class="head-title"><span class="chap-no">04</span>实战演示 · 交易准入</h2></div><div class="head-crew"><img class="crew-item" src="assets/an.png" alt="安小二"><img class="crew-item" src="assets/qian.png" alt="钱小二"></div></header>
     <div class="demo-body">
       <ol class="demo-rail" aria-label="采购流程进度"><li class="done"><span>✓</span>需求确认</li><li class="done"><span>✓</span>行情研判</li><li class="current" aria-current="step"><span>03</span>交易准入</li><li><span>04</span>选粮点价</li><li><span>05</span>成本测算</li><li><span>06</span>下单交付</li><li><span>07</span>到厂核算</li><li><span>08</span>履约复盘</li></ol>
       <div class="demo-main">
         <aside class="demo-brief">
-          <section class="demo-brief-block">
-            <header class="demo-brief-head"><div class="head-meta"><span>01</span><b>使用痛点</b></div><h3>一次准入，要跑好几个地方</h3></header>
-            <p>入驻、资质、信用、账户、保证金分属不同系统，材料重复提交；缺一项就整单退回，材料还得自己一样样找。</p>
+          <section class="demo-brief-block" data-accent="risk">
+            <header class="demo-brief-head"><div class="head-meta"><span>01</span><b>使用痛点</b></div><h3>门槛高、流程多，中小客户尤其吃力</h3></header>
+            <p>资质、授信、资金要分头办，材料重复交，缺一样就整单退回；中小客户没有专人盯着，往往迟迟办不下来。</p>
           </section>
-          <section class="demo-brief-block">
-            <header class="demo-brief-head"><div class="head-meta"><span>02</span><b>AI 如何解决</b></div><h3>六项并行核验，缺项一键补办</h3></header>
-            <div class="demo-brief-tags"><span>并行核验</span><span>档案自动带出</span><span>缺项一键补办</span></div>
-            <p>安小二三项：注册入驻、企业资质、履约授信；钱小二三项：风险预警、资金账户、保证金；缺项点名补办，自动重跑核验。</p>
+          <section class="demo-brief-block" data-accent="ai">
+            <header class="demo-brief-head"><div class="head-meta"><span>02</span><b>如何解决</b></div><h3>六项并行核验，缺项一键补办</h3></header>
+            <div class="accent-list">
+              <div class="accent-list-row"><b>安小二</b><div class="accent-chips"><span>注册入驻</span><span>企业资质</span><span>履约授信</span></div></div>
+              <div class="accent-list-row"><b>钱小二</b><div class="accent-chips"><span>风险预警</span><span>资金账户</span><span>保证金</span></div></div>
+            </div>
           </section>
-          <section class="demo-brief-block">
-            <header class="demo-brief-head"><div class="head-meta"><span>03</span><b>用户价值</b></div><h3>从“来回找材料”到“一键续办”</h3></header>
-            <p>保证金按可用额度自动试算（667,500 元 → 本单预留 53,600 元），核验完成即生成带编号与时间戳的准入报告，每项结论可追溯。</p>
+          <section class="demo-brief-block" data-accent="value">
+            <header class="demo-brief-head"><div class="head-meta"><span>03</span><b>用户价值</b></div><h3>从来回补材料，到一次办结</h3></header>
+            <p>核验完成即生成带编号与时间戳的准入报告，六项结论逐条可追溯；不用再找业务员问进度。</p>
           </section>
           <div class="demo-brief-outcome">
             <span>本步产出</span>
             <strong>准入通过 6 / 6，进入选粮点价</strong>
-            <p>一键补办后自动重跑核验；核验方：安小二（交易准入）· 钱小二（交易条件），报告 VRF-B4D5。</p>
+            <p>核验方 安小二（交易准入）· 钱小二（交易条件）并行完成，报告编号 VRF-B4D5。</p>
           </div>
         </aside>
         <div class="shot-gallery video-gallery contain-fit" id="gallery-3" role="region" aria-roledescription="视频画廊" aria-label="交易准入操作实录" data-current-frame="0">
@@ -1675,7 +1722,7 @@ body.editing .edit-hint{display:block;}
 
   <!-- S8 实战演示 · 选粮点价。口播（详讲 · 约 60 秒）：粮源匹配分两层。第一层是硬条件——等级、可供量、报价时效、交期，按规则把不能做的先筛掉，26 个候选只剩 8 个，淘汰 18 个，每个都能点开看原因。第二层交给 AI，把价格、质量、供给、履约、交付五个维度放到同一口径比，排出主推和两个备选；价格不是拍脑袋，是比近 30 天中位价低 18 元。企业知识库还会召回同品种、同区域的历史采购经验参与排序，所以推荐有据可查。 -->
   <section class="slide demo-slide funnel-slide" aria-label="实战演示·选粮点价">
-    <header class="head"><div class="head-l"><h2 class="head-title"><span class="chap-no">04</span>实战演示 · 选粮点价</h2></div></header>
+    <header class="head"><div class="head-l"><h2 class="head-title"><span class="chap-no">04</span>实战演示 · 选粮点价</h2></div><div class="head-crew"><img class="crew-item" src="assets/liang.png" alt="粮小二"><img class="crew-item" src="assets/zhan.png" alt="瞻小二"></div></header>
     <div class="demo-body"><ol class="demo-rail" aria-label="采购流程进度"><li class="done"><span>✓</span>需求确认</li><li class="done"><span>✓</span>行情研判</li><li class="done"><span>✓</span>交易准入</li><li class="current" aria-current="step"><span>04</span>选粮点价</li><li class=""><span>05</span>成本测算</li><li class=""><span>06</span>下单交付</li><li class=""><span>07</span>到厂核算</li><li class=""><span>08</span>履约复盘</li></ol><div class="demo-main">
       <section class="demo-band" aria-label="粮源筛选与比选过程">
         <div class="band-node"><span>候选粮源</span><strong>26<small>个</small></strong><p>平台在售 · 合作库点 · 历史供应商</p></div>
@@ -1702,22 +1749,24 @@ body.editing .edit-hint{display:block;}
 
   <!-- S9 实战演示 · 成本测算。口播：第 8 页已选出候选粮源，但粮源与运输分开报价，各方案包含的费用还不一样。算小二将「粮源 × 运输」组合后逐一补齐费用，统一核算到厂成本，再结合预算、交期和风险进行比选。最终确认「青岛港粮库 × 铁公联运」组合：到厂 2,389 元/吨，整单节省 1,800 元；6 天到货，仍留 4 天交期余量。 -->
   <section class="slide demo-slide demo-brief-slide cost-slide" aria-label="实战演示·成本测算">
-    <header class="head"><div class="head-l"><h2 class="head-title"><span class="chap-no">04</span>实战演示 · 成本测算</h2></div></header>
+    <header class="head"><div class="head-l"><h2 class="head-title"><span class="chap-no">04</span>实战演示 · 成本测算</h2></div><div class="head-crew"><img class="crew-item" src="assets/suan.png" alt="算小二"><img class="crew-item" src="assets/yun.png" alt="运小二"></div></header>
     <div class="demo-body"><ol class="demo-rail" aria-label="采购流程进度"><li class="done"><span>✓</span>需求确认</li><li class="done"><span>✓</span>行情研判</li><li class="done"><span>✓</span>交易准入</li><li class="done"><span>✓</span>选粮点价</li><li class="current" aria-current="step"><span>05</span>成本测算</li><li><span>06</span>下单交付</li><li><span>07</span>到厂核算</li><li><span>08</span>履约复盘</li></ol>
       <div class="cost-story-layout">
         <aside class="demo-brief">
-          <section class="demo-brief-block">
+          <section class="demo-brief-block" data-accent="risk">
             <header class="demo-brief-head"><div class="head-meta"><span>01</span><b>使用痛点</b></div><h3>方案这么多，哪个真正到场更划算？</h3></header>
-            <p>各方案包含的费用不同；单独看粮价或运价，既算不准真实到厂成本，也难以判断哪个组合更划算。</p>
+            <div class="accent-chips"><span>口径不一</span><span>只看单价</span><span>组合难比</span></div>
+            <p>算不准真实到厂成本，方案就容易选错。</p>
           </section>
-          <section class="demo-brief-block">
-            <header class="demo-brief-head"><div class="head-meta"><span>02</span><b>AI 如何解决</b></div><h3>每个组合算全，再放到同一口径比</h3></header>
-            <div class="demo-brief-tags"><span>费用补齐</span><span>到厂核算</span><span>组合比选</span></div>
-            <p>算小二将候选粮源与运输方案逐一组合，统一归集各项费用；再结合预算、交期和风险进行比较，说明推荐理由。</p>
+          <section class="demo-brief-block" data-accent="ai">
+            <header class="demo-brief-head"><div class="head-meta"><span>02</span><b>如何解决</b></div><h3>多个组合，同一口径横向比</h3></header>
+            <div class="accent-chips"><span>费用补齐</span><span>到厂核算</span><span>横向比选</span></div>
+            <p>算小二还会纳入预算、交期和风险一起权衡。</p>
           </section>
-          <section class="demo-brief-block">
-            <header class="demo-brief-head"><div class="head-meta"><span>03</span><b>用户价值</b></div><h3>不用手工做表，直接获得可下单组合</h3></header>
-            <p>用户直接知道每个组合要花多少、差异来自哪里、最终应该选哪个，以及为什么这样选。</p>
+          <section class="demo-brief-block" data-accent="value">
+            <header class="demo-brief-head"><div class="head-meta"><span>03</span><b>用户价值</b></div><h3>算清真实到厂成本，选出最省的方案</h3></header>
+            <div class="accent-chips"><span>账目透明</span><span>差异清楚</span><span>推荐有据</span></div>
+            <p>每个组合花多少、差在哪，都在同一张表上。</p>
           </section>
           <div class="demo-brief-outcome">
             <span>本步产出</span>
@@ -1746,19 +1795,15 @@ body.editing .edit-hint{display:block;}
 
   <!-- S10 实战演示 · 下单交付。口播（快过 · 约 15 秒）：方案确定后，前五步的结论自动带入订单，系统再做一次一致性核验。AI 负责准备和校验，下单这个不可逆动作由人确认。确认后，直接看到厂后如何核算真实入库成本。 -->
   <section class="slide demo-slide order-slide" aria-label="实战演示·下单交付">
-    <header class="head"><div class="head-l"><h2 class="head-title"><span class="chap-no">04</span>实战演示 · 下单交付</h2></div></header>
+    <header class="head"><div class="head-l"><h2 class="head-title"><span class="chap-no">04</span>实战演示 · 下单交付</h2></div><div class="head-crew"><img class="crew-item" src="assets/da.png" alt="粮掌柜"></div></header>
     <div class="demo-body">
       <ol class="demo-rail" aria-label="采购流程进度"><li class="done"><span>✓</span>需求确认</li><li class="done"><span>✓</span>行情研判</li><li class="done"><span>✓</span>交易准入</li><li class="done"><span>✓</span>选粮点价</li><li class="done"><span>✓</span>成本测算</li><li class="current" aria-current="step"><span>06</span>下单交付</li><li><span>07</span>到厂核算</li><li><span>08</span>履约复盘</li></ol>
       <div class="order-media-layout">
         <aside class="order-brief">
-          <div class="order-principle-compact">
-            <div class="portraits"><img src="assets/da.png" alt=""><img src="assets/an.png" alt=""></div>
-            <div><span>人机协作边界</span><strong>AI 负责准备与校验，人完成最终确认</strong></div>
-          </div>
           <ol class="order-mini-flow">
-            <li><div class="step-meta"><b>01</b><span>AI 准备</span></div><div><h3>自动带入采购组合</h3><p>粮源、运输、价格、质量和交期继承前置结论，不靠人工转录。</p></div></li>
-            <li><div class="step-meta"><b>02</b><span>AI 校验</span></div><div><h3>下单前再核一遍</h3><p>主体、资质、资金、预算和交期 <em>5 / 5 通过</em>，任一项不成立都可退回调整。</p></div></li>
-            <li><div class="step-meta"><b>03</b><span>人确认</span></div><div><h3>人确认后正式下单</h3><p>AI 不替人执行不可逆操作，核验通过后由用户做最终确认。</p></div></li>
+            <li data-accent="ai"><div class="step-meta"><b>01</b><span>汇总成单</span></div><div><h3>自动带入采购组合</h3><div class="accent-chips"><span>粮源</span><span>运输</span><span>价格</span><span>质量</span><span>交期</span></div><p>前五步结论直接继承，不靠人工转录。</p></div></li>
+            <li data-accent="ai"><div class="step-meta"><b>02</b><span>交叉核验</span></div><div><h3>下单前五项核验</h3><div class="accent-chips"><span>主体</span><span>资质</span><span>资金</span><span>预算</span><span>交期</span></div><p><em>5 / 5 通过</em>，任一项不成立都可退回调整。</p></div></li>
+            <li data-accent="human"><div class="step-meta"><b>03</b><span>确认放行</span></div><div><h3>人确认后正式下单</h3><div class="accent-chips"><span>最后判断</span><span>即时生效</span></div><p>订单已经就绪，人机协同。</p></div></li>
           </ol>
           <div class="demo-brief-outcome">
             <span>本步产出</span>
@@ -1785,9 +1830,9 @@ body.editing .edit-hint{display:block;}
     <div class="foot"><div class="brand"><i></i>LIANGDA E-XIAO</div><div class="cn">实战演示 · 下单交付</div></div>
   </section>
 
-  <!-- S11 实战演示 · 到厂核算。口播（中 · 约 50 秒）：订单金额不是最终入库成本。到货这天有四个变量会改账——质量扣价、承运赔付、异常费用、损耗摊增。算小二把出库磅单、入库磅单、运输结算单、入库质检单四张单拉齐，按合同允差逐项核：质量达标不扣、损耗 0.28% 没超 0.40% 允差不赔、也没有压车滞箱记录，这三项都是零。真正改账的是损耗摊增——少了 0.56 吨，可钱一分没少付，摊到 199.44 吨合格入库量上，每吨多 6.72 元。结算合计 2,392.4 元/出库吨，加上损耗摊增，最终实际合格入库吨成本 2,399.12 元，比 2,680 元的到厂预算低 280.88 元，整单结余五万六千多。 -->
+  <!-- S11 实战演示 · 到厂核算。口播（中 · 约 50 秒）：订单金额不是最终入库成本。到货这天有四个变量会改账——质量扣价、承运赔付、异常费用、损耗摊增。算小二把出库磅单、入库磅单、运输结算单、入库质检单四张单拉齐，按合同允差逐项核：质量达标不扣、也没有压车滞箱记录，这两项是零。真正改账的有两项——出库 200 吨、入库 198.80 吨，损耗 0.60% 超了合同 0.40% 的允差，超出的 0.40 吨向承运方追赔 956.96 元；剩下的损耗摊到 198.80 吨合格入库量上，每吨多 14.44 元。结算合计 2,392.4 元/出库吨，减掉赔付、加上损耗摊增，最终实际合格入库吨成本 2,402.03 元，比 2,680 元的到厂预算低 277.97 元，整单结余五万五千多。 -->
   <section class="slide demo-slide inv-slide" aria-label="实战演示·到厂核算">
-    <header class="head"><div class="head-l"><h2 class="head-title"><span class="chap-no">04</span>实战演示 · 到厂核算</h2></div></header>
+    <header class="head"><div class="head-l"><h2 class="head-title"><span class="chap-no">04</span>实战演示 · 到厂核算</h2></div><div class="head-crew"><img class="crew-item" src="assets/suan.png" alt="算小二"></div></header>
     <div class="demo-body"><ol class="demo-rail" aria-label="采购流程进度"><li class="done"><span>✓</span>需求确认</li><li class="done"><span>✓</span>行情研判</li><li class="done"><span>✓</span>交易准入</li><li class="done"><span>✓</span>选粮点价</li><li class="done"><span>✓</span>成本测算</li><li class="done"><span>✓</span>下单交付</li><li class="current" aria-current="step"><span>07</span>到厂核算</li><li class=""><span>08</span>履约复盘</li></ol>
       <div class="inv-layout">
         <!-- 录屏就绪后：画廊加 video-gallery contain-fit，每帧 <img> 换成
@@ -1795,21 +1840,23 @@ body.editing .edit-hint{display:block;}
              右侧视口 1174×609（1.928:1）与 1372×714 录屏对齐，可满铺。 -->
         <section class="inv-summary" aria-label="到货后的四项结算调整与最终到厂成本">
         <div class="inv-note pain"><b>使用痛点</b>下单谈的是到厂价；到货后才算出真实成本，还得对着合同逐项核</div>
-        <div class="inv-head"><i>算</i>算小二 · 到货那天，四个变量会改账<span>四张单逐项核 —— 该扣的扣、该赔的赔、该摊的摊</span></div>
+        <div class="inv-head"><i>算</i>算小二 · 该扣的扣、该赔的赔、该摊的摊</div>
         <div class="inv-cells">
           <div class="inv-cell"><span class="inv-cell-txt"><b>质量扣价<em>已核</em></b><span>入库质量达标 · 对入库质检单</span></span><strong>¥ 0.00</strong></div>
-          <div class="inv-cell"><span class="inv-cell-txt"><b>承运赔付<em>已核</em></b><span>损耗未超 0.40% 允差 · 对两张磅单</span></span><strong>¥ 0.00</strong></div>
+          <div class="inv-cell is-hit"><span class="inv-cell-txt"><b>承运赔付<em>已核</em></b><span>超允差 0.40 吨 · 对两张磅单</span></span><strong>− ¥ 956.96</strong></div>
           <div class="inv-cell"><span class="inv-cell-txt"><b>异常费用<em>已核</em></b><span>无压车、滞箱 · 对运输结算单</span></span><strong>¥ 0.00</strong></div>
-          <div class="inv-cell is-hit"><span class="inv-cell-txt"><b>损耗摊增</b><span>0.56 吨 · 不新增付款</span></span><strong>+ ¥ 6.72<small>元/吨</small></strong></div>
+          <div class="inv-cell is-hit"><span class="inv-cell-txt"><b>损耗摊增</b><span>1.20 吨 · 不新增付款</span></span><strong>+ ¥ 14.44<small>元/吨</small></strong></div>
         </div>
         <div class="inv-eq">
           <span class="inv-eq-part"><span>结算合计 <b>2,392.4</b> 元/出库吨</span><small>粮款 2,320 · 运输 59 · 装卸与中转 11.6 · 运输保险 1.8</small></span>
+          <i aria-hidden="true">−</i>
+          <span class="inv-eq-part"><span>承运赔付 <b>4.81</b> 元/吨</span><small>超允差 0.40 吨 · 向承运方追赔 ¥ 956.96</small></span>
           <i aria-hidden="true">+</i>
-          <span class="inv-eq-part"><span>损耗摊增 <b>6.72</b> 元/吨</span><small>0.56 吨 · 不新增付款</small></span>
+          <span class="inv-eq-part"><span>损耗摊增 <b>14.44</b> 元/吨</span><small>1.20 吨 · 不新增付款</small></span>
           <i aria-hidden="true">=</i>
-          <span class="inv-eq-part is-cost"><span>实际合格入库吨成本 <b>2,399.12</b> 元/吨</span><small>较到厂预算 2,680 低 280.88 元/吨 · 四单已关联可追溯</small></span>
+          <span class="inv-eq-part is-cost"><span>实际合格入库吨成本 <b>2,402.03</b> 元/吨</span><small>较到厂预算 2,680 低 277.97 元/吨 · 四单已关联可追溯</small></span>
         </div>
-        <div class="inv-note value"><b>用户价值</b>到货当天出可直接入账的吨成本，每项调整都能点回单据</div>
+        <div class="inv-note value"><b>用户价值</b>该赔的一分不少追回来，到货当天出可直接入账的吨成本</div>
       </section>
       <div class="shot-gallery video-gallery contain-fit" id="gallery-7" role="region" aria-roledescription="视频画廊" aria-label="到厂核算操作视频" data-current-frame="0">
         <div class="gallery-viewport" id="gallery-7-viewport">
@@ -1828,32 +1875,34 @@ body.editing .edit-hint{display:block;}
 
   <!-- S12 实战演示 · 履约复盘。口播（详讲 · 约 60 秒）：这一单办完了，但结果没有留在这一单里。供应、运输和交易结果被拆成四类企业知识——事实可以直接引用，偏好延续企业习惯，经验是这一次的做法和结果，风险标注边界；本次履约正常，系统也不会硬造一条风险规则。所以新建一笔同品种、同到货区域的采购时，上一单的实际成本基线会主动出现，并标明来源订单。企业的采购经验，第一次不再随人走。 -->
   <section class="slide demo-slide demo-brief-slide" aria-label="实战演示·履约复盘">
-    <header class="head"><div class="head-l"><h2 class="head-title"><span class="chap-no">04</span>实战演示 · 履约复盘</h2></div></header>
+    <header class="head"><div class="head-l"><h2 class="head-title"><span class="chap-no">04</span>实战演示 · 履约复盘</h2></div><div class="head-crew"><img class="crew-item" src="assets/da.png" alt="粮掌柜"></div></header>
     <div class="demo-body"><ol class="demo-rail" aria-label="采购流程进度"><li class="done"><span>✓</span>需求确认</li><li class="done"><span>✓</span>行情研判</li><li class="done"><span>✓</span>交易准入</li><li class="done"><span>✓</span>选粮点价</li><li class="done"><span>✓</span>成本测算</li><li class="done"><span>✓</span>下单交付</li><li class="done"><span>✓</span>到厂核算</li><li class="current" aria-current="step"><span>08</span>履约复盘</li></ol>
       <div class="demo-main">
         <aside class="demo-brief">
-          <section class="demo-brief-block">
+          <section class="demo-brief-block" data-accent="risk">
             <header class="demo-brief-head"><div class="head-meta"><span>01</span><b>使用痛点</b></div><h3>办完一单，经验留在这一单里</h3></header>
-            <p>下一笔同品种、同到货区域的采购，价格重新摸、通道重新试、成本基线重新算。老采购的判断留在人脑里，人一调动，经验就清零。</p>
+            <div class="accent-chips"><span>标准说不清</span><span>红线记不住</span><span>决策查不到</span><span>教训留不下</span></div>
+            <p>人一调动，这些经验就全清零。</p>
           </section>
-          <section class="demo-brief-block">
-            <header class="demo-brief-head"><div class="head-meta"><span>02</span><b>AI 如何解决</b></div><h3>一笔交易，拆成四类企业知识</h3></header>
+          <section class="demo-brief-block" data-accent="ai">
+            <header class="demo-brief-head"><div class="head-meta"><span>02</span><b>如何解决</b></div><h3>一笔交易，拆成四类企业知识</h3></header>
             <div class="knowledge-grid">
               <div class="knowledge-cell is-fact"><b>企业事实</b><span>已引用</span><p>可直接引用</p></div>
               <div class="knowledge-cell is-pref"><b>经营偏好</b><span>已验证</span><p>延续企业习惯</p></div>
               <div class="knowledge-cell is-exp"><b>决策经验</b><span>新增 1 条</span><p>可参考的做法</p></div>
-              <div class="knowledge-cell is-risk"><b>风险规则</b><span>无新增</span><p>本次不生成</p></div>
+              <div class="knowledge-cell is-risk"><b>风险规则</b><span>新增 1 条</span><p>相似线路预警</p></div>
             </div>
-            <p>AI 从履约结果里抽出可复用条目，判断哪些能直接引用、哪些只能参考、哪些是红线；每条都注明来源订单，可追溯。</p>
+            <p>每条都注明来源订单，可追溯到具体哪一单。</p>
           </section>
-          <section class="demo-brief-block">
+          <section class="demo-brief-block" data-accent="value">
             <header class="demo-brief-head"><div class="head-meta"><span>03</span><b>用户价值</b></div><h3>办得越多，越懂这家企业</h3></header>
-            <p>同品种、同到货区域的新采购一建，上一单的实际成本、损耗和交期主动摆出来，并标明来源。不用从零调研，也不用凭印象判断。</p>
+            <div class="accent-chips"><span>不买错</span><span>不越线</span><span>不重犯</span></div>
+            <p>每一单都按这家企业的标准和红线过一遍，不靠个人记性。</p>
           </section>
           <div class="demo-brief-outcome">
             <span>本步产出</span>
-            <strong>这一单的经验，下一单直接站在上面</strong>
-            <p>下一笔采购直接拿到基线 2,399.12 元/吨（损耗 0.28% · 6 天到货）；历史经验用于参考，当前采购仍需重新核验与确认。</p>
+            <strong>超允差损耗追回 ¥956.96，并生成 1 条风险规则</strong>
+            <p>决策经验「青岛港粮库 × 铁公联运」同时入库，下一单自动召回。</p>
           </div>
         </aside>
         <div class="shot-gallery video-gallery contain-fit" id="gallery-8" role="region" aria-roledescription="视频画廊" aria-label="履约复盘操作视频" data-current-frame="0">
@@ -2079,7 +2128,7 @@ body.editing .edit-hint{display:block;}
           <div class="rl">服务起点</div>          <div>人找人沟通需求</div>
           <div>按条件找信息</div>
           <div>按问题给回答</div>
-          <div class="win">理解目标与约束</div>
+          <div class="win">一句话说清目标</div>
           <div class="rl">资源组织</div>          <div>靠渠道与人员</div>
           <div>展示供需连接</div>
           <div>依赖接入工具</div>
@@ -2443,7 +2492,7 @@ class SlidePresentation{
 class InlineEditor{
   constructor(deck){
     this.deck=deck;this.isActive=false;
-    this.key='ldex-deck-v14-merged';
+    this.key='ldex-deck-v42-merged';
     this.toggle=document.getElementById('editToggle');
     this.restore();
     this.bindUI();

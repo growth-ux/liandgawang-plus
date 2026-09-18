@@ -2703,7 +2703,7 @@ function Review({
           <div className="pw-settlement-kpis">
             <article>
               <span>{settlement.isComplete ? "到厂总成本" : "平台结算金额"}</span>
-              <strong>¥ {formatMoney(settlement.settledTotal)}</strong>
+              <strong>¥ {formatMoney(settlement.netTotal)}</strong>
               <small>{settlement.isComplete ? "已完成交易对账" : "不含采购方自提费用"}</small>
             </article>
             <article>
@@ -2759,7 +2759,11 @@ function Review({
             <h4>结算调整</h4>
             <dl>
               <div><dt>质量扣价</dt><dd>¥ 0.00</dd><small>入库质量达标</small></div>
-              <div><dt>承运赔付</dt><dd>¥ 0.00</dd><small>损耗未超合同允差</small></div>
+              <div {...(settlement.carrierCompensation > 0 ? { "data-accent": "true" } : {})}>
+                <dt>承运赔付</dt>
+                <dd>{settlement.carrierCompensation > 0 ? `− ¥ ${formatMoney(settlement.carrierCompensation)}` : "¥ 0.00"}</dd>
+                <small>{settlement.carrierCompensation > 0 ? `超允差 ${formatWeight(settlement.overAllowanceQuantity)} 吨 · 向承运方追赔` : "损耗未超合同允差"}</small>
+              </div>
               <div><dt>异常费用</dt><dd>¥ 0.00</dd><small>无压车、滞箱记录</small></div>
               <div data-accent="true">
                 <dt>损耗摊增</dt>
@@ -2785,12 +2789,16 @@ function Review({
           <div><span>运输损耗</span><strong>{formatWeight(settlement.lossQuantity)} 吨</strong><small>{(settlement.lossRate * 100).toFixed(2)}%</small></div>
           <div><span>合同允差</span><strong>≤ {(settlement.lossAllowanceRate * 100).toFixed(2)}%</strong><small>{settlement.lossResponsibility}</small></div>
         </div>
-        <div className="pw-settlement-loss-result">
+        <div className="pw-settlement-loss-result" data-over={settlement.overAllowanceQuantity > 0}>
           <b>{(settlement.lossRate * 100).toFixed(2)}%</b>
-          <span>≤</span>
+          <span>{settlement.overAllowanceQuantity > 0 ? ">" : "≤"}</span>
           <b>{(settlement.lossAllowanceRate * 100).toFixed(2)}%</b>
-          <strong>允差内</strong>
-          <small>损耗已计入实际合格入库吨成本</small>
+          <strong>{settlement.overAllowanceQuantity > 0 ? "超允差" : "允差内"}</strong>
+          <small>
+            {settlement.overAllowanceQuantity > 0
+              ? `超允差 ${formatWeight(settlement.overAllowanceQuantity)} 吨 · 向承运方追赔 ¥ ${formatMoney(settlement.carrierCompensation)}`
+              : "损耗已计入实际合格入库吨成本"}
+          </small>
         </div>
       </section>
 
@@ -2836,7 +2844,7 @@ function Review({
           </article>
           <article>
             <div><span>交易结果</span><b data-state={hasRiskFinding ? "warning" : "success"}>{hasRiskFinding ? "异常已记录" : "无争议"}</b></div>
-            <strong>质量扣价 ¥ 0 · 承运赔付 ¥ 0</strong>
+            <strong>质量扣价 ¥ 0 · 承运赔付 ¥ {formatMoney(settlement.carrierCompensation)}</strong>
             <small>{hasRiskFinding ? "异常结论已进入知识变更" : "无毁约、无异常费用记录"}</small>
           </article>
         </div>
