@@ -705,14 +705,14 @@ svg {
 .lay-tag{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
   border-radius:12px;color:#fff;text-align:center;padding:8px 8px;box-shadow:0 8px 18px rgba(13,60,110,.13);}
 .lay-tag b{font-size:19px;font-weight:900;letter-spacing:.02em;line-height:1.25;}
-.lay-tag i{font-style:normal;font-size:14px;letter-spacing:.03em;opacity:.96;line-height:1.35;}
+.lay-tag i{font-style:normal;font-size:15px;letter-spacing:.03em;opacity:1;line-height:1.35;}
 .lay-cols{display:grid;gap:10px;}
 .lay-box{padding:12px 16px;border-radius:7px;display:flex;flex-direction:column;justify-content:center;gap:7px;min-width:0;
   align-items:center;text-align:center;
   background:rgb(var(--bg-t,240,246,252));
   border:1px solid rgb(var(--bd-t,200,216,236));}
 .lay-box b{font-size:19.5px;font-weight:900;color:#0B2540;letter-spacing:.01em;line-height:1.25;}
-.lay-box span{font-size:14.5px;color:#546E88;letter-spacing:.01em;line-height:1.45;}
+.lay-box span{font-size:17px;color:#3E5B77;letter-spacing:.01em;line-height:1.45;}
 /* 分层配色 —— 取自 PPT 原稿的实际像素值
    S13 对应 PPT 第6页；S14 对应 PPT 第7页 */
 .arch-s6 .tint1{--bg-t:242,246,252;--bd-t:217,227,241;}
@@ -722,13 +722,13 @@ svg {
 .arch-s6 .tint5{--bg-t:255,255,255;--bd-t:222,228,236;}
 .arch-s6 .tint6{--bg-t:255,255,255;--bd-t:214,225,240;}
 .arch-s6 .tint7{--bg-t:252,255,253;--bd-t:211,230,220;}
-.arch-s6 .t-l1{background:#4A7CB4;}
-.arch-s6 .t-l2{background:#C5843A;}
-.arch-s6 .t-l3{background:#8877C6;}
-.arch-s6 .t-l4{background:#529C76;}
-.arch-s6 .t-l5{background:#667D99;}
-.arch-s6 .t-l6{background:#4A7CB4;}
-.arch-s6 .t-l7{background:#529C76;}
+.arch-s6 .t-l1{background:#3B679B;}
+.arch-s6 .t-l2{background:#9A661F;}
+.arch-s6 .t-l3{background:#6C5CAE;}
+.arch-s6 .t-l4{background:#3D7A58;}
+.arch-s6 .t-l5{background:#53687F;}
+.arch-s6 .t-l6{background:#3B679B;}
+.arch-s6 .t-l7{background:#3D7A58;}
 
 .arch-s7 .tint1{--bg-t:242,246,252;--bd-t:217,227,241;}
 .arch-s7 .tint2{--bg-t:254,249,242;--bd-t:240,226,206;}
@@ -736,12 +736,56 @@ svg {
 .arch-s7 .tint4{--bg-t:243,249,245;--bd-t:215,232,223;}
 .arch-s7 .tint5{--bg-t:255,255,255;--bd-t:222,228,236;}
 .arch-s7 .tint6{--bg-t:255,255,255;--bd-t:214,222,232;}
-.arch-s7 .t-l1{background:#4A7CB4;}
-.arch-s7 .t-l2{background:#C5843A;}
-.arch-s7 .t-l3{background:#8877C6;}
-.arch-s7 .t-l4{background:#529C76;}
-.arch-s7 .t-l5{background:#667D99;}
-.arch-s7 .t-l6{background:#4A7CB4;}
+.arch-s7 .t-l1{background:#3B679B;}
+.arch-s7 .t-l2{background:#9A661F;}
+.arch-s7 .t-l3{background:#6C5CAE;}
+.arch-s7 .t-l4{background:#3D7A58;}
+.arch-s7 .t-l5{background:#53687F;}
+.arch-s7 .t-l6{background:#3B679B;}
+
+/* S13 / S14 投屏可读性优化：内容与结构不变，收敛颜色并拉开文字层级 */
+.arch-s6,.arch-s7{gap:10px;}
+.arch-s6 .lay-row,.arch-s7 .lay-row{grid-template-columns:220px 1fr;gap:14px;}
+.arch-s6 .lay-tag,.arch-s7 .lay-tag{
+  border:1px solid rgba(255,255,255,.2);
+  box-shadow:0 7px 16px rgba(13,60,110,.12);
+}
+.arch-s6 .lay-tag b,.arch-s7 .lay-tag b{font-size:20px;line-height:1.22;}
+.arch-s6 .lay-tag i,.arch-s7 .lay-tag i{font-size:14.5px;opacity:.86;}
+.arch-s7 .t-l3 b{font-size:18.5px;letter-spacing:0;}
+.arch-s6 .lay-box,.arch-s7 .lay-box{
+  background:rgba(var(--bg-t,240,246,252),.92);
+  border:1.25px solid rgb(var(--bd-t,200,216,236));
+  box-shadow:0 2px 6px rgba(31,70,108,.035);
+}
+.arch-s6 .lay-box b,.arch-s7 .lay-box b{
+  font-size:20.5px;line-height:1.22;color:#102E4D;letter-spacing:.005em;
+}
+.arch-s6 .lay-box span,.arch-s7 .lay-box span{
+  font-size:16.5px;line-height:1.42;color:#365675;font-weight:500;
+}
+
+/* 颜色仅承担三种语义：平台蓝 / AI 中枢金 / 数据与闭环绿 */
+.arch-s6 .tint1,.arch-s6 .tint3,.arch-s6 .tint5,
+.arch-s7 .tint1,.arch-s7 .tint3,.arch-s7 .tint5{--bg-t:246,249,253;--bd-t:199,216,233;}
+.arch-s6 .tint2,.arch-s7 .tint2{--bg-t:255,249,240;--bd-t:231,199,151;}
+.arch-s6 .tint4,.arch-s6 .tint7,
+.arch-s7 .tint4{--bg-t:245,250,247;--bd-t:194,222,207;}
+.arch-s6 .tint6,.arch-s7 .tint6{--bg-t:244,249,253;--bd-t:193,214,232;}
+.arch-s6 .t-l1,.arch-s6 .t-l3,.arch-s6 .t-l5,.arch-s6 .t-l6,
+.arch-s7 .t-l1,.arch-s7 .t-l3,.arch-s7 .t-l5,.arch-s7 .t-l6{
+  background:linear-gradient(145deg,#416E9F,#315B88);
+}
+.arch-s6 .t-l2,.arch-s7 .t-l2{
+  background:linear-gradient(145deg,#B47A25,#946018);
+}
+.arch-s6 .t-l4,.arch-s6 .t-l7,.arch-s7 .t-l4{
+  background:linear-gradient(145deg,#438260,#326B4D);
+}
+.arch-s6 .lay-step{font-size:17px;color:#315F8F;border-color:#B7CCE0;background:rgba(255,255,255,.9);}
+.arch-s6 .lay-step.dash{color:#3F815E;border-color:#B7D7C5;}
+.arch-s6 .lay-ar{color:#7C9FBD;}
+.arch-s6 .lay-note{color:#294A68;font-weight:500;}
 
 /* 底部流程条 */
 .lay-flow{display:flex;align-items:center;gap:6px;}
@@ -759,7 +803,8 @@ svg {
 .arch1-hubrow{display:grid;grid-template-columns:322px 30px 1fr;gap:11px;align-items:stretch;}
 .arch1-hub{padding:11px 16px;border-radius:8px;display:flex;flex-direction:row;align-items:center;gap:12px;
   justify-content:center;text-align:left;
-  background:linear-gradient(145deg,#DA9A52,#C98337);box-shadow:0 8px 18px rgba(201,131,55,.22);}
+  background:linear-gradient(145deg,#D99A4A,#B97525);border:1px solid rgba(139,83,16,.22);
+  box-shadow:0 8px 18px rgba(185,117,37,.2);}
 .arch1-hub img{flex:none;width:36px;height:54px;object-fit:contain;object-position:top center;}
 .arch1-hub .six-txt{display:flex;flex-direction:column;gap:3px;}
 .arch1-hub b{font-size:20px;font-weight:900;color:#fff;letter-spacing:.02em;}
@@ -769,9 +814,9 @@ svg {
 .arch1-six .lay-box{flex-direction:row;align-items:center;justify-content:center;gap:10px;padding:7px 14px;}
 .arch1-six .lay-box img{flex:none;width:34px;height:50px;object-fit:contain;object-position:top center;
   filter:drop-shadow(0 4px 8px rgba(13,60,110,.18));}
-.arch1-six .six-txt{display:flex;flex-direction:column;gap:2px;min-width:0;}
-.arch1-six .lay-box b{font-size:18px;color:#8A5A12;}
-.arch1-six .lay-box span{font-size:14px;color:#8A6A2E;}
+.arch1-six .six-txt{display:flex;flex-direction:column;gap:2px;min-width:0;text-align:left;}
+.arch1-six .lay-box b{font-size:18.5px;color:#754A0E;}
+.arch1-six .lay-box span{font-size:15.5px;color:#65481E;}
 
 
 /* ===========================================================
@@ -782,19 +827,19 @@ svg {
   width:27px;height:27px;border-radius:8px;font-size:14.5px;font-weight:900;
   background:linear-gradient(140deg,#F0B45C,#D98A1F);color:#fff;}
 .arc2-step{flex-direction:row;align-items:center;justify-content:center;gap:11px;padding:10px 14px;}
-.arc2-step .six-txt{display:flex;flex-direction:column;gap:3px;min-width:0;}
+.arc2-step .six-txt{display:flex;flex-direction:column;gap:3px;min-width:0;text-align:left;}
 .arc2-bar{flex-direction:row;align-items:center;justify-content:center;gap:14px;}
 .arc2-bar .bar-tag{flex:none;width:132px;text-align:center;padding:8px 0;border-radius:999px;
   font-size:16px;font-weight:900;letter-spacing:.03em;white-space:nowrap;}
-.arc2-bar .bar-txt{display:flex;flex-direction:column;gap:3px;min-width:0;}
-.bar-a{border-color:rgba(22,104,220,.34);background:linear-gradient(120deg,rgba(22,104,220,.09),rgba(255,255,255,.9));}
-.bar-a .bar-tag{background:rgba(22,104,220,.12);color:#1257B8;border:1px solid rgba(22,104,220,.3);}
-.bar-b{border-color:rgba(217,138,31,.38);background:linear-gradient(120deg,rgba(217,138,31,.10),rgba(255,255,255,.9));}
-.bar-b .bar-tag{background:rgba(217,138,31,.14);color:#8A5A12;border:1px solid rgba(217,138,31,.36);}
+.arc2-bar .bar-txt{display:flex;flex-direction:column;gap:3px;min-width:0;text-align:left;}
+.bar-a{border-color:rgba(22,104,220,.38)!important;background:linear-gradient(120deg,rgba(22,104,220,.11),rgba(255,255,255,.94))!important;}
+.bar-a .bar-tag{background:rgba(22,104,220,.14);color:#1257B8;border:1px solid rgba(22,104,220,.34);}
+.bar-b{border-color:rgba(197,119,24,.42)!important;background:linear-gradient(120deg,rgba(217,138,31,.13),rgba(255,255,255,.94))!important;}
+.bar-b .bar-tag{background:rgba(217,138,31,.17);color:#7B4C0E;border:1px solid rgba(197,119,24,.4);}
 .arc2-store{flex-direction:column;align-items:center;justify-content:center;gap:7px;text-align:center;}
 .arc2-store .db{display:flex;align-items:center;gap:9px;font-size:20px;font-weight:900;color:#0E5F70;
   font-family:var(--font-latin);letter-spacing:.02em;}
-.arc2-store .st{font-size:15px;color:#546E88;line-height:1.5;}
+.arc2-store .st{font-size:15.5px;color:#3F5F7C;line-height:1.45;font-weight:500;}
 .arc2-store .db::before{content:"";width:17px;height:17px;border-radius:50% 50% 42% 42%;
   background:linear-gradient(180deg,#7EE0F5,#0891B2);box-shadow:inset 0 -3px 0 rgba(0,0,0,.12);}
 .arc2-store .six-txt{display:flex;flex-direction:column;gap:2px;min-width:0;}
@@ -877,7 +922,7 @@ svg {
    =========================================================== */
 .secu{position:relative;z-index:2;padding:14px 88px 0;display:flex;flex-direction:column;gap:16px;
   height:calc(1080px - 178px - 38px);}
-.secu-grid{flex:0 0 600px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px;min-height:0;}
+.secu-grid{flex:0 0 600px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;min-height:0;}
 .secu-col{display:flex;flex-direction:column;border-radius:16px;overflow:hidden;background:var(--panel);
   border:1px solid var(--line);box-shadow:0 14px 32px rgba(13,60,110,.08);}
 .secu-head{padding:24px 22px 20px;display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden;
@@ -892,8 +937,8 @@ svg {
 .secu-body{flex:1;display:flex;flex-direction:column;padding:2px 22px;justify-content:space-between;min-height:0;}
 .secu-item{display:flex;flex-direction:column;justify-content:center;gap:9px;padding:12px 0;flex:1 1 0;min-height:0;}
 .secu-item+.secu-item{border-top:1px dashed rgba(22,104,220,.24);}
-.secu-item b{font-size:19px;font-weight:900;color:#123B63;}
-.secu-item span{font-size:15.5px;line-height:1.6;color:#52708C;}
+.secu-item b{font-size:21px;font-weight:900;color:#123B63;}
+.secu-item span{font-size:17px;line-height:1.6;color:#4A6480;}
 .secu-audit{flex:1;display:flex;flex-direction:column;gap:14px;padding:18px 24px;border-radius:14px;min-height:0;
   position:relative;overflow:hidden;
   background:linear-gradient(92deg,rgba(22,104,220,.09),rgba(8,145,178,.05));
@@ -902,7 +947,7 @@ svg {
   background:linear-gradient(180deg,var(--blue),var(--cyan));}
 .secu-audit .ah{flex:none;display:flex;align-items:baseline;gap:18px;padding-left:6px;}
 .secu-audit .ah b{font-size:21px;font-weight:900;color:#1257B8;letter-spacing:.06em;}
-.secu-audit .ah span{font-size:16px;color:#33506E;}
+.secu-audit .ah span{font-size:17px;color:#33506E;}
 .secu-audit .ag{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;min-height:0;}
 .secu-audit .ai{display:flex;flex-direction:column;justify-content:center;gap:9px;padding:18px 22px;border-radius:11px;
   position:relative;overflow:hidden;
@@ -910,8 +955,8 @@ svg {
   box-shadow:0 6px 16px rgba(13,60,110,.05);}
 .secu-audit .ai::before{content:"";position:absolute;left:22px;top:0;width:28px;height:3px;border-radius:0 0 3px 3px;
   background:linear-gradient(90deg,var(--cyan),var(--blue));}
-.secu-audit .ai b{font-size:18px;font-weight:900;color:#0E5F70;letter-spacing:.04em;}
-.secu-audit .ai span{font-size:15px;line-height:1.65;color:#52708C;}
+.secu-audit .ai b{font-size:19.5px;font-weight:900;color:#0E5F70;letter-spacing:.04em;}
+.secu-audit .ai span{font-size:16.5px;line-height:1.65;color:#4A6480;}
 .secu-cap b{flex:none;font-size:21px;font-weight:900;color:#1257B8;letter-spacing:.06em;
   padding-right:20px;border-right:1px solid rgba(22,104,220,.3);}
 .secu-cap span{font-size:16.5px;color:#33506E;}
@@ -986,43 +1031,71 @@ svg {
    =========================================================== */
 .sum{position:relative;z-index:2;padding:14px 88px 0;display:flex;flex-direction:column;gap:14px;
   height:calc(1080px - 178px - 38px);}
-.sum-band{flex:none;display:flex;align-items:center;gap:20px;padding:15px 26px;border-radius:12px;
+.sum-band{flex:none;display:flex;align-items:center;gap:20px;padding:18px 28px;border-radius:12px;
   background:linear-gradient(92deg,rgba(22,104,220,.12),rgba(8,145,178,.07));
   border:1px solid rgba(22,104,220,.26);box-shadow:0 8px 20px rgba(22,104,220,.07);}
-.sum-band b{flex:none;font-size:18px;font-weight:900;color:#1257B8;letter-spacing:.08em;
-  padding-right:20px;border-right:1px solid rgba(22,104,220,.3);}
-.sum-band span{font-size:18px;color:#33506E;letter-spacing:.02em;}
+.sum-band b{flex:none;font-size:19px;font-weight:900;color:#1257B8;letter-spacing:.08em;
+  padding-right:22px;border-right:1px solid rgba(22,104,220,.3);}
+.sum-band span{font-size:19px;color:#33506E;letter-spacing:.02em;}
 .sum-band span em{font-style:normal;font-weight:900;color:#0E7490;}
 /* 左右两段：已经做到 → 正在走向，与标题“从…走向…”呼应 */
-.sum-main{flex:1;display:grid;grid-template-columns:1fr 68px 1fr;min-height:0;}
-.sum-half{display:flex;flex-direction:column;gap:10px;min-height:0;}
+.sum-main{flex:1;display:grid;grid-template-columns:1fr 68px 1fr;align-content:center;min-height:0;}
+.sum-half{display:flex;flex-direction:column;gap:20px;min-height:0;}
 .sum-rub{flex:none;display:flex;align-items:baseline;gap:12px;position:relative;padding-left:13px;}
 .sum-rub::before{content:"";position:absolute;left:0;top:50%;margin-top:-9px;width:4px;height:18px;border-radius:2px;
   background:linear-gradient(180deg,var(--cyan),var(--blue));}
-.sum-rub b{font-size:17px;font-weight:900;color:#0B2540;letter-spacing:.10em;}
-.sum-rub i{font-style:normal;font-family:var(--font-latin);font-size:11.5px;font-weight:600;
+.sum-rub b{font-size:18px;font-weight:900;color:#0B2540;letter-spacing:.10em;}
+.sum-rub i{font-style:normal;font-family:var(--font-latin);font-size:12px;font-weight:600;
   letter-spacing:.26em;color:#9AB4C9;}
 .sum-arrow{display:flex;align-items:center;justify-content:center;}
-.sum-arrow span{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-  font-family:var(--font-latin);font-size:22px;font-weight:700;color:#fff;
+.sum-arrow span{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-latin);font-size:23px;font-weight:700;color:#fff;
   background:linear-gradient(140deg,#22B8D4,#1668DC);box-shadow:0 10px 22px rgba(22,104,220,.3);}
-.sum-col{flex:1;display:flex;flex-direction:column;gap:13px;padding:19px 21px;border-radius:16px;min-height:0;
+.sum-col{flex:1;display:flex;flex-direction:column;gap:16px;padding:26px 26px;border-radius:16px;min-height:0;
   background:var(--panel);border:1px solid var(--line);box-shadow:0 12px 30px rgba(13,60,110,.07);}
-.sum-col .sh{flex:none;display:flex;flex-direction:column;gap:6px;padding-bottom:12px;
+.sum-col .sh{flex:none;display:flex;flex-direction:column;gap:7px;padding-bottom:16px;
   border-bottom:1px solid var(--line);position:relative;}
-.sum-col h3{font-size:21px;font-weight:900;color:#0B2540;letter-spacing:.04em;}
-.sum-col em{font-style:normal;font-size:15px;font-weight:900;color:#0E7490;letter-spacing:.04em;}
+.sum-col h3{font-size:24px;font-weight:900;color:#0B2540;letter-spacing:.04em;}
+.sum-col em{font-style:normal;font-size:16.5px;font-weight:900;color:#0E7490;letter-spacing:.04em;}
 .sum-items{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-content:center;min-height:0;}
-.sum-item{display:flex;flex-direction:column;gap:9px;padding:15px 14px;border-radius:12px;
+.sum-item{display:flex;flex-direction:column;justify-content:center;gap:12px;padding:22px 16px;border-radius:12px;
   background:rgba(11,37,64,.035);border:1px solid rgba(22,104,220,.13);}
-.sum-item b{display:flex;align-items:center;gap:9px;font-size:17.5px;font-weight:900;color:#123B63;letter-spacing:.03em;}
-.sum-item b::before{content:"";flex:none;width:8px;height:8px;transform:rotate(45deg);
+.sum-item b{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:900;color:#123B63;letter-spacing:.03em;}
+.sum-item b::before{content:"";flex:none;width:9px;height:9px;transform:rotate(45deg);
   background:var(--cyan);box-shadow:0 0 8px rgba(8,145,178,.5);}
-.sum-item span{font-size:15.5px;font-weight:500;line-height:1.6;color:#36537A;}
-.sum-line{flex:none;display:flex;align-items:center;justify-content:center;gap:16px;padding:16px;
-  font-size:19.5px;font-weight:900;color:#1257B8;letter-spacing:.08em;border-radius:12px;
+.sum-item span{font-size:16.5px;font-weight:500;line-height:1.6;color:#36537A;}
+.sum-line{flex:none;display:flex;align-items:center;justify-content:center;gap:16px;padding:18px;
+  font-size:21px;font-weight:900;color:#1257B8;letter-spacing:.08em;border-radius:12px;
   background:linear-gradient(92deg,rgba(22,104,220,.10),rgba(8,145,178,.06));
   border:1px solid rgba(22,104,220,.22);box-shadow:0 8px 20px rgba(22,104,220,.06);}
+
+/* ===========================================================
+   S20 致谢
+   =========================================================== */
+.closing{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:0 var(--pad-x);text-align:center;}
+.closing-ring{position:absolute;left:50%;top:50%;width:780px;height:780px;margin:-390px 0 0 -390px;
+  border:1px solid rgba(22,104,220,.13);border-radius:50%;pointer-events:none;z-index:0;}
+.closing-ring::after{content:"";position:absolute;inset:104px;border-radius:50%;border:1px solid rgba(217,138,31,.18);}
+.closing-wheat{position:absolute;left:104px;bottom:44px;width:250px;height:375px;
+  color:#1668DC;opacity:.09;pointer-events:none;z-index:1;}
+.closing-inner{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;}
+.closing-kicker{font-family:var(--font-latin);font-size:17px;font-weight:600;letter-spacing:.42em;
+  text-transform:uppercase;color:var(--cyan);}
+.closing-thx{margin:24px 0 0;font-size:176px;font-weight:900;line-height:1.06;
+  letter-spacing:.16em;margin-left:.16em;
+  background:linear-gradient(180deg,#0C2B4E 16%,#145DA0 60%,#0E86A8 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:0 0 70px rgba(22,104,220,.16);}
+.closing-brand{margin-top:30px;font-size:46px;font-weight:900;letter-spacing:.12em;color:#0B2540;}
+.closing-brand span{font-family:var(--font-latin);font-weight:700;
+  background:linear-gradient(180deg,#12A5C6,#0E7490);
+  -webkit-background-clip:text;background-clip:text;color:transparent;}
+.closing-rule{margin-top:34px;width:154px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.closing-meta{margin-top:32px;display:flex;align-items:center;gap:22px;
+  font-size:19px;letter-spacing:.2em;color:var(--sub);}
+.closing-meta i{width:5px;height:5px;transform:rotate(45deg);background:var(--cyan);opacity:.7;}
 
 /* ===========================================================
    舞台外控件：进度点 + 页码（不属于幻灯片设计系统）
@@ -1958,7 +2031,7 @@ body.editing .edit-hint{display:block;}
       <div class="lay-row w3 tint3">
         <div class="lay-tag t-l3"><b>第三层</b><i>产业智能平台</i></div>
                 <div class="lay-cols" style="grid-template-columns:repeat(6,1fr)">
-          <div class="lay-box"><b>多智能体协同</b><span>LangChain · LangGraph</span></div>
+          <div class="lay-box"><b>多智能体协同</b><span>LangGraph · LangChain</span></div>
           <div class="lay-box"><b>粮源检索与比选</b><span>需求解析 · 条件筛选</span></div>
           <div class="lay-box"><b>行情分析与成本测算</b><span>行情 · 到厂成本 · 盈亏</span></div>
           <div class="lay-box"><b>知识与共享记忆</b><span>检索 · 引用 · Mem0</span></div>
@@ -1974,13 +2047,13 @@ body.editing .edit-hint{display:block;}
           <div class="lay-box"><b>供需数据</b><span>需求 · 粮源 · 库存</span></div>
           <div class="lay-box"><b>行情数据</b><span>价格 · 产区 · 政策</span></div>
           <div class="lay-box"><b>交易数据</b><span>报价 · 合同 · 订单</span></div>
-          <div class="lay-box"><b>履约与结算数据</b><span>仓储 · 物流 · 验收 · 结算</span></div>
+          <div class="lay-box"><b>履约与结算数据</b><span>仓储 · 物流 · 验收</span></div>
           <div class="lay-box"><b>知识与记忆</b><span>知识 · 案例 · 决策经验</span></div>
         </div>
 
       </div>
       <div class="lay-row w1 tint5">
-        <div class="lay-tag t-l5"><b>第五层</b><i>连接外部系统对接</i></div>
+        <div class="lay-tag t-l5"><b>第五层</b><i>外部系统连接</i></div>
                 <div class="lay-cols" style="grid-template-columns:repeat(6,1fr)">
           <div class="lay-box"><b>粮达网交易平台</b></div>
           <div class="lay-box"><b>贸易客商管理系统</b></div>
@@ -2018,9 +2091,9 @@ body.editing .edit-hint{display:block;}
       <div class="lay-row w1 tint1">
         <div class="lay-tag t-l1"><b>① 用户与交互层</b><i>三端入口</i></div>
         <div class="lay-cols" style="grid-template-columns:repeat(3,1fr)">
-          <div class="lay-box"><b>目标协同入口</b><span>一句话描述采购目标与约束</span></div>
+          <div class="lay-box"><b>目标协同入口</b><span>一句话输入采购目标与约束</span></div>
           <div class="lay-box"><b>专业小二独立入口</b><span>行情 / 寻源 / 物流 / 成本 / 资金 / 风控</span></div>
-          <div class="lay-box"><b>我的办事 · 企业知识库</b><span>任务轨迹、知识引用与纠偏</span></div>
+          <div class="lay-box"><b>我的办事 · 企业知识库</b><span>任务轨迹 · 知识引用 · 人工纠偏</span></div>
         </div>
       </div>
       <div class="lay-row w2 tint2">
@@ -2028,12 +2101,12 @@ body.editing .edit-hint{display:block;}
         <div class="lay-body">
         <div class="lay-cols" style="grid-template-columns:repeat(4,1fr)">
           <div class="lay-box arc2-step"><span class="arc2-num">1</span><div class="six-txt"><b>AI 目标理解</b><span>自然语言 → 结构化采购目标</span></div></div>
-          <div class="lay-box arc2-step"><span class="arc2-num">2</span><div class="six-txt"><b>协作团队推荐</b><span>按目标复杂度动态选择参与 Agent</span></div></div>
-          <div class="lay-box arc2-step"><span class="arc2-num">3</span><div class="six-txt"><b>多 Agent 图编排</b><span>按依赖顺序编排与调度</span></div></div>
-          <div class="lay-box arc2-step"><span class="arc2-num">4</span><div class="six-txt"><b>冲突检测与综合决策</b><span>跨专业冲突识别与方案综合</span></div></div>
+          <div class="lay-box arc2-step"><span class="arc2-num">2</span><div class="six-txt"><b>协作团队推荐</b><span>按任务复杂度动态选择 Agent</span></div></div>
+          <div class="lay-box arc2-step"><span class="arc2-num">3</span><div class="six-txt"><b>多 Agent 图编排</b><span>按依赖关系编排与调度</span></div></div>
+          <div class="lay-box arc2-step"><span class="arc2-num">4</span><div class="six-txt"><b>冲突检测与综合决策</b><span>识别跨专业冲突并综合方案</span></div></div>
         </div>
         <div class="lay-cols" style="grid-template-columns:1fr 1fr">
-          <div class="lay-box arc2-bar bar-a"><span class="bar-tag">统一协作协议</span><div class="bar-txt"><b>AgentResult</b><span>事实 / 建议 / 风险 / 证据结构化回流，单 Agent 失败不阻塞整体</span></div></div>
+          <div class="lay-box arc2-bar bar-a"><span class="bar-tag">统一协作协议</span><div class="bar-txt"><b>AgentResult</b><span>事实 / 建议 / 风险 / 证据统一回流；单 Agent 失败不阻塞整体</span></div></div>
           <div class="lay-box arc2-bar bar-b"><span class="bar-tag">人工闸门</span><div class="bar-txt"><b>Human-in-the-loop</b><span>目标确认 → 团队确认 → 方案确认，关键决策由人拍板</span></div></div>
         </div>
         </div>
@@ -2061,9 +2134,9 @@ body.editing .edit-hint{display:block;}
       <div class="lay-row w1 tint5">
         <div class="lay-tag t-l5"><b>⑤ 数据存储层</b><i>本地 Docker 部署</i></div>
         <div class="lay-cols" style="grid-template-columns:repeat(3,1fr)">
-          <div class="lay-box arc2-store"><span class="db">MySQL</span><span class="st">行情 / 粮源 / 物流 / 资金产品 / 成本测算 · 办事记录</span></div>
-          <div class="lay-box arc2-store"><span class="db">Milvus</span><span class="st">企业记忆向量集合 · 语义召回相似经验</span></div>
-          <div class="lay-box arc2-store"><span class="db">Elasticsearch</span><span class="st">BM25 关键字检索 · 与语义召回互补</span></div>
+          <div class="lay-box arc2-store"><span class="db">MySQL</span><span class="st">行情 / 粮源 / 物流 / 资金 / 成本 · 办事记录</span></div>
+          <div class="lay-box arc2-store"><span class="db">Milvus</span><span class="st">企业记忆向量 · 相似经验语义召回</span></div>
+          <div class="lay-box arc2-store"><span class="db">Elasticsearch</span><span class="st">BM25 关键词检索 · 与语义召回互补</span></div>
         </div>
       </div>
       <div class="lay-row w4 tint6">
@@ -2072,7 +2145,7 @@ body.editing .edit-hint{display:block;}
           <div class="lay-box"><b>综合决策方案</b><span>主推 + 备选 + 淘汰原因</span></div>
           <div class="lay-box"><b>专业可解释交付物</b><span>每条结论都带事实与证据</span></div>
           <div class="lay-box"><b>行动任务与决策轨迹</b><span>全过程可回看、可追踪</span></div>
-          <div class="lay-box"><b>组织经验持续增值</b><span>办事记录沉淀，下次主动复用</span></div>
+          <div class="lay-box"><b>组织经验持续增值</b><span>办事记录沉淀 · 下次主动复用</span></div>
         </div>
       </div>
     </div>
@@ -2094,13 +2167,13 @@ body.editing .edit-hint{display:block;}
       </div>
       <div class="val-row">
         <div class="val-no"><b>02</b><i>购销增益</i></div>
-        <div class="val-metric"><h3>吨粮购销收益提升</h3><strong>↑ XX 元 / 吨</strong></div>
+        <div class="val-metric"><h3>吨粮购销收益提升</h3><strong>约 30～50 元 / 吨</strong></div>
         <div class="val-txt"><p>优质粮精准对客，不同品质各寻买家，统筹采购·物流·资金。</p><div class="val-tags"><span>全链路收益</span><span>产销能力结合</span><span>可算可比可追溯</span></div></div>
       </div>
       <div class="val-row">
         <div class="val-no"><b>03</b><i>服务扩面</i></div>
-        <div class="val-metric"><h3>中小客户可服务规模</h3><strong>≈ N 倍</strong></div>
-        <div class="val-txt"><p>专业服务下沉，承接零散长尾需求，找粮·找运·找资金，跨区域连接供需。</p><div class="val-tags"><span>平台化覆盖</span><span>突破熟人渠道</span><span>增量市场</span></div></div>
+        <div class="val-metric"><h3>新增有效商机数</h3><strong>显著提升</strong></div>
+        <div class="val-txt"><p>联动价格指数、市场异动与 CRM 客户画像，主动识别采购窗口，定向激活潜客、沉睡客户与长尾客户。</p><div class="val-tags"><span>商机发现</span><span>潜客激活</span><span>精准触达</span></div></div>
       </div>
       <div class="val-row">
         <div class="val-no"><b>04</b><i>产能提升</i></div>
@@ -2216,24 +2289,13 @@ body.editing .edit-hint{display:block;}
           <div class="secu-item"><b>异常调用拦截</b><span>超出外发范围自动拦截<br>并通知责任人复核</span></div>
           </div>
         </div>
-        <div class="secu-col">
-          <div class="secu-head">
-            <div class="secu-ico"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
-            <h3>企业记忆</h3><em>有界共享</em>
-          </div>
-          <div class="secu-body">
-          <div class="secu-item"><b>确认后沉淀经验</b><span>敏感信息处理后入库<br>知识继承来源权限</span></div>
-          <div class="secu-item"><b>检索时再校验</b><span>按授权范围复用知识<br>支持调整范围与停用</span></div>
-          <div class="secu-item"><b>知识来源可溯</b><span>每条经验保留来源任务<br>与确认记录，可回溯</span></div>
-          </div>
-        </div>
       </div>
       <div class="secu-audit">
-        <div class="ah"><b>全程审计与追溯</b><span>关联访问主体与业务任务，记录数据访问、模型调用及知识引用</span></div>
+        <div class="ah"><b>全程审计与追溯</b><span>访问、调用与引用全程留痕，关联访问主体与业务任务</span></div>
         <div class="ag">
-          <div class="ai"><b>数据访问</b><span>记录访问主体、所处业务任务与可读字段范围</span></div>
-          <div class="ai"><b>模型调用</b><span>记录调用内容、脱敏处理与外发范围校验结果</span></div>
-          <div class="ai"><b>知识引用</b><span>记录引用条目、来源权限与检索时的校验结果</span></div>
+          <div class="ai"><b>访问可追溯</b><span>记录访问主体、所处业务任务与可读字段范围</span></div>
+          <div class="ai"><b>外发可举证</b><span>记录调用内容、脱敏处理与外发范围校验结果</span></div>
+          <div class="ai"><b>引用可核查</b><span>记录引用条目、来源权限与检索时的校验结果</span></div>
         </div>
       </div>
     </div>
@@ -2356,14 +2418,30 @@ body.editing .edit-hint{display:block;}
           <div class="sum-col">
             <div class="sh"><h3>长期发展展望</h3><em>从采购助手走向产业服务平台</em></div>
             <div class="sum-items">
-            <div class="sum-item"><b>服务入口</b><span>依托粮达网，触达买卖两端客户</span></div>
-            <div class="sum-item"><b>规模复制</b><span>向更多品种、区域和企业推广</span></div>
+            <div class="sum-item"><b>服务入口</b><span>依托粮达网，触达买卖两端</span></div>
+            <div class="sum-item"><b>数智底座</b><span>成为粮食产业智能基础设施</span></div>
             <div class="sum-item"><b>经营反哺</b><span>以业务反馈优化供应链经营</span></div>
             </div>
           </div>
         </div>
       </div>
       <div class="sum-line">让专业服务触达更多客户，让企业经验赋能产业协同</div>
+    </div>
+  </section>
+
+  <!-- ============ S20 致谢 ============ -->
+  <section class="slide closing" aria-label="致谢">
+    <div class="closing-ring" aria-hidden="true"></div>
+    <svg class="closing-wheat" viewBox="0 0 64 96" aria-hidden="true"><use href="#wheat"/></svg>
+
+    <div class="closing-inner">
+      <div class="closing-kicker reveal">Thanks for your attention</div>
+      <h2 class="closing-thx reveal">谢谢</h2>
+      <div class="closing-brand reveal">粮达 <span>e</span> 销</div>
+      <div class="closing-rule reveal" aria-hidden="true"></div>
+      <div class="closing-meta reveal">
+        <span>汇报团队：粮达 e 销</span><i aria-hidden="true"></i><span>汇报人：魏宇</span><i aria-hidden="true"></i><span>2026 年度</span>
+      </div>
     </div>
   </section>
 
@@ -2391,6 +2469,7 @@ body.editing .edit-hint{display:block;}
   <button class="dot" data-go="16" aria-label="第 17 页"></button>
   <button class="dot" data-go="17" aria-label="第 18 页"></button>
   <button class="dot" data-go="18" aria-label="第 19 页"></button>
+  <button class="dot" data-go="19" aria-label="第 20 页"></button>
   <span class="pg"><b id="pgNow">1</b> / <span id="pgAll">12</span></span>
 </nav>
 
@@ -2492,7 +2571,7 @@ class SlidePresentation{
 class InlineEditor{
   constructor(deck){
     this.deck=deck;this.isActive=false;
-    this.key='ldex-deck-v42-merged';
+    this.key='ldex-deck-v43-merged';
     this.toggle=document.getElementById('editToggle');
     this.restore();
     this.bindUI();
