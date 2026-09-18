@@ -1,0 +1,30 @@
+web/src/theme/theme.css
+  s_a9e2d1b8d27592::t_695489ed883429 906-910
+  s_a9e2d1b8d27592::t_b79ce3d77e8b29 985,1040,1123,1126-1127,1133-1135
+  s_a9e2d1b8d27592::t_fdbf8269e17416 1124-1125,1128-1132
+  s_a9e2d1b8d27592::t_ff3e74e1d35b7e 1041-1088
+  s_a9e2d1b8d27592::t_12a67cf0fd6660 1117-1121
+  s_a9e2d1b8d27592::t_4b93807a702a35 990,1136-1143
+  s_a9e2d1b8d27592::t_17167063d8c950 1104-1116
+  s_a9e2d1b8d27592::t_0cf8adb855d6e2 1089-1103,1122
+  s_a9e2d1b8d27592::t_52199834d6a751 986-989
+  s_a9e2d1b8d27592::t_2231f5209a8cb7 993
+web/src/features/zhanggui/StageBackdrop.tsx
+  s_a9e2d1b8d27592::t_9ce0046f6aec7d 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "053a077840cd9b68865a6bcc65a631f71e64522b",
+  "prompts": {},
+  "sessions": {
+    "s_a9e2d1b8d27592": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7a297a93-feb8-4e9a-88f5-c1cba9636f35",
+        "model": "deepseek-flash"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    }
+  }
+}
