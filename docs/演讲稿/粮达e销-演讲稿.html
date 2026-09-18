@@ -297,9 +297,9 @@ svg {
 .wheat-mark{position:absolute;right:120px;bottom:60px;z-index:1;opacity:.1;pointer-events:none;}
 
 /* ===========================================================
-   S2 场景需求与痛点：痛点 → 能力枢纽 → e销方案 三行对照流
+   S2 场景需求与痛点：痛点 → 能力枢纽 → e销方案 四行对照流
    =========================================================== */
-.s2-body{position:relative;z-index:2;padding:32px var(--pad-x) 0;display:flex;flex-direction:column;gap:22px;height:calc(1080px - 236px - 96px);}
+.s2-body{position:relative;z-index:2;padding:32px var(--pad-x) 0;display:flex;flex-direction:column;gap:22px;height:calc(1080px - 236px - 50px);}
 .ctx-band{
   display:flex;align-items:center;gap:26px;padding:20px 30px;border-radius:14px;
   border:1px solid rgba(8,145,178,.32);
@@ -319,7 +319,7 @@ svg {
 .flow-head .fh-l{color:var(--rose);}
 .flow-head .fh-r{color:var(--blue);}
 .flow-rows{position:relative;flex:1;display:flex;flex-direction:column;gap:20px;min-height:0;}
-/* 中部虚线舱：包裹三枚能力胶囊，呼应 PPT 的虚线容器 */
+/* 中部虚线舱：包裹四枚能力胶囊，呼应 PPT 的虚线容器 */
 .flow-rows::before{
   content:"";position:absolute;left:50%;top:-10px;bottom:-10px;width:300px;
   transform:translateX(-50%);border:1.5px dashed rgba(22,104,220,.34);border-radius:22px;
@@ -346,7 +346,7 @@ svg {
   background:linear-gradient(92deg,rgba(8,145,178,.10),rgba(255,255,255,.75));}
 .fix p{font-size:22px;line-height:1.55;letter-spacing:.03em;color:#0B4C5C;}
 .fix p b{color:var(--cyan-deep);font-weight:900;}
-.s2-sum{text-align:center;font-size:22px;letter-spacing:.12em;color:#274664;}
+.s2-sum{margin-top:40px;text-align:center;font-size:22px;letter-spacing:.12em;color:#274664;}
 .s2-sum b{color:var(--blue);font-weight:900;}
 
 /* ===========================================================
@@ -550,12 +550,12 @@ svg {
 .stage-card.memory .stage-result span{color:#966218;background:#FFF3DE;}
 
 .s6-loop{display:grid;grid-template-columns:1.12fr 1fr;gap:20px;}
-.loop-item{min-height:68px;display:flex;align-items:center;gap:17px;padding:15px 20px;border-radius:12px;
+.loop-item{min-height:94px;display:flex;align-items:center;gap:22px;padding:22px 28px;border-radius:14px;
   border:1px solid rgba(8,145,178,.22);background:rgba(8,145,178,.055);}
 .loop-item.memory{border-color:rgba(217,138,31,.28);background:rgba(217,138,31,.06);}
-.loop-item .loop-lab{flex:none;font-size:15px;font-weight:900;letter-spacing:.12em;color:var(--cyan-deep);}
+.loop-item .loop-lab{flex:none;font-size:17px;font-weight:900;letter-spacing:.12em;color:var(--cyan-deep);}
 .loop-item.memory .loop-lab{color:#9B681B;}
-.loop-item b{font-size:17px;line-height:1.5;color:#173E61;font-weight:500;}
+.loop-item b{font-size:20px;line-height:1.5;color:#173E61;font-weight:500;}
 .loop-item b em{font-style:normal;font-weight:700;color:var(--cyan-deep);}
 .loop-item.memory b em{color:#A46C17;}
 
@@ -1302,17 +1302,27 @@ body.editing .edit-hint{display:block;}
             </div>
             <div class="hub"><span class="pill">供需连接</span></div>
             <div class="fix card">
-              <p>基于客户画像、用途、品质、交期和成本的<b>智能匹配</b></p>
+              <p>按客户画像、用途、品质和交期等条件<b>精准匹配</b>粮源</p>
             </div>
           </div>
 
           <div class="frow reveal">
             <div class="pain card">
-              <p>客户、交易、物流和履约数据分散，难以沉淀持续认知</p>
+              <p>价格、成本、交期和风险口径不一，难以形成统一的采购决策</p>
             </div>
-            <div class="hub"><span class="pill">企业记忆</span></div>
+            <div class="hub"><span class="pill">决策统筹</span></div>
             <div class="fix card">
-              <p>自动沉淀<b>画像、经验和风险规则</b></p>
+              <p>多小二<b>同口径比选</b>，输出可解释的采购方案</p>
+            </div>
+          </div>
+
+          <div class="frow reveal">
+            <div class="pain card">
+              <p>业务经验依赖个人，难以沉淀为组织可复用的能力</p>
+            </div>
+            <div class="hub"><span class="pill">经验沉淀</span></div>
+            <div class="fix card">
+              <p>从每笔履约里提炼<b>可复用经验</b>，下一单主动引用</p>
             </div>
           </div>
         </div>
@@ -1414,7 +1424,7 @@ body.editing .edit-hint{display:block;}
           <div class="stage-panel">
             <div class="stage-agent"><img src="assets/da.png" alt="粮掌柜"></div>
             <h4 class="stage-owner">粮掌柜</h4>
-            <ul class="stage-points"><li>目标抽取：品种、数量、交期与约束</li><li>推荐协作团队，<b>人确认后开办</b></li></ul>
+            <ul class="stage-points"><li>抽取目标并推荐团队，<b>人确认后开办</b></li></ul>
             <div class="stage-result"><span>人确认目标</span></div>
           </div>
         </article>
@@ -1428,7 +1438,7 @@ body.editing .edit-hint{display:block;}
           <div class="stage-panel">
             <div class="stage-agent"><img src="assets/zhan.png" alt="瞻小二"></div>
             <h4 class="stage-owner">瞻小二</h4>
-            <ul class="stage-points"><li>行情走势与<br>区域价差研判</li><li>采购时机建议：<b>买 / 调 / 等</b></li></ul>
+            <ul class="stage-points"><li>行情与价差研判，给出<b>买 / 调 / 等</b></li></ul>
             <div class="stage-result"><span>AI 办理 · 分钟级</span></div>
           </div>
         </article>
@@ -1442,7 +1452,7 @@ body.editing .edit-hint{display:block;}
           <div class="stage-panel">
             <div class="stage-agent duo"><img src="assets/an.png" alt="安小二"><img src="assets/qian.png" alt="钱小二"></div>
             <h4 class="stage-owner">安小二 + 钱小二</h4>
-            <ul class="stage-points"><li><b>六项核验</b>逐项带证据、缺项追问</li><li>信用评分与<br>资金方案匹配</li></ul>
+            <ul class="stage-points"><li><b>六项核验</b>逐项带证据，缺项追问</li></ul>
             <div class="stage-result"><span>证据可追溯</span></div>
           </div>
         </article>
@@ -1454,10 +1464,10 @@ body.editing .edit-hint{display:block;}
             <div class="stage-tags"><span class="stage-tag pain-point">痛点② · 供需匹配困难</span><span class="stage-pain-note">粮源难匹配，品质价值难识别</span></div>
           </div>
           <div class="stage-panel">
-            <div class="stage-agent trio"><img src="assets/liang.png" alt="粮小二"><img src="assets/yun.png" alt="运小二"><img src="assets/suan.png" alt="算小二"></div>
-            <h4 class="stage-owner">粮 / 运 / 算小二</h4>
-            <ul class="stage-points"><li>硬条件过滤，<br>候选粮源比选</li><li><b>同口径到厂成本</b>归集与推荐解释</li></ul>
-            <div class="stage-result"><span>三小二并行</span></div>
+            <div class="stage-agent duo"><img src="assets/liang.png" alt="粮小二"><img src="assets/zhan.png" alt="瞻小二"></div>
+            <h4 class="stage-owner">粮小二 + 瞻小二</h4>
+            <ul class="stage-points"><li>硬条件过滤，多维比选推荐粮源</li></ul>
+            <div class="stage-result"><span>推荐可解释</span></div>
           </div>
         </article>
 
@@ -1465,13 +1475,13 @@ body.editing .edit-hint{display:block;}
           <div class="stage-stop">
             <span class="stage-number">05</span>
             <h3>成本测算</h3>
-            <div class="stage-tags"></div>
+            <div class="stage-tags"><span class="stage-tag pain-point">痛点③ · 决策口径不一</span><span class="stage-pain-note">价格、成本、交期各自成账</span></div>
           </div>
           <div class="stage-panel">
-            <div class="stage-agent"><img src="assets/yun.png" alt="运小二"></div>
-            <h4 class="stage-owner">运小二</h4>
-            <ul class="stage-points"><li>线路筛选、<br>运价与时效比较</li><li><b>提货任务</b>自动创建，节点跟踪</li></ul>
-            <div class="stage-result"><span>AI 办理 · 分钟级</span></div>
+            <div class="stage-agent duo"><img src="assets/suan.png" alt="算小二"><img src="assets/yun.png" alt="运小二"></div>
+            <h4 class="stage-owner">算小二 + 运小二</h4>
+            <ul class="stage-points"><li>粮源 × 运输组合，统一口径算到厂成本</li></ul>
+            <div class="stage-result"><span>组合比选 · 可解释</span></div>
           </div>
         </article>
 
@@ -1484,7 +1494,7 @@ body.editing .edit-hint{display:block;}
           <div class="stage-panel">
             <div class="stage-agent"><img src="assets/da.png" alt="粮掌柜"></div>
             <h4 class="stage-owner">粮掌柜 + 人</h4>
-            <ul class="stage-points"><li>综合决策：<br>主推、备选、条件</li><li>人工确认后下单，形成<b>双方电子用印</b></li></ul>
+            <ul class="stage-points"><li>综合决策，<b>人工确认</b>后下单用印</li></ul>
             <div class="stage-result"><span>人工确认网关</span></div>
           </div>
         </article>
@@ -1498,7 +1508,7 @@ body.editing .edit-hint{display:block;}
           <div class="stage-panel">
             <div class="stage-agent"><img src="assets/suan.png" alt="算小二"></div>
             <h4 class="stage-owner">算小二</h4>
-            <ul class="stage-points"><li>成本、损耗与<br>允差统一核算</li><li>到厂成本与计划<b>偏差分析</b></li></ul>
+            <ul class="stage-points"><li>成本与损耗允差核算，<b>偏差分析</b></li></ul>
             <div class="stage-result"><span>规则复算 · 可审计</span></div>
           </div>
         </article>
@@ -1507,12 +1517,12 @@ body.editing .edit-hint{display:block;}
           <div class="stage-stop">
             <span class="stage-number">08</span>
             <h3>履约复盘</h3>
-            <div class="stage-tags"><span class="stage-tag pain-point">痛点③ · 企业认知难沉淀</span><span class="stage-pain-note">业务数据分散，经验难复用</span></div>
+            <div class="stage-tags"><span class="stage-tag pain-point">痛点④ · 经验难沉淀</span><span class="stage-pain-note">经验随人走，人一调动就清零</span></div>
           </div>
           <div class="stage-panel">
             <div class="stage-agent"><img src="assets/da.png" alt="粮掌柜"></div>
             <h4 class="stage-owner">粮掌柜<small>+ 企业知识大脑</small></h4>
-            <ul class="stage-points"><li>复盘报告提炼为<b>企业知识条目</b></li><li>下一笔相似任务<b>主动引用经验</b></li></ul>
+            <ul class="stage-points"><li>提炼<b>企业知识</b>，下一笔主动引用</li></ul>
             <div class="stage-result"><span>经验沉淀 · 持续复用</span></div>
           </div>
         </article>
@@ -2433,7 +2443,7 @@ class SlidePresentation{
 class InlineEditor{
   constructor(deck){
     this.deck=deck;this.isActive=false;
-    this.key='ldex-deck-v11-merged';
+    this.key='ldex-deck-v14-merged';
     this.toggle=document.getElementById('editToggle');
     this.restore();
     this.bindUI();
