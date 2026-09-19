@@ -1,0 +1,46 @@
+docs/粮达e销-口播演讲稿.md
+  h_f75b2dd43abf29 1-178
+docs/演讲稿/粮达e销-演讲稿.html
+  s_e7125d706466f7::t_70549536a560a3 1833,1883,1928,2056,2157,2776,2787,2817,2838,2864
+  s_dd8909a7bc7915::t_8173142741b851 2717,2720-2721
+  s_dd8909a7bc7915::t_f9fc1ed680d1da 2777-2779
+  h_f75b2dd43abf29 1815,2134,2151,2214,2225,2366,2660
+  s_dd8909a7bc7915::t_b5e0f0ca1af695 1107,1112
+  s_dd8909a7bc7915::t_aa6d52e85b2019 1105-1106
+  s_dd8909a7bc7915::t_45aa4a52278ffb 1108-1111
+  s_dd8909a7bc7915::t_d1d49a309dcd77 1113-1114
+  s_dd8909a7bc7915::t_238bcd606f0d6c 2714-2716
+  s_dd8909a7bc7915::t_6cb31be63f78a6 2718-2719
+  s_e7125d706466f7::t_780ca8afcf18e0 2773-2775
+  s_dd8909a7bc7915::t_24ba8f42b84e6a 2780-2782
+  h_f75b2dd43abf29 43-45,172,1116-1124,2713,2736,2756,2759-2772,2783-2784
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "7636108096a9b57146215e663873b1de7040f08c",
+  "prompts": {},
+  "humans": {
+    "h_f75b2dd43abf29": {
+      "author": "weiyu.1024 <1360055716@qq.com>"
+    }
+  },
+  "sessions": {
+    "s_dd8909a7bc7915": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ccfbe008-2e3d-44a7-b210-4a705f783f65",
+        "model": "deepseek-v4-flash"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    },
+    "s_e7125d706466f7": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0b9b4-a2fc-7fe1-b2b2-64edaedfd0d5",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "weiyu.1024 <1360055716@qq.com>"
+    }
+  }
+}
