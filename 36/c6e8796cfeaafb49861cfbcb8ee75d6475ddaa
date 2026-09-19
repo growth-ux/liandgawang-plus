@@ -1,0 +1,17 @@
+docs/粮达e销-口播演讲稿.md
+  h_f75b2dd43abf29 21,57,87,93
+  h_f75b2dd43abf29 1,5,10,16,29,37,44,52,61,71,81,91,97,104,113,124,132,143,155,161,176
+docs/演讲稿/粮达e销-演讲稿.html
+  h_f75b2dd43abf29 1120-1121
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "36c6e8796cfeaafb49861cfbcb8ee75d6475ddaa",
+  "prompts": {},
+  "humans": {
+    "h_f75b2dd43abf29": {
+      "author": "weiyu.1024 <1360055716@qq.com>"
+    }
+  }
+}
