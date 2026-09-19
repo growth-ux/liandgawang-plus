@@ -1123,13 +1123,20 @@ body,
  * 抽屉底栏：theme.css:654 给它上了 var(--color-panel)，但讲解主题把 .pw-panel
  * 压暗到 #182a46，子层反而比父层亮，浮出一条没有形状的通栏色带。
  * 给它一个正常的卡片形（描边 + 圆角），层级关系就成立了。
+ *
+ * 底与描边取讲解主题自己的卡片档位：原来的 color-mix(tech 5%, panel) 是 #253f5b，
+ * 比面板亮两档、又带一层青，读数成了整屏唯一的青蓝色块；描边用的 --color-line
+ * 也比本主题其它卡片的 tech/0.4 亮。改成 #203652 + tech/0.28，和抽屉头、
+ * 并行核验卡片同色系。投影原本是 #0f1b2b（默认深空主题的抽屉底色），
+ * 在这里等于在卡片上方压出一道暗带，换成面板色，只保留遮住滚动内容的柔化过渡。
  */
 :root[data-theme="deep-space-presentation"] .pw-business-drawer .pw-action-bar {
   margin-top: 24px;
   padding: 16px 18px;
-  border: 1px solid var(--color-line);
+  border: 1px solid rgb(var(--color-tech-rgb) / 0.28);
   border-radius: 12px;
-  background: color-mix(in srgb, var(--color-tech) 5%, var(--color-panel));
+  background: #203652;
+  box-shadow: 0 -18px 26px #182a46f5;
 }
 
 /*

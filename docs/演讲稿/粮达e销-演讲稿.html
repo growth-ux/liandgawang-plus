@@ -862,8 +862,6 @@ svg {
 .val-tags{display:flex;gap:10px;flex-wrap:wrap;}
 .val-tags span{padding:6px 15px;border-radius:999px;font-size:14px;font-weight:700;letter-spacing:.04em;
   color:#0E7490;background:rgba(8,145,178,.09);border:1px solid rgba(8,145,178,.28);}
-.val-note{flex:none;text-align:center;font-size:14.5px;color:#4A6480;letter-spacing:.06em;
-  padding:11px;border-radius:10px;background:rgba(11,37,64,.045);}
 
 /* ===========================================================
    S16 创新亮点与竞品对标
@@ -1131,6 +1129,13 @@ body.editing .edit-hint{display:block;}
 .video-gallery .gallery-frame>video{object-fit:cover;object-position:center;}
 /* 录屏画面本身已贴近左右边缘时改用 contain，避免裁掉界面右边界 */
 .video-gallery.contain-fit .gallery-frame>video{object-fit:contain;}
+/* contain 的前提是图区和素材同比例。行情研判/交易准入这两格的图区由上方
+   内容带的高度决定，和 2030×1080 的录屏对不上就会留暗边（行情研判上下各
+   13.7px，交易准入左右各 126px）。图区改为按素材比例定高，框内不再出现黑边。
+   成本测算那页同样是 demo-brief-slide，但它用的是 1944×1080（1.80），
+   图区本来就刚好，套上 1.88 反而会多出 24.9px 侧边黑边，所以排除掉。 */
+.demo-brief-slide:not(.cost-slide) .gallery-viewport{flex:none;aspect-ratio:2030/1080;}
+.demo-brief-slide:not(.cost-slide) .shot-gallery{justify-content:center;}
 .video-gallery .gallery-controls{border-top-color:#243B56;background:#111D34;}
 .video-gallery .gallery-arrow{border-color:#35506D;background:#17243B;color:#8FD7E6;}
 .video-gallery .gallery-arrow:hover:not(:disabled){border-color:#4A91AA;background:#1C304A;}
@@ -1270,24 +1275,32 @@ body.editing .edit-hint{display:block;}
 .verify-slide .demo-main{display:flex;flex-direction:column;gap:16px;}
 .verify-slide .demo-main>.shot-gallery{flex:1;min-height:0;}
 .verify-slide .demo-rail li{height:48px;font-size:16px;}
-.verify-band{flex:none;display:grid;grid-template-columns:1fr 1fr;gap:12px 40px;
-  padding:15px 26px 14px;border:1px solid #BDD7E8;border-radius:16px;
+.verify-band{flex:none;display:grid;grid-template-columns:1fr 1fr;gap:10px 40px;
+  padding:11px 26px 10px;border:1px solid #BDD7E8;border-radius:16px;
   background:linear-gradient(115deg,#F4FAFE,#FFFFFF 48%,#EFF7FC);box-shadow:0 12px 32px #164B7410;}
 .lane{min-width:0;}
 .lane-head{display:flex;align-items:baseline;gap:9px;}
 .lane-head>b{font-size:15px;font-weight:900;letter-spacing:.04em;color:#0E7490;}
 .lane-head>span{font-size:12px;letter-spacing:.08em;color:#7E96A9;}
 .lane-head>em{margin-left:auto;font-style:normal;font-family:var(--font-latin);font-size:16px;font-weight:700;color:#D98A1F;}
-.lane-track{position:relative;display:grid;grid-template-columns:repeat(3,1fr);margin-top:8px;}
+.lane-track{position:relative;display:grid;grid-template-columns:repeat(3,1fr);margin-top:6px;}
 .lane-track::before{content:"";position:absolute;left:16.6%;right:16.6%;top:6px;height:2px;background:#C9DEEB;}
-.lane-track>li{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;}
+.lane-track>li{position:relative;display:flex;flex-direction:column;align-items:center;gap:5px;}
 .lane-track>li>i{width:10px;height:10px;border:2px solid #FFF;border-radius:50%;background:#3EA9C4;box-shadow:0 0 0 1px #9CC0D4;}
 .lane-track>li>b{font-size:13px;font-weight:900;letter-spacing:.04em;color:#3B6280;}
-.verify-result{grid-column:1/-1;display:flex;align-items:baseline;gap:13px;padding-top:11px;border-top:1px solid #DCE8F1;}
-.verify-result>b{flex:none;font-family:var(--font-latin);font-size:26px;font-weight:700;line-height:1;color:#D98A1F;}
+.verify-result{grid-column:1/-1;display:flex;align-items:baseline;gap:13px;padding-top:9px;border-top:1px solid #DCE8F1;}
+.verify-result>b{flex:none;font-family:var(--font-latin);font-size:23px;font-weight:700;line-height:1;color:#D98A1F;}
 .verify-result>span{font-size:13px;color:#607B90;}
 .verify-result em{font-style:normal;font-weight:900;color:#0E7490;}
-.verify-bottom{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 530px;gap:38px;}
+/* 画廊列按素材比例收窄。这一页上方多了一条「双小二并行核验」带，媒体区被压成
+   1174×491（2.39:1），而录制素材是 2030×1080（1.88:1），object-fit:contain
+   会在左右各留 126px 黑边（填充率只有 78.6%）。带宽压到 127px 后：
+   行高 737 − 带 127 − 间距 16 = 594，减去 83px 控制条 = 511，
+   511 × 2030/1080 ≈ 961，所以列宽取 962，媒体刚好铺满且比原来大 4%。
+   说明列用 minmax(0,1fr) 吃掉剩余宽度——之前留 289px 空白时，中间那大片
+   空白比"图更大"更扎眼。
+   注意：962 和上面 .verify-band 的高度是绑定的，改带内边距/行距要重算。 */
+.verify-bottom{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,962px) minmax(0,1fr);gap:38px;}
 .verify-bottom>.shot-gallery,.verify-bottom>.demo-brief{min-height:0;}
 
 /* ===========================================================
@@ -1297,8 +1310,8 @@ body.editing .edit-hint{display:block;}
 .recap-slide .demo-main{display:flex;flex-direction:column;gap:16px;}
 .recap-slide .demo-rail li{height:48px;font-size:16px;}
 .recap-band{flex:none;display:grid;grid-template-columns:320px 104px minmax(0,1fr);
-  grid-template-rows:auto auto;align-items:center;row-gap:12px;
-  padding:15px 26px 14px;border:1px solid #BDD7E8;border-radius:16px;
+  grid-template-rows:auto auto;align-items:center;row-gap:8px;
+  padding:11px 26px 10px;border:1px solid #BDD7E8;border-radius:16px;
   background:linear-gradient(115deg,#F4FAFE,#FFFFFF 48%,#EFF7FC);box-shadow:0 12px 32px #164B7410;}
 .recap-source{min-width:0;}
 .recap-source>b{display:block;font-size:14px;font-weight:900;letter-spacing:.06em;color:#3C6480;}
@@ -1313,7 +1326,7 @@ body.editing .edit-hint{display:block;}
   border-top:2px solid #9CC0D4;border-right:2px solid #9CC0D4;transform:translateY(-50%) rotate(45deg);}
 .recap-arrow>em{flex:none;font-style:normal;font-size:12px;font-weight:900;letter-spacing:.06em;color:#0E7490;}
 .recap-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0 26px;min-width:0;}
-.recap-cards>li{min-width:0;padding-top:9px;border-top:2px solid #D8E7F1;}
+.recap-cards>li{min-width:0;padding-top:7px;border-top:2px solid #D8E7F1;}
 .recap-cards .know-top{display:flex;align-items:baseline;justify-content:space-between;gap:9px;}
 .recap-cards .know-top>b{font-size:13px;font-weight:900;letter-spacing:.05em;color:#3C6480;}
 .recap-cards .know-top>span{flex:none;padding:2px 7px;border-radius:5px;font-size:11px;font-weight:700;background:#EDF3F8;color:#7893A8;}
@@ -1331,9 +1344,14 @@ body.editing .edit-hint{display:block;}
 .recap-cards>li[data-kind="risk"]{border-top-color:#D98A1F;}
 .recap-cards>li[data-kind="risk"] .know-top>b{color:#A5691A;}
 .recap-cards>li[data-kind="risk"] .know-top>span{background:#FBF0DD;color:#A5691A;}
-.recap-note{grid-column:1/-1;padding-top:11px;border-top:1px solid #DCE8F1;font-size:12px;color:#7E96A9;}
+.recap-note{grid-column:1/-1;padding-top:8px;border-top:1px solid #DCE8F1;font-size:12px;color:#7E96A9;}
 .recap-note em{font-style:normal;font-weight:900;color:#0E7490;}
-.recap-bottom{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 560px;gap:38px;}
+/* 同交易准入：录屏是 1.80:1，图区被上方复盘带压成 2.23:1，contain 会在左右
+   各留 110px 暗边。带宽压到 152px 后：行高 569 − 说明条 37 − 边框 2 = 530，
+   530 × 1.80 ≈ 954，列宽取 956；视频写死比例保证图区永远等于素材比例。
+   说明列用 minmax(0,1fr) 吃掉剩余宽度，不再留中间空白。 */
+.recap-bottom{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,956px) minmax(0,1fr);gap:38px;}
+.recap-video>video{flex:none;aspect-ratio:1944/1080;}
 .recap-video{min-width:0;min-height:0;margin:0;display:flex;flex-direction:column;overflow:hidden;
   border:1px solid #263F62;border-radius:16px;background:#0B1727;}
 .recap-video>video{flex:1;min-height:0;width:100%;object-fit:contain;}
@@ -1348,6 +1366,11 @@ body.editing .edit-hint{display:block;}
    =========================================================== */
 .order-slide .demo-main{display:flex;flex-direction:column;gap:16px;flex:1;min-height:0;}
 .order-slide .demo-main>.shot-pair{flex:1;min-height:0;}
+/* 两格图区按素材 1354×754（1.796）定高：图区原本是 862×524（1.646），
+   object-fit:contain 会在上下各留 22px 暗边。写死比例而不是用 1fr，
+   是因为第 8 页那对图两张比例不同，不能被同一条规则带走。 */
+.order-slide .pair-shot>img{flex:none;aspect-ratio:1354/754;}
+.order-slide .shot-pair>figure{align-self:center;}
 .order-band{flex:none;display:grid;grid-template-columns:minmax(0,1fr) 404px;
   padding:15px 26px 16px;border:1px solid #BDD7E8;border-radius:16px;
   background:linear-gradient(115deg,#F4FAFE,#FFFFFF 48%,#EFF7FC);box-shadow:0 12px 32px #164B7410;}
@@ -1990,8 +2013,8 @@ body.editing .edit-hint{display:block;}
           <figcaption>候选对比 · 比价格，也比品质和履约</figcaption>
         </figure>
         <figure class="pair-shot">
-          <img src="assets/system-demo/04-选粮点价/03.png" alt="推荐依据：为什么优先选择青岛港粮库" draggable="false">
-          <figcaption>推荐依据 · 为什么优先选择青岛港粮库</figcaption>
+          <img src="assets/system-demo/04-选粮点价/03.png" alt="近30日成交基准：同区域可比成交，所选粮源低于中位价 18 元/吨" draggable="false">
+          <figcaption>近30日成交基准 · 同区域可比成交</figcaption>
         </figure>
       </div>
     </div>
@@ -2396,7 +2419,6 @@ body.editing .edit-hint{display:block;}
         <div class="val-metric"><h3>人均服务客户数</h3><strong>≈ 10×</strong></div>
         <div class="val-txt"><p>AI 承接询价比对，多客户并行处理，经验共享复用，业务员聚焦经营与成交。</p><div class="val-tags"><span>释放人力</span><span>降低依赖</span><span>高价值转化</span></div></div>
       </div>
-      <div class="val-note">以上为建设目标，实际成效以试点验证为准</div>
     </div>
   </section>
 
