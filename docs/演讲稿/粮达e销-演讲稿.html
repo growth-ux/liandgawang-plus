@@ -186,8 +186,11 @@ svg {
 /* 实战演示页右上角「本步上场」：8 页固定同一位置，只摆本步参办的小二形象，不带名字和外框。
    形象复用 S2 编队 / S4 链路图素材（1024×1536，不做圆形裁切），底部对齐让多个小二站成一排，
    翻完演示连成一条接力线。 */
-.head-crew{display:flex;align-items:flex-end;gap:40px;padding-bottom:6px;}
-.head-crew .crew-item{width:44px;height:66px;object-fit:contain;filter:drop-shadow(0 5px 8px rgba(13,60,110,.2));
+.head-crew{display:flex;align-items:flex-end;gap:40px;padding-bottom:6px;padding-right:30px;
+  transform:translateY(12px);}
+/* 注：位移写在父级 .head-crew 上——.crew-item 的 transform 已被 crew-step/crew-idle 占用，
+   而父级 transform 不进布局，页眉总高仍是 130。 */
+.head-crew .crew-item{width:60px;height:90px;object-fit:contain;filter:drop-shadow(0 5px 8px rgba(13,60,110,.2));
   opacity:0;translate:52px 0;transition:opacity .46s ease,translate .58s cubic-bezier(.22,.9,.28,1);
   animation:crew-idle 3.8s ease-in-out 1.05s infinite;}
 /* 走位进场：和 .reveal 同一套写法（默认态透明，.slide.visible 复位），来回翻页会重播。
@@ -585,7 +588,9 @@ svg {
 /* S5–S12：同一笔采购的八阶段系统实证。截图来自本地系统实际办理页面。 */
 .demo-slide::before{background-image:none;-webkit-mask-image:none;mask-image:none;}
 .demo-slide .foot{display:none;}
-.demo-slide .head{padding-top:54px;}
+/* 右上角小二形象放大到 60×90 后，上边距相应收窄，好让页眉总高（130）与其余各页保持一致，
+   标题不会在演示页/非演示页之间上下跳。小二形象因此向上长进原留白区。 */
+.demo-slide .head{padding-top:34px;}
 .demo-body{position:absolute;z-index:2;left:var(--pad-x);right:var(--pad-x);top:181px;bottom:96px;display:flex;flex-direction:column;gap:18px;}
 .demo-rail{list-style:none;display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:10px;flex:none;}
 .demo-rail li{height:56px;display:flex;align-items:center;justify-content:center;gap:11px;border:1px solid #D5E3EE;border-radius:9px;
@@ -627,23 +632,12 @@ svg {
 .gallery-dot[aria-pressed="true"] span{width:26px;background:#0C9DB9;border-color:#0C9DB9;box-shadow:0 0 10px #08A3C738;}
 .gallery-page{font-family:var(--font-latin);white-space:nowrap;font-size:15px;color:#87A0B4;}
 .gallery-page b{font-size:26px;color:#236180;margin-right:4px;}
-/* S12 履约复盘：四类企业知识是本页论点，直接落在页面上，不依赖截图小字。 */
-.knowledge-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-left:111px;}
-.knowledge-cell{min-width:0;padding:9px 9px 10px;border:1px solid #D8E7F1;border-radius:10px;background:rgba(255,255,255,.78);}
-.knowledge-cell>b{display:block;font-size:13px;font-weight:900;letter-spacing:.05em;color:#3C6480;}
-.knowledge-cell>span{display:inline-block;margin-top:5px;padding:2px 7px;border-radius:5px;font-size:11px;font-weight:700;background:#EDF3F8;color:#7893A8;}
-.knowledge-cell>p{margin-top:6px;font-size:12px;line-height:1.4;color:#607B90;}
-.knowledge-cell.is-fact>b{color:#0783A4;}
-.knowledge-cell.is-fact>span{background:#E4F4F8;color:#0783A4;}
-.knowledge-cell.is-pref>b{color:#1668DC;}
-.knowledge-cell.is-pref>span{background:#EAF1FD;color:#1668DC;}
-.knowledge-cell.is-exp>b{color:#16836E;}
-.knowledge-cell.is-exp>span{background:#E2F3EE;color:#16836E;}
-.knowledge-cell.is-risk>b{color:#A5691A;}
-.knowledge-cell.is-risk>span{background:#FBF0DD;color:#A5691A;}
+/* S12 履约复盘的“四类企业知识”已升为页首全宽带，改用 .recap-* 样式。 */
 
 /* S5：需求确认采用“左讲解、右实录”。完整系统界面作为视觉主角，不再重复裁切同一截图。 */
-.demand-slide .demo-main{grid-template-columns:500px minmax(0,1fr);gap:34px;}
+/* S5/S9 刻意做镜像（实录在左、要点在右）：八页演示若一路「文左图右」评委易视觉疲劳。 */
+.demand-slide .demo-main{grid-template-columns:minmax(0,1fr) 500px;gap:34px;}
+.demand-slide .demo-main>.shot-gallery{order:-1;}
 .demand-slide .demo-rail li{height:48px;font-size:16px;}
 .demand-copy{min-width:0;min-height:0;display:flex;flex-direction:column;padding:5px 0 0;}
 .demand-copy .demo-value-stack{flex:1;display:grid;grid-template-rows:repeat(3,1fr);}
@@ -1177,19 +1171,16 @@ body.editing .edit-hint{display:block;}
 /* 左栏语义色体系：痛点/风险=红、研判依据=蓝、AI 动作=青、用户价值=绿、人工确认=金。
    S5 已用红/青/绿，这里把各演示页左栏统一成同一套语义色，避免整列同一个灰蓝。
    加 data-accent 的分块才吃这套色，没加的分块保持原样。
-   demo-brief 的编号/标签是 span/b，order-mini-flow 是反过来的 b/span，所以两条选择器都写。 */
+   demo-brief 的编号/标签是 span/b，S5 的 demo-value-item 是另写的。 */
 [data-accent="risk"]{--tone:#D95661;--tone-soft:#FDF1F2;--tone-line:#F0D2D5;}
 [data-accent="basis"]{--tone:#1668DC;--tone-soft:#EDF3FD;--tone-line:#CFE0F4;}
 [data-accent="ai"]{--tone:#0783A4;--tone-soft:#EDF7FA;--tone-line:#C4E3EB;}
 [data-accent="value"]{--tone:#16836E;--tone-soft:#EDF7F4;--tone-line:#C6E6DD;}
 [data-accent="human"]{--tone:#A5691A;--tone-soft:#FDF3E2;--tone-line:#EFD3A6;}
-/* 编号做成实心色块，形成左栏自上而下的颜色节奏。
-   注意 S10/S5 的选择器必须带 li/.demo-value-label 提权：.order-mini-flow .step-meta b、
-   .demo-value-label b 写在更后面或权重相同，不提权会被压掉，编号就变成灰字压在色块上。 */
-[data-accent] .head-meta span,li[data-accent] .step-meta b,[data-accent] .demo-value-label b{display:inline-flex;align-items:center;justify-content:center;width:25px;height:25px;border-radius:8px;background:var(--tone);color:#fff;font-family:var(--font-latin);font-size:12px;font-weight:700;letter-spacing:.02em;}
-[data-accent] .head-meta b,li[data-accent] .step-meta span{color:var(--tone);}
+/* 编号做成实心色块，形成左栏自上而下的颜色节奏。 */
+[data-accent] .head-meta span,[data-accent] .demo-value-label b{display:inline-flex;align-items:center;justify-content:center;width:25px;height:25px;border-radius:8px;background:var(--tone);color:#fff;font-family:var(--font-latin);font-size:12px;font-weight:700;letter-spacing:.02em;}
+[data-accent] .head-meta b{color:var(--tone);}
 .demo-brief-block[data-accent]{border-top-color:var(--tone-line);}
-.order-mini-flow li[data-accent]{border-bottom-color:var(--tone-line);}
 .demo-value-item[data-accent]{border-top-color:var(--tone-line);}
 
 /* S6 行情研判：五类证据、本单约束、三种决策各自跟着本块色调走 */
@@ -1218,24 +1209,165 @@ body.editing .edit-hint{display:block;}
    =========================================================== */
 .funnel-slide .demo-main{display:flex;flex-direction:column;gap:16px;}
 .funnel-slide .demo-rail li{height:48px;font-size:16px;}
-.funnel-slide .demo-main>.shot-gallery{flex:1;min-height:0;}
-.funnel-slide .gallery-frame{padding:10px;}
-.funnel-slide .demo-band{flex:none;display:grid;grid-template-columns:1fr 300px 1fr 300px 1fr;align-items:center;
-  padding:18px 30px;border:1px solid #BDD7E8;border-radius:16px;
+.funnel-slide .demo-main>.shot-pair{flex:1;min-height:0;}
+
+.funnel-band{flex:none;display:grid;grid-template-columns:1fr 300px 1fr 300px 1fr;
+  grid-template-rows:84px 28px auto auto;align-items:center;
+  padding:16px 26px 18px;border:1px solid #BDD7E8;border-radius:16px;
   background:linear-gradient(115deg,#F4FAFE,#FFFFFF 48%,#EFF7FC);box-shadow:0 12px 32px #164B7410;}
-.band-node{text-align:center;}
-.band-node>span{display:block;font-size:14px;font-weight:900;letter-spacing:.14em;color:#557691;}
-.band-node>strong{display:block;margin-top:2px;font-family:var(--font-latin);font-size:50px;font-weight:700;line-height:1.08;color:var(--cyan-deep);}
-.band-node>strong small{font-family:var(--font-cn);font-size:17px;margin-left:4px;color:#6B8AA1;}
-.band-node>p{margin-top:4px;font-size:13px;line-height:1.5;color:#7E96A9;}
-.band-node.is-qualified>strong{color:#0F93AC;}
-.band-node.is-ranked>strong{color:var(--gold);}
-.band-link{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;}
-.band-link>i{font-style:normal;font-family:var(--font-latin);font-size:22px;line-height:1;color:#9CC0D4;}
-.band-link>em{font-style:normal;padding:4px 12px;border-radius:999px;font-size:13px;font-weight:900;letter-spacing:.06em;}
-.band-link.rule>em{color:var(--cyan-deep);background:#E4F4F8;border:1px solid #B6DEE7;}
-.band-link.ai>em{color:#8A5A12;background:#FDF3E2;border:1px solid #EFD3A6;}
-.band-link>p{font-size:12px;line-height:1.5;color:#7E96A9;letter-spacing:.02em;}
+.funnel-col{grid-row:1/4;align-self:start;display:grid;grid-template-rows:84px 28px auto;align-items:center;min-width:0;}
+.funnel-col.is-candidate{grid-column:1;}
+.funnel-col.is-qualified{grid-column:3;}
+.funnel-col.is-ranked{grid-column:5;}
+.stage-figure{align-self:end;text-align:center;font-family:var(--font-latin);font-size:72px;font-weight:700;line-height:1;color:#5B849E;}
+.stage-figure small{font-family:var(--font-cn);font-size:20px;margin-left:6px;color:#6B8AA1;}
+.stage-bar{align-self:center;height:12px;border-radius:999px;background:#EAF2F8;overflow:hidden;}
+.stage-bar>i{display:block;width:var(--fill);height:100%;border-radius:999px;}
+.stage-name{align-self:start;margin-top:6px;text-align:center;font-size:15px;font-weight:900;letter-spacing:.14em;color:#3B6280;}
+.is-candidate .stage-bar>i{background:linear-gradient(90deg,#C2DBE9,#8FB8CF);}
+.is-qualified .stage-figure{font-size:60px;color:#0F93AC;}
+.is-qualified .stage-bar>i{background:linear-gradient(90deg,#8ECFDE,#3EA9C4);}
+.is-ranked .stage-figure{font-size:50px;color:var(--gold);}
+.is-ranked .stage-bar>i{background:linear-gradient(90deg,#F1C579,#D98A1F);}
+.stage-gate{grid-row:2/4;align-self:stretch;display:flex;flex-direction:column;gap:7px;min-width:0;text-align:center;}
+.stage-gate.is-rule{grid-column:2;}
+.stage-gate.is-ai{grid-column:4;}
+.gate-head{flex:none;height:28px;display:flex;align-items:center;gap:9px;}
+.gate-head>i{flex:1;height:2px;border-radius:2px;background:#C9DEEB;}
+.gate-head>i.rail-r{position:relative;}
+.gate-head>i.rail-r::after{content:"";position:absolute;right:-2px;top:50%;width:6px;height:6px;
+  border-top:2px solid #9CC0D4;border-right:2px solid #9CC0D4;transform:translateY(-50%) rotate(45deg);}
+.gate-head>em{flex:none;font-style:normal;padding:5px 12px;border-radius:999px;white-space:nowrap;
+  font-size:13px;font-weight:900;letter-spacing:.06em;}
+.stage-gate.is-rule>em{color:var(--cyan-deep);background:#E4F4F8;border:1px solid #B6DEE7;}
+.stage-gate.is-ai>em{color:#8A5A12;background:#FDF3E2;border:1px solid #EFD3A6;}
+.gate-facts{font-size:12px;line-height:1.5;color:#7E96A9;}
+.gate-dims{font-size:13px;font-weight:900;line-height:1.5;color:#0E7490;letter-spacing:.02em;}
+.is-ai .gate-facts{color:#9A7B4A;}
+.stage-note{grid-row:4;align-self:stretch;margin-top:20px;padding-top:11px;border-top:2px solid #C9DEEB;}
+.stage-note.is-candidate{grid-column:1;}
+.stage-note.is-qualified{grid-column:3;border-top-color:#3EA9C4;}
+.stage-note.is-ranked{grid-column:5;border-top-color:#D98A1F;}
+.stage-note>b{display:block;font-size:12px;font-weight:900;letter-spacing:.08em;color:#3B6280;}
+.stage-note>p{margin-top:6px;font-size:12px;line-height:1.6;color:#7E96A9;}
+.stage-note>p strong{font-weight:900;color:#0F93AC;}
+.note-rows{margin-top:7px;display:grid;gap:5px;}
+.note-rows.is-2col{grid-template-columns:1fr 1fr;gap:5px 20px;}
+.note-rows>span{display:flex;align-items:baseline;gap:8px;font-size:12px;color:#7E96A9;}
+.note-rows>span>b{font-family:var(--font-latin);font-size:16px;font-weight:700;line-height:1;color:#0F93AC;}
+
+.shot-pair{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.pair-shot{min-width:0;min-height:0;margin:0;display:flex;flex-direction:column;overflow:hidden;
+  border:1px solid #263F62;border-radius:16px;background:#0B1727;}
+.pair-shot>img{flex:1;min-height:0;width:100%;object-fit:contain;}
+.pair-shot>figcaption{flex:none;padding:9px 18px;border-top:1px solid #243B56;background:#111D34;
+  font-size:13px;line-height:1.4;color:#E9F1F8;text-align:center;}
+
+/* ===========================================================
+   S7 交易准入 · 并行双轨带（全宽），与 S8 的漏斗带同为“主视觉在上”，
+   但形状不同：这里是两条并排的核验轨，每轨三个节点。
+   =========================================================== */
+.verify-slide .demo-main{display:flex;flex-direction:column;gap:16px;}
+.verify-slide .demo-main>.shot-gallery{flex:1;min-height:0;}
+.verify-slide .demo-rail li{height:48px;font-size:16px;}
+.verify-band{flex:none;display:grid;grid-template-columns:1fr 1fr;gap:12px 40px;
+  padding:15px 26px 14px;border:1px solid #BDD7E8;border-radius:16px;
+  background:linear-gradient(115deg,#F4FAFE,#FFFFFF 48%,#EFF7FC);box-shadow:0 12px 32px #164B7410;}
+.lane{min-width:0;}
+.lane-head{display:flex;align-items:baseline;gap:9px;}
+.lane-head>b{font-size:15px;font-weight:900;letter-spacing:.04em;color:#0E7490;}
+.lane-head>span{font-size:12px;letter-spacing:.08em;color:#7E96A9;}
+.lane-head>em{margin-left:auto;font-style:normal;font-family:var(--font-latin);font-size:16px;font-weight:700;color:#D98A1F;}
+.lane-track{position:relative;display:grid;grid-template-columns:repeat(3,1fr);margin-top:8px;}
+.lane-track::before{content:"";position:absolute;left:16.6%;right:16.6%;top:6px;height:2px;background:#C9DEEB;}
+.lane-track>li{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;}
+.lane-track>li>i{width:10px;height:10px;border:2px solid #FFF;border-radius:50%;background:#3EA9C4;box-shadow:0 0 0 1px #9CC0D4;}
+.lane-track>li>b{font-size:13px;font-weight:900;letter-spacing:.04em;color:#3B6280;}
+.verify-result{grid-column:1/-1;display:flex;align-items:baseline;gap:13px;padding-top:11px;border-top:1px solid #DCE8F1;}
+.verify-result>b{flex:none;font-family:var(--font-latin);font-size:26px;font-weight:700;line-height:1;color:#D98A1F;}
+.verify-result>span{font-size:13px;color:#607B90;}
+.verify-result em{font-style:normal;font-weight:900;color:#0E7490;}
+.verify-bottom{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 530px;gap:38px;}
+.verify-bottom>.shot-gallery,.verify-bottom>.demo-brief{min-height:0;}
+
+/* ===========================================================
+   S12 履约复盘 · 知识沉淀带（全宽）
+   形状是「一份履约结果 → 拆成四类知识」，与 S7 的双轨、S8 的漏斗都不同。
+   =========================================================== */
+.recap-slide .demo-main{display:flex;flex-direction:column;gap:16px;}
+.recap-slide .demo-rail li{height:48px;font-size:16px;}
+.recap-band{flex:none;display:grid;grid-template-columns:320px 104px minmax(0,1fr);
+  grid-template-rows:auto auto;align-items:center;row-gap:12px;
+  padding:15px 26px 14px;border:1px solid #BDD7E8;border-radius:16px;
+  background:linear-gradient(115deg,#F4FAFE,#FFFFFF 48%,#EFF7FC);box-shadow:0 12px 32px #164B7410;}
+.recap-source{min-width:0;}
+.recap-source>b{display:block;font-size:14px;font-weight:900;letter-spacing:.06em;color:#3C6480;}
+.recap-source>ul{margin-top:8px;display:grid;gap:5px;}
+.recap-source li{display:flex;align-items:baseline;gap:9px;}
+.recap-source li>span{flex:none;width:32px;font-size:12px;color:#7E96A9;}
+.recap-source li>em{font-style:normal;font-size:12px;font-weight:900;color:#3B6280;}
+.recap-arrow{display:flex;align-items:center;gap:7px;padding-right:24px;}
+.recap-arrow>i{flex:1;height:2px;border-radius:2px;background:#C9DEEB;}
+.recap-arrow>i.rail-r{position:relative;}
+.recap-arrow>i.rail-r::after{content:"";position:absolute;right:-2px;top:50%;width:6px;height:6px;
+  border-top:2px solid #9CC0D4;border-right:2px solid #9CC0D4;transform:translateY(-50%) rotate(45deg);}
+.recap-arrow>em{flex:none;font-style:normal;font-size:12px;font-weight:900;letter-spacing:.06em;color:#0E7490;}
+.recap-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0 26px;min-width:0;}
+.recap-cards>li{min-width:0;padding-top:9px;border-top:2px solid #D8E7F1;}
+.recap-cards .know-top{display:flex;align-items:baseline;justify-content:space-between;gap:9px;}
+.recap-cards .know-top>b{font-size:13px;font-weight:900;letter-spacing:.05em;color:#3C6480;}
+.recap-cards .know-top>span{flex:none;padding:2px 7px;border-radius:5px;font-size:11px;font-weight:700;background:#EDF3F8;color:#7893A8;}
+.recap-cards .know-item{margin-top:7px;font-size:13px;font-weight:900;line-height:1.4;color:#173E61;}
+.recap-cards .know-basis{margin-top:5px;font-size:11px;line-height:1.45;color:#7E96A9;}
+.recap-cards>li[data-kind="fact"]{border-top-color:#0783A4;}
+.recap-cards>li[data-kind="fact"] .know-top>b{color:#0783A4;}
+.recap-cards>li[data-kind="fact"] .know-top>span{background:#E4F4F8;color:#0783A4;}
+.recap-cards>li[data-kind="pref"]{border-top-color:#1668DC;}
+.recap-cards>li[data-kind="pref"] .know-top>b{color:#1668DC;}
+.recap-cards>li[data-kind="pref"] .know-top>span{background:#EAF1FD;color:#1668DC;}
+.recap-cards>li[data-kind="exp"]{border-top-color:#16836E;}
+.recap-cards>li[data-kind="exp"] .know-top>b{color:#16836E;}
+.recap-cards>li[data-kind="exp"] .know-top>span{background:#E2F3EE;color:#16836E;}
+.recap-cards>li[data-kind="risk"]{border-top-color:#D98A1F;}
+.recap-cards>li[data-kind="risk"] .know-top>b{color:#A5691A;}
+.recap-cards>li[data-kind="risk"] .know-top>span{background:#FBF0DD;color:#A5691A;}
+.recap-note{grid-column:1/-1;padding-top:11px;border-top:1px solid #DCE8F1;font-size:12px;color:#7E96A9;}
+.recap-note em{font-style:normal;font-weight:900;color:#0E7490;}
+.recap-bottom{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 560px;gap:38px;}
+.recap-video{min-width:0;min-height:0;margin:0;display:flex;flex-direction:column;overflow:hidden;
+  border:1px solid #263F62;border-radius:16px;background:#0B1727;}
+.recap-video>video{flex:1;min-height:0;width:100%;object-fit:contain;}
+.recap-video>figcaption{flex:none;padding:9px 18px;border-top:1px solid #243B56;background:#111D34;
+  font-size:13px;line-height:1.4;color:#E9F1F8;text-align:center;}
+.recap-bottom>.demo-brief{min-height:0;}
+
+/* ===========================================================
+   S10 下单交付 · 「AI 自动 → 人确认」分工带（全宽）
+   八页里唯一把「AI 干活 / 人拍板」画成两条泳道的形状：左侧宽区放
+   两步 AI，右侧窄区放唯一的人确认动作，中间一道分界线就是交接点。
+   =========================================================== */
+.order-slide .demo-main{display:flex;flex-direction:column;gap:16px;flex:1;min-height:0;}
+.order-slide .demo-main>.shot-pair{flex:1;min-height:0;}
+.order-band{flex:none;display:grid;grid-template-columns:minmax(0,1fr) 404px;
+  padding:15px 26px 16px;border:1px solid #BDD7E8;border-radius:16px;
+  background:linear-gradient(115deg,#F4FAFE,#FFFFFF 48%,#EFF7FC);box-shadow:0 12px 32px #164B7410;}
+.order-zone.is-ai{padding-right:36px;}
+.order-zone.is-human{padding-left:36px;border-left:2px solid #D8E7F1;}
+.zone-flag{display:flex;align-items:baseline;gap:9px;}
+.zone-flag>b{font-size:15px;font-weight:900;letter-spacing:.06em;color:var(--tone);}
+.zone-flag>span{font-size:12px;letter-spacing:.08em;color:#7E96A9;}
+.zone-steps{display:grid;gap:0 32px;margin-top:11px;}
+.order-zone.is-ai .zone-steps{grid-template-columns:1fr 1fr;}
+.order-zone.is-human .zone-steps{grid-template-columns:1fr;}
+.zone-steps>li{min-width:0;display:grid;grid-template-columns:25px minmax(0,1fr);gap:13px;
+  padding-top:11px;border-top:2px solid var(--tone-line);}
+.zone-no{display:flex;align-items:center;justify-content:center;width:25px;height:25px;border-radius:8px;
+  background:var(--tone);color:#FFF;font-family:var(--font-latin);font-size:12px;font-weight:700;}
+.zone-steps h4{font-size:15px;font-weight:900;line-height:1.35;color:#173E61;}
+.zone-steps .accent-chips{margin:8px 0 7px;}
+.zone-steps .accent-chips span{padding:4px 10px;font-size:12px;}
+.zone-steps p{font-size:12px;line-height:1.5;color:#7E96A9;}
+.zone-steps p em{font-style:normal;font-weight:900;color:var(--tone);}
 .demo-band-team{flex:none;display:flex;align-items:center;justify-content:center;gap:12px;
   font-size:14px;font-weight:900;letter-spacing:.12em;color:#385D79;}
 .demo-band-team::before,.demo-band-team::after{content:"";width:36px;height:1px;}
@@ -1250,29 +1382,15 @@ body.editing .edit-hint{display:block;}
 .cost-slide .demo-body{gap:18px;}
 .cost-slide .demo-main{grid-template-columns:530px minmax(0,1fr);gap:38px;}
 .cost-slide .demo-rail li{height:48px;font-size:16px;}
-.cost-story-layout{display:grid;grid-template-columns:530px minmax(0,1fr);gap:38px;flex:1;min-height:0;}
+.cost-story-layout{display:grid;grid-template-columns:minmax(0,1fr) 530px;gap:38px;flex:1;min-height:0;}
+.cost-story-layout>.shot-gallery{order:-1;}
 .cost-story-layout>.demo-brief,.cost-story-layout>.shot-gallery{min-height:0;}
 
 /* ===========================================================
-   S10 实战演示 · 下单交付：左侧快讲人机边界，右侧保留实录证据。
-   视频就绪前用现有系统截图作 poster，不让页面留空。
+   S10 实战演示 · 下单交付：三步升为页首全宽「AI 自动 / 人确认」分工带，
+   见文件后段 .order-band。这里只留进度条的紧凑尺寸。
    =========================================================== */
-.order-slide .demo-body{gap:18px;}
 .order-slide .demo-rail li{height:48px;font-size:16px;}
-.order-media-layout{display:grid;grid-template-columns:520px minmax(0,1fr);gap:38px;flex:1;min-height:0;}
-.order-brief{min-width:0;min-height:0;display:flex;flex-direction:column;padding-top:3px;}
-.order-mini-flow{list-style:none;flex:1;min-height:0;display:grid;grid-template-rows:repeat(3,1fr);}
-.order-mini-flow li{display:grid;grid-template-columns:74px minmax(0,1fr);gap:18px;align-items:center;border-bottom:1px solid #D4E3EC;}
-.order-mini-flow li:last-child{border-bottom:0;}
-.order-mini-flow .step-meta{display:flex;flex-direction:column;gap:3px;}
-.order-mini-flow .step-meta b{font-family:var(--font-latin);font-size:12px;letter-spacing:.12em;color:#8AA1B3;}
-.order-mini-flow .step-meta span{font-size:13px;font-weight:900;letter-spacing:.05em;color:#385D79;}
-.order-mini-flow h3{font-size:22px;line-height:1.35;color:#173E61;margin-bottom:6px;}
-.order-mini-flow p{font-size:14px;line-height:1.62;color:#607B90;}
-.order-mini-flow em{font-style:normal;font-weight:900;color:#0E7490;}
-.order-mini-flow .accent-chips{margin:2px 0 7px;}
-.order-brief .demo-brief-outcome{margin-top:10px;}
-.order-media-layout>.shot-gallery{min-height:0;}
 
 
 /* ===========================================================
@@ -1298,12 +1416,14 @@ body.editing .edit-hint{display:block;}
 .inv-layout .inv-eq-part{align-items:flex-start;text-align:left;}
 .inv-layout .inv-eq-part>span,.inv-layout .inv-eq-part small{white-space:normal;}
 
-/* 用户视角的痛点/价值条：与 S9「使用痛点 / 用户价值」同口径 */
+/* 用户视角的痛点/价值条：与 S9「使用痛点 / 用户价值」同口径。
+   注意不能复用 .pain —— 那是 S2 痛点卡片的类名，它带一条绝对定位的玫瑰色装饰条，
+   而这里没有 position:relative，装饰条会逃逸到 .demo-body 上画出一道贯穿整页的红线。 */
 .inv-note{display:flex;align-items:baseline;gap:10px;padding:7px 13px;border-radius:10px;
   font-size:13px;line-height:1.45;color:#5C7B92;}
 .inv-note>b{flex:none;font-size:11px;font-weight:900;letter-spacing:.13em;}
-.inv-note.pain{border:1px solid #E2D2C9;background:#FDF8F4;color:#8A6350;}
-.inv-note.pain>b{color:#B0866C;}
+.inv-note.is-pain{border:1px solid #E2D2C9;background:#FDF8F4;color:#8A6350;}
+.inv-note.is-pain>b{color:#B0866C;}
 .inv-note.value{border:1px solid #BFDCE8;background:#F1FAFD;color:#1E506F;}
 .inv-note.value>b{color:#5B90A8;}
 /* 归零项是逐条核过的结论，不是「无事发生」 */
@@ -1750,74 +1870,131 @@ body.editing .edit-hint{display:block;}
   </section>
 
   <!-- S7 实战演示 · 交易准入。口播（中 · 约 45 秒）：一次准入要过六项核验，安小二和钱小二并行跑；缺入驻资料时一键补办、自动重跑，不用重填前面内容。 -->
-  <section class="slide demo-slide demo-brief-slide" aria-label="实战演示·交易准入">
+  <section class="slide demo-slide demo-brief-slide verify-slide" aria-label="实战演示·交易准入">
     <header class="head"><div class="head-l"><h2 class="head-title"><span class="chap-no">04</span>实战演示 · 交易准入</h2></div><div class="head-crew"><img class="crew-item" src="assets/an.png" alt="安小二"><img class="crew-item" src="assets/qian.png" alt="钱小二"></div></header>
     <div class="demo-body">
       <ol class="demo-rail" aria-label="采购流程进度"><li class="done"><span>✓</span>需求确认</li><li class="done"><span>✓</span>行情研判</li><li class="current" aria-current="step"><span>03</span>交易准入</li><li><span>04</span>选粮点价</li><li><span>05</span>成本测算</li><li><span>06</span>下单交付</li><li><span>07</span>到厂核算</li><li><span>08</span>履约复盘</li></ol>
       <div class="demo-main">
-        <aside class="demo-brief">
-          <section class="demo-brief-block" data-accent="risk">
-            <header class="demo-brief-head"><div class="head-meta"><span>01</span><b>使用痛点</b></div><h3>门槛高、流程多，中小客户尤其吃力</h3></header>
-            <p>资质、授信、资金要分头办，材料重复交，缺一样就整单退回；中小客户没有专人盯着，往往迟迟办不下来。</p>
-          </section>
-          <section class="demo-brief-block" data-accent="ai">
-            <header class="demo-brief-head"><div class="head-meta"><span>02</span><b>如何解决</b></div><h3>六项并行核验，缺项一键补办</h3></header>
-            <div class="accent-list">
-              <div class="accent-list-row"><b>安小二</b><div class="accent-chips"><span>注册入驻</span><span>企业资质</span><span>履约授信</span></div></div>
-              <div class="accent-list-row"><b>钱小二</b><div class="accent-chips"><span>风险预警</span><span>资金账户</span><span>保证金</span></div></div>
+        <section class="verify-band" aria-label="六项准入核验并行执行结果">
+          <div class="lane">
+            <header class="lane-head"><b>安小二</b><span>交易准入核验</span></header>
+            <ol class="lane-track">
+              <li><i aria-hidden="true"></i><b>注册入驻</b></li>
+              <li><i aria-hidden="true"></i><b>企业资质</b></li>
+              <li><i aria-hidden="true"></i><b>履约授信</b></li>
+            </ol>
+          </div>
+          <div class="lane">
+            <header class="lane-head"><b>钱小二</b><span>交易条件核验</span></header>
+            <ol class="lane-track">
+              <li><i aria-hidden="true"></i><b>风险预警</b></li>
+              <li><i aria-hidden="true"></i><b>资金账户</b></li>
+              <li><i aria-hidden="true"></i><b>保证金</b></li>
+            </ol>
+          </div>
+          <footer class="verify-result">
+            <b>6 / 6</b>
+            <span>两项并行核验全部通过，出具准入核验报告 <em>VRF-B4D5</em>，六项结论逐条可追溯</span>
+          </footer>
+        </section>
+        <div class="verify-bottom">
+          <div class="shot-gallery video-gallery contain-fit" id="gallery-3" role="region" aria-roledescription="视频画廊" aria-label="交易准入操作实录" data-current-frame="0">
+            <div class="gallery-viewport" id="gallery-3-viewport">
+              <figure class="gallery-frame" id="gallery-3-frame-0" role="group" aria-roledescription="操作视频" aria-label="1 / 2：六项核验待启动 · 缺项可用企业档案材料一键补办" data-caption="六项核验待启动 · 用企业档案材料一键补办" data-tone="dark"><video autoplay muted loop playsinline preload="auto" aria-label="六项核验待启动，缺项可使用企业档案材料一键补办"><source src="assets/system-demo/03-交易准入/01.mp4" type="video/mp4"></video></figure>
+              <figure class="gallery-frame" id="gallery-3-frame-1" role="group" aria-roledescription="截图" aria-label="2 / 2：六项核验全部通过 · 出具准入核验报告" data-caption="六项核验全部通过 · 准入核验报告" data-tone="dark" hidden><img src="assets/system-demo/03-交易准入/02.png" alt="六项核验全部通过，出具准入核验报告" loading="eager" draggable="false"></figure>
             </div>
-          </section>
-          <section class="demo-brief-block" data-accent="value">
-            <header class="demo-brief-head"><div class="head-meta"><span>03</span><b>用户价值</b></div><h3>从来回补材料，到一次办结</h3></header>
-            <p>核验完成即生成带编号与时间戳的准入报告，六项结论逐条可追溯；不用再找业务员问进度。</p>
-          </section>
-          <div class="demo-brief-outcome">
-            <span>本步产出</span>
-            <strong>准入通过 6 / 6，进入选粮点价</strong>
-            <p>核验方 安小二（交易准入）· 钱小二（交易条件）并行完成，报告编号 VRF-B4D5。</p>
+            <div class="gallery-controls" contenteditable="false">
+              <button type="button" class="gallery-arrow" data-gallery-prev aria-label="上一张截图" aria-controls="gallery-3-viewport" disabled>‹</button>
+              <div class="gallery-meta"><p class="gallery-caption" aria-live="polite" aria-atomic="true">六项核验待启动 · 用企业档案材料一键补办</p><div class="gallery-dots" role="group" aria-label="选择视频或截图"><button type="button" class="gallery-dot" data-frame="0" aria-label="显示第 1 段：六项核验待启动，缺项可用企业档案材料补办" aria-controls="gallery-3-viewport" aria-pressed="true"><span></span></button><button type="button" class="gallery-dot" data-frame="1" aria-label="显示第 2 张：六项核验全部通过，出具准入核验报告" aria-controls="gallery-3-viewport" aria-pressed="false"><span></span></button></div></div>
+              <div class="gallery-page" aria-hidden="true"><b data-gallery-count>01</b> / 02</div>
+              <button type="button" class="gallery-arrow" data-gallery-next aria-label="下一张截图" aria-controls="gallery-3-viewport">›</button>
+            </div>
           </div>
-        </aside>
-        <div class="shot-gallery video-gallery contain-fit" id="gallery-3" role="region" aria-roledescription="视频画廊" aria-label="交易准入操作实录" data-current-frame="0">
-          <div class="gallery-viewport" id="gallery-3-viewport">
-            <figure class="gallery-frame" id="gallery-3-frame-0" role="group" aria-roledescription="操作视频" aria-label="1 / 2：六项核验待启动 · 缺项可用企业档案材料一键补办" data-caption="六项核验待启动 · 用企业档案材料一键补办" data-tone="dark"><video autoplay muted loop playsinline preload="auto" aria-label="六项核验待启动，缺项可使用企业档案材料一键补办"><source src="assets/system-demo/03-交易准入/01.mp4" type="video/mp4"></video></figure>
-            <figure class="gallery-frame" id="gallery-3-frame-1" role="group" aria-roledescription="截图" aria-label="2 / 2：六项核验全部通过 · 出具准入核验报告" data-caption="六项核验全部通过 · 准入核验报告" data-tone="dark" hidden><img src="assets/system-demo/03-交易准入/02.png" alt="六项核验全部通过，出具准入核验报告" loading="eager" draggable="false"></figure>
-          </div>
-          <div class="gallery-controls" contenteditable="false">
-            <button type="button" class="gallery-arrow" data-gallery-prev aria-label="上一张截图" aria-controls="gallery-3-viewport" disabled>‹</button>
-            <div class="gallery-meta"><p class="gallery-caption" aria-live="polite" aria-atomic="true">六项核验待启动 · 用企业档案材料一键补办</p><div class="gallery-dots" role="group" aria-label="选择视频或截图"><button type="button" class="gallery-dot" data-frame="0" aria-label="显示第 1 段：六项核验待启动，缺项可用企业档案材料补办" aria-controls="gallery-3-viewport" aria-pressed="true"><span></span></button><button type="button" class="gallery-dot" data-frame="1" aria-label="显示第 2 张：六项核验全部通过，出具准入核验报告" aria-controls="gallery-3-viewport" aria-pressed="false"><span></span></button></div></div>
-            <div class="gallery-page" aria-hidden="true"><b data-gallery-count>01</b> / 02</div>
-            <button type="button" class="gallery-arrow" data-gallery-next aria-label="下一张截图" aria-controls="gallery-3-viewport">›</button>
-          </div>
+          <aside class="demo-brief">
+            <section class="demo-brief-block" data-accent="risk">
+              <header class="demo-brief-head"><div class="head-meta"><span>01</span><b>使用痛点</b></div><h3>门槛高、流程多，中小客户尤其吃力</h3></header>
+              <p>资质、授信、资金要分头办，材料重复交，缺一样就整单退回；中小客户没有专人盯着，往往迟迟办不下来。</p>
+            </section>
+            <section class="demo-brief-block" data-accent="value">
+              <header class="demo-brief-head"><div class="head-meta"><span>02</span><b>用户价值</b></div><h3>从来回补材料，到一次办结</h3></header>
+              <p>缺项可用企业档案材料一键补办、自动重跑，不用重填前面内容；核验完成即生成带编号与时间戳的准入报告。</p>
+            </section>
+            <div class="demo-brief-outcome">
+              <span>本步产出</span>
+              <strong>准入通过 6 / 6，进入选粮点价</strong>
+              <p>核验方 安小二（交易准入）· 钱小二（交易条件）并行完成，报告编号 VRF-B4D5。</p>
+            </div>
+          </aside>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- S8 实战演示 · 选粮点价。口播（详讲 · 约 60 秒）：粮源匹配分两层。第一层是硬条件——等级、可供量、报价时效、交期，按规则把不能做的先筛掉，26 个候选只剩 8 个，淘汰 18 个，每个都能点开看原因。第二层交给 AI，把价格、质量、供给、履约、交付五个维度放到同一口径比，排出主推和两个备选；价格不是拍脑袋，是比近 30 天中位价低 18 元。企业知识库还会召回同品种、同区域的历史采购经验参与排序，所以推荐有据可查。 -->
+  <!-- S8 实战演示 · 选粮点价。口播（详讲 · 约 60 秒）：粮源匹配分两层。第一层是硬条件——等级、可供量、报价时效、交期，按规则把不能做的先筛掉，26 个候选只剩 8 个；淘汰的 18 个里，等级不符 6 个、可供不足 5 个、报价过期 4 个、交期超限 3 个，每条都能点开看原因。第二层交给 AI，把价格竞争力、质量指标、数量覆盖、履约记录、交货响应五个维度归一化到同一口径、加权排序，排出主推和两个备选；价格不是拍脑袋，是比近 30 天中位价低 18 元。企业知识库还会召回同品种、同区域的历史采购经验参与排序，所以推荐有据可查。 -->
   <section class="slide demo-slide funnel-slide" aria-label="实战演示·选粮点价">
     <header class="head"><div class="head-l"><h2 class="head-title"><span class="chap-no">04</span>实战演示 · 选粮点价</h2></div><div class="head-crew"><img class="crew-item" src="assets/liang.png" alt="粮小二"><img class="crew-item" src="assets/zhan.png" alt="瞻小二"></div></header>
     <div class="demo-body"><ol class="demo-rail" aria-label="采购流程进度"><li class="done"><span>✓</span>需求确认</li><li class="done"><span>✓</span>行情研判</li><li class="done"><span>✓</span>交易准入</li><li class="current" aria-current="step"><span>04</span>选粮点价</li><li class=""><span>05</span>成本测算</li><li class=""><span>06</span>下单交付</li><li class=""><span>07</span>到厂核算</li><li class=""><span>08</span>履约复盘</li></ol><div class="demo-main">
-      <section class="demo-band" aria-label="粮源筛选与比选过程">
-        <div class="band-node"><span>候选粮源</span><strong>26<small>个</small></strong><p>平台在售 · 合作库点 · 历史供应商</p></div>
-        <div class="band-link rule"><i aria-hidden="true">→</i><em>准入筛选 · 规则</em><p>二等及以上 · 可供 ≥ 200 吨<br>当日报价 · 交期 ≤ 10 天</p></div>
-        <div class="band-node is-qualified"><span>合格粮源</span><strong>8<small>个</small></strong><p>淘汰 18 个 · 逐条可追溯</p></div>
-        <div class="band-link ai"><i aria-hidden="true">→</i><em>多维比选 · AI</em><p>价格 · 质量 · 供给 · 履约 · 交付</p></div>
-        <div class="band-node is-ranked"><span>推荐结果</span><strong>3<small>个</small></strong><p>主推青岛港粮库 · 2,320 元/吨</p></div>
+      <section class="funnel-band" aria-label="粮源筛选与比选过程：26 个候选，规则筛出 8 个，AI 排出 3 个">
+        <div class="funnel-col is-candidate">
+          <strong class="stage-figure">26<small>个</small></strong>
+          <div class="stage-bar"><i style="--fill:100%"></i></div>
+          <span class="stage-name">候选粮源</span>
+        </div>
+        <div class="stage-gate is-rule">
+          <div class="gate-head"><i aria-hidden="true"></i><em>准入筛选 · 规则</em><i class="rail-r" aria-hidden="true"></i></div>
+          <p class="gate-facts">二等及以上 · 可供 ≥ 200 吨<br>当日报价 · 交期 ≤ 10 天</p>
+        </div>
+        <div class="funnel-col is-qualified">
+          <strong class="stage-figure">8<small>个</small></strong>
+          <div class="stage-bar"><i style="--fill:58%"></i></div>
+          <span class="stage-name">合格粮源</span>
+        </div>
+        <div class="stage-gate is-ai">
+          <div class="gate-head"><i aria-hidden="true"></i><em>多维比选 · AI</em><i class="rail-r" aria-hidden="true"></i></div>
+          <p class="gate-dims">价格竞争力 · 质量指标 · 数量覆盖<br>履约记录 · 交货响应</p>
+          <p class="gate-facts">五维归一化同口径 · 加权排序</p>
+        </div>
+        <div class="funnel-col is-ranked">
+          <strong class="stage-figure">3<small>个</small></strong>
+          <div class="stage-bar"><i style="--fill:34%"></i></div>
+          <span class="stage-name">推荐结果</span>
+        </div>
+
+        <div class="stage-note is-candidate">
+          <b>候选来源</b>
+          <div class="note-rows">
+            <span>平台在售<b>12</b></span>
+            <span>合作库点<b>9</b></span>
+            <span>历史供应商<b>5</b></span>
+          </div>
+        </div>
+        <div class="stage-note is-qualified">
+          <b>淘汰 18 个 · 逐条可追溯</b>
+          <div class="note-rows is-2col">
+            <span>等级不符<b>6</b></span>
+            <span>可供不足<b>5</b></span>
+            <span>报价过期<b>4</b></span>
+            <span>交期超限<b>3</b></span>
+          </div>
+        </div>
+        <div class="stage-note is-ranked">
+          <b>推荐依据 · 可解释</b>
+          <p>主推青岛港粮库，低于近 30 天中位价 <strong>18 元/吨</strong></p>
+          <p>知识库召回同品种同区域历史经验 <strong>47 笔</strong>，推荐依据可查</p>
+        </div>
       </section>
       <div class="demo-band-team">粮小二 × 瞻小二 × 企业知识库</div>
-      <div class="shot-gallery" id="gallery-4" role="region" aria-roledescription="截图画廊" aria-label="选粮点价操作截图" data-current-frame="0">
-        <div class="gallery-heading"><strong>系统操作实录</strong><small>← → 切图 · ↑ ↓ 翻页</small></div>
-        <div class="gallery-viewport" id="gallery-4-viewport">
-          <figure class="gallery-frame" id="gallery-4-frame-0" role="group" aria-roledescription="截图" aria-label="1 / 2：候选对比 · 比价格，也比品质和履约" data-caption="候选对比 · 比价格，也比品质和履约" data-tone="light"><img src="assets/system-demo/04-选粮点价/02.png" alt="候选对比 · 比价格，也比品质和履约" loading="eager" draggable="false"></figure>
-          <figure class="gallery-frame" id="gallery-4-frame-1" role="group" aria-roledescription="截图" aria-label="2 / 2：推荐依据 · 为什么优先选择青岛港粮库" data-caption="推荐依据 · 为什么优先选择青岛港粮库" data-tone="light" hidden><img src="assets/system-demo/04-选粮点价/03.png" alt="推荐依据 · 为什么优先选择青岛港粮库" loading="eager" draggable="false"></figure>
-        </div>
-        <div class="gallery-controls" contenteditable="false">
-          <button type="button" class="gallery-arrow" data-gallery-prev aria-label="上一张截图" aria-controls="gallery-4-viewport" disabled>‹</button>
-          <div class="gallery-meta"><p class="gallery-caption" aria-live="polite" aria-atomic="true">候选对比 · 比价格，也比品质和履约</p><div class="gallery-dots" role="group" aria-label="选择截图"><button type="button" class="gallery-dot" data-frame="0" aria-label="显示第 1 张：候选对比 · 比价格，也比品质和履约" aria-controls="gallery-4-viewport" aria-pressed="true"><span></span></button><button type="button" class="gallery-dot" data-frame="1" aria-label="显示第 2 张：推荐依据 · 为什么优先选择青岛港粮库" aria-controls="gallery-4-viewport" aria-pressed="false"><span></span></button></div></div>
-          <div class="gallery-page" aria-hidden="true"><b data-gallery-count>01</b> / 02</div>
-          <button type="button" class="gallery-arrow" data-gallery-next aria-label="下一张截图" aria-controls="gallery-4-viewport">›</button>
-        </div>
-      </div></div>
+      <div class="shot-pair" aria-label="选粮点价系统操作实录">
+        <figure class="pair-shot">
+          <img src="assets/system-demo/04-选粮点价/02.png" alt="候选对比：比价格，也比品质和履约" draggable="false">
+          <figcaption>候选对比 · 比价格，也比品质和履约</figcaption>
+        </figure>
+        <figure class="pair-shot">
+          <img src="assets/system-demo/04-选粮点价/03.png" alt="推荐依据：为什么优先选择青岛港粮库" draggable="false">
+          <figcaption>推荐依据 · 为什么优先选择青岛港粮库</figcaption>
+        </figure>
+      </div>
+    </div>
   </section>
 
   <!-- S9 实战演示 · 成本测算。口播：第 8 页已选出候选粮源，但粮源与运输分开报价，各方案包含的费用还不一样。算小二将「粮源 × 运输」组合后逐一补齐费用，统一核算到厂成本，再结合预算、交期和风险进行比选。最终确认「青岛港粮库 × 铁公联运」组合：到厂 2,389 元/吨，整单节省 1,800 元；6 天到货，仍留 4 天交期余量。 -->
@@ -1871,32 +2048,52 @@ body.editing .edit-hint{display:block;}
     <header class="head"><div class="head-l"><h2 class="head-title"><span class="chap-no">04</span>实战演示 · 下单交付</h2></div><div class="head-crew"><img class="crew-item" src="assets/da.png" alt="粮掌柜"></div></header>
     <div class="demo-body">
       <ol class="demo-rail" aria-label="采购流程进度"><li class="done"><span>✓</span>需求确认</li><li class="done"><span>✓</span>行情研判</li><li class="done"><span>✓</span>交易准入</li><li class="done"><span>✓</span>选粮点价</li><li class="done"><span>✓</span>成本测算</li><li class="current" aria-current="step"><span>06</span>下单交付</li><li><span>07</span>到厂核算</li><li><span>08</span>履约复盘</li></ol>
-      <div class="order-media-layout">
-        <aside class="order-brief">
-          <ol class="order-mini-flow">
-            <li data-accent="ai"><div class="step-meta"><b>01</b><span>汇总成单</span></div><div><h3>自动带入采购组合</h3><div class="accent-chips"><span>粮源</span><span>运输</span><span>价格</span><span>质量</span><span>交期</span></div><p>前五步结论直接继承，不靠人工转录。</p></div></li>
-            <li data-accent="ai"><div class="step-meta"><b>02</b><span>交叉核验</span></div><div><h3>下单前五项核验</h3><div class="accent-chips"><span>主体</span><span>资质</span><span>资金</span><span>预算</span><span>交期</span></div><p><em>5 / 5 通过</em>，任一项不成立都可退回调整。</p></div></li>
-            <li data-accent="human"><div class="step-meta"><b>03</b><span>确认放行</span></div><div><h3>人确认后正式下单</h3><div class="accent-chips"><span>最后判断</span><span>即时生效</span></div><p>订单已经就绪，人机协同。</p></div></li>
-          </ol>
-          <div class="demo-brief-outcome">
-            <span>本步产出</span>
-            <strong>采购组合核验通过，人确认后下单</strong>
-            <p>订单进入交付跟踪，并接续到厂核算。</p>
+      <div class="demo-main">
+        <section class="order-band" aria-label="下单交付三步：前两步由 AI 自动完成，第三步由人确认放行">
+          <div class="order-zone is-ai" data-accent="ai">
+            <header class="zone-flag"><b>AI 自动</b><span>准备与校验</span></header>
+            <ol class="zone-steps">
+              <li>
+                <div class="zone-no">01</div>
+                <div>
+                  <h4>汇总成单 · 自动带入采购组合</h4>
+                  <div class="accent-chips"><span>粮源</span><span>运输</span><span>价格</span><span>质量</span><span>交期</span></div>
+                  <p>前五步结论直接继承，不靠人工转录。</p>
+                </div>
+              </li>
+              <li>
+                <div class="zone-no">02</div>
+                <div>
+                  <h4>交叉核验 · 下单前五项核验</h4>
+                  <div class="accent-chips"><span>主体</span><span>资质</span><span>资金</span><span>预算</span><span>交期</span></div>
+                  <p><em>5 / 5 通过</em>，任一项不成立都可退回调整。</p>
+                </div>
+              </li>
+            </ol>
           </div>
-        </aside>
-
-        <!-- 预留两段下单交付录屏。当前用系统截图作 poster；视频就绪后取消 source 注释即可播放。 -->
-        <div class="shot-gallery video-gallery contain-fit" id="gallery-6-video" role="region" aria-roledescription="视频画廊" aria-label="下单交付操作视频" data-current-frame="0">
-          <div class="gallery-viewport" id="gallery-6-video-viewport">
-            <figure class="gallery-frame" id="gallery-6-video-frame-0" role="group" aria-roledescription="操作视频" aria-label="1 / 2：下单前五项一致性核验" data-caption="下单前核验 · 主体、资质、资金、预算与交期" data-tone="dark"><video autoplay muted loop playsinline preload="metadata" poster="assets/system-demo/06-下单交付/01.png" aria-label="下单前五项一致性核验"><!-- <source src="assets/system-demo/06-下单交付/01.mp4" type="video/mp4"> --></video></figure>
-            <figure class="gallery-frame" id="gallery-6-video-frame-1" role="group" aria-roledescription="操作视频" aria-label="2 / 2：人确认下单后进入交付跟踪" data-caption="人确认下单 · 订单进入交付跟踪" data-tone="dark" hidden><video autoplay muted loop playsinline preload="metadata" poster="assets/system-demo/06-下单交付/02.png" aria-label="人确认下单后进入交付跟踪"><!-- <source src="assets/system-demo/06-下单交付/02.mp4" type="video/mp4"> --></video></figure>
+          <div class="order-zone is-human" data-accent="human">
+            <header class="zone-flag"><b>人确认</b><span>不可逆动作</span></header>
+            <ol class="zone-steps">
+              <li>
+                <div class="zone-no">03</div>
+                <div>
+                  <h4>确认放行 · 人确认后正式下单</h4>
+                  <div class="accent-chips"><span>最后判断</span><span>即时生效</span></div>
+                  <p>订单已经就绪，拍板即可生效。</p>
+                </div>
+              </li>
+            </ol>
           </div>
-          <div class="gallery-controls" contenteditable="false">
-            <button type="button" class="gallery-arrow" data-gallery-prev aria-label="上一段视频" aria-controls="gallery-6-video-viewport" disabled>‹</button>
-            <div class="gallery-meta"><p class="gallery-caption" aria-live="polite" aria-atomic="true">下单前核验 · 主体、资质、资金、预算与交期</p><div class="gallery-dots" role="group" aria-label="选择视频"><button type="button" class="gallery-dot" data-frame="0" aria-label="显示第 1 段：下单前五项一致性核验" aria-controls="gallery-6-video-viewport" aria-pressed="true"><span></span></button><button type="button" class="gallery-dot" data-frame="1" aria-label="显示第 2 段：人确认下单后交付跟踪" aria-controls="gallery-6-video-viewport" aria-pressed="false"><span></span></button></div></div>
-            <div class="gallery-page" aria-hidden="true"><b data-gallery-count>01</b> / 02</div>
-            <button type="button" class="gallery-arrow" data-gallery-next aria-label="下一段视频" aria-controls="gallery-6-video-viewport">›</button>
-          </div>
+        </section>
+        <div class="shot-pair" aria-label="下单交付系统操作实录">
+          <figure class="pair-shot">
+            <img src="assets/system-demo/06-下单交付/01.png" alt="下单前核验：主体、资质、资金、预算与交期" draggable="false">
+            <figcaption>下单前核验 · 主体、资质、资金、预算与交期</figcaption>
+          </figure>
+          <figure class="pair-shot">
+            <img src="assets/system-demo/06-下单交付/02.png" alt="人确认下单 · 订单进入交付跟踪" draggable="false">
+            <figcaption>人确认下单 · 订单进入交付跟踪</figcaption>
+          </figure>
         </div>
       </div>
     </div>
@@ -1912,7 +2109,7 @@ body.editing .edit-hint{display:block;}
              <video autoplay muted loop playsinline preload="auto" poster="…/NN.png"><source src="…/NN.mp4" type="video/mp4"></video>。
              右侧视口 1174×609（1.928:1）与 1372×714 录屏对齐，可满铺。 -->
         <section class="inv-summary" aria-label="到货后的四项结算调整与最终到厂成本">
-        <div class="inv-note pain"><b>使用痛点</b>下单谈的是到厂价；到货后才算出真实成本，还得对着合同逐项核</div>
+        <div class="inv-note is-pain"><b>使用痛点</b>下单谈的是到厂价；到货后才算出真实成本，还得对着合同逐项核</div>
         <div class="inv-head"><i>算</i>算小二 · 该扣的扣、该赔的赔、该摊的摊</div>
         <div class="inv-cells">
           <div class="inv-cell"><span class="inv-cell-txt"><b>质量扣价<em>已核</em></b><span>入库质量达标 · 对入库质检单</span></span><strong>¥ 0.00</strong></div>
@@ -1947,47 +2144,66 @@ body.editing .edit-hint{display:block;}
   </section>
 
   <!-- S12 实战演示 · 履约复盘。口播（详讲 · 约 60 秒）：这一单办完了，但结果没有留在这一单里。供应、运输和交易结果被拆成四类企业知识——事实可以直接引用，偏好延续企业习惯，经验是这一次的做法和结果，风险标注边界；本次履约正常，系统也不会硬造一条风险规则。所以新建一笔同品种、同到货区域的采购时，上一单的实际成本基线会主动出现，并标明来源订单。企业的采购经验，第一次不再随人走。 -->
-  <section class="slide demo-slide demo-brief-slide" aria-label="实战演示·履约复盘">
+  <section class="slide demo-slide demo-brief-slide recap-slide" aria-label="实战演示·履约复盘">
     <header class="head"><div class="head-l"><h2 class="head-title"><span class="chap-no">04</span>实战演示 · 履约复盘</h2></div><div class="head-crew"><img class="crew-item" src="assets/da.png" alt="粮掌柜"></div></header>
     <div class="demo-body"><ol class="demo-rail" aria-label="采购流程进度"><li class="done"><span>✓</span>需求确认</li><li class="done"><span>✓</span>行情研判</li><li class="done"><span>✓</span>交易准入</li><li class="done"><span>✓</span>选粮点价</li><li class="done"><span>✓</span>成本测算</li><li class="done"><span>✓</span>下单交付</li><li class="done"><span>✓</span>到厂核算</li><li class="current" aria-current="step"><span>08</span>履约复盘</li></ol>
       <div class="demo-main">
-        <aside class="demo-brief">
-          <section class="demo-brief-block" data-accent="risk">
-            <header class="demo-brief-head"><div class="head-meta"><span>01</span><b>使用痛点</b></div><h3>办完一单，经验留在这一单里</h3></header>
-            <div class="accent-chips"><span>标准说不清</span><span>红线记不住</span><span>决策查不到</span><span>教训留不下</span></div>
-            <p>人一调动，这些经验就全清零。</p>
-          </section>
-          <section class="demo-brief-block" data-accent="ai">
-            <header class="demo-brief-head"><div class="head-meta"><span>02</span><b>如何解决</b></div><h3>一笔交易，拆成四类企业知识</h3></header>
-            <div class="knowledge-grid">
-              <div class="knowledge-cell is-fact"><b>企业事实</b><span>已引用</span><p>可直接引用</p></div>
-              <div class="knowledge-cell is-pref"><b>经营偏好</b><span>已验证</span><p>延续企业习惯</p></div>
-              <div class="knowledge-cell is-exp"><b>决策经验</b><span>新增 1 条</span><p>可参考的做法</p></div>
-              <div class="knowledge-cell is-risk"><b>风险规则</b><span>新增 1 条</span><p>相似线路预警</p></div>
-            </div>
-            <p>每条都注明来源订单，可追溯到具体哪一单。</p>
-          </section>
-          <section class="demo-brief-block" data-accent="value">
-            <header class="demo-brief-head"><div class="head-meta"><span>03</span><b>用户价值</b></div><h3>办得越多，越懂这家企业</h3></header>
-            <div class="accent-chips"><span>不买错</span><span>不越线</span><span>不重犯</span></div>
-            <p>每一单都按这家企业的标准和红线过一遍，不靠个人记性。</p>
-          </section>
-          <div class="demo-brief-outcome">
-            <span>本步产出</span>
-            <strong>超允差损耗追回 ¥956.96，并生成 1 条风险规则</strong>
-            <p>决策经验「青岛港粮库 × 铁公联运」同时入库，下一单自动召回。</p>
+        <section class="recap-band" aria-label="一笔交易沉淀为四类企业知识">
+          <div class="recap-source">
+            <b>本次履约结果</b>
+            <ul>
+              <li><span>供应</span><em>质量验收达标</em></li>
+              <li><span>运输</span><em>3 天到货 · 损耗 0.18%</em></li>
+              <li><span>交易</span><em>质量扣价 ¥0 · 承诺赔付 ¥0</em></li>
+            </ul>
           </div>
-        </aside>
-        <div class="shot-gallery video-gallery contain-fit" id="gallery-8" role="region" aria-roledescription="视频画廊" aria-label="履约复盘操作视频" data-current-frame="0">
-        <div class="gallery-viewport" id="gallery-8-viewport">
-          <figure class="gallery-frame" id="gallery-8-frame-0" role="group" aria-roledescription="操作视频" aria-label="履约复盘 · 供应、运输与交易结果" data-caption="履约复盘 · 供应、运输与交易结果" data-tone="dark"><video autoplay muted loop playsinline preload="auto" poster="assets/system-demo/08-履约复盘/01.png" aria-label="履约复盘 · 供应、运输与交易结果"><source src="assets/system-demo/08-履约复盘/01.mp4" type="video/mp4"></video></figure>
-        </div>
-        <div class="gallery-controls" contenteditable="false">
-          <button type="button" class="gallery-arrow" data-gallery-prev aria-label="上一段" aria-controls="gallery-8-viewport" disabled>‹</button>
-          <div class="gallery-meta"><p class="gallery-caption" aria-live="polite" aria-atomic="true">履约复盘 · 供应、运输与交易结果</p><div class="gallery-dots" role="group" aria-label="选择视频"><button type="button" class="gallery-dot" data-frame="0" aria-label="显示第 1 段：履约复盘 · 供应、运输与交易结果" aria-controls="gallery-8-viewport" aria-pressed="true"><span></span></button></div></div>
-          <div class="gallery-page" aria-hidden="true"><b data-gallery-count>01</b> / 01</div>
-          <button type="button" class="gallery-arrow" data-gallery-next aria-label="下一段" aria-controls="gallery-8-viewport" disabled>›</button>
-        </div>
+          <div class="recap-arrow" aria-hidden="true"><i></i><em>沉淀</em><i class="rail-r"></i></div>
+          <ul class="recap-cards">
+            <li data-kind="fact">
+              <div class="know-top"><b>企业事实</b><span>已引用</span></div>
+              <p class="know-item">饲料用玉米优先控制霉菌毒素</p>
+              <p class="know-basis">本次到厂质检：霉变粒 1.2% · 容重 718 g/L · 水分 13.5%，均在企业内控线内，按二等入库</p>
+            </li>
+            <li data-kind="pref">
+              <div class="know-top"><b>经营偏好</b><span>已验证</span></div>
+              <p class="know-item">安全库存低于七天优先保供</p>
+              <p class="know-basis">本次库存 15 天未触红线，按综合到厂成本择源</p>
+            </li>
+            <li data-kind="exp">
+              <div class="know-top"><b>决策经验</b><span>新增 1 条</span></div>
+              <p class="know-item">青岛港粮库 + 公路直达</p>
+              <p class="know-basis">合格入库吨成本 2,407.33 元 · 损耗 0.18%</p>
+            </li>
+            <li data-kind="risk">
+              <div class="know-top"><b>风险规则</b><span>无新增</span></div>
+              <p class="know-item">本次未发生延误、毁约或超限损耗</p>
+              <p class="know-basis">不为正常履约强行生成风险规则</p>
+            </li>
+          </ul>
+          <footer class="recap-note">每条都注明来源订单 <em>CG-MUDPRO5</em>，可追溯到具体哪一单。</footer>
+        </section>
+        <div class="recap-bottom">
+          <figure class="recap-video">
+            <video autoplay muted loop playsinline preload="auto" poster="assets/system-demo/08-履约复盘/01.png" aria-label="履约复盘 · 供应、运输与交易结果"><source src="assets/system-demo/08-履约复盘/01.mp4" type="video/mp4"></video>
+            <figcaption>履约复盘 · 供应、运输与交易结果</figcaption>
+          </figure>
+          <aside class="demo-brief">
+            <section class="demo-brief-block" data-accent="risk">
+              <header class="demo-brief-head"><div class="head-meta"><span>01</span><b>使用痛点</b></div><h3>办完一单，经验留在这一单里</h3></header>
+              <div class="accent-chips"><span>标准说不清</span><span>红线记不住</span><span>决策查不到</span><span>教训留不下</span></div>
+              <p>人一调动，这些经验就全清零。</p>
+            </section>
+            <section class="demo-brief-block" data-accent="value">
+              <header class="demo-brief-head"><div class="head-meta"><span>02</span><b>用户价值</b></div><h3>办得越多，越懂这家企业</h3></header>
+              <div class="accent-chips"><span>不买错</span><span>不越线</span><span>不重犯</span></div>
+              <p>每一单都按这家企业的标准和红线过一遍，不靠个人记性。</p>
+            </section>
+            <div class="demo-brief-outcome">
+              <span>回到第一步</span>
+              <strong>下一笔采购，需求确认时自动带出本单经验</strong>
+              <p>同品种、同到货区域的历史成本基线主动出现，并标明来源订单。</p>
+            </div>
+          </aside>
         </div>
       </div>
     </div>
@@ -2571,7 +2787,7 @@ class SlidePresentation{
 class InlineEditor{
   constructor(deck){
     this.deck=deck;this.isActive=false;
-    this.key='ldex-deck-v43-merged';
+    this.key='ldex-deck-v50-merged';
     this.toggle=document.getElementById('editToggle');
     this.restore();
     this.bindUI();
