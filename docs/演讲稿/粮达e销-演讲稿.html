@@ -1117,8 +1117,8 @@ svg {
 .fs-toggle:active{transform:translateY(0);}
 .fs-toggle .fs-icon{display:block;}
 .fs-toggle .fs-exit{display:none;}
-/* 已全屏：切成青色实心 + 内收箭头，一眼看出当前状态 */
-.fs-toggle.is-full{color:#fff;background:var(--cyan);border-color:var(--cyan);}
+/* 已全屏：只切换内收箭头，外观保持与非全屏一致 */
+.fs-toggle.is-full{}
 .fs-toggle.is-full .fs-enter{display:none;}
 .fs-toggle.is-full .fs-exit{display:block;}
 @media print{.fs-toggle{display:none !important;}}
