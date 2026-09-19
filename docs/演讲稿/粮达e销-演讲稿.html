@@ -40,7 +40,9 @@
   --ease-out-expo:cubic-bezier(.16,1,.3,1);
   --dur:.65s;
 
-  --stage-bg:#D7E3EC;
+  /* 舞台外留白与 .slide 同一条竖向渐变：顶 #FBFDFF、底 #E3EEF6，
+     上下黑边在交界处与幻灯片边缘同色，消除色差 */
+  --stage-bg:linear-gradient(180deg,#FBFDFF 0%,var(--bg) 55%,#E3EEF6 100%);
   --slide-bg:var(--bg);
 }
 
@@ -167,12 +169,7 @@ svg {
     radial-gradient(880px 520px at 6% 112%, rgba(8,145,178,.10), transparent 62%),
     linear-gradient(160deg, #FBFDFF 0%, var(--bg) 55%, #E3EEF6 100%);
 }
-/* 顶部一条极细的科技扫光 */
-.slide::after{
-  content:"";position:absolute;left:0;right:0;top:0;height:2px;z-index:0;
-  background:linear-gradient(90deg,transparent,rgba(8,145,178,.6) 30%,rgba(22,104,220,.5) 62%,transparent);
-  opacity:.9;
-}
+/* 顶部扫光已移除：它压在幻灯片最上沿，全屏留白时会变成一根分割线 */
 
 /* ===========================================================
    通用组件：页眉 / 页脚 / 揭示动画
@@ -1105,24 +1102,26 @@ svg {
 .deck-controls .pg{font-family:var(--font-latin);font-size:12px;letter-spacing:.14em;color:#69849A;}
 .deck-controls .pg b{color:var(--txt);}
 
-/* ===========================================================
-   行内编辑（草稿后默认附带）：悬停左上角或按 E 进入
-   =========================================================== */
-.edit-hotzone{position:fixed;top:0;left:0;width:80px;height:80px;z-index:10000;cursor:pointer;}
-.edit-toggle{
-  position:fixed;top:16px;left:16px;z-index:10001;
-  width:46px;height:46px;border-radius:12px;border:1px solid rgba(23,111,175,.3);
-  background:rgba(255,255,255,.9);color:var(--cyan-deep);font-size:20px;cursor:pointer;
-  opacity:0;pointer-events:none;transition:opacity .3s ease,background .3s;
+/* 全屏播放按钮：右下角常驻，与舞台外控件同一套质感，悬停高亮 */
+.fs-toggle{
+  position:fixed;right:22px;bottom:22px;z-index:1000;
+  display:flex;align-items:center;justify-content:center;
+  width:44px;height:44px;border-radius:12px;
+  border:1px solid rgba(23,111,175,.16);
+  background:rgba(255,255,255,.62);color:var(--cyan-deep);
+  backdrop-filter:blur(8px);box-shadow:0 4px 12px rgba(13,60,110,.07);
+  cursor:pointer;opacity:.72;
+  transition:opacity .18s ease,background .18s ease,color .18s ease,box-shadow .18s ease,transform .18s ease;
 }
-.edit-toggle.show,.edit-toggle.active{opacity:1;pointer-events:auto;}
-.edit-toggle.active{background:var(--cyan);color:#fff;}
-body.editing .slide{outline:1px dashed rgba(8,145,178,.35);outline-offset:-8px;}
-.edit-hint{
-  position:fixed;top:16px;left:74px;z-index:10001;display:none;
-  padding:10px 18px;border-radius:10px;font-size:14px;letter-spacing:.08em;
-  background:rgba(255,255,255,.94);border:1px solid rgba(8,145,178,.4);color:var(--cyan-deep);}
-body.editing .edit-hint{display:block;}
+.fs-toggle:hover,.fs-toggle:focus-visible{opacity:1;background:rgba(255,255,255,.95);box-shadow:0 7px 20px rgba(13,60,110,.14);transform:translateY(-1px);outline:none;}
+.fs-toggle:active{transform:translateY(0);}
+.fs-toggle .fs-icon{display:block;}
+.fs-toggle .fs-exit{display:none;}
+/* 已全屏：切成青色实心 + 内收箭头，一眼看出当前状态 */
+.fs-toggle.is-full{color:#fff;background:var(--cyan);border-color:var(--cyan);}
+.fs-toggle.is-full .fs-enter{display:none;}
+.fs-toggle.is-full .fs-exit{display:block;}
+@media print{.fs-toggle{display:none !important;}}
 
 .video-gallery{border-color:#263F62;background:#0B1427;box-shadow:none;}
 .video-gallery .gallery-frame{padding:0;}
@@ -1813,7 +1812,7 @@ body.editing .edit-hint{display:block;}
           <div class="demo-value-stack">
             <article class="demo-value-item problem" data-accent="risk">
               <div class="demo-value-label"><b>01</b><span>使用痛点</span></div>
-              <div><h3>懂业务，不等于会填系统</h3><p>字段多、术语多，复杂表单需他人代操作。</p><div class="demo-fact"><b>68.8%</b><span>客户群体在 50 岁以上</span></div></div>
+              <div><h3>懂业务，不等于会用系统</h3><p>字段多、术语多，复杂表单需他人代操作。</p><div class="demo-fact"><b>68.8%</b><span>客户群体在 50 岁以上</span></div></div>
             </article>
             <article class="demo-value-item action" data-accent="ai">
               <div class="demo-value-label"><b>02</b><span>如何解决</span></div>
@@ -1831,7 +1830,7 @@ body.editing .edit-hint{display:block;}
             <figure class="gallery-frame" id="gallery-1-frame-0" role="group" aria-roledescription="操作视频" aria-label="1 / 2：选择粮掌柜，进入需求确认" data-caption="选择粮掌柜 · 进入需求确认" data-tone="dark"><video autoplay muted loop playsinline preload="auto" aria-label="选择粮掌柜进入需求确认"><source src="assets/system-demo/01-需求确认/01.mp4" type="video/mp4"></video></figure>
             <figure class="gallery-frame" id="gallery-1-frame-1" role="group" aria-roledescription="操作视频" aria-label="2 / 2：自然语言需求自动生成采购条件" data-caption="自然语言需求 → 自动生成 6 项采购条件" data-tone="dark" hidden><video autoplay muted loop playsinline preload="auto" aria-label="粮掌柜将自然语言采购需求整理为结构化采购条件"><source src="assets/system-demo/01-需求确认/02.mp4" type="video/mp4"></video></figure>
           </div>
-          <div class="gallery-controls" contenteditable="false">
+          <div class="gallery-controls">
             <button type="button" class="gallery-arrow" data-gallery-prev aria-label="上一张截图" aria-controls="gallery-1-viewport" disabled>‹</button>
             <div class="gallery-meta"><p class="gallery-caption" aria-live="polite" aria-atomic="true">选择粮掌柜 · 进入需求确认</p><div class="gallery-dots" role="group" aria-label="选择视频"><button type="button" class="gallery-dot" data-frame="0" aria-label="显示第 1 张：选择粮掌柜，进入需求确认" aria-controls="gallery-1-viewport" aria-pressed="true"><span></span></button><button type="button" class="gallery-dot" data-frame="1" aria-label="显示第 2 张：自然语言需求自动生成采购条件" aria-controls="gallery-1-viewport" aria-pressed="false"><span></span></button></div></div>
             <div class="gallery-page" aria-hidden="true"><b data-gallery-count>01</b> / 02</div>
@@ -1881,7 +1880,7 @@ body.editing .edit-hint{display:block;}
             <figure class="gallery-frame" id="gallery-2-frame-0" role="group" aria-roledescription="操作视频" aria-label="1 / 2：五类市场证据 · 时间、口径与来源可追溯" data-caption="五类市场证据 · 时间、口径与来源可追溯" data-tone="dark"><video autoplay muted loop playsinline preload="auto" aria-label="五类市场证据，时间口径与来源可追溯"><source src="assets/system-demo/02-行情研判/01.mp4" type="video/mp4"></video></figure>
             <figure class="gallery-frame" id="gallery-2-frame-1" role="group" aria-roledescription="操作视频" aria-label="2 / 2：市场证据 × 本单约束 → 可执行采购建议" data-caption="市场证据 × 本单约束 → 可执行采购建议" data-tone="dark" hidden><video autoplay muted loop playsinline preload="auto" aria-label="市场证据结合本单约束形成可执行采购建议"><source src="assets/system-demo/02-行情研判/02.mp4" type="video/mp4"></video></figure>
           </div>
-          <div class="gallery-controls" contenteditable="false">
+          <div class="gallery-controls">
             <button type="button" class="gallery-arrow" data-gallery-prev aria-label="上一段视频" aria-controls="gallery-2-viewport" disabled>‹</button>
             <div class="gallery-meta"><p class="gallery-caption" aria-live="polite" aria-atomic="true">五类市场证据 · 时间、口径与来源可追溯</p><div class="gallery-dots" role="group" aria-label="选择视频"><button type="button" class="gallery-dot" data-frame="0" aria-label="显示第 1 段：五类市场证据" aria-controls="gallery-2-viewport" aria-pressed="true"><span></span></button><button type="button" class="gallery-dot" data-frame="1" aria-label="显示第 2 段：AI 采购研判" aria-controls="gallery-2-viewport" aria-pressed="false"><span></span></button></div></div>
             <div class="gallery-page" aria-hidden="true"><b data-gallery-count>01</b> / 02</div>
@@ -1926,7 +1925,7 @@ body.editing .edit-hint{display:block;}
               <figure class="gallery-frame" id="gallery-3-frame-0" role="group" aria-roledescription="操作视频" aria-label="1 / 2：六项核验待启动 · 缺项可用企业档案材料一键补办" data-caption="六项核验待启动 · 用企业档案材料一键补办" data-tone="dark"><video autoplay muted loop playsinline preload="auto" aria-label="六项核验待启动，缺项可使用企业档案材料一键补办"><source src="assets/system-demo/03-交易准入/01.mp4" type="video/mp4"></video></figure>
               <figure class="gallery-frame" id="gallery-3-frame-1" role="group" aria-roledescription="截图" aria-label="2 / 2：六项核验全部通过 · 出具准入核验报告" data-caption="六项核验全部通过 · 准入核验报告" data-tone="dark" hidden><img src="assets/system-demo/03-交易准入/02.png" alt="六项核验全部通过，出具准入核验报告" loading="eager" draggable="false"></figure>
             </div>
-            <div class="gallery-controls" contenteditable="false">
+            <div class="gallery-controls">
               <button type="button" class="gallery-arrow" data-gallery-prev aria-label="上一张截图" aria-controls="gallery-3-viewport" disabled>‹</button>
               <div class="gallery-meta"><p class="gallery-caption" aria-live="polite" aria-atomic="true">六项核验待启动 · 用企业档案材料一键补办</p><div class="gallery-dots" role="group" aria-label="选择视频或截图"><button type="button" class="gallery-dot" data-frame="0" aria-label="显示第 1 段：六项核验待启动，缺项可用企业档案材料补办" aria-controls="gallery-3-viewport" aria-pressed="true"><span></span></button><button type="button" class="gallery-dot" data-frame="1" aria-label="显示第 2 张：六项核验全部通过，出具准入核验报告" aria-controls="gallery-3-viewport" aria-pressed="false"><span></span></button></div></div>
               <div class="gallery-page" aria-hidden="true"><b data-gallery-count>01</b> / 02</div>
@@ -2054,7 +2053,7 @@ body.editing .edit-hint{display:block;}
             <figure class="gallery-frame" id="gallery-5-video-frame-0" role="group" aria-roledescription="操作视频" aria-label="1 / 2：粮源与运输组合的到厂成本测算" data-caption="粮源 × 运输组合 · 统一测算到厂成本" data-tone="dark"><video autoplay muted loop playsinline preload="auto" poster="assets/system-demo/05-成本测算/01.png" aria-label="粮源与运输组合的到厂成本测算"><source src="assets/system-demo/05-成本测算/01.mp4" type="video/mp4"></video></figure>
             <figure class="gallery-frame" id="gallery-5-video-frame-1" role="group" aria-roledescription="操作视频" aria-label="2 / 2：算小二结合成本、交期与风险给出组合建议" data-caption="组合比选 · 成本、交期与风险一起权衡" data-tone="dark" hidden><video autoplay muted loop playsinline preload="auto" poster="assets/system-demo/05-成本测算/02.png" aria-label="算小二结合成本交期与风险给出组合建议"><source src="assets/system-demo/05-成本测算/02.mp4" type="video/mp4"></video></figure>
           </div>
-          <div class="gallery-controls" contenteditable="false">
+          <div class="gallery-controls">
             <button type="button" class="gallery-arrow" data-gallery-prev aria-label="上一段视频" aria-controls="gallery-5-video-viewport" disabled>‹</button>
             <div class="gallery-meta"><p class="gallery-caption" aria-live="polite" aria-atomic="true">粮源 × 运输组合 · 统一测算到厂成本</p><div class="gallery-dots" role="group" aria-label="选择视频"><button type="button" class="gallery-dot" data-frame="0" aria-label="显示第 1 段：粮源与运输组合的到厂成本测算" aria-controls="gallery-5-video-viewport" aria-pressed="true"><span></span></button><button type="button" class="gallery-dot" data-frame="1" aria-label="显示第 2 段：成本、交期与风险组合比选" aria-controls="gallery-5-video-viewport" aria-pressed="false"><span></span></button></div></div>
             <div class="gallery-page" aria-hidden="true"><b data-gallery-count>01</b> / 02</div>
@@ -2132,7 +2131,7 @@ body.editing .edit-hint{display:block;}
              <video autoplay muted loop playsinline preload="auto" poster="…/NN.png"><source src="…/NN.mp4" type="video/mp4"></video>。
              右侧视口 1174×609（1.928:1）与 1372×714 录屏对齐，可满铺。 -->
         <section class="inv-summary" aria-label="到货后的四项结算调整与最终到厂成本">
-        <div class="inv-note is-pain"><b>使用痛点</b>下单谈的是到厂价；到货后才算出真实成本，还得对着合同逐项核</div>
+        <div class="inv-note is-pain"><b>使用痛点</b>粮食买的便宜，不一定真省钱。人工逐项核账，易漏算成本、漏追赔款</div>
         <div class="inv-head"><i>算</i>算小二 · 该扣的扣、该赔的赔、该摊的摊</div>
         <div class="inv-cells">
           <div class="inv-cell"><span class="inv-cell-txt"><b>质量扣价<em>已核</em></b><span>入库质量达标 · 对入库质检单</span></span><strong>¥ 0.00</strong></div>
@@ -2149,13 +2148,13 @@ body.editing .edit-hint{display:block;}
           <i aria-hidden="true">=</i>
           <span class="inv-eq-part is-cost"><span>实际合格入库吨成本 <b>2,402.03</b> 元/吨</span><small>较到厂预算 2,680 低 277.97 元/吨 · 四单已关联可追溯</small></span>
         </div>
-        <div class="inv-note value"><b>用户价值</b>该赔的一分不少追回来，到货当天出可直接入账的吨成本</div>
+        <div class="inv-note value"><b>用户价值</b>自动关联单据，逐项核算，让每一笔采购的账都算得清、有依据</div>
       </section>
       <div class="shot-gallery video-gallery contain-fit" id="gallery-7" role="region" aria-roledescription="视频画廊" aria-label="到厂核算操作视频" data-current-frame="0">
         <div class="gallery-viewport" id="gallery-7-viewport">
           <figure class="gallery-frame" id="gallery-7-frame-0" role="group" aria-roledescription="操作视频" aria-label="到厂核算 · 实际合格入库吨成本" data-caption="到厂核算 · 实际合格入库吨成本" data-tone="dark"><video autoplay muted loop playsinline preload="auto" poster="assets/system-demo/07-到厂核算/01.png" aria-label="到厂核算 · 实际合格入库吨成本"><source src="assets/system-demo/07-到厂核算/01.mp4" type="video/mp4"></video></figure>
         </div>
-        <div class="gallery-controls" contenteditable="false">
+        <div class="gallery-controls">
           <button type="button" class="gallery-arrow" data-gallery-prev aria-label="上一段" aria-controls="gallery-7-viewport" disabled>‹</button>
           <div class="gallery-meta"><p class="gallery-caption" aria-live="polite" aria-atomic="true">到厂核算 · 实际合格入库吨成本</p><div class="gallery-dots" role="group" aria-label="选择视频"><button type="button" class="gallery-dot" data-frame="0" aria-label="显示第 1 段：到厂核算 · 实际合格入库吨成本" aria-controls="gallery-7-viewport" aria-pressed="true"><span></span></button></div></div>
           <div class="gallery-page" aria-hidden="true"><b data-gallery-count>01</b> / 01</div>
@@ -2212,7 +2211,7 @@ body.editing .edit-hint{display:block;}
           </figure>
           <aside class="demo-brief">
             <section class="demo-brief-block" data-accent="risk">
-              <header class="demo-brief-head"><div class="head-meta"><span>01</span><b>使用痛点</b></div><h3>办完一单，经验留在这一单里</h3></header>
+              <header class="demo-brief-head"><div class="head-meta"><span>01</span><b>使用痛点</b></div><h3>办完一单，经验留在个人手里</h3></header>
               <div class="accent-chips"><span>标准说不清</span><span>红线记不住</span><span>决策查不到</span><span>教训留不下</span></div>
               <p>人一调动，这些经验就全清零。</p>
             </section>
@@ -2223,7 +2222,7 @@ body.editing .edit-hint{display:block;}
             </section>
             <div class="demo-brief-outcome">
               <span>回到第一步</span>
-              <strong>下一笔采购，需求确认时自动带出本单经验</strong>
+              <strong>下一笔采购，自动带出以往经验</strong>
               <p>同品种、同到货区域的历史成本基线主动出现，并标明来源订单。</p>
             </div>
           </aside>
@@ -2364,7 +2363,7 @@ body.editing .edit-hint{display:block;}
       <div class="lay-row w3 tint4">
         <div class="lay-tag t-l4"><b>④ AI 能力引擎</b><i>可理解 · 可协作<br>可解释 · 可降级</i></div>
         <div class="lay-cols" style="grid-template-columns:repeat(4,1fr)">
-          <div class="lay-box"><b>大模型解析与生成</b><span>目标提取 · 对比解读 · 知识提炼</span></div>
+          <div class="lay-box"><b>大模型理解与生成</b><span>目标提取 · 对比解读 · 知识提炼</span></div>
           <div class="lay-box"><b>确定性规则护栏</b><span>硬条件过滤 · 成本计算 · 风险判定</span></div>
           <div class="lay-box"><b>企业记忆增强（RAG）</b><span>相似经验语义召回 · 跨小二共享</span></div>
           <div class="lay-box"><b>可信 AI 与过程解释</b><span>展示依据 · 适用条件 · 淘汰原因</span></div>
@@ -2658,7 +2657,7 @@ body.editing .edit-hint{display:block;}
             <div class="sum-items">
             <div class="sum-item"><b>服务入口</b><span>依托粮达网，触达买卖两端</span></div>
             <div class="sum-item"><b>数智底座</b><span>成为粮食产业智能基础设施</span></div>
-            <div class="sum-item"><b>经营反哺</b><span>以业务反馈优化供应链经营</span></div>
+            <div class="sum-item"><b>经营反哺</b><span>以业务反馈反哺供应链经营</span></div>
             </div>
           </div>
         </div>
@@ -2711,10 +2710,15 @@ body.editing .edit-hint{display:block;}
   <span class="pg"><b id="pgNow">1</b> / <span id="pgAll">12</span></span>
 </nav>
 
-<!-- 行内编辑控件 -->
-<div class="edit-hotzone" title="进入编辑模式"></div>
-<button class="edit-toggle" id="editToggle" title="编辑模式 (E)">✎</button>
-<div class="edit-hint">编辑模式：点击文字直接改 · Ctrl+S 导出 HTML · 改动自动存本地</div>
+<!-- 全屏播放控件 -->
+<button class="fs-toggle" id="fsToggle" title="全屏播放 (F)" aria-label="全屏播放">
+  <svg class="fs-icon fs-enter" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+    <path d="M3 8V3h5M21 8V3h-5M3 16v5h5M21 16v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <svg class="fs-icon fs-exit" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+    <path d="M8 3v5H3M16 3v5h5M8 21v-5H3M16 21v-5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</button>
 
 <script>
 /* ===========================================================
@@ -2729,6 +2733,7 @@ class SlidePresentation{
     document.getElementById('pgAll').textContent=this.slides.length;
     this.current=0;
     this.setupStageScale();
+    this.setupFullscreen();
     this.setupKeyboardNav();
     this.setupTouchNav();
     this.setupWheelNav();
@@ -2748,11 +2753,38 @@ class SlidePresentation{
       const x=(window.innerWidth-1920*f)/2, y=(window.innerHeight-1080*f)/2;
       this.stage.style.transform=`translate(${x}px,${y}px) scale(${f})`;
     };
+    this.fit=fit;
     fit();window.addEventListener('resize',fit);
+  }
+  /* 全屏播放：右下角按钮 + F 键切换，图标随全屏状态联动 */
+  setupFullscreen(){
+    const btn=document.getElementById('fsToggle');
+    if(!btn)return;
+    const enter=()=>{const el=document.documentElement;(el.requestFullscreen||el.webkitRequestFullscreen||function(){}).call(el);};
+    const exit=()=>{(document.exitFullscreen||document.webkitExitFullscreen||function(){}).call(document);};
+    const isFs=()=>!!(document.fullscreenElement||document.webkitFullscreenElement);
+    const sync=()=>{
+      btn.classList.toggle('is-full',isFs());
+      btn.setAttribute('aria-label',isFs()?'退出全屏':'全屏播放');
+      btn.title=isFs()?'退出全屏 (F)':'全屏播放 (F)';
+      /* 进出全屏后重算缩放，避免个别浏览器不触发 resize 导致留白 */
+      if(this.fit)this.fit();
+    };
+    btn.addEventListener('click',()=>{isFs()?exit():enter();});
+    document.addEventListener('fullscreenchange',sync);
+    document.addEventListener('webkitfullscreenchange',sync);
+    /* F 键切换全屏；输入态 / 组合键不触发 */
+    document.addEventListener('keydown',e=>{
+      if(e.key!=='f'&&e.key!=='F')return;
+      if(e.metaKey||e.ctrlKey||e.altKey)return;
+      if(e.target.closest&&e.target.closest('input,textarea,select,[contenteditable="true"]'))return;
+      e.preventDefault();isFs()?exit():enter();
+    });
+    sync();
   }
   setupKeyboardNav(){
     document.addEventListener('keydown',e=>{
-      if(document.designMode==='on'||e.target.closest('input,textarea,select,[contenteditable="true"]'))return;
+      if(e.target.closest('input,textarea,select,[contenteditable="true"]'))return;
       if(e.key===' '&&e.target.closest('button,a'))return;
       const gallery=this.slides[this.current].querySelector('.shot-gallery');
       if(gallery&&(e.key==='ArrowLeft'||e.key==='ArrowRight')){
@@ -2782,7 +2814,7 @@ class SlidePresentation{
   setupWheelNav(){
     let lock=0;
     document.addEventListener('wheel',e=>{
-      if(e.target.closest('.shot-gallery')||document.designMode==='on')return;
+      if(e.target.closest('.shot-gallery'))return;
       const now=Date.now();
       if(now-lock<650||Math.abs(e.deltaY)<24)return;
       lock=now; e.deltaY>0?this.next():this.prev();
@@ -2803,68 +2835,7 @@ class SlidePresentation{
   prev(){this.showSlide(this.current-1);}
 }
 
-/* ===========================================================
-   行内编辑：designMode 全文可编辑 + localStorage 自动保存 + Ctrl+S 导出
-   =========================================================== */
-class InlineEditor{
-  constructor(deck){
-    this.deck=deck;this.isActive=false;
-    this.key='ldex-deck-v50-merged';
-    this.toggle=document.getElementById('editToggle');
-    this.restore();
-    this.bindUI();
-  }
-  bindUI(){
-    const hz=document.querySelector('.edit-hotzone');
-    let t=null;
-    const show=()=>{clearTimeout(t);this.toggle.classList.add('show');};
-    const hide=()=>{t=setTimeout(()=>{if(!this.isActive)this.toggle.classList.remove('show');},400);};
-    hz.addEventListener('mouseenter',show);hz.addEventListener('mouseleave',hide);
-    hz.addEventListener('click',()=>this.toggleEditMode());
-    this.toggle.addEventListener('mouseenter',()=>clearTimeout(t));
-    this.toggle.addEventListener('mouseleave',hide);
-    this.toggle.addEventListener('click',()=>this.toggleEditMode());
-    document.addEventListener('keydown',e=>{
-      if((e.key==='e'||e.key==='E')&&!e.target.getAttribute('contenteditable')&&!e.metaKey&&!e.ctrlKey)this.toggleEditMode();
-      if((e.metaKey||e.ctrlKey)&&e.key==='s'&&this.isActive){e.preventDefault();this.exportFile();}
-    });
-    /* 编辑内容防抖自动存本地 */
-    let s=null;
-    document.getElementById('deckStage').addEventListener('input',()=>{
-      clearTimeout(s);s=setTimeout(()=>this.save(),600);
-    });
-  }
-  toggleEditMode(){
-    this.isActive=!this.isActive;
-    document.designMode=this.isActive?'on':'off';
-    document.body.classList.toggle('editing',this.isActive);
-    this.toggle.classList.toggle('active',this.isActive);
-    if(this.isActive)this.toggle.classList.add('show');
-    else{this.save();this.toggle.classList.remove('show');}
-  }
-  save(){
-    try{localStorage.setItem(this.key,document.getElementById('deckStage').innerHTML);}catch(e){}
-  }
-  restore(){
-    try{
-      const html=localStorage.getItem(this.key);
-      if(html){
-        document.getElementById('deckStage').innerHTML=html;
-        this.deck.slides=[...document.querySelectorAll('.slide')];
-        this.deck.dots.forEach((d,k)=>d.classList.toggle('on',k===this.deck.current));
-      }
-    }catch(e){}
-  }
-  exportFile(){
-    const blob=new Blob(['<!DOCTYPE html>\n'+document.documentElement.outerHTML],{type:'text/html'});
-    const a=document.createElement('a');
-    a.href=URL.createObjectURL(blob);
-    a.download='粮达e销-演讲稿-v2.html';
-    a.click();URL.revokeObjectURL(a.href);
-  }
-}
-
-/* 每页独立切图，不自动播放；事件绑定在恢复编辑内容之后。 */
+/* 每页独立切图，不自动播放。 */
 class ScreenshotGallery{
   constructor(root){
     this.root=root;
@@ -2890,7 +2861,7 @@ class ScreenshotGallery{
     root.addEventListener('touchend',e=>{
       if(!touch)return;
       const dx=e.changedTouches[0].clientX-touch.x,dy=e.changedTouches[0].clientY-touch.y;
-      if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)&&document.designMode!=='on')this.show(this.current+(dx<0?1:-1));
+      if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy))this.show(this.current+(dx<0?1:-1));
       touch=null;
     },{passive:true});
     root.addEventListener('touchcancel',()=>{touch=null;},{passive:true});
@@ -2909,7 +2880,6 @@ class ScreenshotGallery{
 }
 
 const deck=new SlidePresentation();
-const editor=new InlineEditor(deck);
 const galleries=[...document.querySelectorAll('.shot-gallery')].map(root=>new ScreenshotGallery(root));
 deck.showSlide(deck.current);
 </script>
